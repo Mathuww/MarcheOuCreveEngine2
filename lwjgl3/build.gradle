@@ -1,0 +1,224 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "io.github.fourlastor:construo:2.0.2"
+        if (project.findProperty('enableGraalNative') == 'true') {
+            classpath "org.graalvm.buildtools.native:org.graalvm.buildtools.native.gradle.plugin:0.9.28"
+        }
+    }
+}
+
+plugins {
+    id 'application'
+    id 'java'
+    id 'eclipse'
+}
+
+
+apply plugin: 'io.github.fourlastor.construo'
+
+import io.github.fourlastor.construo.Target
+
+// === Java configuration ===
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(17)
+}
+
+
+// === Application configuration ===
+application {
+    mainClass.set('com.walk.or.die.engine.lwjgl3.Lwjgl3Launcher')
+}
+
+sourceSets.main.resources.srcDirs += [rootProject.file('assets')]
+
+// === Dependencies ===
+dependencies {
+    implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+    implementation "com.badlogicgames.gdx:gdx-lwjgl3-angle:$gdxVersion"
+    implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    implementation project(':core')
+    implementation("com.badlogicgames.gdx:gdx-tools:$gdxVersion") {
+        exclude group: 'com.badlogicgames.gdx', module: 'gdx-backend-lwjgl'
+    }
+}
+
+if (project.findProperty('enableGraalNative') == 'true') {
+    dependencies {
+        implementation "io.github.berstanio:gdx-svmhelper-backend-lwjgl3:$graalHelperVersion"
+        implementation "io.github.berstanio:gdx-svmhelper-extension-box2d:$graalHelperVersion"
+        implementation "io.github.berstanio:gdx-svmhelper-extension-bullet:$graalHelperVersion"
+        implementation "io.github.berstanio:gdx-svmhelper-extension-freetype:$graalHelperVersion"
+    }
+}
+
+// === Run configuration ===
+def os = System.properties['os.name'].toLowerCase(Locale.ROOT)
+
+run {
+    workingDir = rootProject.file('assets')
+    if (os.contains('mac')) jvmArgs += "-XstartOnFirstThread"
+}
+
+// === JAR configuration ===
+// Répertoire de sortie constant pour les JARs publics
+def publicOutputDir = file("/home/gaia/dev/java/pcoo/walkordie/public")
+
+// === JAR principal ===
+tasks.named('jar', Jar) {
+    // Définir un nom constant, sans version
+    archiveFileName.set("${rootProject.ext.appName}.jar")
+
+    // Définir le répertoire de sortie
+    destinationDirectory.set(publicOutputDir)
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    // Inclure les dépendances runtime
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    exclude('META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')
+
+    manifest {
+        attributes(
+            'Main-Class': application.mainClass.get(),
+            'Enable-Native-Access': 'ALL-UNNAMED'
+        )
+    }
+
+    doLast {
+        // Rendre le fichier exécutable (Linux/macOS)
+        file(archiveFile.get().asFile).setExecutable(true, false)
+        println "Main JAR built in: ${archiveFile.get().asFile}"
+    }
+}
+
+
+// === Fonction utilitaire pour créer des JARs par plateforme ===
+def createPlatformJar = { nameSuffix, excludes ->
+    tasks.register("jar${nameSuffix}", Jar) {
+        dependsOn(tasks.named("jar"))
+
+        // Nom constant pour chaque plateforme
+        archiveFileName.set("${rootProject.ext.appName}-${nameSuffix.toLowerCase()}.jar")
+
+        // Même répertoire de sortie
+        destinationDirectory.set(publicOutputDir)
+
+        // Inclure le contenu du JAR principal
+        from(tasks.named("jar").flatMap { it.archiveFile }.map { zipTree(it) })
+
+        // Exclusions spécifiques à la plateforme
+        exclude(excludes)
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        doLast {
+            file(archiveFile.get().asFile).setExecutable(true, false)
+            println "JAR ${nameSuffix} built in: ${archiveFile.get().asFile}"
+        }
+    }
+}
+
+
+// === Déclarations des JARs spécifiques ===
+createPlatformJar("Mac", [
+    "windows/x86/**", "windows/x64/**",
+    "linux/arm32/**", "linux/arm64/**", "linux/x64/**",
+    "**/*.dll", "**/*.so",
+    'META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+])
+
+createPlatformJar("Linux", [
+    "windows/x86/**", "windows/x64/**",
+    "macos/arm64/**", "macos/x64/**",
+    "**/*.dll", "**/*.dylib",
+    'META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+])
+
+createPlatformJar("Win", [
+    "macos/arm64/**", "macos/x64/**",
+    "linux/arm32/**", "linux/arm64/**", "linux/x64/**",
+    "**/*.dylib", "**/*.so",
+    'META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+])
+
+// === Construo configuration ===
+construo {
+    name.set(rootProject.ext.appName)
+    humanName.set(rootProject.ext.appName)
+
+    targets.configure {
+        register("linuxX64", Target.Linux) {
+            architecture.set(Target.Architecture.X86_64)
+            jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jdk_x64_linux_hotspot_17.0.15_6.tar.gz")
+        }
+        register("macM1", Target.MacOs) {
+            architecture.set(Target.Architecture.AARCH64)
+            jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jdk_aarch64_mac_hotspot_17.0.15_6.tar.gz")
+            identifier.set("com.walk.or.die.engine.${rootProject.ext.appName}")
+            macIcon.set(project.file("icons/logo.icns"))
+        }
+        register("macX64", Target.MacOs) {
+            architecture.set(Target.Architecture.X86_64)
+            jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jdk_x64_mac_hotspot_17.0.15_6.tar.gz")
+            identifier.set("com.walk.or.die.engine.${rootProject.ext.appName}")
+            macIcon.set(project.file("icons/logo.icns"))
+        }
+        register("winX64", Target.Windows) {
+            architecture.set(Target.Architecture.X86_64)
+            jdkUrl.set("https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.15%2B6/OpenJDK17U-jdk_x64_windows_hotspot_17.0.15_6.zip")
+            icon.set(project.file("icons/logo.png"))
+        }
+    }
+}
+
+// === Distribution & startScripts ===
+tasks.register('dist') {
+    dependsOn(tasks.jar)
+}
+
+distributions {
+    main {
+        contents {
+            into('libs') {
+                project.configurations.runtimeClasspath.files.findAll { file ->
+                    file.name != tasks.named("jar").get().outputs.files.singleFile.name
+                }.each { file ->
+                    exclude file.name
+                }
+            }
+        }
+    }
+}
+
+startScripts {
+    dependsOn(tasks.jar)
+    classpath = files(tasks.named("jar").get().outputs.files)
+}
+
+// === Graal native image support ===
+if (project.findProperty('enableGraalNative') == 'true') {
+    apply from: file("nativeimage.gradle")
+}
+
+tasks.named("processResources") {
+    dependsOn(":core:generateAssetList")
+}
+
+tasks.named("jar") {
+  dependsOn(":core:jar")
+}

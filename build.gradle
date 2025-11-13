@@ -1,0 +1,86 @@
+// Top-level build.gradle for Gradle 9.2
+
+ext {
+    appName = 'MarcheOuCreveEngine2'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        mavenLocal()
+        google()
+        maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
+    }
+    dependencies {
+        // Ajoute ici les plugins Gradle nécessaires si besoin
+    }
+}
+
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        google()
+        maven { url 'https://central.sonatype.com/repository/maven-snapshots/' }
+        maven { url 'https://jitpack.io' }
+    }
+
+    idea {
+        module {
+            outputDir = file('build/classes/java/main')
+            testOutputDir = file('build/classes/java/test')
+        }
+    }
+
+    eclipse {
+        project {
+            name = 'MarcheOuCreveEngine2-parent'
+        }
+    }
+}
+
+subprojects {
+    apply plugin: 'java-library'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    version = project.findProperty("projectVersion") ?: "0.1.0"
+
+    tasks.register("generateAssetList") {
+        def assetsFolder = file("${rootProject.projectDir}/assets")
+        def assetsFile = file("${assetsFolder}/assets.txt")
+
+        outputs.file(assetsFile)
+
+        doLast {
+            if (!assetsFolder.exists()) {
+                println "Warning: assets folder not found: ${assetsFolder}"
+                return
+            }
+
+            assetsFile.text = "" // clear previous content
+
+            fileTree(assetsFolder).visit { fileDetails ->
+                if (!fileDetails.isDirectory()) {
+                    assetsFile.append(fileDetails.relativePath.pathString + "\n")
+                }
+            }
+            println "Generated assets list at ${assetsFile}"
+        }
+    }
+
+    tasks.named("processResources") {
+        dependsOn("generateAssetList")
+    }
+
+    compileJava {
+        options.incremental = true
+    }
+}
