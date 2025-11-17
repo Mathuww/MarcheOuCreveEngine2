@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="5" infinite="0" nextlayerid="5" nextobjectid="42" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="8"><properties><property name="atlas" value="tileset/CArte.atlas"/></properties>
+ <tileset firstgid="1" source="LESAUTRESOLS.tsx"/>
+ <layer height="5" id="1" name="Ground" width="8">
+  <data encoding="csv">
+9,10,10,10,10,10,10,11,
+17,18,38,18,18,18,55,19,
+17,18,18,18,18,18,18,19,
+17,18,18,18,29,18,18,19,
+25,26,26,26,26,26,26,27
+</data>
+ </layer>
+</map>

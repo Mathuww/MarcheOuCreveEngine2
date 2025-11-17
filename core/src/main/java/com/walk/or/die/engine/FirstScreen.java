@@ -10,15 +10,24 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.math.MathUtils;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
     private final MarcheOuCreve game;
+    private OrthographicCamera cam;
+    private AssetManager drh;
 
     private Rectangle macronRect;
     private Texture macronTx;
     private Sprite macronSpr;
     private float speed = 4f;
+
+    private Deque<Vector2> movements;
 
     private final float TILE_SIZE = 1f;
     private boolean moving = false;
@@ -30,6 +39,10 @@ public class FirstScreen implements Screen {
 
     public FirstScreen(final MarcheOuCreve game) {
         this.game = game;
+        cam = new OrthographicCamera();
+        cam.setToOrtho(false, 8, 5); 
+
+        movements = new ArrayDeque<>();
 
         macronTx = new Texture("sprites/political/spritemacron.png");
         macronSpr = new Sprite(macronTx);
@@ -38,7 +51,8 @@ public class FirstScreen implements Screen {
         macronRect = new Rectangle();
         macronRect.set(0, 0, macronSpr.getWidth(), macronSpr.getHeight());
 
-        map = new Map(8,5);
+        drh = new AssetManager();
+        map = new Map("unoriginal_packed_maps/CArte.tmx", cam , 1/16f, drh);
     }
 
     // Called once (when the window oppened)
@@ -56,18 +70,29 @@ public class FirstScreen implements Screen {
     }
 
     private void input(float delta) {
+        if (!moving && !movements.isEmpty()) {
+            Vector2 end = movements.removeFirst();
+            deplacement.x = (int) (end.x - macronRect.x);
+            deplacement.y = (int) (end.y - macronRect.y);
+            start.x = macronRect.x;
+            start.y = macronRect.y;
+            moving = true;
+        }
         if (Gdx.input.justTouched() && !moving) {
             int screenX = Gdx.input.getX();
             int screenY = Gdx.input.getY();
             Vector3 worldCoords = new Vector3(screenX, screenY,0);
             game.viewport.getCamera().unproject(worldCoords);
-            deplacement.x = (int) (Math.floor(worldCoords.x) - macronRect.x);
-            deplacement.y = (int) (Math.floor(worldCoords.y) - macronRect.y);
-            start.x = macronRect.x;
-            start.y = macronRect.y;
+
+            for (Vector2 i : map.getPath(
+                new Vector2(macronRect.x, macronRect.y),
+                new Vector2(MathUtils.floor(worldCoords.x), MathUtils.floor(worldCoords.y)
+                ))) {
+                    movements.addLast(i);
+            }
             System.out.println(deplacement);
-            moving = true;
         }
+
         if (moving) {
             if (deplacement.x != 0f) {
                 percent += delta*speed/Math.abs(deplacement.x);
@@ -96,7 +121,6 @@ public class FirstScreen implements Screen {
         }
     }
 
-    
 
     private float sign(float x) {
         if (x > 0f) return 1f ;
@@ -109,8 +133,9 @@ public class FirstScreen implements Screen {
 
     private void draw() {
         ScreenUtils.clear(Color.RED);
-        game.viewport.apply();;
+        game.viewport.apply();
         game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
+        map.render();
         game.batch.begin();
 
         float scrWidth = game.viewport.getWorldWidth();
