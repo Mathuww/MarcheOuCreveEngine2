@@ -4,13 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.math.MathUtils;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
+import java.util.Queue;
 
 /** First screen of the application. Displayed after the application is created. */
 public class FirstScreen implements Screen {
@@ -22,6 +22,7 @@ public class FirstScreen implements Screen {
     private float speed = 4f;
 
     private Deque<Vector2> movements;
+    private InputManager inputHandler;
 
     //private final float TILE_SIZE = 1f;
     private boolean moving = false;
@@ -37,6 +38,8 @@ public class FirstScreen implements Screen {
         cam.setToOrtho(false, 8, 5); 
 
         movements = new ArrayDeque<>();
+        inputHandler = new InputManager(game.viewport);
+        Gdx.input.setInputProcessor(inputHandler);
 
         drh = new AssetManager();
         map = new Map("unoriginal_packed_maps/CArte.tmx", cam, drh);
@@ -62,34 +65,38 @@ public class FirstScreen implements Screen {
     }
 
     private void input(float delta) {
+        Queue<InputManager.Command> commands = inputHandler.getCommands();
+
+        while(!commands.isEmpty()) {
+            InputManager.Command cmd = commands.poll();
+
+            if (moving) continue;
+
+            if (cmd instanceof InputManager.ClickTileCommand cc) {
+                Vector2 targetPos = new Vector2(cc.tileX, cc.tileY);
+                List<Vector2> path = map.getPath(player.getPosition(), targetPos);
+                movements.addAll(path);
+            } else if (cmd instanceof InputManager.OneMoveCommand omc) {
+                Vector2 targetPos = new Vector2(player.getX() + omc.dx, player.getY() + omc.dy);
+                if (map.isWalkable((int)targetPos.x, (int)targetPos.y)) {
+                    movements.addLast(targetPos);
+                }
+
+            }
+        }
+
         if (!moving && !movements.isEmpty()) {
             Vector2 end = movements.removeFirst();
             deplacement.x = (int) (end.x - player.getX());
             deplacement.y = (int) (end.y - player.getY());
             start.x = player.getX();
             start.y = player.getY();
-            printPos("start", start);
+            //printPos("start", start);
             moving = true;
         }
-        if (Gdx.input.justTouched() && !moving) {
-            int screenX = Gdx.input.getX();
-            int screenY = Gdx.input.getY();
-            printPos("screen", new Vector2(screenX, screenY));
-            Vector3 worldCoords = new Vector3(screenX, screenY,0);
-            game.viewport.getCamera().unproject(worldCoords);
 
-            for (Vector2 i : map.getPath(
-                new Vector2(player.getX(), player.getY()),
-                new Vector2(MathUtils.floor(worldCoords.x), MathUtils.floor(worldCoords.y)
-                ))) {
-                    movements.addLast(i);
-            }
-            System.out.println(deplacement);
-        }
-
-        float x = 0f, y = 0f;
         if (moving) {
-            printPos("deplacement", deplacement);
+            //printPos("deplacement", deplacement);
             if (deplacement.x != 0f) {
                 percent += delta*speed/Math.abs(deplacement.x);
                 if (percent >= 1f) {
