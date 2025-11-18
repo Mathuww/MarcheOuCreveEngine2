@@ -1,5 +1,33 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="5" infinite="0" nextlayerid="5" nextobjectid="42" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="8"><properties><property name="atlas" value="tileset/CArte.atlas"/></properties>
- <tileset firstgid="1" source="LESAUTRESOLS.tsx"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="5" infinite="0" nextlayerid="6" nextobjectid="43" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="8">
+ <properties>
+  <property name="atlas" value="tileset/CArte.atlas"/>
+ </properties>
+ <tileset columns="8" firstgid="1" name="LESAUTRESOLS" tilecount="64" tileheight="16" tilewidth="16">
+  <image height="128" source="tileset_1bit.png" width="128"/>
+  <tile id="28">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="37">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="54">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset columns="8" firstgid="65" name="player" tilecount="64" tileheight="16" tilewidth="16">
+  <image height="128" source="tileset_1bit.png" width="128"/>
+  <tile id="44">
+   <properties>
+    <property name="type" value="player"/>
+   </properties>
+  </tile>
+ </tileset>
  <layer height="5" id="1" name="Ground" width="8">
   <data encoding="csv">
 9,10,10,10,10,10,10,11,
@@ -9,4 +37,11 @@
 25,26,26,26,26,26,26,27
 </data>
  </layer>
+ <objectgroup id="5" name="Entities">
+  <object id="42" name="player_spawn" x="28" y="55">
+   <properties>
+    <property name="type" value="player"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

@@ -1,8 +1,6 @@
 package com.walk.or.die.engine;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.assets.AssetManager;
@@ -10,27 +8,25 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.HashSet;
-import java.util.Collections;
 
 public class Map implements Disposable {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
+    private float tileSize;
     private float unitScale;
     private Pathfinder pathfinder;
 
 
-    public Map(String mapPath, OrthographicCamera camera, float unitScale, AssetManager assetManager) {
+    public Map(String mapPath, OrthographicCamera camera, AssetManager assetManager) {
         this.camera = camera;
         this.pathfinder = new Pathfinder(this);
-        this.unitScale = unitScale;
         loadMapWithAtlas(mapPath, assetManager);
     }
 
@@ -47,10 +43,10 @@ public class Map implements Disposable {
         assetManager.finishLoadingAsset(mapPath);
         tiledMap = assetManager.get(mapPath, TiledMap.class);
         // on choisit l'unit scale selon la taille de tile 
-        /*
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        float unitScale = 1 / (layer.getTileWidth());
-        */
+        this.tileSize = layer.getTileWidth();
+        this.unitScale = 1 / ((float)this.tileSize);
+        System.out.println("tile size : " + this.tileSize + " so unit scale is " + this.unitScale);
         // on crée le renderer
         renderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale);
     }
@@ -70,6 +66,55 @@ public class Map implements Disposable {
         camera.update();
         renderer.setView(camera);
         renderer.render();
+    }
+
+    public TiledMap getTiledMap() {
+        return this.tiledMap;
+    }
+
+    public float getTileSize() {
+        return this.tileSize;
+    }
+
+    public float getUnitScale() {
+        return this.unitScale;
+    }
+
+    public Vector2 stickToNearestTile(Vector2 pos) {
+        float newX = MathUtils.round(pos.x);
+        float newY = MathUtils.round(pos.y);
+        System.out.println("sticking to " + newX + ", " + newY);
+        return new Vector2(newX, newY);
+    }
+
+    public Vector2 getSpawnPos(String entity) throws DataException, IllegalArgumentException {
+        if ("".equals(entity)) {
+            throw new IllegalArgumentException("cannot find spawn pos of empty string !!!");
+        }
+
+        MapLayer layer = this.getTiledMap().getLayers().get("Entities");
+        if (layer == null) {
+            throw new DataException("no Entities layer in Tiled map");
+        }
+
+        for (MapObject obj : layer.getObjects()) {
+            Object type = obj.getProperties().get("type");
+            if (entity.equals(type)) {
+                float x = (Float)obj.getProperties().get("x");
+                float y = (Float)obj.getProperties().get("y");
+                System.out.println("found " + entity + " spawn point in " + x + ", " + y);
+                Vector2 displayPos = getDisplayCoordsFromTiled(new Vector2(x, y));
+                return this.stickToNearestTile(displayPos);
+            }
+        }
+
+        throw new DataException("missing " + entity + " spawn point in Entities layer");
+    }
+
+    public Vector2 getDisplayCoordsFromTiled(Vector2 tiledCoords) {
+        float displayX = tiledCoords.x * unitScale;
+        float displayY = tiledCoords.y * unitScale;
+        return new Vector2(displayX, displayY);
     }
 
     @Override

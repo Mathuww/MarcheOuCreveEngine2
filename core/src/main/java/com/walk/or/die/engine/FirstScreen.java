@@ -1,12 +1,8 @@
 package com.walk.or.die.engine;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -22,14 +18,12 @@ public class FirstScreen implements Screen {
     private OrthographicCamera cam;
     private AssetManager drh;
 
-    private Rectangle macronRect;
-    private Texture macronTx;
-    private Sprite macronSpr;
+    private Player player;
     private float speed = 4f;
 
     private Deque<Vector2> movements;
 
-    private final float TILE_SIZE = 1f;
+    //private final float TILE_SIZE = 1f;
     private boolean moving = false;
     private float percent = 0f;
     private Vector2 start = new Vector2(0,0);
@@ -37,22 +31,20 @@ public class FirstScreen implements Screen {
 
     private Map map;
 
-    public FirstScreen(final MarcheOuCreve game) {
+    public FirstScreen(final MarcheOuCreve game) throws DataException {
         this.game = game;
         cam = new OrthographicCamera();
         cam.setToOrtho(false, 8, 5); 
 
         movements = new ArrayDeque<>();
 
-        macronTx = new Texture("sprites/political/spritemacron.png");
-        macronSpr = new Sprite(macronTx);
-        macronSpr.setSize(1f, 1f);
-        macronSpr.setPosition(0, 0);
-        macronRect = new Rectangle();
-        macronRect.set(0, 0, macronSpr.getWidth(), macronSpr.getHeight());
-
         drh = new AssetManager();
-        map = new Map("unoriginal_packed_maps/CArte.tmx", cam , 1/16f, drh);
+        map = new Map("unoriginal_packed_maps/CArte.tmx", cam, drh);
+        try {
+            player = new Player(map, map.getSpawnPos("player"));
+        } catch (DataException e) {
+            throw new DataException("cannot create player : " + e.getMessage());
+        }
     }
 
     // Called once (when the window oppened)
@@ -72,20 +64,22 @@ public class FirstScreen implements Screen {
     private void input(float delta) {
         if (!moving && !movements.isEmpty()) {
             Vector2 end = movements.removeFirst();
-            deplacement.x = (int) (end.x - macronRect.x);
-            deplacement.y = (int) (end.y - macronRect.y);
-            start.x = macronRect.x;
-            start.y = macronRect.y;
+            deplacement.x = (int) (end.x - player.getX());
+            deplacement.y = (int) (end.y - player.getY());
+            start.x = player.getX();
+            start.y = player.getY();
+            printPos("start", start);
             moving = true;
         }
         if (Gdx.input.justTouched() && !moving) {
             int screenX = Gdx.input.getX();
             int screenY = Gdx.input.getY();
+            printPos("screen", new Vector2(screenX, screenY));
             Vector3 worldCoords = new Vector3(screenX, screenY,0);
             game.viewport.getCamera().unproject(worldCoords);
 
             for (Vector2 i : map.getPath(
-                new Vector2(macronRect.x, macronRect.y),
+                new Vector2(player.getX(), player.getY()),
                 new Vector2(MathUtils.floor(worldCoords.x), MathUtils.floor(worldCoords.y)
                 ))) {
                     movements.addLast(i);
@@ -93,31 +87,33 @@ public class FirstScreen implements Screen {
             System.out.println(deplacement);
         }
 
+        float x = 0f, y = 0f;
         if (moving) {
+            printPos("deplacement", deplacement);
             if (deplacement.x != 0f) {
                 percent += delta*speed/Math.abs(deplacement.x);
                 if (percent >= 1f) {
                     percent = 0f;
-                    macronRect.x = start.x + deplacement.x;
+                    player.setX(start.x + deplacement.x);
                     deplacement.x = 0f;
                 } else {
-                    macronRect.x = start.x + deplacement.x*percent;
+                    player.setX(start.x + deplacement.x*percent);
                 }
             }
             else if (deplacement.y != 0f) {
                 percent += delta*speed/Math.abs(deplacement.y);
                 if (percent >= 1f) {
                     percent = 0f;
-                    macronRect.y = start.y + deplacement.y;
+                    player.setY(start.y + deplacement.y);
                     deplacement.y = 0f;
                 } else {
-                    macronRect.y = start.y + deplacement.y*percent;
+                    player.setY(start.y + deplacement.y*percent);
                 }
             } else {
                 moving = false;
             }
-            macronSpr.setPosition(macronRect.x, macronRect.y);
 
+            player.update(delta);
         }
     }
 
@@ -127,12 +123,13 @@ public class FirstScreen implements Screen {
         if (x < 0f) return -1f ;
         return 0f;
     }
+
     private void logic() {
 
     }
 
     private void draw() {
-        ScreenUtils.clear(Color.RED);
+        ScreenUtils.clear(Color.WHITE);
         game.viewport.apply();
         game.batch.setProjectionMatrix(game.viewport.getCamera().combined);
         map.render();
@@ -141,7 +138,7 @@ public class FirstScreen implements Screen {
         float scrWidth = game.viewport.getWorldWidth();
         float scrHeight = game.viewport.getWorldHeight();
 
-        macronSpr.draw(game.batch);
+        player.render(game.batch);
 
         game.batch.end();
     }
@@ -169,5 +166,9 @@ public class FirstScreen implements Screen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
+    }
+
+    private void printPos(String name, Vector2 pos) {
+        System.out.println(name + " : " + pos.x + ", " + pos.y);
     }
 }

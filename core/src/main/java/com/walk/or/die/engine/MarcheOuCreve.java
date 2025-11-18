@@ -13,7 +13,10 @@ public class MarcheOuCreve extends Game {
     public void create() {
         batch = new SpriteBatch();
         viewport = new FitViewport(8, 5);
-        setScreen(new FirstScreen(this));
+        try {
+            setScreen(new FirstScreen(this));
+        } catch (DataException e) {}
+
     }
 
     @Override

@@ -1,15 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="8" height="5" tilewidth="16" tileheight="16" infinite="0" nextlayerid="4" nextobjectid="42">
- <tileset firstgid="1" source="LESAUTRESOLS.tsx"/>
- <layer id="1" name="Calque de Tuiles 1" width="8" height="5">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="8" height="5" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="43">
+ <properties>
+  <property name="atlas" value="tileset/CArte.atlas"/>
+ </properties>
+ <tileset firstgid="1" name="LESAUTRESOLS" tilewidth="16" tileheight="16" tilecount="64" columns="8">
+  <image source="tileset_1bit.png" width="128" height="128"/>
+  <tile id="28">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="37">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="54">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="65" name="player" tilewidth="16" tileheight="16" tilecount="64" columns="8">
+  <image source="tileset_1bit.png" width="128" height="128"/>
+  <tile id="44">
+   <properties>
+    <property name="type" value="player"/>
+   </properties>
+  </tile>
+ </tileset>
+ <layer id="1" name="Ground" width="8" height="5">
   <data encoding="csv">
-34,34,34,34,34,34,34,34,
-34,34,34,34,34,34,34,34,
-34,34,34,34,34,0,34,0,
-34,34,34,34,34,3221225506,34,0,
-34,34,34,34,34,0,34,0
+9,10,10,10,10,10,10,11,
+17,18,38,18,18,18,55,19,
+17,18,18,18,18,18,18,19,
+17,18,18,18,29,18,18,19,
+25,26,26,26,26,26,26,27
 </data>
  </layer>
- <objectgroup id="2" name="Monstres" class="Monstre"/>
- <objectgroup id="3" name="Calque d'Objets 2"/>
+ <objectgroup id="5" name="Entities">
+  <object id="42" name="player_spawn" x="28" y="55">
+   <properties>
+    <property name="type" value="player"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

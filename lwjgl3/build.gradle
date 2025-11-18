@@ -16,6 +16,9 @@ plugins {
     id 'eclipse'
 }
 
+tasks.named("distTar").configure { enabled = false }
+tasks.named("distZip").configure { enabled = false }
+
 
 apply plugin: 'io.github.fourlastor.construo'
 
