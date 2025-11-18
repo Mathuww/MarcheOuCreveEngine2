@@ -32,9 +32,31 @@ public class InputManager implements InputProcessor {
     private Queue<Command> commands;
     private Viewport vp;
 
+    private boolean upGoing, downGoing, leftGoing, rightGoing;
+
     public InputManager(Viewport vp) {
         this.commands = new ArrayDeque<>();
         this.vp = vp;
+        this.upGoing = false;
+        this.downGoing = false;
+        this.leftGoing = false;
+        this.rightGoing = false;
+    }
+
+    public boolean isUpGoing() {
+        return this.upGoing;
+    }
+
+    public boolean isDownGoing() {
+        return this.downGoing;
+    }
+
+    public boolean isLeftGoing() {
+        return this.leftGoing;
+    }
+
+    public boolean isRightGoing() {
+        return this.rightGoing;
     }
 
     public Queue<Command> getCommands() {
@@ -46,22 +68,51 @@ public class InputManager implements InputProcessor {
         switch (k) {
             case Input.Keys.Z:
             case Input.Keys.UP:
+                upGoing = true;
                 commands.add(new OneMoveCommand(0, +1));
                 break;
 
             case Input.Keys.S:
             case Input.Keys.DOWN:
+                downGoing = true;
                 commands.add(new OneMoveCommand(0, -1));
                 break;
 
             case Input.Keys.Q:
             case Input.Keys.LEFT:
+                leftGoing = true;
                 commands.add(new OneMoveCommand(-1, 0));
                 break;
 
             case Input.Keys.D:
             case Input.Keys.RIGHT:
+                rightGoing = true;
                 commands.add(new OneMoveCommand(+1, 0));
+                break;
+        }
+        return true;
+    }
+
+    @Override public boolean keyUp(int k){
+        switch (k) {
+            case Input.Keys.Z:
+            case Input.Keys.UP:
+                upGoing = false;
+                break;
+
+            case Input.Keys.S:
+            case Input.Keys.DOWN:
+                downGoing = false;
+                break;
+
+            case Input.Keys.Q:
+            case Input.Keys.LEFT:
+                leftGoing = false;
+                break;
+
+            case Input.Keys.D:
+            case Input.Keys.RIGHT:
+                rightGoing = false;
                 break;
         }
         return true;
@@ -77,7 +128,6 @@ public class InputManager implements InputProcessor {
         return true;
     }
 
-    @Override public boolean keyUp(int k){return false;}
     @Override public boolean keyTyped(char c){return false;}
     @Override public boolean touchUp(int x,int y,int p,int b){return false;}
     @Override public boolean touchDragged(int x,int y,int p){return false;}

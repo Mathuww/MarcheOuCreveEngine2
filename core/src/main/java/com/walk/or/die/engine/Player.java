@@ -16,7 +16,7 @@ public class Player {
     private TextureRegion currentRegion;
     private Sprite sprite;
 
-    private float size;
+    private float SIZE = 1f;
 
     private int hp;
 
@@ -46,9 +46,8 @@ public class Player {
         currentRegion = baseRegion;
 
         sprite = new Sprite(currentRegion);
-        size = map.getTileSize();
 
-        sprite.setSize(1f, 1f);
+        sprite.setSize(SIZE, SIZE);
 
         hitbox = new Rectangle(spawn.x, spawn.y, sprite.getWidth(), sprite.getHeight());
         sprite.setPosition(spawn.x, spawn.y);
@@ -85,7 +84,7 @@ public class Player {
     }
 
     public float getSize() {
-        return (float)this.size;
+        return sprite.getWidth();
     }
 
     public Vector2 getPosition() {

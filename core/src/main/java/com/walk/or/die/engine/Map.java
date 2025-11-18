@@ -51,15 +51,29 @@ public class Map implements Disposable {
         renderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale);
     }
 
+    public float getWidth() {
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
+        return layer.getWidth();
+    }
+
+    public float getHeight() {
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
+        return layer.getHeight();
+    }
+
     public boolean isWalkable(int x, int y) {
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
+        if (layer == null) return false;
         if (x < 0 || x >= layer.getWidth() || y < 0 || y >= layer.getHeight()) return false;
         TiledMapTileLayer.Cell cell = layer.getCell(x, y);
         
-        if (cell == null || cell.getTile() == null) return false; // vide = traversable
+        if (cell == null || cell.getTile() == null) return false; // vide = non traversable
 
         MapProperties props = cell.getTile().getProperties();
-        return !props.containsKey("blocked") && !props.containsKey("collision");
+        if (props.containsKey("blocked") || props.containsKey("collision")) {
+            return false;
+        }
+        return true;
     }
 
     public void render() {
