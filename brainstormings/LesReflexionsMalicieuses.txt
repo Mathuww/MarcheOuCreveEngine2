@@ -1,0 +1,50 @@
+Ok, je commence ma review, je vais essayer d’être pertinent :
+
+Déjà, ce que je disais qu’il faudrait modifier, c’est autant la gestion de la caméra que du joueur (des personnages du joueur
+en réalité). Parce que le déplacement au clavier est pas vraiment pertinent dans un combat de tactical RPG (Edit : ou alors 
+tu déplace un curseur, ça c’est intéressant effectivement, ça peut être une bonne idée, à savoir qu’en clickant ou en 
+déplaçant les flèches tu positionnes un curseur, et qu’il faille ensuite appuyer sur une autre touche pour valider). Par contre,
+si je me souviens de ce qu’on s’était dit, et en tout cas c’est ce que moi j’avais en tête, pendant l’exploration on veut se 
+déplacer librement, cad sans les cases et c’est pas ce qui est codé actuellement, a raison parce qu’il faut surtout pas 
+mélanger les 2 mdr.
+Quand à la gestion de la caméra, il ne faut pas qu’elle soit attaché au joueur mais qu’on puisse la déplacer librement sur la 
+map (intuitivement j’aurais avec les flèches) sans qu’elle soit relié au joueur pour qu’on puisse avoir une vue d’ensemble (car 
+le joueur pourrait contrôler plusieurs personnages à différents endroit, ou veut peut-être juste pouvoir voir la map pour 
+planifier. Edit : bah en fait, pour le mode exploration c’est très pertinent comme gestion de la caméra ce que t’a fait.
+
+Par contre, ça veut pas dire que ce que t’a fait est nul (au contraire c’est très chaud gg) ou a jeter à la poubelle, ça va 
+clairement nous servir pour implémenter tout ce dont on a besoin.
+
+
+- InputManager :
+	Franchement bien, ça fait plaisir et c’était bien nécessaire d’avoir cette classe. J’ai quand même un pb. C’est que c’est 
+checké à chaque frame, ce qui est pas super optimisé comme manière de fonctionner. Il faudrait pouvoir avoir les deux. Un 
+« event », notamment pour les click (mais ça peut aussi être utile pour autre chose), et le système actuel, qui est bien pour 
+le déplacement, mais lorsqu’il se fait avec les flèches et  qu’il n’est pas case par case.
+
+- Logique de déplacement :
+	Déjà comme son nom l’indique, faudra mettre ça dans logique, j’avais codé comme un sagouin dans input mais c’était 
+pas super pertinent.
+FAIT
+
+- Player:
+	 Le nom de la classe est pas forcément pertinent, fin ça mixe des choses mais ça serait mieux de les séparer. Je vois 
+que c’est la classe que t’utilises actuellement, dans ce cas ça serait plutôt character, parce qu’on peut en avoir plusieurs en 
+combat. Egalement, tu à fait une hitbox mais c’était un travers nul de ce que j’avais fait, à savoir que la hitbox est bien inutile
+dans le mode combat.
+	Par contre si on parle du mode exploration, la oui il nous fat un player, on va pas contrôler plusieurs entités. Et dans ce 
+cas là, si on est sur un déplacement sans case alors on a besoin d’une hitbox, mais je pense qu’il va nous falloir séparer les 
+2 concepts
+
+Question con : c’est quoi current région ?
+
+- Camera:
+	Actuellement j’ai pas grand chose à dire sur la manière dont elle a été codé ça me semble clean.
+
+
+Bon j’ai pas tout regardé dans le détail mais je crois que j’ai déjà assez blablaté. Une dernière chose, tout géré dans le first 
+screen me semble sale, et même son nom est foireux mdr. C’est un point d’architecture qu’il faudra changer je pense. En 
+tout cas ta géré de faire tout ça aussi vite, bravo !
+
+(Dites moi ce que vous en pensez, j’ai dit ce qui me passait par la tête mais ptet j’raconte n’imp ou vous êtes pas d’accord, 
+j’espère que ce sera utile quoi comme message)

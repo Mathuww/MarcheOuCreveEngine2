@@ -1,4 +1,4 @@
-package com.walk.or.die.engine;
+package com.walk.or.die.engine.tiledmap;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -8,25 +8,24 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.utils.Disposable;
+import com.walk.or.die.engine.exceptions.DataException;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapProperties;
 import java.util.List;
 
-public class Map implements Disposable {
+public class MCMap implements Disposable {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private float tileSize;
     private float unitScale;
-    private Pathfinder pathfinder;
+    private MCPathfinder pathfinder;
 
 
-    public Map(String mapPath, OrthographicCamera camera, AssetManager assetManager) {
+    public MCMap(String mapPath, OrthographicCamera camera, AssetManager assetManager) {
         this.camera = camera;
-        this.pathfinder = new Pathfinder(this);
+        this.pathfinder = new MCPathfinder(this);
         loadMapWithAtlas(mapPath, assetManager);
     }
 
@@ -101,28 +100,37 @@ public class Map implements Disposable {
         return new Vector2(newX, newY);
     }
 
-    public Vector2 getSpawnPos(String entity) throws DataException, IllegalArgumentException {
+    public MCTileSet getTileSet(int id) {
+        return new MCTileSet(this.tiledMap.getTileSets().getTileSet(id));
+    }
+
+    public MCTileSet getTileSet(String name) {
+        return new MCTileSet(this.tiledMap.getTileSets().getTileSet(name));
+    }
+
+    public MCMapLayer getLayer(int id) {
+        return new MCMapLayer(this.tiledMap.getLayers().get(id));
+    }
+
+    public MCMapLayer getLayer(String name) {
+        return new MCMapLayer(this.tiledMap.getLayers().get(name));
+    }
+
+    public Vector2 getEntitySpawnPos(String entity) throws DataException, IllegalArgumentException {
         if ("".equals(entity)) {
             throw new IllegalArgumentException("cannot find spawn pos of empty string !!!");
         }
 
-        MapLayer layer = this.getTiledMap().getLayers().get("Entities");
-        if (layer == null) {
-            throw new DataException("no Entities layer in Tiled map");
-        }
+        MCMapLayer layer = this.getLayer("Entities");
+        if (layer == null) throw new DataException("no Entities layer in Tiled map");
 
-        for (MapObject obj : layer.getObjects()) {
-            Object type = obj.getProperties().get("type");
-            if (entity.equals(type)) {
-                float x = (Float)obj.getProperties().get("x");
-                float y = (Float)obj.getProperties().get("y");
-                System.out.println("found " + entity + " spawn point in " + x + ", " + y);
-                Vector2 displayPos = getDisplayCoordsFromTiled(new Vector2(x, y));
-                return this.stickToNearestTile(displayPos);
-            }
-        }
+        MCMapObject obj = layer.getObjectByType(entity);
+        if (obj == null) throw new DataException(entity + " not found in Entities");
 
-        throw new DataException("missing " + entity + " spawn point in Entities layer");
+        Vector2 pos = obj.getPosition();
+        pos = getDisplayCoordsFromTiled(pos);
+        return this.stickToNearestTile(pos);
+
     }
 
     public Vector2 getDisplayCoordsFromTiled(Vector2 tiledCoords) {

@@ -1,4 +1,4 @@
-package com.walk.or.die.engine;
+package com.walk.or.die.engine.exceptions;
 
 public class DataException extends Exception {
     public DataException(String msg) {

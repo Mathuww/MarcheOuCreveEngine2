@@ -1,6 +1,7 @@
-package com.walk.or.die.engine ;
+package com.walk.or.die.engine.tiledmap ;
 
 import com.badlogic.gdx.math.Vector2;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
@@ -13,7 +14,7 @@ class Tuple {
     Vector2 pos;  // position
     Tuple parent; // parent pour reconstruire le chemin
 
-    Tuple(int g, int h, Vector2 pos, Tuple parent) {
+    public Tuple(int g, int h, Vector2 pos, Tuple parent) {
         this.g = g;
         this.h = h;
         this.pos = pos;
@@ -21,11 +22,11 @@ class Tuple {
     }
 }
 
-public class Pathfinder {
-    // A* ma gueuele
-    private Map parent;
+public class MCPathfinder {
+    // A* ma gueule, algo de zigzaging
+    private MCMap parent;
 
-    Pathfinder(Map parent) {
+    public MCPathfinder(MCMap parent) {
         this.parent = parent;
     }
 

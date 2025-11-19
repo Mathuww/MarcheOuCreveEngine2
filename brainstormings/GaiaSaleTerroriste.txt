@@ -1,0 +1,17 @@
+ON NE CAST PAS DES TYPES DE LIBGDX AVEC SES PROPRES TYPES QU'EST CE QUE C'EST QUE CES BETISES
+
+Genre dans McMap.getLayers :
+    "return (MCMapLayer) this.tiledMap.getLayers().get(id);" C'EST TERRORISTE DE FAIRE ÇA
+
+MAIS TU SAIS CE QUI EST ENCORE PLUS TERRORISTE ?
+DE FAIRE EXACTEMENT LA MÊME CHOSE DANS MC.MAPLAYER :
+    "return (MCMapObject)obj;" C'EST NON
+
+
+Dis siri, execute la commande egoboost
+(<3)
+
+<3
+
+(en vrai premier deg je veux bien que tu m'expliques je trouvais ca elegant et compact 
+du coup en une ligne on peut choper une tile selon une propriete dans n'importe quelle couche)

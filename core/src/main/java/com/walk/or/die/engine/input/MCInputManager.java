@@ -1,4 +1,4 @@
-package com.walk.or.die.engine;
+package com.walk.or.die.engine.input;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -9,8 +9,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.walk.or.die.engine.MCEventBus;
 
-public class InputManager implements InputProcessor {
+public class MCInputManager implements InputProcessor {
     public static abstract class Command {}
 
     public static class OneMoveCommand extends Command {
@@ -34,13 +35,16 @@ public class InputManager implements InputProcessor {
 
     private boolean upGoing, downGoing, leftGoing, rightGoing;
 
-    public InputManager(Viewport vp) {
+    private MCEventBus bus;
+
+    public MCInputManager(Viewport vp) {
         this.commands = new ArrayDeque<>();
+        this.bus = MCEventBus.get();
         this.vp = vp;
         this.upGoing = false;
         this.downGoing = false;
         this.leftGoing = false;
-        this.rightGoing = false;
+        this.rightGoing = false; 
     }
 
     public boolean isUpGoing() {
@@ -63,37 +67,42 @@ public class InputManager implements InputProcessor {
         return this.commands;
     }
 
-    @Override
+    @Override 
     public boolean keyDown(int k) {
         switch (k) {
             case Input.Keys.Z:
             case Input.Keys.UP:
                 upGoing = true;
+                bus.emit("InputPressed", new OneMoveCommand(0, +1));
                 commands.add(new OneMoveCommand(0, +1));
                 break;
 
             case Input.Keys.S:
             case Input.Keys.DOWN:
                 downGoing = true;
+                bus.emit("InputPressed", new OneMoveCommand(0, -1));
                 commands.add(new OneMoveCommand(0, -1));
                 break;
 
             case Input.Keys.Q:
             case Input.Keys.LEFT:
                 leftGoing = true;
+                bus.emit("InputPressed", new OneMoveCommand(-1, 0));
                 commands.add(new OneMoveCommand(-1, 0));
                 break;
 
             case Input.Keys.D:
             case Input.Keys.RIGHT:
                 rightGoing = true;
+                bus.emit("InputPressed", new OneMoveCommand(+1, 0));
                 commands.add(new OneMoveCommand(+1, 0));
                 break;
         }
         return true;
     }
 
-    @Override public boolean keyUp(int k){
+    @Override 
+    public boolean keyUp(int k){
         switch (k) {
             case Input.Keys.Z:
             case Input.Keys.UP:
@@ -118,12 +127,12 @@ public class InputManager implements InputProcessor {
         return true;
     }
 
-    @Override
-    public boolean touchDown(int x, int y, int pointer, int button) {
+    @Override public boolean touchDown(int x, int y, int pointer, int button) {
         Vector3 worldCoords = new Vector3(x, y, 0);
         vp.getCamera().unproject(worldCoords);
         Vector2 v = new Vector2(MathUtils.floor(worldCoords.x), MathUtils.floor(worldCoords.y));
         commands.add(new ClickTileCommand(v.x, v.y));
+        bus.emit("InputPressed", new ClickTileCommand(v.x, v.y));
 
         return true;
     }

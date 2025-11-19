@@ -1,0 +1,28 @@
+--------- Les Reflexions Des Génies ------------
+
+----- Préambule ----
+Ce journal est composé d'archives, retrouvés il y a quelques années. Elles semblent avoir été écrites par des 
+esprits brillants, des génies oubliés. Elles contiennent les bribes d'un savoir inestimable, malheureusement 
+perdu aujourd'hui. Je l'ai ai rassemblées pour former ce recueil qui, je l'espère, pourra aider les jeunes
+developpeurs dont le but est de créer le meilleur moteur de jeu du monde
+
+
+----- Réflexions ----
+
+"Je pense qu'il y a trop de trucs dans entity, faut vraiment faire une classe basique et abstract, dont découlera autant
+les obstacles que les personnages, alliés ou ennemy (pte une classe character puis Ally et Enemy ?)"
+
+"Les possibilités du joueur en mode combat serait de :
+    - déplacer un personnage
+    - déclancher l'attaque d'un personnage
+    - déclancher une capacité d'un personnage
+    - déplacer la caméra
+    - terminer son tour"
+
+"Il faudrait donc que la classe character ait ses propres méthodes pour se déplacer, activer ses capacités etc
+ Si on veut respecter MVC, c'est pte bien d'avoir une sorte de class AnimateSprite jsp quoi, dans laquelle on met les anims et qui
+ est appelée par character.draw() (ptet ça existe déjà et on a pas besoin de gérer les anims à la main ?)"
+
+"Il faut déplacer la gestion des input dans les states machines, au lieu de le gerer dans firstScreen"
+
+----- Remarques -----

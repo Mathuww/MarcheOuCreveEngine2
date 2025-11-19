@@ -1,4 +1,4 @@
-package com.walk.or.die.engine;
+package com.walk.or.die.engine.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -7,69 +7,89 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+//import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.assets.AssetManager;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 import java.util.Queue;
 
-/** First screen of the application. Displayed after the application is created. */
-public class FirstScreen implements Screen {
-    private final MarcheOuCreve game;
-    private OrthographicCamera cam;
+
+import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.cameras.MCFollowCamera;
+import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.tiledmap.MCMap;
+
+public class MCFirstScreen implements Screen {
+
+    private MCGame game;
     private AssetManager drh;
+    
+    // Map
+    private MCMap map;
 
-    private Player player;
+    // Camera
+    private MCFollowCamera cam;
+
+    // Input
+    private MCInputManager inputHandler;
+    
+    // Player
+    private MCEntity player;
     private float speed = 4f;
-
+    
+    // Movements
     private Deque<Vector2> movements;
-    private InputManager inputHandler;
-
-    private final float CAM_MARGIN_X = 2f;
-    private final float CAM_MARGIN_Y = 2f;
-    private final float CAM_LERP = 3f;
-
     private boolean moving = false;
     private float percent = 0f;
     private Vector2 start = new Vector2(0,0);
     private Vector2 deplacement = new Vector2(0, 0);
 
-    private Map map;
+    // Debug
+    //private ShapeRenderer debugRenderer = new ShapeRenderer();
 
-    private ShapeRenderer debugRenderer = new ShapeRenderer();
-
-    public FirstScreen(final MarcheOuCreve game) throws DataException {
+    public MCFirstScreen(MCGame game) throws DataException {
+        cam = new MCFollowCamera(8, 5);
         this.game = game;
-        //cam = new OrthographicCamera();
-        cam = (OrthographicCamera)game.viewport.getCamera();
-        System.out.println("test : " + game.viewport.getWorldHeight() + game.viewport.getWorldWidth());
-        cam.setToOrtho(false, 8, 5); 
-
-        movements = new ArrayDeque<>();
-        inputHandler = new InputManager(game.viewport);
-        Gdx.input.setInputProcessor(inputHandler);
-
         drh = new AssetManager();
-        map = new Map("unoriginal_packed_maps/CArte.tmx", cam, drh);
+        map = new MCMap("unoriginal_packed_maps/CArte.tmx", cam.camera, drh);
         try {
-            player = new Player(map, map.getSpawnPos("player"));
+            TextureRegion playerTexture = map.getTileSet("player").getTileByType("player").getTextureRegion();
+            player = new MCEntity(map.getEntitySpawnPos("player"), playerTexture);
         } catch (DataException e) {
             throw new DataException("cannot create player : " + e.getMessage());
         }
+
+        setupCamera();
+        cam.follow(player);
+
+        setupInput();
+    }
+    public void setupCamera() {
+
+        cam.setLimitX(map.getWidth());
+        cam.setLimitY(map.getHeight());
+        game.viewport.setCamera(cam.camera);
+    }
+
+    public void setupInput() {
+        movements = new ArrayDeque<>();
+        inputHandler = new MCInputManager(game.viewport);
+        Gdx.input.setInputProcessor(inputHandler);
     }
 
     // Called once (when the window oppened)
     @Override
-    public void show() {
-        // Prepare your screen here.
-    }
+    public void show() {}
 
     // Called every frame
     @Override
     public void render(float delta) {
         input(delta);
-        logic();
+        logic(delta);
         draw(delta);
     }
 
@@ -80,18 +100,18 @@ public class FirstScreen implements Screen {
     }
 
     private void input(float delta) {
-        Queue<InputManager.Command> commands = inputHandler.getCommands();
+        Queue<MCInputManager.Command> commands = inputHandler.getCommands();
 
         while(!commands.isEmpty()) {
-            InputManager.Command cmd = commands.poll();
+            MCInputManager.Command cmd = commands.poll();
 
             if (moving) continue;
 
-            if (cmd instanceof InputManager.ClickTileCommand cc) {
+            if (cmd instanceof MCInputManager.ClickTileCommand cc) {
                 Vector2 targetPos = new Vector2(cc.tileX, cc.tileY);
                 List<Vector2> path = map.getPath(player.getPosition(), targetPos);
                 movements.addAll(path);
-            } else if (cmd instanceof InputManager.OneMoveCommand omc) {
+            } else if (cmd instanceof MCInputManager.OneMoveCommand omc) {
                 Vector2 targetPos = new Vector2(player.getX() + omc.dx, player.getY() + omc.dy);
                 tryAddMovement(targetPos);
             }
@@ -103,6 +123,16 @@ public class FirstScreen implements Screen {
          * bon c'est logique y'a aucune verif entre la case de départ et celle d'arrivée
          * qu'elles o
          */
+        
+    }
+
+    private void logic(float delta) {
+        // We don't give a fuck about logic
+        // We're going to do random things
+        // player.danseSalsa()
+        // Ptn la fonction marche pas...
+        // Bon bah on va bouger normalement les characters
+
         if (!moving && movements.isEmpty()) {
             float x = player.getX(), y = player.getY();
             float dx = 0, dy = 0;
@@ -152,72 +182,17 @@ public class FirstScreen implements Screen {
             } else {
                 moving = false;
             }
-
-            //player.update(delta);
         }
     }
 
 
-    private float sign(float x) {
-        if (x > 0f) return 1f ;
-        if (x < 0f) return -1f ;
-        return 0f;
-    }
-
-    private void logic() {
-
-    }
-
-    private void updateCamera(float delta) {
-        float maxLeft = cam.position.x - cam.viewportWidth / 2 + CAM_MARGIN_X;
-        float maxRight = cam.position.x + cam.viewportWidth / 2 - CAM_MARGIN_X;
-        float maxBottom = cam.position.y - cam.viewportHeight / 2 + CAM_MARGIN_Y;
-        float maxTop = cam.position.y + cam.viewportHeight / 2 - CAM_MARGIN_Y;
-
-        float px = player.getX() + player.getSize() / 2;
-        float py = player.getY() + player.getSize() / 2;
-
-        float targetX = cam.position.x;
-        float targetY = cam.position.y;
-
-        float camHalfWidth = cam.viewportWidth / 2;
-        float camHalfHeight = cam.viewportHeight / 2;
-
-        if (px < maxLeft) targetX = px + camHalfWidth - CAM_MARGIN_X;
-        else if (px > maxRight) targetX = px - camHalfWidth + CAM_MARGIN_X;
-
-        if (py < maxBottom) targetY = py + camHalfHeight - CAM_MARGIN_Y;
-        else if (py > maxTop) targetY = py - camHalfHeight + CAM_MARGIN_Y;
-
-        float mapWidth = map.getWidth();
-        float mapHeight = map.getHeight();
-
-        targetX = MathUtils.clamp(targetX, camHalfWidth, mapWidth - camHalfWidth);
-        targetY = MathUtils.clamp(targetY, camHalfHeight, mapHeight - camHalfHeight);
-
-        printPos("cameraPos", new Vector2(targetX, targetY));
-
-        cam.position.x += (targetX - cam.position.x) * CAM_LERP * delta;
-        cam.position.y += (targetY - cam.position.y) * CAM_LERP * delta;
-        //float ppu = map.getTileSize();
-        //cam.position.x = MathUtils.round(targetX * ppu) / ppu;
-        //cam.position.y = MathUtils.round(targetY * ppu) / ppu;
-        //cam.position.x = targetX;
-        //cam.position.y = targetY;
-
-        cam.update();
-    }
-
     private void draw(float delta) {
         ScreenUtils.clear(Color.BLACK);
-        updateCamera(delta);
+        cam.update(delta);
         game.viewport.apply();
         map.render();
-        game.batch.setProjectionMatrix(cam.combined);
+        game.batch.setProjectionMatrix(cam.camera.combined);
         game.batch.begin();
-
-        //float scrWidth = game.viewport.getWorldWidth();
-        //float scrHeight = game.viewport.getWorldHeight();
 
         player.update(delta);
         player.render(game.batch);
