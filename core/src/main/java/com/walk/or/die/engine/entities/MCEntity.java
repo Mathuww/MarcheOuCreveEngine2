@@ -1,10 +1,13 @@
 package com.walk.or.die.engine.entities;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.walk.or.die.engine.states.MCSClickMove;
 import com.walk.or.die.engine.states.MCSIdle;
 import com.walk.or.die.engine.states.MCStateMachine;
 
@@ -19,7 +22,9 @@ public class MCEntity {
     public MCEntity(Vector2 spawn, TextureRegion baseRegion) {
         currentRegion = baseRegion;
         stateManager = new MCStateMachine(this);
+        stateManager.addState(new MCSClickMove(this));
         stateManager.addState(new MCSIdle(this));
+        stateManager.setCurrentState("idle", new ArrayList<>());
 
         sprite = new Sprite(currentRegion);
         sprite.setSize(SIZE, SIZE);

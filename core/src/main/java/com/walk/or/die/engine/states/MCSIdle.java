@@ -1,11 +1,17 @@
 package com.walk.or.die.engine.states;
 
+import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.input.MCInputManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MCSIdle extends MCState {
 
     public MCSIdle(MCEntity parent) {
         super(parent);
+        this.name = "idle";
     }
 
     @Override
@@ -14,8 +20,8 @@ public class MCSIdle extends MCState {
     }
 
     @Override
-    public void enter() {
-        super.enter();
+    public void enter(List args) {
+        super.enter(args);
     }
 
     @Override
@@ -25,6 +31,16 @@ public class MCSIdle extends MCState {
     
     @Override
     protected void inputPressed(Object data) {
-        super.inputPressed(data);
+        if (!(data instanceof MCInputManager.Command)) return;
+        
+        if (data instanceof MCInputManager.ClickTileCommand) {
+            List args = new ArrayList<>();
+            args.add(getName());
+            args.add("click_move");
+            MCEventBus.get().emit("ChangeState", args);
+        }
+        else if (data instanceof MCInputManager.OneMoveCommand) {
+            System.out.println("Oh on a pressé les touches du clavier");
+        }
     }
 }

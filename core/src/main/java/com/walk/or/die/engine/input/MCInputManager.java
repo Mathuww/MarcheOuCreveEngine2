@@ -12,6 +12,11 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.MCEventBus;
 
 public class MCInputManager implements InputProcessor {
+    /*
+    private static MCInputManager instance;
+
+    public MCInputManager get() {} */
+
     public static abstract class Command {}
 
     public static class OneMoveCommand extends Command {

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.walk.or.die.engine.exceptions.DataException;
-import com.walk.or.die.engine.screens.MCFirstScreen;
+import com.walk.or.die.engine.screens.MCGameScreen;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class MCGame extends Game {
@@ -19,7 +19,7 @@ public class MCGame extends Game {
         batch = new SpriteBatch();
         viewport = new FitViewport(8, 5);
         try {
-            setScreen(new MCFirstScreen(this));
+            setScreen(new MCGameScreen(this));
         } catch (DataException e) {}
 
     }

@@ -17,13 +17,17 @@ import java.util.Queue;
 
 
 import com.walk.or.die.engine.MCGame;
-import com.walk.or.die.engine.cameras.MCFollowCamera;
+import com.walk.or.die.engine.cameras.MCCameraBehavior;
+import com.walk.or.die.engine.cameras.MCCameraManager;
+import com.walk.or.die.engine.cameras.MCCameraMode;
+import com.walk.or.die.engine.cameras.MCFollowCamBehavior;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.exceptions.UndefinedBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
-public class MCFirstScreen implements Screen {
+public class MCGameScreen implements Screen {
 
     private MCGame game;
     private AssetManager drh;
@@ -32,7 +36,7 @@ public class MCFirstScreen implements Screen {
     private MCMap map;
 
     // Camera
-    private MCFollowCamera cam;
+    private MCCameraManager camManager;
 
     // Input
     private MCInputManager inputHandler;
@@ -51,11 +55,12 @@ public class MCFirstScreen implements Screen {
     // Debug
     //private ShapeRenderer debugRenderer = new ShapeRenderer();
 
-    public MCFirstScreen(MCGame game) throws DataException {
-        cam = new MCFollowCamera(8, 5);
+    public MCGameScreen(MCGame game) throws DataException {
+        camManager = MCCameraManager.get();
+        camManager.init(8, 5);
         this.game = game;
         drh = new AssetManager();
-        map = new MCMap("unoriginal_packed_maps/CArte.tmx", cam.camera, drh);
+        map = new MCMap("unoriginal_packed_maps/CArte.tmx", camManager.getGdxCam(), drh);
         try {
             TextureRegion playerTexture = map.getTileSet("player").getTileByType("player").getTextureRegion();
             player = new MCEntity(map.getEntitySpawnPos("player"), playerTexture);
@@ -63,16 +68,13 @@ public class MCFirstScreen implements Screen {
             throw new DataException("cannot create player : " + e.getMessage());
         }
 
-        setupCamera();
-        cam.follow(player);
+        camManager.setLimitX(map.getWidth());
+        camManager.setLimitY(map.getHeight());
+        game.viewport.setCamera(camManager.getGdxCam());
+        camManager.register(MCCameraMode.FOLLOW, new MCFollowCamBehavior(player));
+        camManager.setMode(MCCameraMode.FOLLOW);
 
         setupInput();
-    }
-    public void setupCamera() {
-
-        cam.setLimitX(map.getWidth());
-        cam.setLimitY(map.getHeight());
-        game.viewport.setCamera(cam.camera);
     }
 
     public void setupInput() {
@@ -188,11 +190,13 @@ public class MCFirstScreen implements Screen {
 
     private void draw(float delta) {
         ScreenUtils.clear(Color.BLACK);
-        cam.update(delta);
+        try {
+            camManager.update(delta);
+        } catch (UndefinedBehaviorException e) {}
+
         game.viewport.apply();
         map.render();
-        game.batch.setProjectionMatrix(cam.camera.combined);
-        game.batch.begin();
+        game.batch.setProjectionMatrix(camManager.getGdxCam().combined);       game.batch.begin();
 
         player.update(delta);
         player.render(game.batch);
@@ -212,7 +216,7 @@ public class MCFirstScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-       game.viewport.update(width, height, true);
+       game.viewport.update(width, height, false);
     }
 
     @Override

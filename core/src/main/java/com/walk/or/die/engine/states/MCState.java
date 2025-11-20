@@ -6,15 +6,17 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.ClickTileCommand;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.OneMoveCommand;
+import java.util.List;
+import java.util.ArrayList;
 
 public class MCState {
     private MCEntity parent;
-    private String name;
+    protected String name;
 
     public MCState(MCEntity parent) {
         this.parent = parent;
-    };
-
+    }
+    
     public String getName() {
         return name;
     }
@@ -25,7 +27,8 @@ public class MCState {
 
     public void update(float delta) {}
 
-    public void enter() {
+    public void enter(List args) {
+        System.out.println("Hop");
         MCEventBus bus = MCEventBus.get();
         bus.on("InputPressed", this::inputPressed);
         // Je rentre dans tes MC en bus
@@ -45,6 +48,14 @@ public class MCState {
         else if (data instanceof MCInputManager.OneMoveCommand) {
             System.out.println("Oh on a pressé les touches du clavier");
         }
+    }
+
+    protected void change_state(String new_state) {
+        MCEventBus bus = MCEventBus.get();
+        List<String> list = new ArrayList<>();
+        list.add(getName());
+        list.add(new_state);
+        bus.emit("ChangeState", list);
     }
 
 }
