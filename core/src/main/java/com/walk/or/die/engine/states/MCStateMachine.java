@@ -8,7 +8,20 @@ import java.util.ArrayList;
 
 public class MCStateMachine {
     
-    private MCEntity parent;
+    // Classe pour l'event de transition
+    public static class TransitionArgs<T extends MCState.StateArgs> {
+        public String prevState;
+        public String nextState;
+        public T args;
+
+        public TransitionArgs (String prevState, String nextState, T args) {
+            this.prevState = prevState;
+            this.nextState = nextState;
+            this.args = args;
+        }
+    }
+
+    protected MCEntity parent;
     private List<MCState> states;
     private MCState currentState;
 
@@ -19,7 +32,7 @@ public class MCStateMachine {
         bus.on("ChangeState", this::stateTransitionCheck);
     };
 
-    public void setCurrentState(String name, List args) {
+    public void setCurrentState(String name, MCState.StateArgs args) {
         currentState = getState(name);
         currentState.enter(args); 
     }
@@ -33,20 +46,13 @@ public class MCStateMachine {
         currentState.update(delta);
     }
 
-    public void stateTransitionCheck(Object data) {
-        if (!(data instanceof List)) {
+    public void stateTransitionCheck(TransitionArgs<?> args) {
+        if (!args.prevState.equals(currentState.getName()) || !stateExists(args.nextState)) {
             return ;
         }
 
-        List<String> list = (List<String>) data;
-        String prevStateName = list.get(0), nextStateName = list.get(1);
-
-        if (list.size() != 2 || prevStateName != currentState.getName() || !stateExists(nextStateName)) {
-            return ;
-        }
-
-        System.out.println("Heho");
-        stateTransition(currentState, getState(nextStateName), new ArrayList<>());
+        System.out.println("Transition from " + args.prevState + " to " + args.nextState);
+        stateTransition(currentState, getState(args.nextState), args.args);
         
     }
 
@@ -68,15 +74,14 @@ public class MCStateMachine {
         return null;
     }
 
-    public void stateTransition(MCState prevState, MCState nextState, List args) {
-        if (prevState.getName() != currentState.getName()) {
+    private <T extends MCState.StateArgs> void stateTransition(MCState prevState, MCState nextState, T args) {
+        if (!prevState.getName().equals(currentState.getName())) {
             return ;
         }
 
         currentState.exit();
+        nextState.enter(args);
         currentState = nextState;
-        currentState.enter(args);
-
     }
 
 }

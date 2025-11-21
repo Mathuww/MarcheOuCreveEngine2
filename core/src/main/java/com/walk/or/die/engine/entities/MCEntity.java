@@ -10,8 +10,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.states.MCSClickMove;
 import com.walk.or.die.engine.states.MCSIdle;
 import com.walk.or.die.engine.states.MCStateMachine;
+import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCEntity {
+    private MCMap map;
     private Rectangle hitbox;
     private TextureRegion currentRegion;
     private Sprite sprite;
@@ -19,12 +21,13 @@ public class MCEntity {
 
     private float SIZE = 1f;
 
-    public MCEntity(Vector2 spawn, TextureRegion baseRegion) {
+    public MCEntity(MCMap map, Vector2 spawn, TextureRegion baseRegion) {
+        this.map = map;
         currentRegion = baseRegion;
         stateManager = new MCStateMachine(this);
         stateManager.addState(new MCSClickMove(this));
         stateManager.addState(new MCSIdle(this));
-        stateManager.setCurrentState("idle", new ArrayList<>());
+        stateManager.setCurrentState("idle", new MCSIdle.IdleStateArgs());
 
         sprite = new Sprite(currentRegion);
         sprite.setSize(SIZE, SIZE);
@@ -70,5 +73,9 @@ public class MCEntity {
 
     public void setPosition(float x, float y) {
         this.hitbox.setPosition(x, y);
+    }
+
+    public MCMap getMap() {
+        return map;
     }
 }

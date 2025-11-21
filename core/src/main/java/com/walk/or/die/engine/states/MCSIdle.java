@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.states;
 
+import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
@@ -7,7 +8,10 @@ import com.walk.or.die.engine.input.MCInputManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MCSIdle extends MCState {
+
+public class MCSIdle extends MCState<MCSIdle.IdleStateArgs> {
+
+    public static class IdleStateArgs extends MCState.StateArgs {}
 
     public MCSIdle(MCEntity parent) {
         super(parent);
@@ -20,7 +24,7 @@ public class MCSIdle extends MCState {
     }
 
     @Override
-    public void enter(List args) {
+    public void enter(IdleStateArgs args) {
         super.enter(args);
     }
 
@@ -30,16 +34,13 @@ public class MCSIdle extends MCState {
     }
     
     @Override
-    protected void inputPressed(Object data) {
-        if (!(data instanceof MCInputManager.Command)) return;
-        
+    protected void inputPressed(MCInputManager.Command data) {
+        System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.ClickTileCommand) {
-            List args = new ArrayList<>();
-            args.add(getName());
-            args.add("click_move");
-            MCEventBus.get().emit("ChangeState", args);
+            MCInputManager.ClickTileCommand tileCmd = (MCInputManager.ClickTileCommand) data;
+            changeState("click_move", new MCSClickMove.MoveStateArgs(tileCmd.getVector()));
         }
-        else if (data instanceof MCInputManager.OneMoveCommand) {
+        else if (data instanceof MCInputManager.DirectionalCommand) {
             System.out.println("Oh on a pressé les touches du clavier");
         }
     }

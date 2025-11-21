@@ -19,11 +19,26 @@ public class MCInputManager implements InputProcessor {
 
     public static abstract class Command {}
 
-    public static class OneMoveCommand extends Command {
+    public static class DirectionalCommand extends Command {
         public float dx, dy;
-        public OneMoveCommand(float dx, float dy) {
+        public DirectionalCommand(float dx, float dy) {
             this.dx = dx;
             this.dy = dy;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) return true;
+            if (obj == null || getClass() != obj.getClass()) return false;
+            DirectionalCommand comp = (DirectionalCommand) obj;
+            return Float.compare(dx, comp.dx) == 0 && Float.compare(dy, comp.dy) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            int res = Float.hashCode(dx);
+            res = 31 * res + Float.hashCode(dy);
+            return res;
         }
     }
 
@@ -32,6 +47,16 @@ public class MCInputManager implements InputProcessor {
         public ClickTileCommand(float tileX, float tileY) {
             this.tileX = tileX;
             this.tileY = tileY;
+        }
+        public Vector2 getVector() {
+            return new Vector2(tileX, tileY);
+        }
+    }
+
+    public static class OtherKeyCommand extends Command {
+        public int key;
+        public OtherKeyCommand(int key) {
+            this.key = key;
         }
     }
 
@@ -78,30 +103,33 @@ public class MCInputManager implements InputProcessor {
             case Input.Keys.Z:
             case Input.Keys.UP:
                 upGoing = true;
-                bus.emit("InputPressed", new OneMoveCommand(0, +1));
-                commands.add(new OneMoveCommand(0, +1));
+                bus.emit("InputPressed", new DirectionalCommand(0, +1));
+                commands.add(new DirectionalCommand(0, +1));
                 break;
 
             case Input.Keys.S:
             case Input.Keys.DOWN:
                 downGoing = true;
-                bus.emit("InputPressed", new OneMoveCommand(0, -1));
-                commands.add(new OneMoveCommand(0, -1));
+                bus.emit("InputPressed", new DirectionalCommand(0, -1));
+                commands.add(new DirectionalCommand(0, -1));
                 break;
 
             case Input.Keys.Q:
             case Input.Keys.LEFT:
                 leftGoing = true;
-                bus.emit("InputPressed", new OneMoveCommand(-1, 0));
-                commands.add(new OneMoveCommand(-1, 0));
+                bus.emit("InputPressed", new DirectionalCommand(-1, 0));
+                commands.add(new DirectionalCommand(-1, 0));
                 break;
 
             case Input.Keys.D:
             case Input.Keys.RIGHT:
                 rightGoing = true;
-                bus.emit("InputPressed", new OneMoveCommand(+1, 0));
-                commands.add(new OneMoveCommand(+1, 0));
+                bus.emit("InputPressed", new DirectionalCommand(+1, 0));
+                commands.add(new DirectionalCommand(+1, 0));
                 break;
+
+            default:
+                bus.emit("InputPressed", new OtherKeyCommand(k));
         }
         return true;
     }
@@ -112,21 +140,25 @@ public class MCInputManager implements InputProcessor {
             case Input.Keys.Z:
             case Input.Keys.UP:
                 upGoing = false;
+                bus.emit("InputReleased", new DirectionalCommand(0, +1));
                 break;
 
             case Input.Keys.S:
             case Input.Keys.DOWN:
                 downGoing = false;
+                bus.emit("InputReleased", new DirectionalCommand(0, -1));
                 break;
 
             case Input.Keys.Q:
             case Input.Keys.LEFT:
                 leftGoing = false;
+                bus.emit("InputReleased", new DirectionalCommand(-1, 0));
                 break;
 
             case Input.Keys.D:
             case Input.Keys.RIGHT:
                 rightGoing = false;
+                bus.emit("InputReleased", new DirectionalCommand(+1, 0));
                 break;
         }
         return true;

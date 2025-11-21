@@ -63,7 +63,7 @@ public class MCGameScreen implements Screen {
         map = new MCMap("unoriginal_packed_maps/CArte.tmx", camManager.getGdxCam(), drh);
         try {
             TextureRegion playerTexture = map.getTileSet("player").getTileByType("player").getTextureRegion();
-            player = new MCEntity(map.getEntitySpawnPos("player"), playerTexture);
+            player = new MCEntity(map, map.getEntitySpawnPos("player"), playerTexture);
         } catch (DataException e) {
             throw new DataException("cannot create player : " + e.getMessage());
         }
@@ -113,7 +113,7 @@ public class MCGameScreen implements Screen {
                 Vector2 targetPos = new Vector2(cc.tileX, cc.tileY);
                 List<Vector2> path = map.getPath(player.getPosition(), targetPos);
                 movements.addAll(path);
-            } else if (cmd instanceof MCInputManager.OneMoveCommand omc) {
+            } else if (cmd instanceof MCInputManager.DirectionalCommand omc) {
                 Vector2 targetPos = new Vector2(player.getX() + omc.dx, player.getY() + omc.dy);
                 tryAddMovement(targetPos);
             }
@@ -135,6 +135,7 @@ public class MCGameScreen implements Screen {
         // Ptn la fonction marche pas...
         // Bon bah on va bouger normalement les characters
 
+/*
         if (!moving && movements.isEmpty()) {
             float x = player.getX(), y = player.getY();
             float dx = 0, dy = 0;
@@ -184,7 +185,7 @@ public class MCGameScreen implements Screen {
             } else {
                 moving = false;
             }
-        }
+        } */
     }
 
 

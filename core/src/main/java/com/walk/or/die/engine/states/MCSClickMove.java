@@ -1,27 +1,77 @@
 package com.walk.or.die.engine.states;
 
 import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.input.MCInputManager;
+
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 
-public class MCSClickMove extends MCState {
+public class MCSClickMove extends MCState<MCSClickMove.MoveStateArgs> {
 
-    Vector2 goal;
+    public static class MoveStateArgs extends MCState.StateArgs {
+        public Vector2 target;
+
+        public MoveStateArgs(Vector2 target) {
+            this.target = target;
+        }
+    }
+
+    private Vector2 goal;
+
+    private Deque<Vector2> movements;
+    private Vector2 start;
+    private Vector2 deplacement = new Vector2(0f,0f);
+    private float percent = 0f;
+    private float speed = 4f;
 
     public MCSClickMove(MCEntity parent) {
         super(parent);
+        movements = new ArrayDeque<>();
         this.name = "click_move";
     }
 
     @Override
     public void update(float delta) {
-        System.out.println("On respire le bon air de la nature");
+
+        if (deplacement.x != 0f) {
+            percent += delta*speed/Math.abs(deplacement.x);
+            if (percent >= 1f) {
+                percent = 0f;
+                parent.setX(start.x + deplacement.x);
+                deplacement.x = 0f;
+            } else {
+                parent.setX(start.x + deplacement.x*percent);
+            }
+        }
+        else if (deplacement.y != 0f) {
+            percent += delta*speed/Math.abs(deplacement.y);
+            if (percent >= 1f) {
+                percent = 0f;
+                parent.setY(start.y + deplacement.y);
+                deplacement.y = 0f;
+            } else {
+                parent.setY(start.y + deplacement.y*percent);
+            }
+        } else {
+            nextMove();
+        }
     }
 
-    public void enter(List args) {
-        //this.goal = goal;
+    @Override
+    public void enter(MoveStateArgs args) {
+        goal = args.target;
+        movements.clear();
+        movements.addAll(parent.getMap().getPath(parent.getPosition(), goal));
+        for (Vector2 movement : movements) {
+            System.out.println("x: " + movement.x + ", y: " + movement.y);
+        }
+        System.out.println("ouf");
         super.enter(args);
     }
 
@@ -31,7 +81,20 @@ public class MCSClickMove extends MCState {
     }
     
     @Override
-    protected void inputPressed(Object data) {
+    protected void inputPressed(MCInputManager.Command data) {
+        System.out.println("Input pressed detect in Move");
         super.inputPressed(data);
+    }
+
+    private void nextMove() {
+        if (movements.size() == 0) changeState("idle", new MCSIdle.IdleStateArgs()) ;
+        else {
+            Vector2 targetPos = movements.removeFirst();
+
+            start = parent.getPosition();
+            deplacement.x = MathUtils.floor(targetPos.x - parent.getX()); // avant : cast (int)end.x....
+            deplacement.y = MathUtils.floor(targetPos.y - parent.getY());
+            percent = 0f;
+        }
     }
 }
