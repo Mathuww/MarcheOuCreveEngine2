@@ -13,21 +13,12 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
     private final float CAM_MARGIN_Y = 2f;
     private final float CAM_LERP = 3f;
 
-    public MCFollowCamBehavior(MCEntity target) {
-        this.target = target;
-    }
-
-    public void follow(MCEntity target) {
-        this.target = target;
-    }
-
-    public void setTarget(MCEntity target) {
-        this.target = target;
-    }
+    public MCFollowCamBehavior() {}
 
     @Override
     public void update(OrthographicCamera gdxCam, float delta) {
         MCCameraManager camManager = MCCameraManager.get();
+        MCEntity target = camManager.getFollowTarget();
 
         if (target == null) return;
 

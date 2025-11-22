@@ -5,18 +5,35 @@ import com.walk.or.die.engine.states.MCState;
 import com.walk.or.die.engine.states.MCStateMachine;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.lang.invoke.SerializedLambda;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 
 public class MCEventBus {
-
     private static MCEventBus instance;
 
     public static MCEventBus get() {
         if (instance == null) instance = new MCEventBus();
         return instance;
+    }
+
+    public static class Subscription {
+        String eventName;
+        Consumer<?> listener;
+
+        public Subscription(String eventName, Consumer<?> listener) {
+            this.eventName = eventName;
+            this.listener = listener;
+        }
+
+        public void unsubscribe() {
+            MCEventBus.get().off(this);
+        }
     }
 
     private MCEventBus() {
@@ -25,7 +42,6 @@ public class MCEventBus {
         addEvent("InputPressed", MCInputManager.Command.class);
         addEvent("InputReleased", MCInputManager.Command.class);
         addEvent("ChangeState", MCStateMachine.TransitionArgs.class);
-
     }
 
     private void MCDeconstructor() {
@@ -40,23 +56,39 @@ public class MCEventBus {
         listeners.putIfAbsent(eventName, new ArrayList<>());
     }
 
-    public <T> void on(String eventName, Consumer<T> listener) {
+    public <T> Subscription on(String eventName, Consumer<T> listener) {
         Class<?> argType = eventTypes.get(eventName);
         if (argType == null) {
-            throw new IllegalArgumentException("event bus : trying to subscribe to unregistrevent event " + eventName);
+            throw new IllegalArgumentException("event bus : trying to subscribe to unregistered event " + eventName);
         }
         listeners.get(eventName).add(listener);
+        return new Subscription(eventName, listener);
     }
 
-    public <T> void off(String eventName, Consumer<T> listener) {
-        List<Consumer<?>> listenersList = listeners.get(eventName);
-        if (listenersList == null) return;
-        boolean debug = listenersList.remove(listener);
-        if (debug) {
-            System.out.println("removed from event lsitenre");
-        } else {
-            System.out.println("nothing to remvoe");
+    public <T> void off(Subscription sub) {
+        List<Consumer<?>> listenersList = listeners.get(sub.eventName);
+
+        /* 
+        try {
+            String methodId = getMethodIdentifier(listener);
+            // int instanceId = System.identityHashCode(stateInstance);
+            // UUID uuid = UUID.nameUUIDFromBytes((instanceId + methodId).getBytes(StandardCharsets.UTF_8));
+        } catch (Exception e) {
+            System.err.println("getMethodIdnetifier a planté");
         }
+        */
+
+        // Il faut faire en sorte de mettre ça dans le try et de vérifier avec le getMethodIdentifier
+        // Soit inclure l'instance qui se register dans on et off, soit une méthode qui compile l'instance + la méthode accessible hors de event bus,
+        // qui permet de créer l'identifiant qu'on passe soit même en paramètres
+        if (listenersList == null) return;
+    }
+
+    public static String getMethodIdentifier(Consumer<?> c) throws Exception {
+        Method writeReplace = c.getClass().getDeclaredMethod("writeReplace");
+        writeReplace.setAccessible(true);
+        SerializedLambda lambda = (SerializedLambda) writeReplace.invoke(c);
+        return lambda.getImplClass() + "::" + lambda.getImplMethodName();
     }
 
     public <T> void emit(String eventName, T data) {

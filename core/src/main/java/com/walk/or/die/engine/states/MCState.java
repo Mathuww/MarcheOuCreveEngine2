@@ -16,7 +16,8 @@ public class MCState<T extends MCState.StateArgs> {
     public static class StateArgs {}
 
 
-    private Consumer<MCInputManager.Command> inputPressedConsumer;
+    //private Consumer<MCInputManager.Command> inputPressedConsumer;
+    protected List<MCEventBus.Subscription> subscriptions = new ArrayList<>();
     protected MCEntity parent;
     protected String name;
 
@@ -35,17 +36,28 @@ public class MCState<T extends MCState.StateArgs> {
     public void update(float delta) {}
 
     public void enter(T args) {
-        System.out.println("Enter " + getName());
+        //System.out.println("Enter " + getName());
         MCEventBus bus = MCEventBus.get();
-        inputPressedConsumer = this::inputPressed;
-        bus.on("InputPressed", inputPressedConsumer);
+        listen("InputPressed", this::inputPressed);
         // Je rentre dans tes MC en bus
     }
 
     public void exit() {
-        System.out.println("Exit " + getName());
+        //System.out.println("Exit " + getName());
+        unsubscribeAll();
+    }
+
+    protected <U> void listen(String eventName, Consumer<U> listener) {
         MCEventBus bus = MCEventBus.get();
-        bus.off("InputPressed", inputPressedConsumer);
+        subscriptions.add(bus.on(eventName, listener));
+    }
+
+    protected void unsubscribeAll() {
+        MCEventBus bus = MCEventBus.get();
+        for (MCEventBus.Subscription fjkdslfj : subscriptions) {
+            bus.off(fjkdslfj);
+        }
+        subscriptions.clear();
     }
     
     protected void inputPressed(MCInputManager.Command data) {

@@ -4,6 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.walk.or.die.engine.MCEventBus;
+import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.UndefinedBehaviorException;
 
 public class MCCameraManager {
@@ -22,6 +26,13 @@ public class MCCameraManager {
     private float limitX;
     private float limitY;
 
+    private MCEntity target;
+
+    private MCCameraManager() {
+        register(MCCameraMode.FOLLOW, new MCFollowCamBehavior());
+        register(MCCameraMode.ARROWS, new MCArrowsCamBehavior());
+    }
+
     public float getLimitX() {
         return this.limitX;
     }
@@ -38,10 +49,21 @@ public class MCCameraManager {
         this.limitY = limitY;
     }
 
-    private MCCameraManager() {}
+    public Vector2 getPosition() {
+        return new Vector2(gdxCam.position.x, gdxCam.position.y);
+    }
+
+    public void setPosition(Vector2 pos) {
+        gdxCam.position.x = pos.x;
+        gdxCam.position.y = pos.y;
+    }
 
     public void register(MCCameraMode mode, MCCameraBehavior behavior) {
         behaviors.put(mode, behavior);
+    }
+
+    public MCCameraMode getMode() {
+        return this.mode;
     }
 
     public void setMode(MCCameraMode mode) {
@@ -57,6 +79,14 @@ public class MCCameraManager {
 
     public OrthographicCamera getGdxCam() {
         return gdxCam;
+    }
+
+    public MCEntity getFollowTarget() {
+        return this.target;
+    }
+
+    public void setFollowTarget(MCEntity target) {
+        this.target = target;
     }
 
     public void update(float delta) throws UndefinedBehaviorException {

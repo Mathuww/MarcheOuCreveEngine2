@@ -1,7 +1,10 @@
 package com.walk.or.die.engine.states;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCEventBus;
+import com.walk.or.die.engine.cameras.MCCameraManager;
+import com.walk.or.die.engine.cameras.MCCameraMode;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 
@@ -35,13 +38,19 @@ public class MCSIdle extends MCState<MCSIdle.IdleStateArgs> {
     
     @Override
     protected void inputPressed(MCInputManager.Command data) {
-        System.out.println("Input pressed detect in Idle");
-        if (data instanceof MCInputManager.ClickTileCommand) {
-            MCInputManager.ClickTileCommand tileCmd = (MCInputManager.ClickTileCommand) data;
+        //System.out.println("Input pressed detect in Idle");
+        if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
+            //MCInputManager.ClickTileCommand tileCmd = (MCInputManager.ClickTileCommand) data;
             changeState("click_move", new MCSClickMove.MoveStateArgs(tileCmd.getVector()));
         }
         else if (data instanceof MCInputManager.DirectionalCommand) {
             System.out.println("Oh on a pressé les touches du clavier");
+        } else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
+            if (keyCmd.key == Input.Keys.F) {
+                MCCameraManager camManager = MCCameraManager.get();
+                if (camManager.getMode() == MCCameraMode.FOLLOW) camManager.setMode(MCCameraMode.ARROWS);
+                else camManager.setMode(MCCameraMode.FOLLOW);
+            }
         }
     }
 }

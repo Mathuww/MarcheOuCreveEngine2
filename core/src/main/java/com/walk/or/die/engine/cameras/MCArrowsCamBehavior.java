@@ -1,6 +1,8 @@
 package com.walk.or.die.engine.cameras;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -17,6 +19,7 @@ public class MCArrowsCamBehavior extends MCCameraBehavior implements Disposable 
     private final float CAM_LERP = 3f;
 
     private Map<DirectionalCommand, Boolean> currentInput;
+    private List<MCEventBus.Subscription> subscriptions = new ArrayList<>();
 
     public MCArrowsCamBehavior() {
         currentInput = new HashMap<>();
@@ -32,14 +35,13 @@ public class MCArrowsCamBehavior extends MCCameraBehavior implements Disposable 
 
     public void attachInput() {
         MCEventBus bus = MCEventBus.get();
-        bus.on("InputPressed", this::inputPressed);
-        bus.on("InputReleased", this::inputReleased);
+        subscriptions.add(bus.on("InputPressed", this::inputPressed));
+        subscriptions.add(bus.on("InputReleased", this::inputReleased));
     }
 
     public void detachInput() {
-        MCEventBus bus = MCEventBus.get();
-        bus.off("InputPressed", this::inputPressed);
-        bus.off("InputReleased", this::inputReleased);
+        for (MCEventBus.Subscription s : subscriptions) s.unsubscribe();
+        subscriptions.clear();
     }
 
     public void dispose() {

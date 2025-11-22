@@ -169,6 +169,6 @@ savestate.sh
 **/resource-config.json
 
 .vscode/
-
+runnable_jars/
 private_brainbranlings/
 

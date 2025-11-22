@@ -68,10 +68,6 @@ public class MCSClickMove extends MCState<MCSClickMove.MoveStateArgs> {
         goal = args.target;
         movements.clear();
         movements.addAll(parent.getMap().getPath(parent.getPosition(), goal));
-        for (Vector2 movement : movements) {
-            System.out.println("x: " + movement.x + ", y: " + movement.y);
-        }
-        System.out.println("ouf");
         super.enter(args);
     }
 
@@ -82,7 +78,7 @@ public class MCSClickMove extends MCState<MCSClickMove.MoveStateArgs> {
     
     @Override
     protected void inputPressed(MCInputManager.Command data) {
-        System.out.println("Input pressed detect in Move");
+        //System.out.println("Input pressed detect in Move");
         super.inputPressed(data);
     }
 

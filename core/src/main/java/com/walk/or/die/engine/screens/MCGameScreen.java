@@ -17,6 +17,7 @@ import java.util.Queue;
 
 
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.cameras.MCArrowsCamBehavior;
 import com.walk.or.die.engine.cameras.MCCameraBehavior;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraMode;
@@ -71,8 +72,8 @@ public class MCGameScreen implements Screen {
         camManager.setLimitX(map.getWidth());
         camManager.setLimitY(map.getHeight());
         game.viewport.setCamera(camManager.getGdxCam());
-        camManager.register(MCCameraMode.FOLLOW, new MCFollowCamBehavior(player));
-        camManager.setMode(MCCameraMode.FOLLOW);
+        camManager.setFollowTarget(player);
+        camManager.setMode(MCCameraMode.ARROWS);
 
         setupInput();
     }
