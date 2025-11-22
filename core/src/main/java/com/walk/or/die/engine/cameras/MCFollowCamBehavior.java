@@ -16,6 +16,12 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
     public MCFollowCamBehavior() {}
 
     @Override
+    public void enter() {}
+
+    @Override
+    public void exit() {}
+
+    @Override
     public void update(OrthographicCamera gdxCam, float delta) {
         MCCameraManager camManager = MCCameraManager.get();
         MCEntity target = camManager.getFollowTarget();

@@ -20,7 +20,9 @@ public class MCGame extends Game {
         viewport = new FitViewport(8, 5);
         try {
             setScreen(new MCGameScreen(this));
-        } catch (DataException e) {}
+        } catch (DataException e) {
+            e.printStackTrace();
+        }
 
     }
 

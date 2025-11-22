@@ -81,15 +81,21 @@ public class MCEventBus {
         // Il faut faire en sorte de mettre ça dans le try et de vérifier avec le getMethodIdentifier
         // Soit inclure l'instance qui se register dans on et off, soit une méthode qui compile l'instance + la méthode accessible hors de event bus,
         // qui permet de créer l'identifiant qu'on passe soit même en paramètres
+
+        /* je me demandais si c'était néceessaire d'ajouter une exception si on n'a pas enregistré de listener en vrai jsp */
         if (listenersList == null) return;
+
+        listenersList.remove(sub.listener);
     }
 
+    /*
     public static String getMethodIdentifier(Consumer<?> c) throws Exception {
         Method writeReplace = c.getClass().getDeclaredMethod("writeReplace");
         writeReplace.setAccessible(true);
         SerializedLambda lambda = (SerializedLambda) writeReplace.invoke(c);
         return lambda.getImplClass() + "::" + lambda.getImplMethodName();
     }
+    */
 
     public <T> void emit(String eventName, T data) {
         Class<?> argType = eventTypes.get(eventName);

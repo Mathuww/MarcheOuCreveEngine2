@@ -38,7 +38,6 @@ public class MCSClickMove extends MCState<MCSClickMove.MoveStateArgs> {
 
     @Override
     public void update(float delta) {
-
         if (deplacement.x != 0f) {
             percent += delta*speed/Math.abs(deplacement.x);
             if (percent >= 1f) {

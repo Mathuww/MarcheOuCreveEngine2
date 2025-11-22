@@ -67,14 +67,17 @@ public class MCCameraManager {
     }
 
     public void setMode(MCCameraMode mode) {
+        if (this.mode != null) behaviors.get(this.mode).exit();
         this.mode = mode;
+        behaviors.get(this.mode).enter();
     }
 
-    public void init(float viewportWidth, float viewportHeight) {
+    public void init(float viewportWidth, float viewportHeight, MCCameraMode mode) {
         gdxCam = new OrthographicCamera(viewportWidth, viewportHeight);
         gdxCam.position.set(viewportWidth / 2, viewportHeight / 2, 0);
         limitX = 0f;
         limitY = 0f;
+        setMode(mode);
     }
 
     public OrthographicCamera getGdxCam() {

@@ -14,7 +14,7 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
 
-public class MCArrowsCamBehavior extends MCCameraBehavior implements Disposable {
+public class MCArrowsCamBehavior extends MCCameraBehavior {
     private final float CAM_MOVE_SPEED = 1f;
     private final float CAM_LERP = 3f;
 
@@ -23,6 +23,10 @@ public class MCArrowsCamBehavior extends MCCameraBehavior implements Disposable 
 
     public MCArrowsCamBehavior() {
         currentInput = new HashMap<>();
+    }
+
+    @Override
+    public void enter() {
         int[][] directions = {
             {0, +1}, {0, -1},
             {+1, 0}, {-1, 0}
@@ -30,22 +34,15 @@ public class MCArrowsCamBehavior extends MCCameraBehavior implements Disposable 
         for (int[] dir : directions) {
             currentInput.put(new DirectionalCommand(dir[0], dir[1]), false);
         }
-        attachInput();
-    }
-
-    public void attachInput() {
         MCEventBus bus = MCEventBus.get();
         subscriptions.add(bus.on("InputPressed", this::inputPressed));
         subscriptions.add(bus.on("InputReleased", this::inputReleased));
     }
 
-    public void detachInput() {
+    @Override
+    public void exit() {
         for (MCEventBus.Subscription s : subscriptions) s.unsubscribe();
         subscriptions.clear();
-    }
-
-    public void dispose() {
-        detachInput();
     }
 
     public void inputPressed(Command data) {
