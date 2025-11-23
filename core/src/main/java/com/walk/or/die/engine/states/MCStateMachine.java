@@ -6,7 +6,7 @@ import com.walk.or.die.engine.entities.MCEntity;
 import java.util.List;
 import java.util.ArrayList;
 
-public class MCStateMachine {
+public abstract class MCStateMachine<T extends MCState> {
     
     // Classe pour l'event de transition
     public static class TransitionArgs<T extends MCState.StateArgs> {
@@ -22,22 +22,28 @@ public class MCStateMachine {
     }
 
     protected MCEntity parent;
-    private List<MCState> states;
-    private MCState currentState;
+    private List<T> states;
+    private T currentState;
 
-    public MCStateMachine(MCEntity parent) {
-        MCEventBus bus = MCEventBus.get();
-        this.parent = parent;
-        states = new ArrayList<MCState>();
-        bus.on("ChangeState", this::stateTransitionCheck);
-    };
+    public MCStateMachine() {
+        this.parent = null;
+        states = new ArrayList<T>();
+    }
 
-    public void setCurrentState(String name, MCState.StateArgs args) {
+    public T getCurrentState() {
+        return currentState;
+    }
+
+    public boolean isIn(String name) {
+        return currentState.getName().equals(name);
+    }
+
+    public void setCurrentState(String name, T.StateArgs args) {
         currentState = getState(name);
         currentState.enter(args); 
     }
 
-    public void addState(MCState state) {
+    public void addState(T state) {
         states.add(state);
     }
 
@@ -51,13 +57,13 @@ public class MCStateMachine {
             return ;
         }
 
-        System.out.println("Transition from " + args.prevState + " to " + args.nextState);
+        //System.out.println("Transition from " + args.prevState + " to " + args.nextState);
         stateTransition(currentState, getState(args.nextState), args.args);
         
     }
 
     public boolean stateExists(String name) {
-        for (MCState state : states) {
+        for (T state : states) {
             if (state.getName().equalsIgnoreCase(name)) {
                 return true;
             }
@@ -65,8 +71,8 @@ public class MCStateMachine {
         return false;
     }
 
-    public MCState getState(String name) {
-        for (MCState state : states) {
+    public T getState(String name) {
+        for (T state : states) {
             if (state.getName().equalsIgnoreCase(name)) {
                 return state;
             }
@@ -74,7 +80,7 @@ public class MCStateMachine {
         return null;
     }
 
-    private <T extends MCState.StateArgs> void stateTransition(MCState prevState, MCState nextState, T args) {
+    private <U extends T.StateArgs> void stateTransition(T prevState, T nextState, U args) {
         if (!prevState.getName().equals(currentState.getName())) {
             return ;
         }
@@ -83,5 +89,4 @@ public class MCStateMachine {
         nextState.enter(args);
         currentState = nextState;
     }
-
 }

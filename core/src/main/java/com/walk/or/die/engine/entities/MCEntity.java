@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.states.MCSClickMove;
-import com.walk.or.die.engine.states.MCSIdle;
-import com.walk.or.die.engine.states.MCStateMachine;
+import com.walk.or.die.engine.states.entity.MCESClickMove;
+import com.walk.or.die.engine.states.entity.MCESIdle;
+import com.walk.or.die.engine.states.entity.MCEntityStateMachine;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCEntity {
@@ -17,17 +17,17 @@ public class MCEntity {
     private Rectangle hitbox;
     private TextureRegion currentRegion;
     private Sprite sprite;
-    private MCStateMachine stateManager;
+    private MCEntityStateMachine stateManager;
 
     private float SIZE = 1f;
 
     public MCEntity(MCMap map, Vector2 spawn, TextureRegion baseRegion) {
         this.map = map;
         currentRegion = baseRegion;
-        stateManager = new MCStateMachine(this);
-        stateManager.addState(new MCSClickMove(this));
-        stateManager.addState(new MCSIdle(this));
-        stateManager.setCurrentState("idle", new MCSIdle.IdleStateArgs());
+        stateManager = new MCEntityStateMachine(this);
+        stateManager.addState(new MCESClickMove(this));
+        stateManager.addState(new MCESIdle(this));
+        stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
 
         sprite = new Sprite(currentRegion);
         sprite.setSize(SIZE, SIZE);
@@ -45,6 +45,14 @@ public class MCEntity {
 
     public void render(SpriteBatch batch) {
         sprite.draw(batch);
+    }
+
+    public MCEntityStateMachine getStateManager() {
+        return this.stateManager;
+    }
+
+    public void setStateManager(MCEntityStateMachine stateManager) {
+        this.stateManager = stateManager;
     }
 
     public float getX() {

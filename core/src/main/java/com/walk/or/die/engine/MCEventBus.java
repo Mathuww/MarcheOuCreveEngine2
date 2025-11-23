@@ -1,8 +1,7 @@
 package com.walk.or.die.engine;
 
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.states.MCState;
-import com.walk.or.die.engine.states.MCStateMachine;
+import com.walk.or.die.engine.states.entity.MCEntityState;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,25 +22,35 @@ public class MCEventBus {
     }
 
     public static class Subscription {
+        Class cl;
+        int id;
         String eventName;
         Consumer<?> listener;
 
-        public Subscription(String eventName, Consumer<?> listener) {
+        public Subscription(Object obj, String eventName, Consumer<?> listener) {
+            this.cl = obj.getClass();
+            this.id = System.identityHashCode(obj);
             this.eventName = eventName;
             this.listener = listener;
         }
 
-        public void unsubscribe() {
-            MCEventBus.get().off(this);
+        public boolean check(Object obj, String eventName) {
+            return (obj.getClass() == cl && id == System.identityHashCode(obj) && eventName == this.eventName);
         }
+
+        public void unsubscribe() {
+            MCEventBus.get().unsubscribe(this);
+        }
+    
     }
 
     private MCEventBus() {
         this.listeners = new HashMap<>();
         this.eventTypes = new HashMap<>();
+        this.subscriptions = new ArrayList<>();
         addEvent("InputPressed", MCInputManager.Command.class);
         addEvent("InputReleased", MCInputManager.Command.class);
-        addEvent("ChangeState", MCStateMachine.TransitionArgs.class);
+        //addEvent("ChangeState", MCStateMachine.TransitionArgs.class);
     }
 
     private void MCDeconstructor() {
@@ -50,52 +59,46 @@ public class MCEventBus {
 
     private Map<String, List<Consumer<?>>> listeners;
     private Map<String, Class<?>> eventTypes;
+    private List<Subscription> subscriptions;
 
     public <T> void addEvent(String eventName, Class<T> argType) {
         eventTypes.put(eventName, argType);
         listeners.putIfAbsent(eventName, new ArrayList<>());
     }
 
-    public <T> Subscription on(String eventName, Consumer<T> listener) {
+    public <T> void on(Object obj, String eventName, Consumer<T> listener) {
         Class<?> argType = eventTypes.get(eventName);
         if (argType == null) {
             throw new IllegalArgumentException("event bus : trying to subscribe to unregistered event " + eventName);
         }
         listeners.get(eventName).add(listener);
-        return new Subscription(eventName, listener);
+        subscriptions.add(new Subscription(obj, eventName, listener));
     }
 
-    public <T> void off(Subscription sub) {
+    protected void unsubscribe(Subscription sub) {
         List<Consumer<?>> listenersList = listeners.get(sub.eventName);
-
-        /* 
-        try {
-            String methodId = getMethodIdentifier(listener);
-            // int instanceId = System.identityHashCode(stateInstance);
-            // UUID uuid = UUID.nameUUIDFromBytes((instanceId + methodId).getBytes(StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            System.err.println("getMethodIdnetifier a planté");
-        }
-        */
-
-        // Il faut faire en sorte de mettre ça dans le try et de vérifier avec le getMethodIdentifier
-        // Soit inclure l'instance qui se register dans on et off, soit une méthode qui compile l'instance + la méthode accessible hors de event bus,
-        // qui permet de créer l'identifiant qu'on passe soit même en paramètres
-
         /* je me demandais si c'était néceessaire d'ajouter une exception si on n'a pas enregistré de listener en vrai jsp */
         if (listenersList == null) return;
-
         listenersList.remove(sub.listener);
+        subscriptions.remove(sub);
     }
 
-    /*
-    public static String getMethodIdentifier(Consumer<?> c) throws Exception {
-        Method writeReplace = c.getClass().getDeclaredMethod("writeReplace");
-        writeReplace.setAccessible(true);
-        SerializedLambda lambda = (SerializedLambda) writeReplace.invoke(c);
-        return lambda.getImplClass() + "::" + lambda.getImplMethodName();
+    private void clear(List list) {
+        for (Subscription sub : new ArrayList<>(subscriptions)) {
+            subscriptions.remove(sub);
+        }
     }
-    */
+
+    public <T> void off(Object obj, String eventName) {
+        List list = new ArrayList<>();
+        for (Subscription sub : new ArrayList<>(subscriptions)) {
+            if (sub.check(obj, eventName)) {
+                sub.unsubscribe();
+                list.add(sub);
+            }
+        }
+        clear(list);
+    }
 
     public <T> void emit(String eventName, T data) {
         Class<?> argType = eventTypes.get(eventName);
@@ -108,8 +111,8 @@ public class MCEventBus {
 
         List<Consumer<?>> listenersList = listeners.get(eventName);
         if (listenersList == null) return;
+
         List<Consumer<?>> listenersListCopy = new ArrayList<>(listenersList);
-        //List<Consumer<Object>> copy = new ArrayList<>(listenersList);
         for (Consumer<?> genericListener : listenersListCopy) {
             Consumer<T> listener = (Consumer<T>) genericListener;
             listener.accept(data);

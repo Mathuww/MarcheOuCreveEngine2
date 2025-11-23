@@ -19,7 +19,7 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
     private final float CAM_LERP = 3f;
 
     private Map<DirectionalCommand, Boolean> currentInput;
-    private List<MCEventBus.Subscription> subscriptions = new ArrayList<>();
+    // private List<MCEventBus.Subscription> subscriptions = new ArrayList<>();
 
     public MCArrowsCamBehavior() {
         currentInput = new HashMap<>();
@@ -35,14 +35,19 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
             currentInput.put(new DirectionalCommand(dir[0], dir[1]), false);
         }
         MCEventBus bus = MCEventBus.get();
-        subscriptions.add(bus.on("InputPressed", this::inputPressed));
-        subscriptions.add(bus.on("InputReleased", this::inputReleased));
+        bus.on(this, "InputPressed", this::inputPressed);
+        bus.on(this, "InputReleased", this::inputReleased);
+        //subscriptions.add(bus.on(this, "InputPressed", this::inputPressed));
+        //subscriptions.add(bus.on(this, "InputReleased", this::inputReleased));
     }
 
     @Override
     public void exit() {
-        for (MCEventBus.Subscription s : subscriptions) s.unsubscribe();
-        subscriptions.clear();
+        MCEventBus bus = MCEventBus.get();
+        bus.off(this, "InputPressed");
+        bus.off(this, "InputReleased");
+        //for (MCEventBus.Subscription s : subscriptions) s.unsubscribe();
+        //subscriptions.clear();
     }
 
     public void inputPressed(Command data) {

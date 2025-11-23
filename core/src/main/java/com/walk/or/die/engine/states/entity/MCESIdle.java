@@ -1,4 +1,4 @@
-package com.walk.or.die.engine.states;
+package com.walk.or.die.engine.states.entity;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -7,16 +7,18 @@ import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraMode;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.states.MCState;
+import com.walk.or.die.engine.states.MCState.StateArgs;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MCSIdle extends MCState<MCSIdle.IdleStateArgs> {
+public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
 
-    public static class IdleStateArgs extends MCState.StateArgs {}
+    public static class IdleStateArgs extends MCEntityState.StateArgs {}
 
-    public MCSIdle(MCEntity parent) {
+    public MCESIdle(MCEntity parent) {
         super(parent);
         this.name = "idle";
     }
@@ -40,8 +42,7 @@ public class MCSIdle extends MCState<MCSIdle.IdleStateArgs> {
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
-            //MCInputManager.ClickTileCommand tileCmd = (MCInputManager.ClickTileCommand) data;
-            changeState("click_move", new MCSClickMove.MoveStateArgs(tileCmd.getVector()));
+            changeState("click_move", new MCESClickMove.MoveStateArgs(tileCmd.getVector()));
         }
         else if (data instanceof MCInputManager.DirectionalCommand) {
             System.out.println("Oh on a pressé les touches du clavier");

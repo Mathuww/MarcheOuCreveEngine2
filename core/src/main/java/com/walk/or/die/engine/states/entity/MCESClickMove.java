@@ -1,8 +1,10 @@
-package com.walk.or.die.engine.states;
+package com.walk.or.die.engine.states.entity;
 
+import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
-
+import com.walk.or.die.engine.states.MCState;
+import com.walk.or.die.engine.states.MCState.StateArgs;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -12,9 +14,9 @@ import java.util.Deque;
 import java.util.List;
 
 
-public class MCSClickMove extends MCState<MCSClickMove.MoveStateArgs> {
+public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
 
-    public static class MoveStateArgs extends MCState.StateArgs {
+    public static class MoveStateArgs extends MCEntityState.StateArgs {
         public Vector2 target;
 
         public MoveStateArgs(Vector2 target) {
@@ -25,12 +27,13 @@ public class MCSClickMove extends MCState<MCSClickMove.MoveStateArgs> {
     private Vector2 goal;
 
     private Deque<Vector2> movements;
+    private Deque<Float> percent_check = new ArrayDeque<>();
     private Vector2 start;
     private Vector2 deplacement = new Vector2(0f,0f);
     private float percent = 0f;
     private float speed = 4f;
 
-    public MCSClickMove(MCEntity parent) {
+    public MCESClickMove(MCEntity parent) {
         super(parent);
         movements = new ArrayDeque<>();
         this.name = "click_move";
@@ -58,7 +61,14 @@ public class MCSClickMove extends MCState<MCSClickMove.MoveStateArgs> {
                 parent.setY(start.y + deplacement.y*percent);
             }
         } else {
+            System.out.println(parent.getPosition());
             nextMove();
+        }
+
+        if (!percent_check.isEmpty() && percent > percent_check.getFirst()) {
+            //MCEventBus.get().emit("EntityMoved");
+            percent_check.pollFirst();
+            System.out.println(parent.getPosition()); // Bon c'est la merde je veux que ça se print à chack case mais ça marche pas mdr
         }
     }
 
@@ -82,7 +92,7 @@ public class MCSClickMove extends MCState<MCSClickMove.MoveStateArgs> {
     }
 
     private void nextMove() {
-        if (movements.size() == 0) changeState("idle", new MCSIdle.IdleStateArgs()) ;
+        if (movements.size() == 0) changeState("idle", new MCESIdle.IdleStateArgs()) ;
         else {
             Vector2 targetPos = movements.removeFirst();
 
@@ -90,6 +100,15 @@ public class MCSClickMove extends MCState<MCSClickMove.MoveStateArgs> {
             deplacement.x = MathUtils.floor(targetPos.x - parent.getX()); // avant : cast (int)end.x....
             deplacement.y = MathUtils.floor(targetPos.y - parent.getY());
             percent = 0f;
+            
+            int step = ((int) deplacement.x) + ((int) deplacement.y);
+            percent_check.clear();
+            for (int i = 1; i < step; i++) {
+                float new_percent = i / (float) step;
+                percent_check.add(new_percent);
+            }
+            System.out.println(percent_check);
         }
     }
+
 }

@@ -27,11 +27,14 @@ import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.UndefinedBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.states.game.MCGameStateMachine;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCGameScreen implements Screen {
     private MCGame game;
     private AssetManager drh;
+
+    private MCGameStateMachine stateManager;
     
     // Map
     private MCMap map;
@@ -58,6 +61,8 @@ public class MCGameScreen implements Screen {
         this.game = game;
         drh = new AssetManager();
         entities = new ArrayList<>();
+
+        stateManager = MCGameStateMachine.get();
 
         camManager = MCCameraManager.get();
         camManager.init(8, 5, MCCameraMode.ARROWS);
@@ -144,9 +149,5 @@ public class MCGameScreen implements Screen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
-    }
-
-    private void printPos(String name, Vector2 pos) {
-        System.out.println(name + " : " + pos.x + ", " + pos.y);
     }
 }

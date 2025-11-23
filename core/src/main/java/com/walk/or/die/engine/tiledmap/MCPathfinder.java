@@ -3,6 +3,7 @@ package com.walk.or.die.engine.tiledmap ;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.List;
+import java.beans.VetoableChangeSupport;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.HashSet;
@@ -59,6 +60,24 @@ public class MCPathfinder {
         return new ArrayList<>();
     }
 
+    public List<Vector2> clean(List<Vector2> path) {
+        if (path.size() == 0) return path;
+        Vector2 current = path.get(0);
+        List<Vector2> newList = new ArrayList<>();
+
+        for (int i=1; i < path.size(); i++) {
+
+            if (path.get(i).x != current.x && current.y != path.get(i).y) {
+                newList.add(path.get(i-1));
+                current = path.get(i-1);
+            }
+        }
+
+        newList.add(path.get(path.size()-1));
+
+        return newList;
+    }
+
     private int comparaison(Tuple x, Tuple y) {
         int value_x = x.g + x.h;
         int value_y = y.g + y.h;
@@ -82,7 +101,7 @@ public class MCPathfinder {
             current = current.parent;
         }
         Collections.reverse(path);
-        return path;
+        return clean(path);
     }
 
     private List<Vector2> getNeighbors(Vector2 current) {
