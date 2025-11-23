@@ -1,6 +1,6 @@
-package com.walk.or.die.engine.states.game;
+package com.walk.or.die.engine.sm.game;
 
-import com.walk.or.die.engine.states.MCStateMachine;
+import com.walk.or.die.engine.sm.MCStateMachine;
 
 public class MCGameStateMachine extends MCStateMachine<MCGameState> {
     private static MCGameStateMachine instance;

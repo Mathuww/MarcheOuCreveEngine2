@@ -1,9 +1,9 @@
-package com.walk.or.die.engine.states.entity;
+package com.walk.or.die.engine.sm.entity;
 
 import java.util.ArrayList;
 
 import com.walk.or.die.engine.entities.MCEntity;
-import com.walk.or.die.engine.states.MCStateMachine;
+import com.walk.or.die.engine.sm.MCStateMachine;
 
 public class MCEntityStateMachine extends MCStateMachine<MCEntityState> {
     protected MCEntity parent;

@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.states.entity.MCESClickMove;
-import com.walk.or.die.engine.states.entity.MCESIdle;
-import com.walk.or.die.engine.states.entity.MCEntityStateMachine;
+import com.walk.or.die.engine.sm.entity.MCEntityStateMachine;
+import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
+import com.walk.or.die.engine.sm.entity.states.MCESIdle;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCEntity {

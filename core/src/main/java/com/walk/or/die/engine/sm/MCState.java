@@ -1,4 +1,4 @@
-package com.walk.or.die.engine.states;
+package com.walk.or.die.engine.sm;
 
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.entities.MCEntity;
@@ -14,8 +14,11 @@ public abstract class MCState<T extends MCState.StateArgs> {
     public static class StateArgs {}
 
     protected String name;
+    protected MCEventBus bus;
 
-    public MCState() {}
+    public MCState() {
+        bus = MCEventBus.get();
+    }
     
     public String getName() {
         return name;
@@ -28,7 +31,6 @@ public abstract class MCState<T extends MCState.StateArgs> {
     public abstract void exit();
 
     protected <U> void listen(String eventName, Consumer<U> listener) {
-        MCEventBus bus = MCEventBus.get();
         bus.on(this, eventName, listener);
     }
 

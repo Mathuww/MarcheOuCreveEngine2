@@ -27,7 +27,9 @@ import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.UndefinedBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.states.game.MCGameStateMachine;
+import com.walk.or.die.engine.sm.game.MCGameStateMachine;
+import com.walk.or.die.engine.sm.game.states.MCGSCombat;
+import com.walk.or.die.engine.sm.game.states.MCGSExploration;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCGameScreen implements Screen {
@@ -63,6 +65,9 @@ public class MCGameScreen implements Screen {
         entities = new ArrayList<>();
 
         stateManager = MCGameStateMachine.get();
+        stateManager.addState(new MCGSCombat());
+        stateManager.addState(new MCGSExploration());
+        stateManager.setCurrentState("combat", new MCGSCombat.CombatStateArgs());
 
         camManager = MCCameraManager.get();
         camManager.init(8, 5, MCCameraMode.ARROWS);
@@ -112,6 +117,8 @@ public class MCGameScreen implements Screen {
         } catch (UndefinedBehaviorException e) {
             e.printStackTrace();
         }
+
+        stateManager.update(delta);
 
         game.viewport.apply();
         map.render();

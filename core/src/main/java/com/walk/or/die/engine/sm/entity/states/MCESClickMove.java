@@ -1,10 +1,12 @@
-package com.walk.or.die.engine.states.entity;
+package com.walk.or.die.engine.sm.entity.states;
 
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.states.MCState;
-import com.walk.or.die.engine.states.MCState.StateArgs;
+import com.walk.or.die.engine.sm.MCState;
+import com.walk.or.die.engine.sm.MCState.StateArgs;
+import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.states.MCESIdle.IdleStateArgs;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -66,7 +68,7 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
         }
 
         if (!percent_check.isEmpty() && percent > percent_check.getFirst()) {
-            //MCEventBus.get().emit("EntityMoved");
+            //bus.emit("EntityMoved");
             percent_check.pollFirst();
             System.out.println(parent.getPosition()); // Bon c'est la merde je veux que ça se print à chack case mais ça marche pas mdr
         }

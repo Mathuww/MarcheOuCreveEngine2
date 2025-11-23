@@ -1,4 +1,4 @@
-package com.walk.or.die.engine.states.entity;
+package com.walk.or.die.engine.sm.entity;
 
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.entities.MCEntity;
@@ -6,19 +6,20 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.ClickTileCommand;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
-import com.walk.or.die.engine.states.MCState;
-import com.walk.or.die.engine.states.MCStateMachine;
-import com.walk.or.die.engine.states.MCState.StateArgs;
-import com.walk.or.die.engine.states.MCStateMachine.TransitionArgs;
+import com.walk.or.die.engine.sm.MCState;
+import com.walk.or.die.engine.sm.MCStateMachine;
+import com.walk.or.die.engine.sm.MCState.StateArgs;
+import com.walk.or.die.engine.sm.MCStateMachine.TransitionArgs;
 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.ArrayList;
 
-public class MCEntityState<T extends MCEntityState.StateArgs> extends MCState<T> {
+public abstract class MCEntityState<T extends MCEntityState.StateArgs> extends MCState<T> {
     protected MCEntity parent;
 
     public MCEntityState(MCEntity parent) {
+        super();
         this.parent = parent;
     }
 
@@ -32,7 +33,6 @@ public class MCEntityState<T extends MCEntityState.StateArgs> extends MCState<T>
     @Override
     public void enter(T args) {
         //System.out.println("Enter " + getName());
-        MCEventBus bus = MCEventBus.get();
         listen("InputPressed", this::inputPressed);
         // Je rentre dans tes MC en bus
     }
@@ -41,7 +41,7 @@ public class MCEntityState<T extends MCEntityState.StateArgs> extends MCState<T>
     public void exit() {
         //System.out.println("Exit " + getName());
         //unsubscribeAll();
-        MCEventBus.get().off(this, "InputPressed");
+        bus.off(this, "InputPressed");
     }
     
     protected void inputPressed(MCInputManager.Command data) {

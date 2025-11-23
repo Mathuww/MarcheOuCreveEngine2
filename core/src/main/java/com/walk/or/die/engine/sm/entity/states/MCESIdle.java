@@ -1,4 +1,4 @@
-package com.walk.or.die.engine.states.entity;
+package com.walk.or.die.engine.sm.entity.states;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
@@ -7,8 +7,9 @@ import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraMode;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.states.MCState;
-import com.walk.or.die.engine.states.MCState.StateArgs;
+import com.walk.or.die.engine.sm.MCState;
+import com.walk.or.die.engine.sm.MCState.StateArgs;
+import com.walk.or.die.engine.sm.entity.MCEntityState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,12 +47,6 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
         }
         else if (data instanceof MCInputManager.DirectionalCommand) {
             System.out.println("Oh on a pressé les touches du clavier");
-        } else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
-            if (keyCmd.key == Input.Keys.F) {
-                MCCameraManager camManager = MCCameraManager.get();
-                if (camManager.getMode() == MCCameraMode.FOLLOW) camManager.setMode(MCCameraMode.ARROWS);
-                else camManager.setMode(MCCameraMode.FOLLOW);
-            }
         }
     }
 }

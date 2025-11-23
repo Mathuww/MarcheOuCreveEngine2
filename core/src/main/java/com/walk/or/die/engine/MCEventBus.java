@@ -1,7 +1,7 @@
 package com.walk.or.die.engine;
 
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.states.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.MCEntityState;
 
 import java.util.Map;
 import java.util.UUID;
