@@ -96,7 +96,7 @@ public class MCMap implements Disposable {
     public Vector2 stickToNearestTile(Vector2 pos) {
         float newX = MathUtils.round(pos.x);
         float newY = MathUtils.round(pos.y);
-        System.out.println("sticking to " + newX + ", " + newY);
+        //System.out.println("sticking to " + newX + ", " + newY);
         return new Vector2(newX, newY);
     }
 

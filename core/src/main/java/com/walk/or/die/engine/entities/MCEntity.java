@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.screens.MCGameScreen;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -107,6 +108,7 @@ public class MCEntity {
     public MCGameScreen getParent() {
         return parent;
     }
+    
     public float getX() {
         return this.hitbox.x;
     }
@@ -145,6 +147,16 @@ public class MCEntity {
 
     public MCMap getMap() {
         return map;
+    }
+
+    public void getFocus() {
+        focus = true;
+        System.out.println("Focus get by " + this.toString());
+        MCEventBus.get().emit("ChangedFocus", this);
+    }
+
+    public void loseFocus() {
+        focus = false;
     }
 
     public boolean shoot(MCEntity target) {

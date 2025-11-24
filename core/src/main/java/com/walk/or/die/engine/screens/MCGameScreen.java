@@ -18,6 +18,7 @@ import java.util.Queue;
 
 
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.cameras.MCArrowsCamBehavior;
 import com.walk.or.die.engine.cameras.MCCameraBehavior;
 import com.walk.or.die.engine.cameras.MCCameraManager;
@@ -27,6 +28,7 @@ import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.UndefinedBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.sm.game.states.MCGSCombat;
@@ -46,8 +48,9 @@ public class MCGameScreen implements Screen {
     // Input
     private MCInputManager inputHandler;
     
-    // Player
+    // Entity
     private List<MCEntity> entities;
+    private MCEntity focusedEntity;
     private float speed = 4f;
     
     // Movements
@@ -56,7 +59,6 @@ public class MCGameScreen implements Screen {
     private float percent = 0f;
     private Vector2 start = new Vector2(0,0);
     private Vector2 deplacement = new Vector2(0, 0);
-
 
     public MCGameScreen(MCGame game) throws DataException {
         this.game = game;
@@ -84,6 +86,9 @@ public class MCGameScreen implements Screen {
         movements = new ArrayDeque<>();
         inputHandler = new MCInputManager(game.viewport);
         Gdx.input.setInputProcessor(inputHandler);
+        MCEventBus bus = MCEventBus.get();
+        bus.on(this, "ChangedFocus", this::changeFocus);
+        bus.on(this, "InputPressed", this::inputPressed);
     }
 
     // Called once (when the window oppened)
@@ -155,8 +160,34 @@ public class MCGameScreen implements Screen {
 
     public MCEntity getEntityFromTile(int layer, Vector2 pos) {
         for (MCEntity e: entities) {
-            if (e.getTilePosition() == pos && e.getLayer() == layer) return e;
+            System.out.println("Entity : " + e.toString() + " " + e.getTilePosition().toString() + pos + " " + e.getLayer() + layer);
+            if (e.getTilePosition().x == pos.x && e.getTilePosition().y == pos.y) {
+                if (e.getLayer() == layer) return e;
+                System.out.println("oups2");
+            }  
         }
+        System.out.println("oups");
         return null;
     }
+
+    public MCEntity getFocusedEntity() {
+        return focusedEntity;
+    }
+
+    public void changeFocus(MCEntity e) {
+        if (focusedEntity != null) focusedEntity.loseFocus();
+        focusedEntity = e;
+    }
+
+    protected void inputPressed(MCInputManager.Command data) {
+        if (focusedEntity != null) return ;
+        if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
+            //System.out.println("Détecté par le game");
+            MCEntity e = getEntityFromTile(1, tileCmd.getVector());
+            if (e != null) {
+                e.getFocus();
+            }
+        }
+    }
+
 }

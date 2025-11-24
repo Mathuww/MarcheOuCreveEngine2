@@ -55,4 +55,5 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
             changeState("idle", new MCESIdle.IdleStateArgs());
         }
     }
+
 }

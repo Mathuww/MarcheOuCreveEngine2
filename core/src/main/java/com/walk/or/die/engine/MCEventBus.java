@@ -52,6 +52,7 @@ public class MCEventBus {
         addEvent("InputPressed", MCInputManager.Command.class);
         addEvent("InputReleased", MCInputManager.Command.class);
         addEvent("EntityTileReached", MCEntity.TileReachedArgs.class);
+        addEvent("ChangedFocus", MCEntity.class);
         //addEvent("ChangeState", MCStateMachine.TransitionArgs.class);
     }
 

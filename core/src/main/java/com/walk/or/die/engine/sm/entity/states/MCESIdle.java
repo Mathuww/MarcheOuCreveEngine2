@@ -42,6 +42,7 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
     @Override
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
+        if (!parent.focus) return;
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
             changeState("click_move", new MCESClickMove.MoveStateArgs(tileCmd.getVector()));
         }
@@ -53,4 +54,5 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
             System.out.println("Oh on a pressé les touches du clavier");
         }
     }
+
 }
