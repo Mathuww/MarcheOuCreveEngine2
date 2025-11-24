@@ -27,7 +27,8 @@ import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.UndefinedBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.sm.game.MCGameStateMachine;
+import com.walk.or.die.engine.sm.MCStateMachine;
+import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.sm.game.states.MCGSCombat;
 import com.walk.or.die.engine.sm.game.states.MCGSExploration;
 import com.walk.or.die.engine.tiledmap.MCMap;
@@ -35,8 +36,6 @@ import com.walk.or.die.engine.tiledmap.MCMap;
 public class MCGameScreen implements Screen {
     private MCGame game;
     private AssetManager drh;
-
-    private MCGameStateMachine stateManager;
     
     // Map
     private MCMap map;
@@ -64,10 +63,7 @@ public class MCGameScreen implements Screen {
         drh = new AssetManager();
         entities = new ArrayList<>();
 
-        stateManager = MCGameStateMachine.get();
-        stateManager.addState(new MCGSCombat());
-        stateManager.addState(new MCGSExploration());
-        stateManager.setCurrentState("combat", new MCGSCombat.CombatStateArgs());
+        game.getStateManager().setCurrentState("combat", new MCGSCombat.CombatStateArgs());
 
         camManager = MCCameraManager.get();
         camManager.init(8, 5, MCCameraMode.ARROWS);
@@ -75,7 +71,7 @@ public class MCGameScreen implements Screen {
         map = new MCMap("unoriginal_packed_maps/CArte.tmx", camManager.getGdxCam(), drh);
         try {
             TextureRegion playerTexture = map.getTileSet("player").getTileByType("player").getTextureRegion();
-            entities.add(new MCEntity(map, map.getEntitySpawnPos("player"), playerTexture));
+            entities.add(new MCEntity(this, map, map.getEntitySpawnPos("player"), playerTexture));
         } catch (DataException e) {
             e.printStackTrace();
         }
@@ -109,7 +105,6 @@ public class MCGameScreen implements Screen {
         // Bon bah on va bouger normalement les characters
     }
 
-
     private void draw(float delta) {
         ScreenUtils.clear(Color.BLACK);
         try {
@@ -118,7 +113,7 @@ public class MCGameScreen implements Screen {
             e.printStackTrace();
         }
 
-        stateManager.update(delta);
+        game.getStateManager().update(delta);
 
         game.viewport.apply();
         map.render();
@@ -156,5 +151,12 @@ public class MCGameScreen implements Screen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
+    }
+
+    public MCEntity getEntityFromTile(int layer, Vector2 pos) {
+        for (MCEntity e: entities) {
+            if (e.getTilePosition() == pos && e.getLayer() == layer) return e;
+        }
+        return null;
     }
 }

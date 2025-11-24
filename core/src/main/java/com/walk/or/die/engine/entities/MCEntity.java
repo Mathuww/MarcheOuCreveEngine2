@@ -1,32 +1,81 @@
 package com.walk.or.die.engine.entities;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.sm.entity.MCEntityStateMachine;
+import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.screens.MCGameScreen;
+import com.walk.or.die.engine.sm.MCStateMachine;
+import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
 import com.walk.or.die.engine.sm.entity.states.MCESIdle;
+import com.walk.or.die.engine.sm.entity.states.MCESAim;
+import com.walk.or.die.engine.sm.entity.states.MCESShoot;
+import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCEntity {
+    public static class TileReachedArgs {
+        public MCEntity entity;
+        public Vector2 tile;
+
+        public TileReachedArgs(MCEntity entity, Vector2 tile) {
+            this.entity = entity;
+            this.tile = tile;
+        }
+    }
+
+    public abstract class Attack {
+        protected final MCEntity parent;
+        protected int power;
+        private Map<Vector2, Float> damagePattern;
+
+        public Attack(MCEntity parent, int power, Map<Vector2, Float> pattern) {
+            this.parent = parent;
+            this.power = power;
+            this.damagePattern = pattern;
+        }
+
+        public boolean isValidTile(Vector2 targetPos) {
+            return damagePattern.containsKey(targetPos);
+        }
+        
+        protected float getDamageAtTile(Vector2 targetPos) {
+            Vector2 relativeDist = parent.getTilePosition().sub(targetPos);
+            return damagePattern.getOrDefault(relativeDist, 0f);
+        }
+
+        public float getDamageTo(MCEntity targetEntity) {
+            return getDamageAtTile(targetEntity.getTilePosition());
+        }
+    }
+
+    private MCGameScreen parent;
     private MCMap map;
     private Rectangle hitbox;
     private TextureRegion currentRegion;
     private Sprite sprite;
-    private MCEntityStateMachine stateManager;
+    private MCStateMachine<MCEntityState, MCEntity> stateManager;
+    private int layer = 1;
+    public boolean focus = false;
+    public Attack baseAttack;
 
     private float SIZE = 1f;
 
-    public MCEntity(MCMap map, Vector2 spawn, TextureRegion baseRegion) {
+    public MCEntity(MCGameScreen parent, MCMap map, Vector2 spawn, TextureRegion baseRegion) {
+        this.parent = parent;
         this.map = map;
         currentRegion = baseRegion;
-        stateManager = new MCEntityStateMachine(this);
+        stateManager = new MCStateMachine<>(this);
         stateManager.addState(new MCESClickMove(this));
         stateManager.addState(new MCESIdle(this));
+        stateManager.addState(new MCESAim(this));
+        stateManager.addState(new MCESShoot(this));
         stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
 
         sprite = new Sprite(currentRegion);
@@ -47,14 +96,17 @@ public class MCEntity {
         sprite.draw(batch);
     }
 
-    public MCEntityStateMachine getStateManager() {
+    public MCStateMachine getStateManager() {
         return this.stateManager;
     }
 
-    public void setStateManager(MCEntityStateMachine stateManager) {
+    public void setStateManager(MCStateMachine<MCEntityState, MCEntity> stateManager) {
         this.stateManager = stateManager;
     }
 
+    public MCGameScreen getParent() {
+        return parent;
+    }
     public float getX() {
         return this.hitbox.x;
     }
@@ -75,8 +127,16 @@ public class MCEntity {
         return sprite.getWidth();
     }
 
+    public int getLayer() {
+        return layer;
+    }
+
     public Vector2 getPosition() {
         return new Vector2(this.hitbox.x, this.hitbox.y);
+    }
+
+    public Vector2 getTilePosition() {
+        return map.stickToNearestTile(getPosition());
     }
 
     public void setPosition(float x, float y) {
@@ -85,5 +145,10 @@ public class MCEntity {
 
     public MCMap getMap() {
         return map;
+    }
+
+    public boolean shoot(MCEntity target) {
+        //baseAttack.getDamageTo(target);
+        return true;
     }
 }

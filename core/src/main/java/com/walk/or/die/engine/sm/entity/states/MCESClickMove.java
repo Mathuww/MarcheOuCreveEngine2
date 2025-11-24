@@ -68,9 +68,9 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
         }
 
         if (!percent_check.isEmpty() && percent > percent_check.getFirst()) {
-            //bus.emit("EntityMoved");
+            bus.emit("EntityTileReached", new MCEntity.TileReachedArgs(this.parent, parent.getTilePosition()));
             percent_check.pollFirst();
-            System.out.println(parent.getPosition()); // Bon c'est la merde je veux que ça se print à chack case mais ça marche pas mdr
+            System.out.println("Tile reached : " + parent.getTilePosition().toString()); // Bon c'est la merde je veux que ça se print à chack case mais ça marche pas mdr
         }
     }
 
@@ -103,13 +103,13 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
             deplacement.y = MathUtils.floor(targetPos.y - parent.getY());
             percent = 0f;
             
-            int step = ((int) deplacement.x) + ((int) deplacement.y);
+            int step = Math.abs(((int) deplacement.x) + ((int) deplacement.y));
             percent_check.clear();
-            for (int i = 1; i < step; i++) {
+            for (int i = 1; i <= step; i++) {
                 float new_percent = i / (float) step;
                 percent_check.add(new_percent);
             }
-            System.out.println(percent_check);
+            System.out.println("Percent check : " + percent_check.toString());
         }
     }
 

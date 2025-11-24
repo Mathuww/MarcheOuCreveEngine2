@@ -2,18 +2,18 @@ package com.walk.or.die.engine.sm.game.states;
 
 import com.badlogic.gdx.Input;
 import com.walk.or.die.engine.MCEventBus;
+import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraMode;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.game.MCGameState;
-import com.walk.or.die.engine.sm.game.MCGameStateMachine;
 
 public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> {
     public static class ExplStateArgs extends MCGameState.StateArgs {}
 
-    public MCGSExploration() {
-        super();
+    public MCGSExploration(MCGame parent) {
+        super(parent);
         this.name = "exploration";
     }
 

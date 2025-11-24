@@ -1,11 +1,15 @@
 package com.walk.or.die.engine.sm.game;
 
+import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.sm.MCState;
-import com.walk.or.die.engine.sm.entity.MCEntityStateMachine;
+import com.walk.or.die.engine.sm.MCStateMachine;
 
 public abstract class MCGameState<T extends MCGameState.StateArgs> extends MCState<T> {
-    public MCGameState() {
+    protected MCGame parent;
+
+    public MCGameState(MCGame parent) {
         super();
+        this.parent = parent;
     }
 
     @Override
@@ -25,6 +29,6 @@ public abstract class MCGameState<T extends MCGameState.StateArgs> extends MCSta
 
     @Override
     protected void changeState(String newState, MCGameState.StateArgs args) {
-        MCGameStateMachine.get().stateTransitionCheck(new MCEntityStateMachine.TransitionArgs(getName(), newState, args));
+        parent.getStateManager().stateTransitionCheck(new MCStateMachine.TransitionArgs(getName(), newState, args));
     }
 }

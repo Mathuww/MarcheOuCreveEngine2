@@ -2,6 +2,7 @@ package com.walk.or.die.engine.sm.game.states;
 
 import com.badlogic.gdx.Input;
 import com.walk.or.die.engine.MCEventBus;
+import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraMode;
 import com.walk.or.die.engine.entities.MCEntity;
@@ -11,8 +12,8 @@ import com.walk.or.die.engine.sm.game.MCGameState;
 public class MCGSCombat extends MCGameState<MCGSCombat.CombatStateArgs> {
     public static class CombatStateArgs extends MCGameState.StateArgs {}
 
-    public MCGSCombat() {
-        super();
+    public MCGSCombat(MCGame parent) {
+        super(parent);
         this.name = "combat";
     }
 

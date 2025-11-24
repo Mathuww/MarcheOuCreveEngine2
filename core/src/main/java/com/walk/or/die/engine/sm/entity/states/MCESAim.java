@@ -10,18 +10,19 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
+public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
 
-    public static class IdleStateArgs extends MCEntityState.StateArgs {}
+    public static class AimStateArgs extends MCEntityState.StateArgs {}
 
-    public MCESIdle(MCEntity parent) {
+    public MCESAim(MCEntity parent) {
         super(parent);
-        this.name = "idle";
+        this.name = "aim";
     }
 
     @Override
@@ -30,7 +31,7 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
     }
 
     @Override
-    public void enter(IdleStateArgs args) {
+    public void enter(AimStateArgs args) {
         super.enter(args);
     }
 
@@ -43,14 +44,15 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
-            changeState("click_move", new MCESClickMove.MoveStateArgs(tileCmd.getVector()));
+            MCEntity e = parent.getParent().getEntityFromTile(1, tileCmd.getVector());
+            if (e != null) {
+                changeState("shoot", new MCESShoot.ShootStateArgs(e));
+                return;
+            }
+            changeState("idle", new MCESIdle.IdleStateArgs());
         }
-        else if (data instanceof MCInputManager.AimCommand) {
-            System.out.println("oh");
-            changeState("aim", new MCESAim.AimStateArgs());
-        }
-        else if (data instanceof MCInputManager.DirectionalCommand) {
-            System.out.println("Oh on a pressé les touches du clavier");
+        else {
+            changeState("idle", new MCESIdle.IdleStateArgs());
         }
     }
 }

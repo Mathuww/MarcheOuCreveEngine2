@@ -1,12 +1,11 @@
 package com.walk.or.die.engine.sm;
 
 import com.walk.or.die.engine.MCEventBus;
-import com.walk.or.die.engine.entities.MCEntity;
 
 import java.util.List;
 import java.util.ArrayList;
 
-public abstract class MCStateMachine<T extends MCState> {
+public class MCStateMachine<T extends MCState, U> {
     
     // Classe pour l'event de transition
     public static class TransitionArgs<T extends MCState.StateArgs> {
@@ -21,12 +20,12 @@ public abstract class MCStateMachine<T extends MCState> {
         }
     }
 
-    protected MCEntity parent;
+    protected U parent;
     private List<T> states;
     private T currentState;
 
-    public MCStateMachine() {
-        this.parent = null;
+    public MCStateMachine(U parent) {
+        this.parent = parent;
         states = new ArrayList<T>();
     }
 
@@ -57,7 +56,7 @@ public abstract class MCStateMachine<T extends MCState> {
             return ;
         }
 
-        //System.out.println("Transition from " + args.prevState + " to " + args.nextState);
+        System.out.println("Transition from " + args.prevState + " to " + args.nextState);
         stateTransition(currentState, getState(args.nextState), args.args);
         
     }
@@ -80,7 +79,7 @@ public abstract class MCStateMachine<T extends MCState> {
         return null;
     }
 
-    private <U extends T.StateArgs> void stateTransition(T prevState, T nextState, U args) {
+    private <V extends T.StateArgs> void stateTransition(T prevState, T nextState, V args) {
         if (!prevState.getName().equals(currentState.getName())) {
             return ;
         }

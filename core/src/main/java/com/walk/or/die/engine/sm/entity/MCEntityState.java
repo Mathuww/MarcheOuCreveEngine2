@@ -56,7 +56,7 @@ public abstract class MCEntityState<T extends MCEntityState.StateArgs> extends M
     }
 
     protected void changeState(String newState, MCEntityState.StateArgs args) {
-       parent.getStateManager().stateTransitionCheck(new MCEntityStateMachine.TransitionArgs(getName(), newState, args));
+       parent.getStateManager().stateTransitionCheck(new MCStateMachine.TransitionArgs(getName(), newState, args));
     }
 
 }

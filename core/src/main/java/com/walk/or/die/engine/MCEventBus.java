@@ -2,6 +2,7 @@ package com.walk.or.die.engine;
 
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.entities.MCEntity;
 
 import java.util.Map;
 import java.util.UUID;
@@ -50,6 +51,7 @@ public class MCEventBus {
         this.subscriptions = new ArrayList<>();
         addEvent("InputPressed", MCInputManager.Command.class);
         addEvent("InputReleased", MCInputManager.Command.class);
+        addEvent("EntityTileReached", MCEntity.TileReachedArgs.class);
         //addEvent("ChangeState", MCStateMachine.TransitionArgs.class);
     }
 
