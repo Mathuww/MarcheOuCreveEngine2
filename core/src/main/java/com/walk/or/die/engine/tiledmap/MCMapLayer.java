@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 
 
 public class MCMapLayer {
@@ -87,17 +88,17 @@ public class MCMapLayer {
         return null;
     }
 
-    public List<List<TiledMapTile>> splitInTiles() {
+    public Array<Array<TiledMapTile>> splitInTiles() {
         if (!(ml instanceof TiledMapTileLayer)) {
             throw new IllegalStateException("cant split a map layer in tiles if its not a tiledmaptilelayer instance");
         }
 
         TiledMapTileLayer tml = (TiledMapTileLayer) ml;
 
-        List<List<TiledMapTile>> rows = new ArrayList<>();
+        Array<Array<TiledMapTile>> rows = new Array<>();
 
         for (int y = 0; y < tml.getHeight(); y++) {
-            List<TiledMapTile> row = new ArrayList<>();
+            Array<TiledMapTile> row = new Array<>();
             for (int x = 0; x < tml.getWidth(); x++) {
                 TiledMapTileLayer.Cell cell = tml.getCell(x, y);
                 if (cell != null && cell.getTile() != null) {

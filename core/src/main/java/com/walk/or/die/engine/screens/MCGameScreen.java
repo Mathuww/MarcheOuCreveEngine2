@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 //import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.utils.Array;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -51,7 +53,7 @@ public class MCGameScreen implements Screen {
     private MCInputManager inputHandler;
     
     // Entity
-    private List<MCEntity> entities;
+    private Array<MCEntity> entities;
     private MCEntity focusedEntity;
     private float speed = 4f;
     
@@ -65,7 +67,7 @@ public class MCGameScreen implements Screen {
     public MCGameScreen(MCGame game) throws DataException {
         this.game = game;
         drh = new AssetManager();
-        entities = new ArrayList<>();
+        entities = new Array<>();
 
         game.getStateManager().setCurrentState("combat", new MCGSCombat.CombatStateArgs());
 

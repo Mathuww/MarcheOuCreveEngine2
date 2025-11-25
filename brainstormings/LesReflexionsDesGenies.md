@@ -25,8 +25,9 @@ developpeurs dont le but est de créer le meilleur moteur de jeu du monde
 
 "J'ai ajouté une fonction clean dans pathfinder mais il aurait fallu le faire dans reconstruct path (quand j'aurais pas la flemme)"
 
-## Structure des données Tiled
-tiled_data/
+## Structure des données 
+- assets/
+-- tiled_data/
 ---- entities_anims/
 -------- entity1.tmx - map 1 layer 
 -------- entity2.tmx
@@ -39,6 +40,10 @@ tiled_data/
 ------------- house1.tmx
 -------- combat/
 ------------ combat1.tmx
+-- music/
+----- bgmusic.wav
+-- soundfx/
+----- swordhit.wav
 
 ### entities_anims/X.tmx
 

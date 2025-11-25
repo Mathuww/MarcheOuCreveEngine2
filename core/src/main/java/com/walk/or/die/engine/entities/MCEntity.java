@@ -6,6 +6,7 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
@@ -21,7 +22,7 @@ import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.tiledmap.MCGameMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
-public class MCEntity {
+public abstract class MCEntity {
     public static class TileReachedArgs {
         public MCEntity entity;
         public Vector2 tile;
@@ -32,10 +33,16 @@ public class MCEntity {
         }
     }
 
-    public abstract class Attack {
-        protected final MCEntity parent;
+    public abstract static class Attack {
+        protected MCEntity parent;
         protected int power;
-        private Map<Vector2, Float> damagePattern;
+        protected Map<Vector2, Float> damagePattern;
+
+        public Attack(int power, Map<Vector2, Float> pattern) {
+            this.parent = null;
+            this.power = power;
+            this.damagePattern = pattern;
+        }
 
         public Attack(MCEntity parent, int power, Map<Vector2, Float> pattern) {
             this.parent = parent;
@@ -43,24 +50,42 @@ public class MCEntity {
             this.damagePattern = pattern;
         }
 
+        public abstract void initFromProperties(MapProperties props);
+
+        public MCEntity getParent() {
+            return this.parent;
+        }
+
+        public void setParent(MCEntity parent) {
+            this.parent = parent;
+        }
+
         public boolean isValidTile(Vector2 targetPos) {
-            return damagePattern.containsKey(targetPos);
+            if (parent == null)
+                throw new IllegalStateException("cant use attack methods without associatin a parent !");
+            return damagePattern.containsKey(parent.getTilePosition().cpy().sub(targetPos));
         }
         
         protected float getDamageAtTile(Vector2 targetPos) {
-            Vector2 relativeDist = parent.getTilePosition().sub(targetPos);
+            if (parent == null)
+                throw new IllegalStateException("cant use attack methods without associatin a parent !");
+            Vector2 relativeDist = parent.getTilePosition().cpy().sub(targetPos);
             return damagePattern.getOrDefault(relativeDist, -1f);
         }
 
         public float getDamageTo(MCEntity targetEntity) {
+            if (parent == null)
+                throw new IllegalStateException("cant use attack methods without associatin a parent !");
             return getDamageAtTile(targetEntity.getTilePosition());
         }
     }
 
+    private String name;
     private MCGameScreen parent;
     private MCGameMap map;
     private Rectangle hitbox;
     private TextureRegion currentRegion;
+    private Map<String, MCAnimation> animations;
     private Sprite sprite;
     private int layer = 1;
     public boolean focus = false;
@@ -82,6 +107,19 @@ public class MCEntity {
         sprite.setPosition(spawn.x, spawn.y);
 
         hitbox = new Rectangle(spawn.x, spawn.y, sprite.getWidth(), sprite.getHeight());
+    }
+
+    public MCEntity(MCGameScreen parent, MCGameMap map, String entityId) {
+        this.parent = parent;
+        this.map = map;
+        this.name = entityId;
+        //hitbox = new Rectangle(spawn.x, spawn.y, sprite.getWidth(), sprite.getHeight());
+    }
+
+    public abstract void initFromProperties(MapProperties props) throws Exception;
+
+    public void addAnimation(String animName, MCAnimation anim) {
+        animations.put(animName, anim);
     }
 
     public void update(float delta) {
@@ -139,7 +177,7 @@ public class MCEntity {
     }
 
     public Vector2 getTilePosition() {
-        return map.stickToNearestTile(getPosition());
+        return map.stickToNearestTile(getPosition()).cpy();
     }
 
     public void setPosition(float x, float y) {
