@@ -15,7 +15,7 @@ import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
 
 public class MCArrowsCamBehavior extends MCCameraBehavior {
-    private final float CAM_MOVE_SPEED = 1f;
+    private final float CAM_MOVE_SPEED = 0.025f;
     private final float CAM_LERP = 3f;
 
     private Map<DirectionalCommand, Boolean> currentInput;
@@ -70,11 +70,14 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         for (Map.Entry<DirectionalCommand, Boolean> entry : currentInput.entrySet()) {
             if (entry.getValue()) { // true
                 DirectionalCommand cmd = entry.getKey();
-                relativeMove.x += cmd.dx * CAM_MOVE_SPEED;
-                relativeMove.y += cmd.dy * CAM_MOVE_SPEED;
+                relativeMove.x += cmd.dx;
+                relativeMove.y += cmd.dy;
             }
         }
         if (relativeMove.len() > 0) relativeMove.nor();
+
+        relativeMove.x = relativeMove.x * CAM_MOVE_SPEED;
+        relativeMove.y = relativeMove.y * CAM_MOVE_SPEED;
 
         float targetX = gdxCam.position.x + relativeMove.x;
         float targetY = gdxCam.position.y + relativeMove.y;
@@ -89,7 +92,7 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
             targetY = MathUtils.clamp(targetY, camHalfHeight, camManager.getLimitY() - camHalfHeight);
         }
 
-        gdxCam.position.x += (targetX - gdxCam.position.x) * CAM_LERP * delta;
-        gdxCam.position.y += (targetY - gdxCam.position.y) * CAM_LERP * delta;
+        gdxCam.position.x += (targetX - gdxCam.position.x); // * CAM_LERP * delta;
+        gdxCam.position.y += (targetY - gdxCam.position.y); // * CAM_LERP * delta;
     }
 }

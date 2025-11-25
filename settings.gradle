@@ -5,6 +5,23 @@ plugins {
 
 rootProject.name = "MarcheOuCreveEngine2"
 
+/*
+gradle.projectsLoaded {
+    gradle.startParameter.continueOnFailure = false
+}
+
+gradle.settingsEvaluated {
+    settings.buildCache {
+        local {
+            directory = new File(rootDir, '.gradle/build-cache')
+        }
+    }
+}
+
+gradle.beforeProject {
+    gradle.startParameter.parallelProjectExecutionEnabled = true
+}
+*/
 
 // A list of which subprojects to load as part of the same larger project.
 // You can remove Strings from the list and reload the Gradle project

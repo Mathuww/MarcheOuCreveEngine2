@@ -1,6 +1,7 @@
 package com.walk.or.die.engine.sm.entity.states;
 
 import com.walk.or.die.engine.MCEventBus;
+import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.MCState;
@@ -35,7 +36,7 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
     private float percent = 0f;
     private float speed = 4f;
 
-    public MCESClickMove(MCEntity parent) {
+    public MCESClickMove(MCCharacter parent) {
         super(parent);
         movements = new ArrayDeque<>();
         this.name = "click_move";
@@ -95,6 +96,7 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
     }
 
     private void nextMove() {
+        System.out.println("On redebug cette fonction de merde");
         if (movements.size() == 0) changeState("idle", new MCESIdle.IdleStateArgs()) ;
         else {
             Vector2 targetPos = movements.removeFirst();

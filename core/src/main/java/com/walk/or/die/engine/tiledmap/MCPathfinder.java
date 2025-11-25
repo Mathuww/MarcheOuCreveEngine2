@@ -78,6 +78,17 @@ public class MCPathfinder {
         return newList;
     }
 
+    private List<Vector2> reconstructPath(Tuple endNode) {
+        List<Vector2> path = new ArrayList<>();
+        Tuple current = endNode;
+        while (current != null) {
+            path.add(current.pos);
+            current = current.parent;
+        }
+        Collections.reverse(path);
+        return clean(path);
+    }
+
     private int comparaison(Tuple x, Tuple y) {
         int value_x = x.g + x.h;
         int value_y = y.g + y.h;
@@ -91,17 +102,6 @@ public class MCPathfinder {
 
     private int getDist(Vector2 x, Vector2 y) {
         return (int)(Math.abs(x.x - y.x) + Math.abs(y.y - x.y));
-    }
-
-    private List<Vector2> reconstructPath(Tuple endNode) {
-        List<Vector2> path = new ArrayList<>();
-        Tuple current = endNode;
-        while (current != null) {
-            path.add(current.pos);
-            current = current.parent;
-        }
-        Collections.reverse(path);
-        return clean(path);
     }
 
     private List<Vector2> getNeighbors(Vector2 current) {

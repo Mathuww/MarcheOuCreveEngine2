@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraMode;
+import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.MCState;
@@ -28,9 +29,9 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
 
     boolean finished = false;
 
-    public MCESShoot(MCEntity parent) {
+    public MCESShoot(MCCharacter parent) {
         super(parent);
-        this.name = "aim";
+        this.name = "shoot";
     }
 
     @Override

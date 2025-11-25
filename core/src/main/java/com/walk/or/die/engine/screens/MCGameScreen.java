@@ -24,15 +24,17 @@ import com.walk.or.die.engine.cameras.MCCameraBehavior;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraMode;
 import com.walk.or.die.engine.cameras.MCFollowCamBehavior;
+import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.DataException;
-import com.walk.or.die.engine.exceptions.UndefinedBehaviorException;
+import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.sm.game.states.MCGSCombat;
 import com.walk.or.die.engine.sm.game.states.MCGSExploration;
+import com.walk.or.die.engine.tiledmap.MCGameMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCGameScreen implements Screen {
@@ -40,7 +42,7 @@ public class MCGameScreen implements Screen {
     private AssetManager drh;
     
     // Map
-    private MCMap map;
+    private MCGameMap map;
 
     // Camera
     private MCCameraManager camManager;
@@ -54,7 +56,7 @@ public class MCGameScreen implements Screen {
     private float speed = 4f;
     
     // Movements
-    private Deque<Vector2> movements;
+    private Deque<Vector2> movements; // https://prod.liveshare.vsengsaas.visualstudio.com/join?914C5AD2D27C14E1963765B1C4E1262974D1
     private boolean moving = false;
     private float percent = 0f;
     private Vector2 start = new Vector2(0,0);
@@ -70,13 +72,15 @@ public class MCGameScreen implements Screen {
         camManager = MCCameraManager.get();
         camManager.init(8, 5, MCCameraMode.ARROWS);
 
-        map = new MCMap("unoriginal_packed_maps/CArte.tmx", camManager.getGdxCam(), drh);
+        map = new MCGameMap("unoriginal_packed_maps/CArte.tmx", camManager.getGdxCam(), drh);
         try {
             TextureRegion playerTexture = map.getTileSet("player").getTileByType("player").getTextureRegion();
-            entities.add(new MCEntity(this, map, map.getEntitySpawnPos("player"), playerTexture));
+            entities.add(new MCCharacter(this, map, map.getEntitySpawnPos("player"), playerTexture));
+            entities.add(new MCCharacter(this, map, new Vector2(3, 2), playerTexture));
         } catch (DataException e) {
             e.printStackTrace();
         }
+
 
         camManager.setLimitX(map.getWidth());
         camManager.setLimitY(map.getHeight());
@@ -87,7 +91,7 @@ public class MCGameScreen implements Screen {
         inputHandler = new MCInputManager(game.viewport);
         Gdx.input.setInputProcessor(inputHandler);
         MCEventBus bus = MCEventBus.get();
-        bus.on(this, "ChangedFocus", this::changeFocus);
+        //bus.on(this, "ChangedFocus", this::changeFocus);
         bus.on(this, "InputPressed", this::inputPressed);
     }
 
@@ -107,14 +111,13 @@ public class MCGameScreen implements Screen {
         // We're going to do random things
         // player.danseSalsa()
         // Ptn la fonction marche pas...
-        // Bon bah on va bouger normalement les characters
     }
 
     private void draw(float delta) {
         ScreenUtils.clear(Color.BLACK);
         try {
             camManager.update(delta);
-        } catch (UndefinedBehaviorException e) {
+        } catch (UnexistingBehaviorException e) {
             e.printStackTrace();
         }
 
@@ -160,13 +163,8 @@ public class MCGameScreen implements Screen {
 
     public MCEntity getEntityFromTile(int layer, Vector2 pos) {
         for (MCEntity e: entities) {
-            System.out.println("Entity : " + e.toString() + " " + e.getTilePosition().toString() + pos + " " + e.getLayer() + layer);
-            if (e.getTilePosition().x == pos.x && e.getTilePosition().y == pos.y) {
-                if (e.getLayer() == layer) return e;
-                System.out.println("oups2");
-            }  
+            if (e.getTilePosition().x == pos.x && e.getTilePosition().y == pos.y && e.getLayer() == layer) return e;
         }
-        System.out.println("oups");
         return null;
     }
 
@@ -175,18 +173,27 @@ public class MCGameScreen implements Screen {
     }
 
     public void changeFocus(MCEntity e) {
-        if (focusedEntity != null) focusedEntity.loseFocus();
-        focusedEntity = e;
+        if (focusedEntity != null) {
+            System.out.println("Yey");
+            if (focusedEntity.loseFocus()) {
+                focusedEntity = e;
+                if (e != null) {
+                    e.getFocus();
+                    System.out.println("Haha");
+                }
+            }
+        } else {
+            System.out.println("AAAAAAAAA");
+            focusedEntity = e;
+            if (e != null) e.getFocus();
+        }
     }
 
     protected void inputPressed(MCInputManager.Command data) {
-        if (focusedEntity != null) return ;
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
             //System.out.println("Détecté par le game");
             MCEntity e = getEntityFromTile(1, tileCmd.getVector());
-            if (e != null) {
-                e.getFocus();
-            }
+            changeFocus(e);
         }
     }
 

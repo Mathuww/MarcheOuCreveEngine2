@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraMode;
+import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.MCState;
@@ -19,7 +20,7 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
 
     public static class IdleStateArgs extends MCEntityState.StateArgs {}
 
-    public MCESIdle(MCEntity parent) {
+    public MCESIdle(MCCharacter parent) {
         super(parent);
         this.name = "idle";
     }
@@ -31,11 +32,13 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
 
     @Override
     public void enter(IdleStateArgs args) {
+        parent.keep = false;
         super.enter(args);
     }
 
     @Override
     public void exit() {
+        parent.keep = true;
         super.exit();
     }
     
@@ -43,15 +46,12 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
         if (!parent.focus) return;
-        if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
-            changeState("click_move", new MCESClickMove.MoveStateArgs(tileCmd.getVector()));
+        if (data instanceof MCInputManager.ReadyCommand) {
+            changeState("ready", new MCESReady.ReadyStateArgs());
         }
         else if (data instanceof MCInputManager.AimCommand) {
             System.out.println("oh");
             changeState("aim", new MCESAim.AimStateArgs());
-        }
-        else if (data instanceof MCInputManager.DirectionalCommand) {
-            System.out.println("Oh on a pressé les touches du clavier");
         }
     }
 

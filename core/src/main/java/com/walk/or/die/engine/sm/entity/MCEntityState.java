@@ -1,6 +1,7 @@
 package com.walk.or.die.engine.sm.entity;
 
 import com.walk.or.die.engine.MCEventBus;
+import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.ClickTileCommand;
@@ -16,9 +17,9 @@ import java.util.function.Consumer;
 import java.util.ArrayList;
 
 public abstract class MCEntityState<T extends MCEntityState.StateArgs> extends MCState<T> {
-    protected MCEntity parent;
+    protected MCCharacter parent;
 
-    public MCEntityState(MCEntity parent) {
+    public MCEntityState(MCCharacter parent) {
         super();
         this.parent = parent;
     }

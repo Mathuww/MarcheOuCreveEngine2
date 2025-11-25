@@ -1,6 +1,7 @@
 package com.walk.or.die.engine.sm.entity.states;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.cameras.MCCameraManager;
@@ -11,20 +12,20 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
-import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
+public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
 
-    public static class AimStateArgs extends MCEntityState.StateArgs {}
+    public static class ReadyStateArgs extends MCEntityState.StateArgs {}
 
-    public MCESAim(MCCharacter parent) {
+    public MCESReady (MCCharacter parent) {
         super(parent);
-        this.name = "aim";
+        this.name = "ready";
     }
+
 
     @Override
     public void update(float delta) {
@@ -32,7 +33,7 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
     }
 
     @Override
-    public void enter(AimStateArgs args) {
+    public void enter(ReadyStateArgs args) {
         super.enter(args);
     }
 
@@ -45,12 +46,12 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
-            MCEntity e = parent.getParent().getEntityFromTile(1, tileCmd.getVector());
-            if (e != null) {
-                changeState("shoot", new MCESShoot.ShootStateArgs(e));
+            Vector2 v = tileCmd.getVector();
+           if (parent.getMap().isWalkable(MathUtils.floor(v.x), MathUtils.floor(v.y))) {
+                changeState("click_move", new MCESClickMove.MoveStateArgs(v));
                 return;
             }
-            changeState("idle", new MCESIdle.IdleStateArgs());
+            changeState("idle", new MCESIdle.IdleStateArgs());;
         }
         else if (!(data instanceof MCInputManager.DirectionalCommand bipboup)) {
             changeState("idle", new MCESIdle.IdleStateArgs());

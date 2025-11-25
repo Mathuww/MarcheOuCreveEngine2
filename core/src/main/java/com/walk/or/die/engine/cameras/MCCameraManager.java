@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.entities.MCEntity;
-import com.walk.or.die.engine.exceptions.UndefinedBehaviorException;
+import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 
 public class MCCameraManager {
     private static MCCameraManager instance;
@@ -92,8 +92,8 @@ public class MCCameraManager {
         this.target = target;
     }
 
-    public void update(float delta) throws UndefinedBehaviorException {
-        if (mode == null) throw new UndefinedBehaviorException("camera update : need a behavior to update");
+    public void update(float delta) throws UnexistingBehaviorException {
+        if (mode == null) throw new UnexistingBehaviorException("camera update : need a behavior to update");
         behaviors.get(mode).update(gdxCam, delta);
         gdxCam.update();
     }

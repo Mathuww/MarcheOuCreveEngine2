@@ -15,25 +15,16 @@ import com.badlogic.gdx.maps.MapProperties;
 import java.util.List;
 
 public class MCMap implements Disposable {
-    private TiledMap tiledMap;
-    private OrthogonalTiledMapRenderer renderer;
-    private OrthographicCamera camera;
-    private float tileSize;
-    private float unitScale;
-    private MCPathfinder pathfinder;
+    protected TiledMap tiledMap;
+    protected float tileSize;
+    protected float unitScale;
 
 
-    public MCMap(String mapPath, OrthographicCamera camera, AssetManager assetManager) {
-        this.camera = camera;
-        this.pathfinder = new MCPathfinder(this);
+    public MCMap(String mapPath, AssetManager assetManager) {
         loadMapWithAtlas(mapPath, assetManager);
     }
 
-    public List<Vector2> getPath(Vector2 start, Vector2 end) {
-        return pathfinder.getPath(start, end);
-    }
-
-    private void loadMapWithAtlas(String mapPath, AssetManager assetManager) {
+    protected void loadMapWithAtlas(String mapPath, AssetManager assetManager) {
         // On configure le loader pour Tiled‑map packée
         assetManager.setLoader(TiledMap.class,
             new AtlasTmxMapLoader(new InternalFileHandleResolver()));
@@ -46,8 +37,6 @@ public class MCMap implements Disposable {
         this.tileSize = layer.getTileWidth();
         this.unitScale = 1 / ((float)this.tileSize);
         System.out.println("tile size : " + this.tileSize + " so unit scale is " + this.unitScale);
-        // on crée le renderer
-        renderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale);
     }
 
     public float getWidth() {
@@ -75,12 +64,6 @@ public class MCMap implements Disposable {
         return true;
     }
 
-    public void render() {
-        camera.update();
-        renderer.setView(camera);
-        renderer.render();
-    }
-
     public TiledMap getTiledMap() {
         return this.tiledMap;
     }
@@ -98,6 +81,18 @@ public class MCMap implements Disposable {
         float newY = MathUtils.round(pos.y);
         //System.out.println("sticking to " + newX + ", " + newY);
         return new Vector2(newX, newY);
+    }
+
+    public MapProperties getProperties() {
+        return this.tiledMap.getProperties();
+    }
+
+    public <T> T getProperty(String name, Class<T> type) {
+        return this.tiledMap.getProperties().get(name, type);
+    }
+
+    public String getProperty(String name) {
+        return getProperty(name, String.class);
     }
 
     public MCTileSet getTileSet(int id) {
@@ -141,7 +136,6 @@ public class MCMap implements Disposable {
 
     @Override
     public void dispose() {
-        if (renderer != null) renderer.dispose();
         if (tiledMap != null) tiledMap.dispose();
     }
 }

@@ -57,6 +57,10 @@ public class MCInputManager implements InputProcessor {
         public AimCommand() {}
     }
 
+    public static class ReadyCommand extends Command {
+        public ReadyCommand() {}    
+    }
+
     public static class OtherKeyCommand extends Command {
         public int key;
         public OtherKeyCommand(int key) {
@@ -124,6 +128,10 @@ public class MCInputManager implements InputProcessor {
 
             case Input.Keys.SPACE:
                 bus.emit("InputPressed", new AimCommand());
+                break;
+            
+            case Input.Keys.M:
+                bus.emit("InputPressed", new ReadyCommand());
                 break;
                 
             default:

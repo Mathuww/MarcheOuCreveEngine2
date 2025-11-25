@@ -18,6 +18,7 @@ import com.walk.or.die.engine.sm.entity.states.MCESIdle;
 import com.walk.or.die.engine.sm.entity.states.MCESAim;
 import com.walk.or.die.engine.sm.entity.states.MCESShoot;
 import com.walk.or.die.engine.sm.game.MCGameState;
+import com.walk.or.die.engine.tiledmap.MCGameMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCEntity {
@@ -48,7 +49,7 @@ public class MCEntity {
         
         protected float getDamageAtTile(Vector2 targetPos) {
             Vector2 relativeDist = parent.getTilePosition().sub(targetPos);
-            return damagePattern.getOrDefault(relativeDist, 0f);
+            return damagePattern.getOrDefault(relativeDist, -1f);
         }
 
         public float getDamageTo(MCEntity targetEntity) {
@@ -57,27 +58,24 @@ public class MCEntity {
     }
 
     private MCGameScreen parent;
-    private MCMap map;
+    private MCGameMap map;
     private Rectangle hitbox;
     private TextureRegion currentRegion;
     private Sprite sprite;
-    private MCStateMachine<MCEntityState, MCEntity> stateManager;
     private int layer = 1;
     public boolean focus = false;
-    public Attack baseAttack;
+    public boolean keep = false;
+
+    // A deplacer
+    //private MCStateMachine<MCEntityState, MCEntity> stateManager;
+    //public Attack baseAttack;
 
     private float SIZE = 1f;
 
-    public MCEntity(MCGameScreen parent, MCMap map, Vector2 spawn, TextureRegion baseRegion) {
+    public MCEntity(MCGameScreen parent, MCGameMap map, Vector2 spawn, TextureRegion baseRegion) {
         this.parent = parent;
         this.map = map;
         currentRegion = baseRegion;
-        stateManager = new MCStateMachine<>(this);
-        stateManager.addState(new MCESClickMove(this));
-        stateManager.addState(new MCESIdle(this));
-        stateManager.addState(new MCESAim(this));
-        stateManager.addState(new MCESShoot(this));
-        stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
 
         sprite = new Sprite(currentRegion);
         sprite.setSize(SIZE, SIZE);
@@ -88,7 +86,7 @@ public class MCEntity {
 
     public void update(float delta) {
         // utile pour ajouter des anims par la suite hihihi
-        stateManager.update(delta);
+        //stateManager.update(delta);
         sprite.setPosition(hitbox.x, hitbox.y);
         sprite.setRegion(currentRegion);
     }
@@ -97,13 +95,16 @@ public class MCEntity {
         sprite.draw(batch);
     }
 
+    // A deplacer
+    /*
     public MCStateMachine getStateManager() {
         return this.stateManager;
     }
 
+    // A deplacer
     public void setStateManager(MCStateMachine<MCEntityState, MCEntity> stateManager) {
         this.stateManager = stateManager;
-    }
+    } */
 
     public MCGameScreen getParent() {
         return parent;
@@ -145,22 +146,34 @@ public class MCEntity {
         this.hitbox.setPosition(x, y);
     }
 
-    public MCMap getMap() {
+    public MCGameMap getMap() {
         return map;
     }
 
     public void getFocus() {
         focus = true;
         System.out.println("Focus get by " + this.toString());
-        MCEventBus.get().emit("ChangedFocus", this);
+        // MCEventBus.get().emit("ChangedFocus", this);
     }
 
-    public void loseFocus() {
+    public boolean loseFocus() {
+        if (keep) return false;
         focus = false;
-    }
-
-    public boolean shoot(MCEntity target) {
-        //baseAttack.getDamageTo(target);
         return true;
     }
+
+
+    // A deplacer
+    /*
+    public boolean shoot(MCEntity target) {
+        //int damage = baseAttack.getDamageTo(target);
+        //target.getHurt(damage)
+        return true;
+    }
+
+    // A deplacer
+    public void getHurt(int damage) {
+        System.out.println("J'ai pris " + damage + "dégats !");
+    } */
+
 }

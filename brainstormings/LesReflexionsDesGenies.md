@@ -27,12 +27,11 @@ developpeurs dont le but est de créer le meilleur moteur de jeu du monde
 
 ## Structure des données Tiled
 tiled_data/
----- main.tsx
 ---- entities_anims/
--------- entity1.tsx
--------- entity2.tsx
+-------- entity1.tmx - map 1 layer 
+-------- entity2.tmx
 ---- attacks/
--------- attack1.tmx
+-------- attack1.tmx - map : 1 layer pattern [+ 1 layer visuel opt.]
 ---- maps/
 -------- freemove/
 ----------- start.tmx
@@ -41,26 +40,19 @@ tiled_data/
 -------- combat/
 ------------ combat1.tmx
 
-### main.tsx
-Tileset de toutes les tiles qui ne sont pas les entités.
-**Comprend** le visuel des projectiles pour les attaques qui en utilisent.
-Comprend les tiles de terrain, d'intérieur, de maps de combat... tout sauf les entités.
+### entities_anims/X.tmx
 
-+ une tile de propriété globale ***type = "attackDamage"*** qui servira dans les tmx d'attacks/ pour repérer les positions des degats.
-
-### entities_anims/X.tsx
-
-Visuel de l'entité X.
+Visuel de l'entité X, sous forme de map.
 
 Une entité n'existe pas dans le jeu si elle n'existe pas dans ce dossier .
 
-Pour chaque tileset, donc chaque entité, on définit :
+Pour chaque map, donc chaque entité, on définit :
 - Son nom ***displayName*** qui sera son nom in-game.
 - type/class : définit le type d'entité (Character, Enemy, Obstacle...)
  - ... jsp 
 
 Définit surtout toutes ces animations.
-Chaque ligne d'une tileset est une animation.
+Chaque ligne de la map est une animation.
 On définit sur chaque 1ère tile de la ligne l'animation à laquelle elle correspond(ex : ***animName = "idle"*** sur la 1ere ligne).
 
 Propriété globale :
@@ -68,8 +60,8 @@ Propriété globale :
 
 ### attacks/X.tmx
 
-Définit les propriétés (globales sur le tileset) et le pattern de l'attaque.
-Propriétés du tileset :
+Définit les propriétés (globales sur la map) et le pattern de l'attaque.
+Propriétés de la map :
 - power : puissance de l'attaque
 - senderAnimName : nom de l'anim du chara qui lance l'attaque
 - receiverAnimName : nom de l'anim du chara qui recoit l'attaque
