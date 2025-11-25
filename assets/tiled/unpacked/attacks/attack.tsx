@@ -3,12 +3,17 @@
  <image source="../spritesheets/tileset_1bit.png" width="128" height="128"/>
  <tile id="44">
   <properties>
-   <property name="decreaseFactor" type="float" value="0.15"/>
    <property name="type" value="sender"/>
   </properties>
  </tile>
  <tile id="57">
   <properties>
+   <property name="type" value="attackDamage"/>
+  </properties>
+ </tile>
+ <tile id="59">
+  <properties>
+   <property name="decreaseFactor" type="float" value="0.15"/>
    <property name="type" value="attackDamage"/>
   </properties>
  </tile>

@@ -14,6 +14,13 @@
    <property name="type" value="sender"/>
   </properties>
  </tile>
+ <tile id="45">
+  <properties>
+   <property name="animName" value="walk"/>
+   <property name="fps" type="int" value="6"/>
+   <property name="playMode" value="LOOP"/>
+  </properties>
+ </tile>
  <tile id="57">
   <properties>
    <property name="type" value="attackDamage"/>
