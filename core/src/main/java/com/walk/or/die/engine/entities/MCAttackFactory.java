@@ -34,11 +34,11 @@ public class MCAttackFactory {
     private AssetManager assetManager;
     private Map<String, Class<? extends MCEntity.Attack>> attackTypes;
     private Map<String, String> possibleAttacks;
-    private Map<String, MCEntity.Attack> builtAttacks;
+    private Map<String, MCMap> mapCache;
 
     private MCAttackFactory() {
         possibleAttacks = new HashMap<>();
-        builtAttacks = new HashMap<>();
+        mapCache = new HashMap<>();
     }
 
     public void init(AssetManager assetManager) throws DataException {
@@ -60,13 +60,6 @@ public class MCAttackFactory {
     }
 
     public MCEntity.Attack build(MCEntity parent, String attackName) throws Exception {
-        MCEntity.Attack orphanAttack;
-        if (builtAttacks.containsKey(attackName)) {
-            orphanAttack = builtAttacks.get(attackName);
-            orphanAttack.setParent(parent);
-            return orphanAttack;
-        }
-
         if (assetManager == null) 
             throw new IllegalStateException("must init attack factory before using it");
 
@@ -74,8 +67,13 @@ public class MCAttackFactory {
         if (attackPath == null)
             throw new MissingDataException("cant build attack with name " + attackName + " because no tmx file exists associated with it");
         
-
-        MCMap attackMap = new MCMap(attackPath, assetManager);
+        MCMap attackMap;
+        if (mapCache.containsKey(attackPath))
+            attackMap = mapCache.get(attackPath);
+        else {
+            attackMap = new MCMap(attackPath, assetManager);
+            mapCache.put(attackPath, attackMap);
+        }
 
         MapProperties attackProperties = attackMap.getProperties();
 
@@ -126,12 +124,11 @@ public class MCAttackFactory {
             }
         }
 
-        orphanAttack = clazz
-            .getDeclaredConstructor(Integer.class, HashMap.class)
-            .newInstance(power, damagePattern);
-        builtAttacks.put(attackName, orphanAttack);
+        MCEntity.Attack attack = clazz
+            .getDeclaredConstructor(MCEntity.class, Integer.class, HashMap.class)
+            .newInstance(parent, power, damagePattern);
+        attack.initFromProperties(attackProperties);
 
-        orphanAttack.setParent(parent);
-        return orphanAttack;
+        return attack;
     }
 }

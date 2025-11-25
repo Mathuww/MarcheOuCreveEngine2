@@ -11,8 +11,8 @@ public class MCMapObject {
     }
 
     public Vector2 getPosition() {
-        float x = (Float)this.mo.getProperties().get("x");
-        float y = (Float)this.mo.getProperties().get("y");
+        float x = this.mo.getProperties().get("x", Float.class);
+        float y = this.mo.getProperties().get("y", Float.class);
         return new Vector2(x, y);
     }
 }

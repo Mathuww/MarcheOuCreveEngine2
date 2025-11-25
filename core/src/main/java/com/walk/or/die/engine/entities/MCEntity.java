@@ -34,15 +34,9 @@ public abstract class MCEntity {
     }
 
     public abstract static class Attack {
-        protected MCEntity parent;
+        protected final MCEntity parent;
         protected int power;
         protected Map<Vector2, Float> damagePattern;
-
-        public Attack(int power, Map<Vector2, Float> pattern) {
-            this.parent = null;
-            this.power = power;
-            this.damagePattern = pattern;
-        }
 
         public Attack(MCEntity parent, int power, Map<Vector2, Float> pattern) {
             this.parent = parent;
@@ -51,14 +45,6 @@ public abstract class MCEntity {
         }
 
         public abstract void initFromProperties(MapProperties props);
-
-        public MCEntity getParent() {
-            return this.parent;
-        }
-
-        public void setParent(MCEntity parent) {
-            this.parent = parent;
-        }
 
         public boolean isValidTile(Vector2 targetPos) {
             if (parent == null)
@@ -84,16 +70,12 @@ public abstract class MCEntity {
     private MCGameScreen parent;
     private MCGameMap map;
     private Rectangle hitbox;
-    private TextureRegion currentRegion;
+    private TextureRegion currentRegion; // ca va bientot degager
     private Map<String, MCAnimation> animations;
     private Sprite sprite;
     private int layer = 1;
     public boolean focus = false;
     public boolean keep = false;
-
-    // A deplacer
-    //private MCStateMachine<MCEntityState, MCEntity> stateManager;
-    //public Attack baseAttack;
 
     private float SIZE = 1f;
 
@@ -132,17 +114,6 @@ public abstract class MCEntity {
     public void render(SpriteBatch batch) {
         sprite.draw(batch);
     }
-
-    // A deplacer
-    /*
-    public MCStateMachine getStateManager() {
-        return this.stateManager;
-    }
-
-    // A deplacer
-    public void setStateManager(MCStateMachine<MCEntityState, MCEntity> stateManager) {
-        this.stateManager = stateManager;
-    } */
 
     public MCGameScreen getParent() {
         return parent;

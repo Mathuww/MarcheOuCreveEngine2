@@ -1,10 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="16" height="10" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="43">
- <properties>
-  <property name="atlas" value="tileset/CArte.atlas"/>
- </properties>
- <tileset firstgid="1" name="LESAUTRESOLS" tilewidth="16" tileheight="16" tilecount="64" columns="8">
-  <image source="tileset_1bit.png" width="128" height="128"/>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="10" infinite="0" nextlayerid="6" nextobjectid="43" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="16"><properties><property name="atlas" value="tileset/start.atlas"/></properties>
+ <tileset columns="8" firstgid="1" name="main" tilecount="64" tileheight="16" tilewidth="16">
+  <image height="128" source="../spritesheets/tileset_1bit.png" width="128"/>
   <tile id="28">
    <properties>
     <property name="blocked" type="bool" value="true"/>
@@ -20,16 +16,21 @@
     <property name="blocked" type="bool" value="true"/>
    </properties>
   </tile>
+  <tile id="57">
+   <properties>
+    <property name="type" value="attackDamage"/>
+   </properties>
+  </tile>
  </tileset>
- <tileset firstgid="65" name="player" tilewidth="16" tileheight="16" tilecount="64" columns="8">
-  <image source="tileset_1bit.png" width="128" height="128"/>
+ <tileset columns="8" firstgid="65" name="player" tilecount="64" tileheight="16" tilewidth="16">
+  <image height="128" source="../spritesheets/tileset_1bit.png" width="128"/>
   <tile id="44">
    <properties>
     <property name="type" value="player"/>
    </properties>
   </tile>
  </tileset>
- <layer id="1" name="Ground" width="16" height="10">
+ <layer height="10" id="1" name="Ground" width="16">
   <data encoding="csv">
 9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,
 17,18,38,18,18,18,55,18,18,18,18,18,18,38,18,19,

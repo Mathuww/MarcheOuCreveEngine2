@@ -161,8 +161,7 @@ test/
 savestate.sh
 .vscode/
 .editorconfig
-runnable_jars/
-private_brainbranlings/
+misc/
 
 ## Special cases:
 

@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCEntity;
 
 public class MCGenericAttack extends MCEntity.Attack {
-    public MCGenericAttack(int power, Map<Vector2, Float> pattern) {
-        super(power, pattern);
+    public MCGenericAttack(MCEntity parent, int power, Map<Vector2, Float> pattern) {
+        super(parent, power, pattern);
     }
 
     public void initFromProperties(MapProperties props) {

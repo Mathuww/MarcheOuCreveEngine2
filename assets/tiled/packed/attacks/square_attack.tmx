@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="8" infinite="0" nextlayerid="2" nextobjectid="1" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="8">
+ <properties><property name="atlas" value="tileset/square_attack.atlas"/>
+  <property name="attackType" value="generic"/>
+  <property name="power" type="int" value="5"/>
+ </properties>
+ <tileset firstgid="1" source="attack.tsx"/>
+ <layer height="8" id="1" name="Calque de Tuiles 1" width="8">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,60,58,60,0,0,0,
+0,0,58,45,58,0,0,0,
+0,0,60,58,60,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>

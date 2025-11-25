@@ -32,12 +32,12 @@ public class MCEntityFactory {
     private AssetManager assetManager;
     private Map<String, Class<? extends MCEntity>> entityTypes;
     private Map<String, String> possibleEntities;
-    private Map<String, MCEntity> builtEntities;
+    private Map<String, MCMap> mapCache;
 
     private MCEntityFactory() {
         entityTypes = new HashMap<>();
         possibleEntities = new HashMap<>();
-        builtEntities = new HashMap<>();
+        mapCache = new HashMap<>();
     }
 
     public void init(AssetManager assetManager) throws DataException {
@@ -57,9 +57,6 @@ public class MCEntityFactory {
     }
 
     public MCEntity build(MCGameScreen parentScreen, MCGameMap parentMap, String entityGenericName, String entityId) throws Exception {  
-        if (builtEntities.containsKey(entityGenericName))
-            return builtEntities.get(entityGenericName);
-
         if (assetManager == null) 
             throw new IllegalStateException("must init entity factory before using it");
 
@@ -67,8 +64,13 @@ public class MCEntityFactory {
         if (entityPath == null)
             throw new MissingDataException("cant build entity with name " + entityGenericName + " because no tmx file exists associated with it");
         
-
-        MCMap entityMap = new MCMap(entityPath, assetManager);
+        MCMap entityMap;
+        if (mapCache.containsKey(entityPath))
+            entityMap = mapCache.get(entityPath);
+        else {
+            entityMap = new MCMap(entityPath, assetManager);
+            mapCache.put(entityPath, entityMap);
+        }
         
         String typeStr = entityMap.getProperty("entityType");
         if (typeStr == null) 
@@ -125,8 +127,6 @@ public class MCEntityFactory {
             entity.addAnimation(animName, anim);
         }
 
-        // comme ca on rebuild pas la meme entity pour le meme nom
-        builtEntities.put(entityGenericName, entity);
         return entity;
     }
 }
