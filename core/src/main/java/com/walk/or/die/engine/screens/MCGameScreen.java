@@ -56,7 +56,7 @@ public class MCGameScreen implements Screen {
     private float speed = 4f;
     
     // Movements
-    private Deque<Vector2> movements; // https://prod.liveshare.vsengsaas.visualstudio.com/join?914C5AD2D27C14E1963765B1C4E1262974D1
+    private Deque<Vector2> movements;
     private boolean moving = false;
     private float percent = 0f;
     private Vector2 start = new Vector2(0,0);

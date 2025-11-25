@@ -3,6 +3,7 @@ package com.walk.or.die.engine;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.exceptions.VoluntaryCrashException;
 
 import java.util.Map;
 import java.util.UUID;
@@ -13,8 +14,9 @@ import java.util.ArrayList;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
+import com.walk.or.die.engine.vehicles.MCVehicle;
 
-public class MCEventBus {
+public class MCEventBus implements MCVehicle {
     private static MCEventBus instance;
 
     public static MCEventBus get() {
@@ -63,6 +65,9 @@ public class MCEventBus {
     private Map<String, List<Consumer<?>>> listeners;
     private Map<String, Class<?>> eventTypes;
     private List<Subscription> subscriptions;
+    
+    private int lineNumber = 62;
+    private String destination = "Aspremont";
 
     public <T> void addEvent(String eventName, Class<T> argType) {
         eventTypes.put(eventName, argType);
@@ -124,5 +129,18 @@ public class MCEventBus {
 
     public void emit(String eventName) {
         emit(eventName, null);
+    }
+
+    public void start() {
+        System.out.println("le bus demarre !");
+    }
+
+    public void stop() throws VoluntaryCrashException {
+        System.out.println("We never stop idiot");
+        crash();
+    }
+
+    public void crash() throws VoluntaryCrashException {
+        throw new VoluntaryCrashException("EXPLOSION !!!!!! over. *Fermeture des rideaux*");
     }
 }
