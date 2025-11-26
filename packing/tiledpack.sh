@@ -8,6 +8,9 @@ rm -r assets/tiled/packed/** > /dev/null 2>&1
 mkdir misc
 rm misc/packing.log
 
+#cp -r assets/tiled/unpacked/spritesheets assets/tiled/packed
+rsync -av --exclude '*.tmx' "$MAP_ROOT"/ "$OUTPUT_ROOT"/
+
 find "$MAP_ROOT" -type d | while read dir; do
     # si ce dossier contient des .tmx directement
     if ls "$dir"/*.tmx >/dev/null 2>&1; then
@@ -19,7 +22,7 @@ find "$MAP_ROOT" -type d | while read dir; do
         echo "Packing $rel" >> misc/packing.log
 
         xvfb-run -a \
-            java -jar packing/runnable-tiledmappacker.jar --strip-unused \
+            java -jar packing/runnable-tiledmappacker.jar \
             "$dir" \
             "$OUTPUT_ROOT/$rel" \
             2>> misc/packing.log
@@ -27,3 +30,5 @@ find "$MAP_ROOT" -type d | while read dir; do
         echo ""
     fi
 done
+
+./mcgradlew build --rerun-tasks

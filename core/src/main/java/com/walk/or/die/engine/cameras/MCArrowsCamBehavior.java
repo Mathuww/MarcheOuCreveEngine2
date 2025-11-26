@@ -19,7 +19,6 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
     private final float CAM_LERP = 3f;
 
     private Map<DirectionalCommand, Boolean> currentInput;
-    // private List<MCEventBus.Subscription> subscriptions = new ArrayList<>();
 
     public MCArrowsCamBehavior() {
         currentInput = new HashMap<>();
@@ -37,8 +36,6 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         MCEventBus bus = MCEventBus.get();
         bus.on(this, "InputPressed", this::inputPressed);
         bus.on(this, "InputReleased", this::inputReleased);
-        //subscriptions.add(bus.on(this, "InputPressed", this::inputPressed));
-        //subscriptions.add(bus.on(this, "InputReleased", this::inputReleased));
     }
 
     @Override
@@ -46,8 +43,6 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         MCEventBus bus = MCEventBus.get();
         bus.off(this, "InputPressed");
         bus.off(this, "InputReleased");
-        //for (MCEventBus.Subscription s : subscriptions) s.unsubscribe();
-        //subscriptions.clear();
     }
 
     public void inputPressed(Command data) {

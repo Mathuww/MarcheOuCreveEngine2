@@ -81,6 +81,7 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
         goal = args.target;
         movements.clear();
         movements.addAll(parent.getMap().getPath(parent.getPosition(), goal));
+        parent.playAnimation("walk");
         super.enter(args);
     }
 

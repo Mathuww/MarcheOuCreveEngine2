@@ -27,7 +27,7 @@ developpeurs dont le but est de créer le meilleur moteur de jeu du monde
 
 ## Structure des données 
 - assets/
--- tiled_data/
+-- tiled/
 ---- entities_anims/
 -------- entity1.tmx - map 1 layer 
 -------- entity2.tmx
@@ -43,7 +43,7 @@ developpeurs dont le but est de créer le meilleur moteur de jeu du monde
 -- music/
 ----- bgmusic.wav
 -- soundfx/
------ swordhit.wav
+----- swordshit.wav
 
 ### entities_anims/X.tmx
 
@@ -60,7 +60,7 @@ Définit surtout toutes ces animations.
 Chaque ligne de la map est une animation.
 On définit sur chaque 1ère tile de la ligne l'animation à laquelle elle correspond(ex : ***animName = "idle"*** sur la 1ere ligne).
 
-Propriété globale :
+Propriété globale :00
 - ***fps***
 
 ### attacks/X.tmx

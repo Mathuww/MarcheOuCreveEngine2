@@ -11,6 +11,11 @@ import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 
 public class MCCameraManager {
+    public static enum CameraMode {
+        FOLLOW,
+        ARROWS
+    }
+
     private static MCCameraManager instance;
 
     public static MCCameraManager get() {
@@ -20,8 +25,8 @@ public class MCCameraManager {
 
     private OrthographicCamera gdxCam;
 
-    private Map<MCCameraMode, MCCameraBehavior> behaviors = new HashMap<>();
-    private MCCameraMode mode;
+    private Map<CameraMode, MCCameraBehavior> behaviors = new HashMap<>();
+    private CameraMode mode;
 
     private float limitX;
     private float limitY;
@@ -29,8 +34,8 @@ public class MCCameraManager {
     private MCEntity target;
 
     private MCCameraManager() {
-        register(MCCameraMode.FOLLOW, new MCFollowCamBehavior());
-        register(MCCameraMode.ARROWS, new MCArrowsCamBehavior());
+        register(CameraMode.FOLLOW, new MCFollowCamBehavior());
+        register(CameraMode.ARROWS, new MCArrowsCamBehavior());
     }
 
     public float getLimitX() {
@@ -58,21 +63,21 @@ public class MCCameraManager {
         gdxCam.position.y = pos.y;
     }
 
-    public void register(MCCameraMode mode, MCCameraBehavior behavior) {
+    public void register(CameraMode mode, MCCameraBehavior behavior) {
         behaviors.put(mode, behavior);
     }
 
-    public MCCameraMode getMode() {
+    public CameraMode getMode() {
         return this.mode;
     }
 
-    public void setMode(MCCameraMode mode) {
+    public void setMode(CameraMode mode) {
         if (this.mode != null) behaviors.get(this.mode).exit();
         this.mode = mode;
         behaviors.get(this.mode).enter();
     }
 
-    public void init(float viewportWidth, float viewportHeight, MCCameraMode mode) {
+    public void init(float viewportWidth, float viewportHeight, CameraMode mode) {
         gdxCam = new OrthographicCamera(viewportWidth, viewportHeight);
         gdxCam.position.set(viewportWidth / 2, viewportHeight / 2, 0);
         limitX = 0f;

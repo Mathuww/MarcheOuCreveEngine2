@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.cameras.MCCameraManager;
-import com.walk.or.die.engine.cameras.MCCameraMode;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.game.MCGameState;
@@ -24,7 +23,7 @@ public class MCGSCombat extends MCGameState<MCGSCombat.CombatStateArgs> {
 
     @Override
     public void enter(CombatStateArgs args) {
-        MCCameraManager.get().setMode(MCCameraMode.ARROWS);
+        MCCameraManager.get().setMode(MCCameraManager.CameraMode.ARROWS);
         bus.on(this, "InputPressed", this::inputPressed);
         super.enter(args);
     }

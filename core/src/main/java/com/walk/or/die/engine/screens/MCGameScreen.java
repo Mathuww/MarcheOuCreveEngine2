@@ -24,10 +24,12 @@ import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.cameras.MCArrowsCamBehavior;
 import com.walk.or.die.engine.cameras.MCCameraBehavior;
 import com.walk.or.die.engine.cameras.MCCameraManager;
-import com.walk.or.die.engine.cameras.MCCameraMode;
 import com.walk.or.die.engine.cameras.MCFollowCamBehavior;
+import com.walk.or.die.engine.entities.MCAlly;
+import com.walk.or.die.engine.entities.MCAttackFactory;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.entities.MCEntityFactory;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
@@ -45,6 +47,10 @@ public class MCGameScreen implements Screen {
     
     // Map
     private MCGameMap map;
+    private final String MAP_ROOT = "tiled/packed/maps/";
+
+    private final MCEntityFactory entityFact = MCEntityFactory.get();
+    private final MCAttackFactory attackFact = MCAttackFactory.get();
 
     // Camera
     private MCCameraManager camManager;
@@ -54,6 +60,8 @@ public class MCGameScreen implements Screen {
     
     // Entity
     private Array<MCEntity> entities;
+    private String playerEntityName;
+    private MCCharacter main;
     private MCEntity focusedEntity;
     private float speed = 4f;
     
@@ -71,30 +79,40 @@ public class MCGameScreen implements Screen {
 
         game.getStateManager().setCurrentState("combat", new MCGSCombat.CombatStateArgs());
 
+        map = new MCGameMap(MAP_ROOT + "start.tmx", drh);
+
         camManager = MCCameraManager.get();
-        camManager.init(8, 5, MCCameraMode.ARROWS);
-
-        map = new MCGameMap("unoriginal_packed_maps/CArte.tmx", camManager.getGdxCam(), drh);
-        try {
-            TextureRegion playerTexture = map.getTileSet("player").getTileByType("player").getTextureRegion();
-            entities.add(new MCCharacter(this, map, map.getEntitySpawnPos("player"), playerTexture));
-            entities.add(new MCCharacter(this, map, new Vector2(3, 2), playerTexture));
-        } catch (DataException e) {
-            e.printStackTrace();
-        }
-
-
+        camManager.init(16, 10, MCCameraManager.CameraMode.ARROWS);
         camManager.setLimitX(map.getWidth());
         camManager.setLimitY(map.getHeight());
-        camManager.setFollowTarget(entities.get(0));
+        //camManager.setFollowTarget(entities.get(0));
         game.viewport.setCamera(camManager.getGdxCam());
 
         movements = new ArrayDeque<>();
         inputHandler = new MCInputManager(game.viewport);
         Gdx.input.setInputProcessor(inputHandler);
+
         MCEventBus bus = MCEventBus.get();
         //bus.on(this, "ChangedFocus", this::changeFocus);
         bus.on(this, "InputPressed", this::inputPressed);
+
+        entityFact.init(drh);
+        attackFact.init(drh);
+
+        try {
+            playerEntityName = map.getPlayerEntityType();
+            main = (MCCharacter) entityFact.build(this, map, playerEntityName, "player");
+            main.setPosition(map.getPlayerSpawnPos());
+            camManager.setFollowTarget(main);
+            entities.add(main);
+            entities.addAll(map.getEntitiesToSpawn(this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        for (MCEntity e : entities) {
+            e.playAnimation("idle");
+        }
     }
 
     // Called once (when the window oppened)
@@ -110,13 +128,14 @@ public class MCGameScreen implements Screen {
 
     private void logic(float delta) {
         // We don't give a fuck about logic
-        // We're going to do random things
-        // player.danseSalsa()
-        // Ptn la fonction marche pas...
+        // Because we implement MVC (Modular Venomous Contraception) // co autored by mathuww
     }
 
     private void draw(float delta) {
+        //Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         ScreenUtils.clear(Color.BLACK);
+        game.viewport.apply();
+
         try {
             camManager.update(delta);
         } catch (UnexistingBehaviorException e) {
@@ -125,8 +144,7 @@ public class MCGameScreen implements Screen {
 
         game.getStateManager().update(delta);
 
-        game.viewport.apply();
-        map.render();
+        map.render(camManager.getGdxCam());
         game.batch.setProjectionMatrix(camManager.getGdxCam().combined);       
         game.batch.begin();
 
@@ -140,6 +158,7 @@ public class MCGameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+       //game.viewport.update(width, height, false);
        game.viewport.update(width, height, false);
     }
 
@@ -195,7 +214,7 @@ public class MCGameScreen implements Screen {
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
             //System.out.println("Détecté par le game");
             MCEntity e = getEntityFromTile(1, tileCmd.getVector());
-            changeFocus(e);
+            if (e instanceof MCAlly ally) changeFocus(ally);
         }
     }
 

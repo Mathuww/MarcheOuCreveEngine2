@@ -4,7 +4,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.cameras.MCCameraManager;
-import com.walk.or.die.engine.cameras.MCCameraMode;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
@@ -33,6 +32,7 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
     @Override
     public void enter(IdleStateArgs args) {
         parent.keep = false;
+        parent.playAnimation("idle");
         super.enter(args);
     }
 

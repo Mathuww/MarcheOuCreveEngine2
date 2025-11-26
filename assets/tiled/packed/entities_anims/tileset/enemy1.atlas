@@ -1,451 +1,451 @@
 
-character1.png
+enemy1.png
 size: 512, 64
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-chara1
+enemy1
   rotate: false
   xy: 1, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
-chara1
+enemy1
   rotate: false
   xy: 1, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
-chara1
+enemy1
   rotate: false
   xy: 19, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
-chara1
+enemy1
   rotate: false
   xy: 1, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
-chara1
+enemy1
   rotate: false
   xy: 19, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
-chara1
+enemy1
   rotate: false
   xy: 37, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
-chara1
+enemy1
   rotate: false
   xy: 19, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 6
-chara1
+enemy1
   rotate: false
   xy: 37, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
-chara1
+enemy1
   rotate: false
   xy: 55, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 8
-chara1
+enemy1
   rotate: false
   xy: 37, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
-chara1
+enemy1
   rotate: false
   xy: 55, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 10
-chara1
+enemy1
   rotate: false
   xy: 73, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
-chara1
+enemy1
   rotate: false
   xy: 55, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 12
-chara1
+enemy1
   rotate: false
   xy: 73, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 13
-chara1
+enemy1
   rotate: false
   xy: 91, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 14
-chara1
+enemy1
   rotate: false
   xy: 73, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 15
-chara1
+enemy1
   rotate: false
   xy: 91, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 16
-chara1
+enemy1
   rotate: false
   xy: 109, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 17
-chara1
+enemy1
   rotate: false
   xy: 91, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 18
-chara1
+enemy1
   rotate: false
   xy: 109, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 19
-chara1
+enemy1
   rotate: false
   xy: 127, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 20
-chara1
+enemy1
   rotate: false
   xy: 109, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 21
-chara1
+enemy1
   rotate: false
   xy: 127, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 22
-chara1
+enemy1
   rotate: false
   xy: 145, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 23
-chara1
+enemy1
   rotate: false
   xy: 127, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 24
-chara1
+enemy1
   rotate: false
   xy: 145, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 25
-chara1
+enemy1
   rotate: false
   xy: 163, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 26
-chara1
+enemy1
   rotate: false
   xy: 145, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 27
-chara1
+enemy1
   rotate: false
   xy: 163, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 28
-chara1
+enemy1
   rotate: false
   xy: 181, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 29
-chara1
+enemy1
   rotate: false
   xy: 163, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 30
-chara1
+enemy1
   rotate: false
   xy: 181, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 31
-chara1
+enemy1
   rotate: false
   xy: 199, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 32
-chara1
+enemy1
   rotate: false
   xy: 181, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 33
-chara1
+enemy1
   rotate: false
   xy: 199, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 34
-chara1
+enemy1
   rotate: false
   xy: 217, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 35
-chara1
+enemy1
   rotate: false
   xy: 199, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 36
-chara1
+enemy1
   rotate: false
   xy: 217, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 37
-chara1
+enemy1
   rotate: false
   xy: 235, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 38
-chara1
+enemy1
   rotate: false
   xy: 217, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 39
-chara1
+enemy1
   rotate: false
   xy: 235, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 40
-chara1
+enemy1
   rotate: false
   xy: 253, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 41
-chara1
+enemy1
   rotate: false
   xy: 235, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 42
-chara1
+enemy1
   rotate: false
   xy: 253, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 43
-chara1
+enemy1
   rotate: false
   xy: 271, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 44
-chara1
+enemy1
   rotate: false
   xy: 253, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 45
-chara1
+enemy1
   rotate: false
   xy: 271, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 46
-chara1
+enemy1
   rotate: false
   xy: 289, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 47
-chara1
+enemy1
   rotate: false
   xy: 271, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 48
-chara1
+enemy1
   rotate: false
   xy: 289, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 49
-chara1
+enemy1
   rotate: false
   xy: 307, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 50
-chara1
+enemy1
   rotate: false
   xy: 289, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 51
-chara1
+enemy1
   rotate: false
   xy: 307, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 52
-chara1
+enemy1
   rotate: false
   xy: 325, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 53
-chara1
+enemy1
   rotate: false
   xy: 307, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 54
-chara1
+enemy1
   rotate: false
   xy: 325, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 55
-chara1
+enemy1
   rotate: false
   xy: 343, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 56
-chara1
+enemy1
   rotate: false
   xy: 325, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 57
-chara1
+enemy1
   rotate: false
   xy: 343, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 58
-chara1
+enemy1
   rotate: false
   xy: 361, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 59
-chara1
+enemy1
   rotate: false
   xy: 343, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 60
-chara1
+enemy1
   rotate: false
   xy: 361, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 61
-chara1
+enemy1
   rotate: false
   xy: 379, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 62
-chara1
+enemy1
   rotate: false
   xy: 361, 1
   size: 16, 16

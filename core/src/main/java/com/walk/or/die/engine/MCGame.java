@@ -2,6 +2,7 @@ package com.walk.or.die.engine;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.screens.MCGameScreen;
@@ -28,7 +29,7 @@ public class MCGame extends Game {
     
     public void create() {
         batch = new SpriteBatch();
-        viewport = new FitViewport(8, 5);
+        viewport = new FitViewport(12, 8);
         try {
             setScreen(new MCGameScreen(this));
         } catch (DataException e) {

@@ -1,6 +1,46 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="10" infinite="0" nextlayerid="6" nextobjectid="43" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="16"><properties><property name="atlas" value="tileset/start.atlas"/></properties>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="10" infinite="0" nextlayerid="6" nextobjectid="49" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="16"><properties><property name="atlas" value="tileset/start.atlas"/></properties>
  <tileset columns="8" firstgid="1" name="main" tilecount="64" tileheight="16" tilewidth="16">
   <image height="128" source="../spritesheets/tileset_1bit.png" width="128"/>
+  <tile id="8">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="9">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="10">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="16">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="18">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="24">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="25">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
+  <tile id="26">
+   <properties>
+    <property name="blocked" type="bool" value="true"/>
+   </properties>
+  </tile>
   <tile id="28">
    <properties>
     <property name="blocked" type="bool" value="true"/>
@@ -31,6 +71,9 @@
   </tile>
  </tileset>
  <layer height="10" id="1" name="Ground" width="16">
+  <properties>
+   <property name="blocked" type="bool" value="false"/>
+  </properties>
   <data encoding="csv">
 9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,11,
 17,18,38,18,18,18,55,18,18,18,18,18,18,38,18,19,
@@ -45,9 +88,40 @@
 </data>
  </layer>
  <objectgroup id="5" name="Entities">
-  <object id="42" name="player_spawn" x="28" y="55">
+  <object id="42" x="146.653" y="43.4685">
    <properties>
-    <property name="type" value="player"/>
+    <property name="name" value="character1"/>
+   </properties>
+  </object>
+  <object height="17.6008" id="45" name="player_spawn" width="17.6008" x="126.625" y="127.527">
+   <properties>
+    <property name="name" value="character1"/>
+    <property name="type" value="player_spawn"/>
+   </properties>
+  </object>
+  <object id="44" x="169.413" y="110.23">
+   <properties>
+    <property name="name" value="character1"/>
+   </properties>
+  </object>
+  <object height="16.9938" id="43" width="18.5111" x="30.1242" y="59.8554">
+   <properties>
+    <property name="name" value="character1"/>
+   </properties>
+  </object>
+  <object height="16.9938" id="46" width="18.5111" x="65.3959" y="19.725">
+   <properties>
+    <property name="name" value="enemy1"/>
+   </properties>
+  </object>
+  <object height="16.9938" id="47" width="18.5111" x="93.9213" y="68.8857">
+   <properties>
+    <property name="name" value="enemy1"/>
+   </properties>
+  </object>
+  <object height="16.9938" id="48" width="18.5111" x="186.78" y="60.6923">
+   <properties>
+    <property name="name" value="enemy1"/>
    </properties>
   </object>
  </objectgroup>

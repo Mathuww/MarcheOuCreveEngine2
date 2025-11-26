@@ -40,17 +40,17 @@ public class MCMap implements Disposable {
     }
 
     public float getWidth() {
-        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         return layer.getWidth();
     }
 
     public float getHeight() {
-        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         return layer.getHeight();
     }
 
     public boolean isWalkable(int x, int y) {
-        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get("Ground");
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         if (layer == null) return false;
         if (x < 0 || x >= layer.getWidth() || y < 0 || y >= layer.getHeight()) return false;
         TiledMapTileLayer.Cell cell = layer.getCell(x, y);
@@ -109,23 +109,6 @@ public class MCMap implements Disposable {
 
     public MCMapLayer getLayer(String name) {
         return new MCMapLayer(this.tiledMap.getLayers().get(name));
-    }
-
-    public Vector2 getEntitySpawnPos(String entity) throws DataException, IllegalArgumentException {
-        if ("".equals(entity)) {
-            throw new IllegalArgumentException("cannot find spawn pos of empty string !!!");
-        }
-
-        MCMapLayer layer = this.getLayer("Entities");
-        if (layer == null) throw new DataException("no Entities layer in Tiled map");
-
-        MCMapObject obj = layer.getObjectByType(entity);
-        if (obj == null) throw new DataException(entity + " not found in Entities");
-
-        Vector2 pos = obj.getPosition();
-        pos = getDisplayCoordsFromTiled(pos);
-        return this.stickToNearestTile(pos);
-
     }
 
     public Vector2 getDisplayCoordsFromTiled(Vector2 tiledCoords) {

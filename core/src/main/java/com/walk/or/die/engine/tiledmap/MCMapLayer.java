@@ -6,6 +6,8 @@ import java.util.List;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
@@ -23,15 +25,23 @@ public class MCMapLayer {
         return ml;
     }
 
-    public MCMapObject getObjectByType(String name) {
-        for (MapObject obj : this.ml.getObjects()) {
-            Object type = obj.getProperties().get("type");
-            if (name.equals(type)) {
-                return new MCMapObject(obj);
+    public MapObjects getObjects() {
+        return this.ml.getObjects();
+    }
+
+    public List<MCMapObject> getObjectsByProperty(String name, String value) {
+        List<MCMapObject> ret = new ArrayList<>();
+        for (MapObject obj : this.getObjects()) {
+            MapProperties props = obj.getProperties();
+            if (!props.containsKey(name)) continue;
+            Object prop = obj.getProperties().get(name);
+            if (prop == null) continue;
+            if (prop.equals(value)) {
+                ret.add(new MCMapObject(obj));
             }
         }
 
-        return null;
+        return ret;
     }
 
     public TiledMapTileLayer.Cell getCell(int x, int y) {

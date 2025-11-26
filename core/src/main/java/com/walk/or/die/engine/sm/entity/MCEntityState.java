@@ -24,7 +24,7 @@ public abstract class MCEntityState<T extends MCEntityState.StateArgs> extends M
         this.parent = parent;
     }
 
-    public MCEntity getParent() {
+    public MCCharacter getParent() {
         return parent;
     }
 
@@ -33,15 +33,12 @@ public abstract class MCEntityState<T extends MCEntityState.StateArgs> extends M
 
     @Override
     public void enter(T args) {
-        //System.out.println("Enter " + getName());
         listen("InputPressed", this::inputPressed);
         // Je rentre dans tes MC en bus
     }
 
     @Override
     public void exit() {
-        //System.out.println("Exit " + getName());
-        //unsubscribeAll();
         bus.off(this, "InputPressed");
     }
     

@@ -15,7 +15,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCUtils;
-import com.walk.or.die.engine.entities.attacks.MCGenericAttack;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.screens.MCGameScreen;
@@ -31,8 +30,8 @@ public class MCAttackFactory {
         return instance;
     }
 
+    private final String ATTACK_ROOT = "tiled/packed/attacks/";
     private AssetManager assetManager;
-    private Map<String, Class<? extends MCEntity.Attack>> attackTypes;
     private Map<String, String> possibleAttacks;
     private Map<String, MCMap> mapCache;
 
@@ -45,48 +44,27 @@ public class MCAttackFactory {
         this.assetManager = assetManager;
 
         // on recupere la liste de toutes les entités possibles
-        FileHandle attackFolder = Gdx.files.internal("attacks");
-        for (FileHandle attackFile : MCUtils.listFilesByExt(attackFolder, "tmx")) {
+        for (FileHandle attackFile : MCUtils.listFilesByExt(ATTACK_ROOT, "tmx")) {
             String attackName = attackFile.nameWithoutExtension();
             if (possibleAttacks.containsKey(attackName)) {
                 throw new DataException("duplicate attack tmx files exist for attack name " + attackName);
             }
-            possibleAttacks.put(attackName, attackFile.path());
+            MCMap attackMap = new MCMap(attackFile.path(), assetManager);
+            mapCache.put(attackName, attackMap);
         }
-
-        // faudra déclarer les classes des attaques possibles et nom associé 
-        // dans la propriété "type" de l'attaque icci
-        attackTypes.put("generic", MCGenericAttack.class);
     }
 
     public MCEntity.Attack build(MCEntity parent, String attackName) throws Exception {
         if (assetManager == null) 
             throw new IllegalStateException("must init attack factory before using it");
 
-        String attackPath = possibleAttacks.get(attackName);
-        if (attackPath == null)
-            throw new MissingDataException("cant build attack with name " + attackName + " because no tmx file exists associated with it");
-        
-        MCMap attackMap;
-        if (mapCache.containsKey(attackPath))
-            attackMap = mapCache.get(attackPath);
-        else {
-            attackMap = new MCMap(attackPath, assetManager);
-            mapCache.put(attackPath, attackMap);
-        }
+        MCMap attackMap = mapCache.get(attackName);
+        if (attackMap == null)
+            throw new IllegalStateException("cant find " + attackName + " in entity factory map cache");
 
         MapProperties attackProperties = attackMap.getProperties();
 
-        String typeStr = attackProperties.get("attackType", String.class);
-        if (typeStr == null) 
-            throw new DataException("cant decide of type of attack " + attackName + " because its type is not filled in map properties");
-        Class<? extends MCEntity.Attack> clazz = attackTypes.get(typeStr);
-        if (clazz == null)
-            throw new IllegalStateException("cannot find type " + typeStr + " in entity types map in factory");
-
-        Integer power = attackProperties.get("power", Integer.class);
-        if (power == null) 
-            throw new DataException("missing power in attack map " + attackName);
+        int power = MCUtils.getIntProperty(attackProperties, "power", 1);
 
         Map<Vector2, Float> damagePattern = new HashMap<>();
 
@@ -94,7 +72,6 @@ public class MCAttackFactory {
         Vector2 senderPos = layer.getPosByProperty("type", "sender");
         if (senderPos == null)
             throw new DataException("cant build attack " + attackName + " : no sender tile in attack map");
-
 
         if (!(layer.getRawLayer() instanceof TiledMapTileLayer))
             throw new IllegalStateException("the MapLayer in attack Map layer 0 is not a TiledMapTileLayer");
@@ -110,13 +87,10 @@ public class MCAttackFactory {
                     String tileType = tileProps.get("type", String.class);
                     if (tileType.equals("attackDamage")) {
                         // on calcule sa position relative à l'envoyeur
-                        Vector2 relativePos = senderPos.cpy().sub(new Vector2(x, y));
-                        float damageAtPos = 1;
+                        Vector2 relativePos = new Vector2(x, y).sub(senderPos.cpy());
 
-                        Float decreaseFactor = tileProps.get("decreaseFactor", Float.class);
-                        if (decreaseFactor != null) {
-                            damageAtPos = 1 * (1 - decreaseFactor);
-                        }
+                        float decreaseFactor = MCUtils.getFloatProperty(tileProps, "decreaseFactor", 0f);
+                        float damageAtPos = 1 * (1 - decreaseFactor);
 
                         damagePattern.put(relativePos, damageAtPos);
                     }
@@ -124,11 +98,11 @@ public class MCAttackFactory {
             }
         }
 
-        MCEntity.Attack attack = clazz
-            .getDeclaredConstructor(MCEntity.class, Integer.class, HashMap.class)
-            .newInstance(parent, power, damagePattern);
+        MCEntity.Attack attack = new MCEntity.Attack(parent, power, damagePattern);
         attack.initFromProperties(attackProperties);
+        //System.out.println(attack.toString());
 
         return attack;
     }
+    
 }

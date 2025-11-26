@@ -1,6 +1,7 @@
 package com.walk.or.die.engine.entities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.screens.MCGameScreen;
@@ -33,10 +35,13 @@ public abstract class MCEntity {
         }
     }
 
-    public abstract static class Attack {
-        protected final MCEntity parent;
-        protected int power;
-        protected Map<Vector2, Float> damagePattern;
+    public static class Attack {
+        private final MCEntity parent;
+        private int power;
+        private Map<Vector2, Float> damagePattern;
+
+        private String senderAnim;
+        private String targetAnim;
 
         public Attack(MCEntity parent, int power, Map<Vector2, Float> pattern) {
             this.parent = parent;
@@ -44,7 +49,10 @@ public abstract class MCEntity {
             this.damagePattern = pattern;
         }
 
-        public abstract void initFromProperties(MapProperties props);
+        public void initFromProperties(MapProperties props) {
+            this.senderAnim = props.get("senderAnim", String.class);
+            this.targetAnim = props.get("targetAnim", String.class);
+        }
 
         public boolean isValidTile(Vector2 targetPos) {
             if (parent == null)
@@ -52,17 +60,34 @@ public abstract class MCEntity {
             return damagePattern.containsKey(parent.getTilePosition().cpy().sub(targetPos));
         }
         
-        protected float getDamageAtTile(Vector2 targetPos) {
+        private float getDamageAtTile(Vector2 targetPos) {
             if (parent == null)
                 throw new IllegalStateException("cant use attack methods without associatin a parent !");
             Vector2 relativeDist = parent.getTilePosition().cpy().sub(targetPos);
-            return damagePattern.getOrDefault(relativeDist, -1f);
+            Float damage = damagePattern.get(relativeDist);
+            if (damage == null)
+                return -1f;
+            else
+                return damage * (float)power;
         }
 
         public float getDamageTo(MCEntity targetEntity) {
             if (parent == null)
                 throw new IllegalStateException("cant use attack methods without associatin a parent !");
             return getDamageAtTile(targetEntity.getTilePosition());
+        }
+
+        @Override 
+        public String toString() {
+            String s = "";
+            for (int i = -2; i <= 2; i++) {
+                for (int j = -2; j <= 2; j++) {
+                    Vector2 v = new Vector2(i, j);
+                    Float d = damagePattern.get(v);
+                    s += "(" + v.x + "," + v.y + ") : " + d + "\n";
+                }
+            }
+            return s;
         }
     }
 
@@ -72,6 +97,7 @@ public abstract class MCEntity {
     private Rectangle hitbox;
     private TextureRegion currentRegion; // ca va bientot degager
     private Map<String, MCAnimation> animations;
+    private MCAnimation currentAnim;
     private Sprite sprite;
     private int layer = 1;
     public boolean focus = false;
@@ -79,23 +105,17 @@ public abstract class MCEntity {
 
     private float SIZE = 1f;
 
-    public MCEntity(MCGameScreen parent, MCGameMap map, Vector2 spawn, TextureRegion baseRegion) {
-        this.parent = parent;
-        this.map = map;
-        currentRegion = baseRegion;
-
-        sprite = new Sprite(currentRegion);
-        sprite.setSize(SIZE, SIZE);
-        sprite.setPosition(spawn.x, spawn.y);
-
-        hitbox = new Rectangle(spawn.x, spawn.y, sprite.getWidth(), sprite.getHeight());
-    }
-
     public MCEntity(MCGameScreen parent, MCGameMap map, String entityId) {
         this.parent = parent;
         this.map = map;
         this.name = entityId;
-        //hitbox = new Rectangle(spawn.x, spawn.y, sprite.getWidth(), sprite.getHeight());
+        this.animations = new HashMap<>();
+
+        sprite = new Sprite();
+        sprite.setSize(SIZE, SIZE);
+        sprite.setPosition(0, 0);
+
+        hitbox = new Rectangle(0, 0, sprite.getWidth(), sprite.getHeight());
     }
 
     public abstract void initFromProperties(MapProperties props) throws Exception;
@@ -104,11 +124,23 @@ public abstract class MCEntity {
         animations.put(animName, anim);
     }
 
+    public void playAnimation(String animName) {
+        MCAnimation newAnim = animations.get(animName);
+        if (newAnim != null) {
+            currentAnim = newAnim;
+            currentAnim.reset(); // remet statetime à 0 ms
+        } else {
+            System.err.println("playAnimation " + animName + " not found");
+        }
+    }
+
     public void update(float delta) {
         // utile pour ajouter des anims par la suite hihihi
         //stateManager.update(delta);
         sprite.setPosition(hitbox.x, hitbox.y);
-        sprite.setRegion(currentRegion);
+        if (currentAnim != null) {
+            sprite.setRegion(currentAnim.update(delta));
+        }
     }
 
     public void render(SpriteBatch batch) {
@@ -153,6 +185,10 @@ public abstract class MCEntity {
 
     public void setPosition(float x, float y) {
         this.hitbox.setPosition(x, y);
+    }
+
+    public void setPosition(Vector2 pos) {
+        this.hitbox.setPosition(pos.x, pos.y);
     }
 
     public MCGameMap getMap() {

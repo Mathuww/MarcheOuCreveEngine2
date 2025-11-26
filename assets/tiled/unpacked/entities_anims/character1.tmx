@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="1">
  <properties>
-  <property name="type" value="character"/>
+  <property name="attack1" value="square_attack"/>
+  <property name="baseAttack" value="square_attack"/>
+  <property name="hp" type="int" value="100"/>
+  <property name="maxMoves" type="int" value="4"/>
+  <property name="type" value="ally"/>
  </properties>
  <tileset firstgid="1" name="chara1" tilewidth="16" tileheight="16" tilecount="64" columns="8">
   <image source="../spritesheets/tileset_1bit.png" width="128" height="128"/>

@@ -8,6 +8,8 @@ import javax.crypto.Mac;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
+import com.walk.or.die.engine.MCUtils;
 import com.walk.or.die.engine.screens.MCGameScreen;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -23,16 +25,16 @@ public class MCCharacter extends MCEntity {
     
     protected final int MAX_ATTACK_NUMBER = 6;
 
-    private int hp;
-    private int maxDeplacements;
+    private Integer hp;
+    private Integer maxDeplacements;
     private MCStateMachine<MCEntityState, MCEntity> stateManager;
     private Attack String;
     private Map<String, MCEntity.Attack> attacks;
     private String baseAttack;
 
-    public MCCharacter(MCGameScreen parent, MCGameMap map, Vector2 spawn, TextureRegion baseRegion) {
-        super(parent, map, spawn, baseRegion);
-        
+    public MCCharacter(MCGameScreen parent, MCGameMap map, String entityGenericName) {
+        super(parent, map, entityGenericName);
+        attacks = new HashMap<>();
         stateManager = new MCStateMachine<>(this);
         stateManager.addState(new MCESClickMove(this));
         stateManager.addState(new MCESIdle(this));
@@ -40,34 +42,32 @@ public class MCCharacter extends MCEntity {
         stateManager.addState(new MCESShoot(this));
         stateManager.addState(new MCESReady(this));
         stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
-        
-    }
-
-    public MCCharacter(MCGameScreen parent, MCGameMap map, String entityGenericName) {
-        super(parent, map, entityGenericName);
-        attacks = new HashMap<>();
-        //hitbox = new Rectangle(spawn.x, spawn.y, sprite.getWidth(), sprite.getHeight());
     }
 
     @Override
     public void initFromProperties(MapProperties props) throws Exception {
-        hp = props.get("hp", Integer.class);
-        maxDeplacements = props.get("maxMoves", Integer.class);
+        hp = MCUtils.getIntProperty(props, "hp", 100);
+        maxDeplacements = MCUtils.getIntProperty(props, "maxMoves", 2);
 
-        MCAttackFactory builder = MCAttackFactory.get();
-        for (int i = 0; i < MAX_ATTACK_NUMBER; i++) {
+        MCAttackFactory attackFact = MCAttackFactory.get();
+        for (int i = 1; i < MAX_ATTACK_NUMBER; i++) {
             // on vient chercher attack1, attack2, etc.
+            System.out.println("searching for " + "attack" + i);
             String attackName = props.get("attack" + i, String.class);
-            if (attackName == null)
+            if (attackName == null) {
+                System.out.println("not found");
                 break;
-            addAttack(attackName, builder.build(this, attackName));
+            }
+            MCEntity.Attack attack = attackFact.build(this, attackName);
+            System.out.println(attackName + attack.toString());
+            addAttack(attackName, attack);
         }
 
         baseAttack = props.get("baseAttack", String.class);
     }
 
-    public void addAttack(String attackName, MCEntity.Attack attack) {
-        attacks.put(attackName, attack);
+    public void addAttack(String name, MCEntity.Attack attack) {
+        attacks.put(name, attack);
     }
 
     @Override
