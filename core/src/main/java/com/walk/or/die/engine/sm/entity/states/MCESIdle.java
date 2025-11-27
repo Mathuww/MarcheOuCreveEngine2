@@ -49,10 +49,9 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
         if (data instanceof MCInputManager.ReadyCommand) {
             changeState("ready", new MCESReady.ReadyStateArgs());
             
-        }
-        else if (data instanceof MCInputManager.AimCommand) {
+        } else if (data instanceof MCInputManager.AimCommand) {
             System.out.println("oh");
-            changeState("aim", new MCESAim.AimStateArgs());
+            changeState("aim", new MCESAim.AimStateArgs(parent.getAttack()));
         }
     }
 

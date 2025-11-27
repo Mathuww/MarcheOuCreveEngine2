@@ -6,9 +6,9 @@
     "activeFile": "",
     "expandedProjectPaths": [
         "entities_anims",
+        ".",
         "maps",
-        "attacks",
-        "."
+        "attacks"
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
@@ -27,6 +27,9 @@
                 "x": 91.75,
                 "y": 73.375
             }
+        },
+        "entities_anims/chara1.tsx": {
+            "scaleInDock": 1
         },
         "entities_anims/character1.tmx": {
             "scale": 5.5,
@@ -62,6 +65,17 @@
             "scaleInDock": 1
         },
         "maps/start.tmx#player": {
+            "scaleInDock": 1
+        },
+        "misc.tmx": {
+            "scale": 4,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 35.125,
+                "y": 58.25
+            }
+        },
+        "misc.tmx#chara1": {
             "scaleInDock": 1
         }
     },

@@ -43,6 +43,7 @@ public abstract class MCEntity {
     private MCAnimation currentAnim;
     private Sprite sprite;
     private int layer = 1;
+    public boolean display = true;
     public boolean focus = false;
     public boolean keep = false;
 
@@ -89,6 +90,7 @@ public abstract class MCEntity {
     }
 
     public void render(SpriteBatch batch) {
+        if (!display) return;
         sprite.draw(batch);
     }
 
@@ -150,5 +152,17 @@ public abstract class MCEntity {
         if (keep) return false;
         focus = false;
         return true;
+    }
+
+    public boolean isHidden() {
+        return !display;
+    }
+
+    public void show() {
+        display = true;
+    }
+
+    public void hide() {
+        display = false;
     }
 }

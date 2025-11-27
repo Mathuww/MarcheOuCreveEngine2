@@ -3,6 +3,7 @@ package com.walk.or.die.engine.sm.entity.states;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.cameras.MCCameraManager;
+import com.walk.or.die.engine.entities.MCAttack;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
@@ -20,9 +21,11 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
 
     public static class ShootStateArgs extends MCEntityState.StateArgs {
         MCCharacter target;
+        MCAttack attack;
 
-        public ShootStateArgs(MCCharacter e) {
+        public ShootStateArgs(MCCharacter e, MCAttack a) {
             target = e;
+            attack = a;
         }
     }
 
@@ -41,7 +44,7 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
     @Override
     public void enter(ShootStateArgs args) {
         super.enter(args);
-        finished = parent.shoot(args.target);
+        finished = parent.shoot(args.target, args.attack);
 
     }
 

@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.shared;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,7 @@ public class MCSharedAssets {
     }
 
     private MCMapLayer miscTilesLayer;
-    private Map<String, TiledMapTile> savedTiles;
+    private Map<String, TiledMapTile> savedTiles = new HashMap<>();
 
     private MCSharedAssets() {}
 

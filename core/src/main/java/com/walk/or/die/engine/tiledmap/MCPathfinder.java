@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.tiledmap ;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
 
@@ -100,6 +101,15 @@ public class MCPathfinder {
         }
 
         return result;
+    }
+
+    public boolean isCorrectTrajectory(List<Vector2> trajectory) {
+        System.out.println(trajectory);
+        for (Vector2 pos : trajectory) {
+            if (!game.isWalkable(MathUtils.floor(pos.x), MathUtils.floor(pos.y))) return false;
+        }
+        System.out.println("hop ça marche (pas)");
+        return true;
     }
 
     private List<Vector2> clean(List<Vector2> path) {

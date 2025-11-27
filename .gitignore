@@ -162,6 +162,8 @@ savestate.sh
 .vscode/
 .editorconfig
 misc/
+assets/ 
+# en vrai pour l'instant
 
 ## Special cases:
 

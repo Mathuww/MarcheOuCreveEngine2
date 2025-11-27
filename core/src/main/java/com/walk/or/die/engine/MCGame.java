@@ -79,7 +79,7 @@ public class MCGame extends Game {
         pathfinder.init(this);
 
         try {
-            //sharedAssets.init(TILED_ROOT + "misc.tmx", drh);
+            sharedAssets.init(MAP_ROOT + "misc.tmx", drh);
         } catch (Exception e) {
             e.printStackTrace();
         }

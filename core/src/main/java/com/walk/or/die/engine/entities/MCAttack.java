@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.entities;
 
+import java.awt.Point;
 import java.util.Map;
 
 import org.w3c.dom.Text;
@@ -19,18 +20,19 @@ import com.walk.or.die.engine.shared.MCSharedAssets;
 public class MCAttack {
     private final MCEntity parent;
     private int power;
-    private Map<Vector2, Float> damagePattern;
+    private Map<Point, Float> damagePattern;
     private Array<Sprite> displaySprites = new Array<>();
     private TextureRegion validTileTexture;
+    public boolean display = false;
 
     private String senderAnim;
     private String targetAnim;
 
-    public MCAttack(MCEntity parent, int power, Map<Vector2, Float> pattern) throws Exception {
+    public MCAttack(MCEntity parent, int power, Map<Point, Float> pattern) throws Exception {
         this.parent = parent;
         this.power = power;
         this.damagePattern = pattern;
-        //validTileTexture = MCSharedAssets.get().getSavedTexture("validAttackTile");
+        validTileTexture = MCSharedAssets.get().getSavedTexture("validAttackTile");
     }
 
     public void initFromProperties(MapProperties props) {
@@ -39,12 +41,15 @@ public class MCAttack {
     }
 
     public boolean isValidTile(Vector2 targetPos) {
-        return damagePattern.containsKey(targetPos.cpy().sub(parent.getTilePosition()));
+        Vector2 relativePos = targetPos.cpy().sub(parent.getTilePosition());
+        Point key = new Point(MathUtils.floor(relativePos.x), MathUtils.floor(relativePos.y));
+        return damagePattern.containsKey(key);
     }
     
     private int getDamageAtTile(Vector2 targetPos) {
-        Vector2 relativeDist = targetPos.cpy().sub(parent.getTilePosition());
-        Float damage = damagePattern.get(relativeDist);
+        Vector2 relativePos = targetPos.cpy().sub(parent.getTilePosition());
+        Point key = new Point(MathUtils.floor(relativePos.x), MathUtils.floor(relativePos.y));
+        Float damage = damagePattern.get(key);
         if (damage == null)
             return -1;
         else
@@ -55,22 +60,21 @@ public class MCAttack {
         return getDamageAtTile(targetEntity.getTilePosition());
     }
 
-    public void hide() {
-        displaySprites.clear();
-    }
-
     public void update() {
+        System.out.println("updating attack");
         displaySprites.clear();
         Vector2 parentTile = parent.getTilePosition();
-        for (Vector2 relativeTile : damagePattern.keySet()) {
+        for (Point relativeTile : damagePattern.keySet()) {
             Float damage = damagePattern.get(relativeTile);
             if (damage != null && damage > 0f) {
-                Vector2 absoluteTile = relativeTile.add(parentTile.cpy());
+                Vector2 absoluteTile = new Vector2(relativeTile.x, relativeTile.y).add(parentTile.cpy());
                 int absTileX = MathUtils.floor(absoluteTile.x);
                 int absTileY = MathUtils.floor(absoluteTile.y);
                 if (parent.getMap().isWalkable(absTileX, absTileY)) {
+                    //System.out.println("adding attack display sprite at  : " + absTileX + ", " + absTileY);
                     Sprite spr = new Sprite(validTileTexture);
                     spr.setPosition(absTileX, absTileY);
+                    spr.setSize(1f, 1f);
                     displaySprites.add(spr);
                 }
             }
@@ -78,6 +82,7 @@ public class MCAttack {
     }
 
     public void render(SpriteBatch batch) {
+        if (!display) return;
         for (Sprite spr : displaySprites)
             spr.draw(batch);
     }

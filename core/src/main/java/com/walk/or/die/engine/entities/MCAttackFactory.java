@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.entities;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.exceptions.DataException;
@@ -65,7 +67,7 @@ public class MCAttackFactory {
 
         int power = MCUtils.getIntProperty(attackProperties, "power", 1);
 
-        Map<Vector2, Float> damagePattern = new HashMap<>();
+        Map<Point, Float> damagePattern = new HashMap<>();
 
         MCMapLayer layer = attackMap.getLayer(0);
         Vector2 senderPos = layer.getPosByProperty("type", "sender");
@@ -91,7 +93,7 @@ public class MCAttackFactory {
                         float decreaseFactor = MCUtils.getFloatProperty(tileProps, "decreaseFactor", 0f);
                         float damageAtPos = 1 * (1 - decreaseFactor);
 
-                        damagePattern.put(relativePos, damageAtPos);
+                        damagePattern.put(new Point(MathUtils.floor(relativePos.x), MathUtils.floor(relativePos.y)), damageAtPos);
                     }
                 }
             }

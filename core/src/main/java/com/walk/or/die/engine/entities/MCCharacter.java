@@ -28,11 +28,11 @@ public class MCCharacter extends MCEntity {
 
     private Integer hp;
     private boolean dead = false;
-    private boolean display = true;
     private Integer maxDeplacements;
     private MCStateMachine<MCEntityState, MCEntity> stateManager;
     private Map<String, MCAttack> attacks;
     private String baseAttack;
+    private String displayedAttack;
 
     public MCCharacter(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
@@ -80,7 +80,8 @@ public class MCCharacter extends MCEntity {
 
     @Override
     public void render(SpriteBatch batch) {
-        if (!display) return;
+        for (MCAttack pineapple : attacks.values())
+            pineapple.render(batch);
         super.render(batch);
     }
 
@@ -99,11 +100,12 @@ public class MCCharacter extends MCEntity {
         return attack;
     }
     
-    public boolean shoot(MCCharacter target) {
-        MCAttack attack = attacks.get(baseAttack);
+    public boolean shoot(MCCharacter target, MCAttack attack) {
+        //MCAttack attack = attacks.get(baseAttack);
         if (attack == null)
-            throw new IllegalStateException("trying to shoot without a base attack !");
+            throw new IllegalStateException("trying to shoot without a null attack !");
         int damage = attack.getDamageTo(target);
+        System.out.println("trying to shoot with damage : " + damage);
         target.getHurt(damage);
         return true;
     }
@@ -121,22 +123,11 @@ public class MCCharacter extends MCEntity {
         return dead;
     }
 
-    public boolean isHidden() {
-        return !display;
-    }
-
-    public void show() {
-        display = true;
-    }
-
-    public void hide() {
-        display = false;
-    }
-
     private void die() {
         hp = 0;
         dead = true;
         if (!playAnimation("dead"))
             hide();
     }
+
 }
