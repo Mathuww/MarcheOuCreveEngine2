@@ -3,14 +3,15 @@ package com.walk.or.die.engine.sm.entity.states;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +47,14 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
             Vector2 v = tileCmd.getVector();
-           if (parent.getMap().isWalkable(MathUtils.floor(v.x), MathUtils.floor(v.y))) {
-                changeState("click_move", new MCESClickMove.MoveStateArgs(v));
+            if (MCPathfinder.get().isWalkable(MathUtils.floor(v.x), MathUtils.floor(v.y))) {
+                List<Vector2> path = MCPathfinder.get().getPath(parent.getPosition(), v);
+                if (path.size() == 0)
+                    changeState("idle", new MCESIdle.IdleStateArgs());
+                changeState("click_move", new MCESClickMove.MoveStateArgs(v, path));
                 return;
             }
-            changeState("idle", new MCESIdle.IdleStateArgs());;
+            changeState("idle", new MCESIdle.IdleStateArgs());
         }
         else if (!(data instanceof MCInputManager.DirectionalCommand bipboup)) {
             changeState("idle", new MCESIdle.IdleStateArgs());

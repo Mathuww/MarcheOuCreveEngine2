@@ -5,12 +5,13 @@ import java.util.Map;
 
 import javax.crypto.Mac;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.walk.or.die.engine.MCUtils;
-import com.walk.or.die.engine.screens.MCGameScreen;
+import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESAim;
@@ -18,7 +19,7 @@ import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
 import com.walk.or.die.engine.sm.entity.states.MCESIdle;
 import com.walk.or.die.engine.sm.entity.states.MCESReady;
 import com.walk.or.die.engine.sm.entity.states.MCESShoot;
-import com.walk.or.die.engine.tiledmap.MCGameMap;
+import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCCharacter extends MCEntity {
@@ -26,13 +27,14 @@ public class MCCharacter extends MCEntity {
     protected final int MAX_ATTACK_NUMBER = 6;
 
     private Integer hp;
+    private boolean dead = false;
+    private boolean display = true;
     private Integer maxDeplacements;
     private MCStateMachine<MCEntityState, MCEntity> stateManager;
-    private Attack String;
-    private Map<String, MCEntity.Attack> attacks;
+    private Map<String, MCAttack> attacks;
     private String baseAttack;
 
-    public MCCharacter(MCGameScreen parent, MCGameMap map, String entityGenericName) {
+    public MCCharacter(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
         attacks = new HashMap<>();
         stateManager = new MCStateMachine<>(this);
@@ -58,7 +60,7 @@ public class MCCharacter extends MCEntity {
                 System.out.println("not found");
                 break;
             }
-            MCEntity.Attack attack = attackFact.build(this, attackName);
+            MCAttack attack = attackFact.build(this, attackName);
             System.out.println(attackName + attack.toString());
             addAttack(attackName, attack);
         }
@@ -66,7 +68,7 @@ public class MCCharacter extends MCEntity {
         baseAttack = props.get("baseAttack", String.class);
     }
 
-    public void addAttack(String name, MCEntity.Attack attack) {
+    public void addAttack(String name, MCAttack attack) {
         attacks.put(name, attack);
     }
 
@@ -74,6 +76,12 @@ public class MCCharacter extends MCEntity {
     public void update(float delta) {
         super.update(delta);
         stateManager.update(delta);
+    }
+
+    @Override
+    public void render(SpriteBatch batch) {
+        if (!display) return;
+        super.render(batch);
     }
 
     public MCStateMachine getStateManager() {
@@ -84,15 +92,51 @@ public class MCCharacter extends MCEntity {
         this.stateManager = stateManager;
     }
 
-    public boolean shoot(MCEntity target) {
-        //int damage = baseAttack.getDamageTo(target);
-        //target.getHurt(damage)
+    public MCAttack getAttack() {
+        MCAttack attack = attacks.get(baseAttack);
+        if (attack == null)
+            throw new IllegalStateException("trying to shoot without a base attack !");
+        return attack;
+    }
+    
+    public boolean shoot(MCCharacter target) {
+        MCAttack attack = attacks.get(baseAttack);
+        if (attack == null)
+            throw new IllegalStateException("trying to shoot without a base attack !");
+        int damage = attack.getDamageTo(target);
+        target.getHurt(damage);
         return true;
     }
 
     public void getHurt(int damage) {
+        if (damage < 0f) 
+            throw new IllegalArgumentException("cant get hurt with negative damage");
+        hp = hp - damage;
+        if (hp <= 0)
+            die();
         System.out.println("J'ai pris " + damage + "dégats !");
     }
     
+    public boolean isDead() {
+        return dead;
+    }
 
+    public boolean isHidden() {
+        return !display;
+    }
+
+    public void show() {
+        display = true;
+    }
+
+    public void hide() {
+        display = false;
+    }
+
+    private void die() {
+        hp = 0;
+        dead = true;
+        if (!playAnimation("dead"))
+            hide();
+    }
 }

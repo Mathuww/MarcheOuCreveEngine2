@@ -9,10 +9,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Disposable;
-import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
+import com.walk.or.die.engine.shared.MCEventBus;
 
 public class MCArrowsCamBehavior extends MCCameraBehavior {
     private final float CAM_MOVE_SPEED = 0.025f;

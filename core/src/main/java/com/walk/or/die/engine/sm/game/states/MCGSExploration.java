@@ -1,11 +1,11 @@
 package com.walk.or.die.engine.sm.game.states;
 
 import com.badlogic.gdx.Input;
-import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.sm.game.MCGameState;
 
 public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> {

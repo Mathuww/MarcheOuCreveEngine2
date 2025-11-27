@@ -2,11 +2,11 @@ package com.walk.or.die.engine.sm.entity.states;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -19,9 +19,9 @@ import java.util.List;
 public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
 
     public static class ShootStateArgs extends MCEntityState.StateArgs {
-        MCEntity target;
+        MCCharacter target;
 
-        public ShootStateArgs(MCEntity e) {
+        public ShootStateArgs(MCCharacter e) {
             target = e;
         }
     }

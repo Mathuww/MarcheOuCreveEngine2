@@ -1,11 +1,15 @@
 package com.walk.or.die.engine.tiledmap ;
 
 import com.badlogic.gdx.math.Vector2;
+import com.walk.or.die.engine.MCGame;
 
 import java.util.List;
 import java.beans.VetoableChangeSupport;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import java.util.HashSet;
 import java.util.Collections;
 
@@ -25,10 +29,17 @@ class Tuple {
 
 public class MCPathfinder {
     // A* ma gueule, algo de zigzaging
-    private MCMap parent;
+    private MCGame game;
+    private MCTerrainMap map;
+    private static MCPathfinder instance = null;
 
-    public MCPathfinder(MCMap parent) {
-        this.parent = parent;
+    public static MCPathfinder get() {
+        if (instance == null) instance = new MCPathfinder();
+        return instance;
+    }
+
+    public void init (MCGame game) {
+        this.game = game;
     }
 
     public List<Vector2> getPath(Vector2 start, Vector2 end) {
@@ -60,7 +71,38 @@ public class MCPathfinder {
         return new ArrayList<>();
     }
 
-    public List<Vector2> clean(List<Vector2> path) {
+    public boolean isWalkable(int x, int y) {
+        return game.isWalkable(x, y);
+    }
+
+    public List<Vector2> getTrajectory(int x1, int y1, int x2, int y2) {
+
+        List<Vector2> result = new ArrayList<>();
+
+        int dx = Math.abs(x2 - x1);
+        int dy = Math.abs(y2 - y1);
+        int sx = x1 < x2 ? 1 : -1;
+        int sy = y1 < y2 ? 1 : -1;
+        int err = dx - dy;
+
+        while (true) {
+            result.add(new Vector2(x1, y1));
+            if (x1 == x2 && y1 == y2) break;
+            int e2 = 2 * err;
+            if (e2 > -dy) {
+                err -= dy;
+                x1 += sx;
+            }
+            if (e2 < dx) {
+                err += dx;
+                y1 += sy;
+            }
+        }
+
+        return result;
+    }
+
+    private List<Vector2> clean(List<Vector2> path) {
         if (path.size() == 0) return path;
         Vector2 current = path.get(0);
         List<Vector2> newList = new ArrayList<>();
@@ -116,7 +158,7 @@ public class MCPathfinder {
             int nx = x + dir[0];
             int ny = y + dir[1];
 
-            if (parent.isWalkable(nx, ny)) {
+            if (game.isWalkable(nx, ny)) {
                 neighbors.add(new Vector2(nx, ny));
             }
         }

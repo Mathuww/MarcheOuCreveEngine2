@@ -1,13 +1,14 @@
 package com.walk.or.die.engine.sm.entity.states;
 
-import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESIdle.IdleStateArgs;
+import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
@@ -21,9 +22,11 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
 
     public static class MoveStateArgs extends MCEntityState.StateArgs {
         public Vector2 target;
+        public List<Vector2> path;
 
-        public MoveStateArgs(Vector2 target) {
+        public MoveStateArgs(Vector2 target, List<Vector2> path) {
             this.target = target;
+            this.path = path;
         }
     }
 
@@ -80,7 +83,7 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
     public void enter(MoveStateArgs args) {
         goal = args.target;
         movements.clear();
-        movements.addAll(parent.getMap().getPath(parent.getPosition(), goal));
+        movements.addAll(args.path);
         parent.playAnimation("walk");
         super.enter(args);
     }

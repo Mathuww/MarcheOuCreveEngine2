@@ -6,9 +6,9 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
+import com.walk.or.die.engine.shared.MCEventBus;
 
 public class MCCameraManager {
     public static enum CameraMode {

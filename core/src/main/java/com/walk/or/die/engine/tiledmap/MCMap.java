@@ -49,21 +49,6 @@ public class MCMap implements Disposable {
         return layer.getHeight();
     }
 
-    public boolean isWalkable(int x, int y) {
-        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        if (layer == null) return false;
-        if (x < 0 || x >= layer.getWidth() || y < 0 || y >= layer.getHeight()) return false;
-        TiledMapTileLayer.Cell cell = layer.getCell(x, y);
-        
-        if (cell == null || cell.getTile() == null) return false; // vide = non traversable
-
-        MapProperties props = cell.getTile().getProperties();
-        if (props.containsKey("blocked") || props.containsKey("collision")) {
-            return false;
-        }
-        return true;
-    }
-
     public TiledMap getTiledMap() {
         return this.tiledMap;
     }
@@ -121,5 +106,6 @@ public class MCMap implements Disposable {
     public void dispose() {
         if (tiledMap != null) tiledMap.dispose();
     }
+
 }
 

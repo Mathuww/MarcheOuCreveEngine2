@@ -12,8 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
-import com.walk.or.die.engine.MCEventBus;
-import com.walk.or.die.engine.screens.MCGameScreen;
+import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
@@ -21,10 +20,11 @@ import com.walk.or.die.engine.sm.entity.states.MCESIdle;
 import com.walk.or.die.engine.sm.entity.states.MCESAim;
 import com.walk.or.die.engine.sm.entity.states.MCESShoot;
 import com.walk.or.die.engine.sm.game.MCGameState;
-import com.walk.or.die.engine.tiledmap.MCGameMap;
+import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public abstract class MCEntity {
+    
     public static class TileReachedArgs {
         public MCEntity entity;
         public Vector2 tile;
@@ -35,67 +35,10 @@ public abstract class MCEntity {
         }
     }
 
-    public static class Attack {
-        private final MCEntity parent;
-        private int power;
-        private Map<Vector2, Float> damagePattern;
-
-        private String senderAnim;
-        private String targetAnim;
-
-        public Attack(MCEntity parent, int power, Map<Vector2, Float> pattern) {
-            this.parent = parent;
-            this.power = power;
-            this.damagePattern = pattern;
-        }
-
-        public void initFromProperties(MapProperties props) {
-            this.senderAnim = props.get("senderAnim", String.class);
-            this.targetAnim = props.get("targetAnim", String.class);
-        }
-
-        public boolean isValidTile(Vector2 targetPos) {
-            if (parent == null)
-                throw new IllegalStateException("cant use attack methods without associatin a parent !");
-            return damagePattern.containsKey(parent.getTilePosition().cpy().sub(targetPos));
-        }
-        
-        private float getDamageAtTile(Vector2 targetPos) {
-            if (parent == null)
-                throw new IllegalStateException("cant use attack methods without associatin a parent !");
-            Vector2 relativeDist = parent.getTilePosition().cpy().sub(targetPos);
-            Float damage = damagePattern.get(relativeDist);
-            if (damage == null)
-                return -1f;
-            else
-                return damage * (float)power;
-        }
-
-        public float getDamageTo(MCEntity targetEntity) {
-            if (parent == null)
-                throw new IllegalStateException("cant use attack methods without associatin a parent !");
-            return getDamageAtTile(targetEntity.getTilePosition());
-        }
-
-        @Override 
-        public String toString() {
-            String s = "";
-            for (int i = -2; i <= 2; i++) {
-                for (int j = -2; j <= 2; j++) {
-                    Vector2 v = new Vector2(i, j);
-                    Float d = damagePattern.get(v);
-                    s += "(" + v.x + "," + v.y + ") : " + d + "\n";
-                }
-            }
-            return s;
-        }
-    }
-
     private String name;
-    private MCGameScreen parent;
-    private MCGameMap map;
+    private MCGame parent;
+    private MCTerrainMap map;
     private Rectangle hitbox;
-    private TextureRegion currentRegion; // ca va bientot degager
     private Map<String, MCAnimation> animations;
     private MCAnimation currentAnim;
     private Sprite sprite;
@@ -105,7 +48,7 @@ public abstract class MCEntity {
 
     private float SIZE = 1f;
 
-    public MCEntity(MCGameScreen parent, MCGameMap map, String entityId) {
+    public MCEntity(MCGame parent, MCTerrainMap map, String entityId) {
         this.parent = parent;
         this.map = map;
         this.name = entityId;
@@ -124,13 +67,15 @@ public abstract class MCEntity {
         animations.put(animName, anim);
     }
 
-    public void playAnimation(String animName) {
+    public boolean playAnimation(String animName) {
         MCAnimation newAnim = animations.get(animName);
         if (newAnim != null) {
             currentAnim = newAnim;
             currentAnim.reset(); // remet statetime à 0 ms
+            return true;
         } else {
             System.err.println("playAnimation " + animName + " not found");
+            return false;
         }
     }
 
@@ -147,7 +92,7 @@ public abstract class MCEntity {
         sprite.draw(batch);
     }
 
-    public MCGameScreen getParent() {
+    public MCGame getParent() {
         return parent;
     }
     
@@ -191,7 +136,7 @@ public abstract class MCEntity {
         this.hitbox.setPosition(pos.x, pos.y);
     }
 
-    public MCGameMap getMap() {
+    public MCTerrainMap getMap() {
         return map;
     }
 
@@ -206,19 +151,4 @@ public abstract class MCEntity {
         focus = false;
         return true;
     }
-
-
-    // A deplacer
-    /*
-    public boolean shoot(MCEntity target) {
-        //int damage = baseAttack.getDamageTo(target);
-        //target.getHurt(damage)
-        return true;
-    }
-
-    // A deplacer
-    public void getHurt(int damage) {
-        System.out.println("J'ai pris " + damage + "dégats !");
-    } */
-
 }

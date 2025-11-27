@@ -14,11 +14,10 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.walk.or.die.engine.MCUtils;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.MissingDataException;
-import com.walk.or.die.engine.screens.MCGameScreen;
-import com.walk.or.die.engine.tiledmap.MCGameMap;
+import com.walk.or.die.engine.shared.MCUtils;
+import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
 
@@ -54,7 +53,7 @@ public class MCAttackFactory {
         }
     }
 
-    public MCEntity.Attack build(MCEntity parent, String attackName) throws Exception {
+    public MCAttack build(MCEntity parent, String attackName) throws Exception {
         if (assetManager == null) 
             throw new IllegalStateException("must init attack factory before using it");
 
@@ -98,7 +97,7 @@ public class MCAttackFactory {
             }
         }
 
-        MCEntity.Attack attack = new MCEntity.Attack(parent, power, damagePattern);
+        MCAttack attack = new MCAttack(parent, power, damagePattern);
         attack.initFromProperties(attackProperties);
         //System.out.println(attack.toString());
 

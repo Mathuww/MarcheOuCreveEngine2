@@ -2,11 +2,11 @@ package com.walk.or.die.engine.sm.entity.states;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.MCEventBus;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -48,6 +48,7 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
         if (!parent.focus) return;
         if (data instanceof MCInputManager.ReadyCommand) {
             changeState("ready", new MCESReady.ReadyStateArgs());
+            
         }
         else if (data instanceof MCInputManager.AimCommand) {
             System.out.println("oh");

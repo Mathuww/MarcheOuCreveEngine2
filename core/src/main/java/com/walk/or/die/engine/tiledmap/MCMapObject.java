@@ -2,7 +2,7 @@ package com.walk.or.die.engine.tiledmap;
 
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.MCUtils;
+import com.walk.or.die.engine.shared.MCUtils;
 
 public class MCMapObject {
     private MapObject mo;

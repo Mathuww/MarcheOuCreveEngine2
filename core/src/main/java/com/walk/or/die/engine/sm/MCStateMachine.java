@@ -1,8 +1,9 @@
 package com.walk.or.die.engine.sm;
 
-import com.walk.or.die.engine.MCEventBus;
-
 import java.util.List;
+
+import com.walk.or.die.engine.shared.MCEventBus;
+
 import java.util.ArrayList;
 
 public class MCStateMachine<T extends MCState, U> {

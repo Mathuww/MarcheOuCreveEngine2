@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 MAP_ROOT="assets/tiled/unpacked"
 OUTPUT_ROOT="assets/tiled/packed"
 
@@ -8,7 +7,6 @@ rm -r assets/tiled/packed/** > /dev/null 2>&1
 mkdir misc
 rm misc/packing.log
 
-#cp -r assets/tiled/unpacked/spritesheets assets/tiled/packed
 rsync -av --exclude '*.tmx' "$MAP_ROOT"/ "$OUTPUT_ROOT"/
 
 find "$MAP_ROOT" -type d | while read dir; do

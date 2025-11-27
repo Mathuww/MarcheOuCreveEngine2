@@ -1,4 +1,4 @@
-package com.walk.or.die.engine;
+package com.walk.or.die.engine.shared;
 
 import java.util.ArrayList;
 import java.util.List;

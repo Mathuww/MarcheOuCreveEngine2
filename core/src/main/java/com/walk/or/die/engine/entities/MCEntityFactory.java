@@ -16,11 +16,11 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
-import com.walk.or.die.engine.MCUtils;
+import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.MissingDataException;
-import com.walk.or.die.engine.screens.MCGameScreen;
-import com.walk.or.die.engine.tiledmap.MCGameMap;
+import com.walk.or.die.engine.shared.MCUtils;
+import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCEntityFactory {
@@ -61,7 +61,7 @@ public class MCEntityFactory {
         }
     }
 
-    public MCEntity build(MCGameScreen parentScreen, MCGameMap parentMap, String entityGenericName, String entityId) throws Exception {  
+    public MCEntity build(MCGame parentScreen, MCTerrainMap parentMap, String entityGenericName, String entityId) throws Exception {  
         if (assetManager == null) 
             throw new IllegalStateException("must init entity factory before using it");
 
@@ -80,7 +80,7 @@ public class MCEntityFactory {
         // le bordel pour en arrive la déjà ...
         // ca au passage ca peut générer 4 exceptions différentes ptdr
         MCEntity entity = clazz
-            .getDeclaredConstructor(MCGameScreen.class, MCGameMap.class, String.class)
+            .getDeclaredConstructor(MCGame.class, MCTerrainMap.class, String.class)
             .newInstance(parentScreen, parentMap, entityId);
 
         // Partie 2 : transmettre les propriétés éventuelles

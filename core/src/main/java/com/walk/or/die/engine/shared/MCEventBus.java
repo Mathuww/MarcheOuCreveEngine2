@@ -1,4 +1,4 @@
-package com.walk.or.die.engine;
+package com.walk.or.die.engine.shared;
 
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.entity.MCEntityState;

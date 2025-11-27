@@ -9,10 +9,10 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.utils.Disposable;
+import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityFactory;
 import com.walk.or.die.engine.exceptions.DataException;
-import com.walk.or.die.engine.screens.MCGameScreen;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.maps.MapObject;
@@ -24,19 +24,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MCGameMap extends MCMap {
+public class MCTerrainMap extends MCMap {
     private OrthogonalTiledMapRenderer renderer;
-    private MCPathfinder pathfinder;
+    private MCGame parent;
 
-    public MCGameMap(String mapPath, AssetManager assetManager) {
+    public MCTerrainMap(String mapPath, AssetManager assetManager) {
         super(mapPath, assetManager);
-        this.pathfinder = new MCPathfinder(this);
     }
-
-    public List<Vector2> getPath(Vector2 start, Vector2 end) {
-        return pathfinder.getPath(start, end);
-    }
-
     @Override
     public void loadMapWithAtlas(String mapPath, AssetManager assetManager) {
         super.loadMapWithAtlas(mapPath, assetManager);
@@ -44,6 +38,22 @@ public class MCGameMap extends MCMap {
         renderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale);
     }
 
+    public boolean isWalkable(int x, int y) {
+        
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        if (layer == null) return false;
+        if (x < 0 || x >= layer.getWidth() || y < 0 || y >= layer.getHeight()) return false;
+        TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+        
+        if (cell == null || cell.getTile() == null) return false; // vide = non traversable
+
+        MapProperties props = cell.getTile().getProperties();
+        if (props.containsKey("blocked") || props.containsKey("collision")) {
+            return false;
+        }
+        return true;
+    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
     public MCMapObject getPlayerSpawnObject() throws DataException {
         MCMapLayer layer = this.getLayer("Entities");
         if (layer == null) throw new DataException("no Entities layer in Tiled map");
@@ -78,7 +88,7 @@ public class MCGameMap extends MCMap {
         return this.stickToNearestTile(pos);
     }
 
-    public Array<MCEntity> getEntitiesToSpawn(MCGameScreen screen) throws Exception {
+    public Array<MCEntity> spawnEntities(MCGame game) throws Exception {
         MCMapLayer layer = this.getLayer("Entities");
         if (layer == null) throw new DataException("no Entities layer in game map");
 
@@ -106,7 +116,7 @@ public class MCGameMap extends MCMap {
                     count = 1;
                 }
                 entityCounter.put(entityName, count);
-                MCEntity entity = entityFact.build(screen, this, entityName, entityName + "_ " + String.format("%03d", count));
+                MCEntity entity = entityFact.build(game, this, entityName, entityName + "_ " + String.format("%03d", count));
 
                 MCMapObject obj = new MCMapObject(rawObj);
                 Vector2 pos = obj.getPosition();
