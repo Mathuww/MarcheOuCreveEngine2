@@ -2,9 +2,11 @@ package com.walk.or.die.engine.entities;
 
 import java.awt.Point;
 import java.util.Map;
+import java.util.List;
 
 import org.w3c.dom.Text;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,6 +16,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.shared.MCSharedAssets;
+import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 // ne pas mettre de point d'attaque 
 
@@ -24,6 +27,8 @@ public class MCAttack {
     private Array<Sprite> displaySprites = new Array<>();
     private TextureRegion validTileTexture;
     public boolean display = false;
+    private final Color VALID_COLOR = new Color(1f, 1f, 1f, 0.5f);
+    private final Color TRAJ_COLOR = new Color(1f, 0f, 0f, 0.6f);
 
     private String senderAnim;
     private String targetAnim;
@@ -60,7 +65,7 @@ public class MCAttack {
         return getDamageAtTile(targetEntity.getTilePosition());
     }
 
-    public void update() {
+    public void computeValidTilesDisplay() {
         System.out.println("updating attack");
         displaySprites.clear();
         Vector2 parentTile = parent.getTilePosition();
@@ -71,12 +76,43 @@ public class MCAttack {
                 int absTileX = MathUtils.floor(absoluteTile.x);
                 int absTileY = MathUtils.floor(absoluteTile.y);
                 if (parent.getMap().isWalkable(absTileX, absTileY)) {
+                    MCEntity e = MCEntityManager.get().getEntityFromTile(1, absoluteTile);
+                    if (e != null && e instanceof MCAlly) // can't shoot an ally !
+                        continue;
                     //System.out.println("adding attack display sprite at  : " + absTileX + ", " + absTileY);
                     Sprite spr = new Sprite(validTileTexture);
                     spr.setPosition(absTileX, absTileY);
                     spr.setSize(1f, 1f);
+                    spr.setColor(VALID_COLOR);
                     displaySprites.add(spr);
                 }
+            }
+        }
+    }
+
+    public void clearTrajectory() {
+        for (Sprite spr : displaySprites)
+            spr.setColor(VALID_COLOR);
+    }
+
+    public void showTrajectory(List<Vector2> traj) {
+        for (Sprite spr : displaySprites)
+            spr.setColor(VALID_COLOR);
+        //System.out.println("New trajectory");
+        for (Sprite spr : displaySprites) {
+            boolean isInTrajectory = false;
+
+            for (Vector2 pos : traj) {
+                if (MathUtils.floor(spr.getX()) == MathUtils.floor(pos.x) 
+                    && MathUtils.floor(spr.getY()) == MathUtils.floor(pos.y)) {
+                    isInTrajectory = true;
+                    break;
+                }
+            }
+
+            if (isInTrajectory) {
+                // System.out.println("(" + spr.posX + "," + spr.posY + ")");
+                spr.setColor(TRAJ_COLOR);
             }
         }
     }
@@ -87,16 +123,4 @@ public class MCAttack {
             spr.draw(batch);
     }
 
-    @Override 
-    public String toString() {
-        String s = "";
-        for (int i = -2; i <= 2; i++) {
-            for (int j = -2; j <= 2; j++) {
-                Vector2 v = new Vector2(i, j);
-                Float d = damagePattern.get(v);
-                s += "(" + v.x + "," + v.y + ") : " + d + "\n";
-            }
-        }
-        return s;
-    }
 }

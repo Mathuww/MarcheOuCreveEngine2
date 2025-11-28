@@ -2,6 +2,7 @@ package com.walk.or.die.engine.shared;
 
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.VoluntaryCrashException;
 
@@ -54,6 +55,8 @@ public class MCEventBus implements MCVehicle {
         addEvent("InputPressed", MCInputManager.Command.class);
         addEvent("InputReleased", MCInputManager.Command.class);
         addEvent("EntityTileReached", MCEntity.TileReachedArgs.class);
+        addEvent("connectMouseMoved", MCInputManager.Function.class);
+        addEvent("disconnectMouseMoved", MCInputManager.Function.class);
         //addEvent("ChangedFocus", MCEntity.class);
         //addEvent("ChangeState", MCStateMachine.TransitionArgs.class);
     }

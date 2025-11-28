@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.entities;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -79,9 +80,16 @@ public class MCEntityFactory {
         // Partie 1 : constuire l'instance
         // le bordel pour en arrive la déjà ...
         // ca au passage ca peut générer 4 exceptions différentes ptdr
-        MCEntity entity = clazz
-            .getDeclaredConstructor(MCGame.class, MCTerrainMap.class, String.class)
-            .newInstance(parentScreen, parentMap, entityId);
+        MCEntity entity = null;
+        try {
+            entity = clazz
+                .getDeclaredConstructor(MCGame.class, MCTerrainMap.class, String.class)
+                .newInstance(parentScreen, parentMap, entityId);
+        } catch (InvocationTargetException  e) {
+            e.printStackTrace();
+            if (e.getCause() != null) e.getCause().printStackTrace();
+            throw new IllegalStateException("cannot build entity " + entityGenericName + " of type " + typeStr + " because invoking constructor failed");
+        }
 
         // Partie 2 : transmettre les propriétés éventuelles
         // ca javoue c'est l'entité qui gere mdr

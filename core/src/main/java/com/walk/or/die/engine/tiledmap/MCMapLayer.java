@@ -66,7 +66,8 @@ public class MCMapLayer {
                 TiledMapTileLayer.Cell cell = tml.getCell(x, y);
                 if (cell != null && cell.getTile() != null) {
                     TiledMapTile tile = cell.getTile();
-                    if (tile.getProperties().get(name, String.class).equals(value)) {
+                    String s = tile.getProperties().get(name, String.class);
+                    if (s != null && s.equals(value)) {
                         return new Vector2(x, y);
                     }
                 }
@@ -88,7 +89,8 @@ public class MCMapLayer {
                 TiledMapTileLayer.Cell cell = tml.getCell(x, y);
                 if (cell != null && cell.getTile() != null) {
                     TiledMapTile tile = cell.getTile();
-                    if (tile.getProperties().get(name, String.class).equals(value)) {
+                    String s = tile.getProperties().get(name, String.class);
+                    if (s != null && s.equals(value)) {
                         return cell;
                     }
                 }

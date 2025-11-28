@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.ai.MCAI;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -33,11 +34,20 @@ public class MCCharacter extends MCEntity {
     private Map<String, MCAttack> attacks;
     private String baseAttack;
     private String displayedAttack;
+    private MCMoveDisplay moveDisplay;
+    public MCAI ai;
 
     public MCCharacter(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
         attacks = new HashMap<>();
         stateManager = new MCStateMachine<>(this);
+        try {
+            moveDisplay = new MCMoveDisplay(this);
+            ai = new MCAI(map); // non c'était moi eheheh
+        } catch(Exception e) { 
+            // Mouahahaha e.printStackTrace(); // pitié :'''''''''''''''''')
+            e.printStackTrace();
+        }
         stateManager.addState(new MCESClickMove(this));
         stateManager.addState(new MCESIdle(this));
         stateManager.addState(new MCESAim(this));
@@ -80,10 +90,15 @@ public class MCCharacter extends MCEntity {
 
     @Override
     public void render(SpriteBatch batch) {
-        for (MCAttack pineapple : attacks.values())
-            pineapple.render(batch);
         super.render(batch);
+        stateManager.render(batch);
     }
+
+    
+    public void renderOnGridOverlay(SpriteBatch batch) {
+        stateManager.renderOnGridOverlay(batch);
+    }
+
 
     public MCStateMachine getStateManager() {
         return this.stateManager;
@@ -91,6 +106,14 @@ public class MCCharacter extends MCEntity {
 
     public void setStateManager(MCStateMachine<MCEntityState, MCEntity> stateManager) {
         this.stateManager = stateManager;
+    }
+
+    public int getMaxMoves() {
+        return this.maxDeplacements;
+    }
+
+    public MCMoveDisplay getMoveDisplay() {
+        return moveDisplay;
     }
 
     public MCAttack getAttack() {
@@ -101,12 +124,17 @@ public class MCCharacter extends MCEntity {
     }
     
     public boolean shoot(MCCharacter target, MCAttack attack) {
-        //MCAttack attack = attacks.get(baseAttack);
         if (attack == null)
             throw new IllegalStateException("trying to shoot without a null attack !");
         int damage = attack.getDamageTo(target);
-        System.out.println("trying to shoot with damage : " + damage);
+        // System.out.println("trying to shoot with damage : " + damage);
         target.getHurt(damage);
+        return true;
+    }
+
+    public boolean missShoot(int endX, int endY) {
+        System.out.println("MissShot");
+        // Hop on envoie le projectile jusqu'au bon endroit
         return true;
     }
 

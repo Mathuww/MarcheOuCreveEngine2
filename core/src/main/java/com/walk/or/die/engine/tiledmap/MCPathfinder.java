@@ -3,6 +3,7 @@ package com.walk.or.die.engine.tiledmap ;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.entities.MCEntityManager;
 
 import java.util.List;
 import java.beans.VetoableChangeSupport;
@@ -31,8 +32,19 @@ class Tuple {
 public class MCPathfinder {
     // A* ma gueule, algo de zigzaging
     private MCGame game;
-    private MCTerrainMap map;
     private static MCPathfinder instance = null;
+
+    public static class Simulation {
+        public boolean success;
+        public int endX;
+        public int endY;
+
+        public Simulation(boolean success, int x, int y) {
+            this.success = success;
+            endX = x;
+            endY = y;
+        }
+    }
 
     public static MCPathfinder get() {
         if (instance == null) instance = new MCPathfinder();
@@ -76,6 +88,14 @@ public class MCPathfinder {
         return game.isWalkable(x, y);
     }
 
+    public boolean isProtect(int x, int y) {
+        if (MCEntityManager.get().getEntityFromTile(1, new Vector2(x,y)) == null) {
+            return game.getTerrainMap().isProtect(x, y);
+        }
+        System.out.println(MCEntityManager.get().getEntityFromTile(1, new Vector2(x,y)));
+        return true;
+    }
+
     public List<Vector2> getTrajectory(int x1, int y1, int x2, int y2) {
 
         List<Vector2> result = new ArrayList<>();
@@ -103,16 +123,17 @@ public class MCPathfinder {
         return result;
     }
 
-    public boolean isCorrectTrajectory(List<Vector2> trajectory) {
-        System.out.println(trajectory);
+    public Simulation isCorrectTrajectory(List<Vector2> trajectory) {
+        //System.out.println(trajectory);
         for (Vector2 pos : trajectory) {
-            if (!game.isWalkable(MathUtils.floor(pos.x), MathUtils.floor(pos.y))) return false;
+            if (!game.isWalkable(MathUtils.floor(pos.x), MathUtils.floor(pos.y))) 
+                return new Simulation (false, MathUtils.floor(pos.x), MathUtils.floor(pos.y));
         }
         System.out.println("hop ça marche (pas)");
-        return true;
+        return new Simulation(true, -1, -1);
     }
 
-    private List<Vector2> clean(List<Vector2> path) {
+    public List<Vector2> clean(List<Vector2> path) {
         if (path.size() == 0) return path;
         Vector2 current = path.get(0);
         List<Vector2> newList = new ArrayList<>();
@@ -138,7 +159,7 @@ public class MCPathfinder {
             current = current.parent;
         }
         Collections.reverse(path);
-        return clean(path);
+        return path;
     }
 
     private int comparaison(Tuple x, Tuple y) {

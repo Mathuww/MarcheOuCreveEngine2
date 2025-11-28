@@ -2,6 +2,7 @@ package com.walk.or.die.engine.sm;
 
 import java.util.List;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.shared.MCEventBus;
 
 import java.util.ArrayList;
@@ -50,6 +51,16 @@ public class MCStateMachine<T extends MCState, U> {
     public void update(float delta) {
         if (currentState == null) return ;
         currentState.update(delta);
+    }
+
+    public void render(SpriteBatch batch) {
+        if (currentState == null) return;
+        currentState.render(batch);
+    }
+
+    public void renderOnGridOverlay(SpriteBatch batch) {
+        if (currentState == null) return;
+        currentState.renderOnGridOverlay(batch);
     }
 
     public void stateTransitionCheck(TransitionArgs<?> args) {

@@ -1,6 +1,7 @@
 package com.walk.or.die.engine.sm.entity.states;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCAttack;
@@ -12,6 +13,7 @@ import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
+import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +24,14 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
     public static class ShootStateArgs extends MCEntityState.StateArgs {
         MCCharacter target;
         MCAttack attack;
+        List<Vector2> trajectory;
 
-        public ShootStateArgs(MCCharacter e, MCAttack a) {
+        public ShootStateArgs(MCCharacter e, MCAttack a, List<Vector2> traj) {
             target = e;
             attack = a;
+            trajectory = traj;
         }
+
     }
 
     boolean finished = false;
@@ -42,9 +47,19 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
     }
 
     @Override
+    public void render(SpriteBatch batch) {
+        
+    }
+
+    @Override
     public void enter(ShootStateArgs args) {
         super.enter(args);
-        finished = parent.shoot(args.target, args.attack);
+        MCPathfinder.Simulation result = MCPathfinder.get().isCorrectTrajectory(args.trajectory);
+        if (result.success) {
+            finished = parent.shoot(args.target, args.attack);
+        } else {
+            finished = parent.missShoot(result.endX, result.endY);
+        }
 
     }
 

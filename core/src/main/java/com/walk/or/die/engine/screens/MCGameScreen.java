@@ -29,10 +29,12 @@ import com.walk.or.die.engine.entities.MCAttackFactory;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityFactory;
+import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.Command;
+import com.walk.or.die.engine.shared.MCDebugRenderer;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.game.MCGameState;
@@ -63,8 +65,9 @@ public class MCGameScreen implements Screen {
         game.batch.setProjectionMatrix(camManager.getGdxCam().combined);       
         game.batch.begin();
 
-        for (MCEntity e : game.getEntities())
-            e.render(game.batch);
+        game.getStateManager().render(game.batch);
+        MCEntityManager.get().render(game.batch);
+        //MCDebugRenderer.get().render(game.batch);
 
         game.batch.end();
     }

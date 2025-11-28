@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.sm.entity;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
@@ -30,6 +31,12 @@ public abstract class MCEntityState<T extends MCEntityState.StateArgs> extends M
 
     @Override
     public void update(float delta) {}
+
+    @Override
+    public void render(SpriteBatch batch) {}
+
+    @Override
+    public void renderOnGridOverlay(SpriteBatch batch) {}
 
     @Override
     public void enter(T args) {

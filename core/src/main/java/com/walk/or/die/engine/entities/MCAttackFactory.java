@@ -86,7 +86,7 @@ public class MCAttackFactory {
                     TiledMapTile tile = cell.getTile();
                     MapProperties tileProps = tile.getProperties();
                     String tileType = tileProps.get("type", String.class);
-                    if (tileType.equals("attackDamage")) {
+                    if (tileType != null && tileType.equals("attackDamage")) {
                         // on calcule sa position relative à l'envoyeur
                         Vector2 relativePos = new Vector2(x, y).sub(senderPos.cpy());
 

@@ -17,10 +17,12 @@ import com.walk.or.die.engine.entities.MCAttackFactory;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityFactory;
+import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.screens.MCGameScreen;
+import com.walk.or.die.engine.shared.MCDebugRenderer;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.sm.MCStateMachine;
@@ -52,50 +54,57 @@ public class MCGame extends Game {
     private final MCCameraManager camManager = MCCameraManager.get();
 
     // Input
-    private MCInputManager inputHandler;
+    private MCInputManager inputHandler = MCInputManager.get();
     
     // Entity
-    private Array<MCEntity> entities = new Array<>();
+    private MCEntityManager entityManager = MCEntityManager.get();
     private String playerEntityName;
     private MCCharacter main;
     private MCEntity focusedEntity;
 
+    // Debug
+    private MCDebugRenderer debugRenderer = MCDebugRenderer.get();
+
     public SpriteBatch batch;
     public FitViewport viewport;
 
-    public MCGame() {
-        stateManager.addState(new MCGSCombat(this));
-        stateManager.addState(new MCGSExploration(this));
-        stateManager.setCurrentState("combat", new MCGSCombat.CombatStateArgs());
-    }
+    public MCGame() {}
 
     @Override // commence pas je vais t'attraper
     // cast me if you can ;)
     // MCGaia sale_terrorist = (MCGaia) anothercoderterrorist
     
     public void create() {
+        // View objects init
         batch = new SpriteBatch();
         viewport = new FitViewport(12, 8);
+
+        // Singleton inits
         pathfinder.init(this);
 
         try {
             sharedAssets.init(MAP_ROOT + "misc.tmx", drh);
+            debugRenderer.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+        // Map init (start.tmx)
         map = new MCTerrainMap(MAP_ROOT + "start.tmx", drh);
 
+        // Cam manager init
         camManager.init(16, 10, MCCameraManager.CameraMode.ARROWS);
         camManager.setLimitX(map.getWidth());
         camManager.setLimitY(map.getHeight());
         viewport.setCamera(camManager.getGdxCam());
 
-        inputHandler = new MCInputManager(viewport);
+        // Input init
+        inputHandler.init(viewport);
         Gdx.input.setInputProcessor(inputHandler);
 
         //bus.on(this, "ChangedFocus", this::changeFocus);
 
+        // Entities init
         try {
             entityFact.init(drh);
             attackFact.init(drh);
@@ -104,15 +113,17 @@ public class MCGame extends Game {
             main = (MCCharacter) entityFact.build(this, map, playerEntityName, "player");
             main.setPosition(map.getPlayerSpawnPos());
             camManager.setFollowTarget(main);
-            entities.add(main);
-            entities.addAll(map.spawnEntities(this));
+            entityManager.addEntity(main);
+            entityManager.addAllEntities(map.spawnEntities(this));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        for (MCEntity e : entities) {
-            e.playAnimation("idle");
-        }
+        entityManager.playGlobalAnimation("idle");
+
+        stateManager.addState(new MCGSCombat(this));
+        stateManager.addState(new MCGSExploration(this));
+        stateManager.setCurrentState("combat", new MCGSCombat.CombatStateArgs());
 
         try {
             setScreen(new MCGameScreen(this));
@@ -132,9 +143,7 @@ public class MCGame extends Game {
         }
 
         stateManager.update(delta);
-
-        for (MCEntity e : entities) 
-            e.update(delta);
+        entityManager.update(delta);
     }
 
     @Override
@@ -157,23 +166,12 @@ public class MCGame extends Game {
         return this.map;
     }
 
-    public Array<MCEntity> getEntities() {
-        return this.entities;
-    }
-
-    public MCEntity getEntityFromTile(int layer, Vector2 pos) {
-        for (MCEntity e: entities) {
-            if (e.getTilePosition().x == pos.x && e.getTilePosition().y == pos.y && e.getLayer() == layer) return e;
-        }
-        return null;
-    }
-
     public MCEntity getFocusedEntity() {
         return focusedEntity;
     }
 
     public boolean isWalkable(int x, int y) {
-        if (getEntityFromTile(1, new Vector2(x,y)) == null) {
+        if (entityManager.getEntityFromTile(1, new Vector2(x,y)) == null) {
             return map.isWalkable(x, y);
         }
         return false;

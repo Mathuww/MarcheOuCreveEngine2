@@ -5,6 +5,7 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.sm.game.MCGameState;
@@ -38,7 +39,7 @@ public class MCGSCombat extends MCGameState<MCGSCombat.CombatStateArgs> {
     protected void inputPressed(MCInputManager.Command data) {
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
             //System.out.println("Détecté par le game");
-            MCEntity e = parent.getEntityFromTile(1, tileCmd.getVector());
+            MCEntity e = MCEntityManager.get().getEntityFromTile(1, tileCmd.getVector());
             if (e instanceof MCAlly ally) parent.changeFocus(ally);
         } else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
             if (keyCmd.key == Input.Keys.F) {

@@ -2,7 +2,9 @@ package com.walk.or.die.engine.input;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.function.Consumer;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.MathUtils;
@@ -12,6 +14,16 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.shared.MCEventBus;
 
 public class MCInputManager implements InputProcessor {
+    private static MCInputManager instance = null;
+
+    public static MCInputManager get() {
+        if (instance == null) instance = new MCInputManager();
+        return instance;
+    }
+
+    public void init(Viewport v) {
+        vp = v;
+    }
 
     public static abstract class Command {}
 
@@ -64,15 +76,26 @@ public class MCInputManager implements InputProcessor {
         }
     }
 
+    public static class Function {
+        public Consumer<Vector2> mouseMovedFunction;
+
+        public Function(Consumer<Vector2> consumer) {
+            this.mouseMovedFunction = consumer;
+        }
+    }
+
     private Viewport vp;
 
     private boolean upGoing, downGoing, leftGoing, rightGoing;
 
     private MCEventBus bus;
+    private Consumer<Vector2> mouseMovedFunction;
 
-    public MCInputManager(Viewport vp) {
+    private MCInputManager() {
         this.bus = MCEventBus.get();
-        this.vp = vp;
+        bus.on(this, "connectMouseMoved", this::connectMouseMoved);
+        bus.on(this, "disconnectMouseMoved", this::disconnectMouseMoved);
+        //this.vp = vp;
         this.upGoing = false;
         this.downGoing = false;
         this.leftGoing = false;
@@ -93,6 +116,16 @@ public class MCInputManager implements InputProcessor {
 
     public boolean isRightGoing() {
         return this.rightGoing;
+    }
+
+    public void connectMouseMoved(Function consumer) {
+        if (mouseMovedFunction != null) 
+            throw new IllegalStateException("cant connect multiple mouse moved listeners at the same time"); // C'est la merde faudrait une erreur
+        mouseMovedFunction = consumer.mouseMovedFunction;
+    }
+
+    public void disconnectMouseMoved(Function consumer) {
+        mouseMovedFunction = null;
     }
 
     @Override 
@@ -175,10 +208,27 @@ public class MCInputManager implements InputProcessor {
         return true;
     }
 
+    @Override public boolean mouseMoved(int x,int y){
+        if (mouseMovedFunction != null) {
+            Vector3 worldCoords = new Vector3(x, y, 0);
+            vp.getCamera().unproject(worldCoords);
+            Vector2 v = new Vector2(MathUtils.floor(worldCoords.x), MathUtils.floor(worldCoords.y));
+
+            mouseMovedFunction.accept(v);
+            return true;
+        }
+        return false;
+    }
+
+    public void triggerMouseUpdate() {
+        int x = Gdx.input.getX();
+        int y = Gdx.input.getY();
+        mouseMoved(x, y);
+    }
+
     @Override public boolean keyTyped(char c){return false;}
     @Override public boolean touchUp(int x,int y,int p,int b){return false;}
     @Override public boolean touchDragged(int x,int y,int p){return false;}
     @Override public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {return false;}
-    @Override public boolean mouseMoved(int x,int y){return false;}
     @Override public boolean scrolled(float x,float y){return false;}
 }

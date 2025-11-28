@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.sm.game;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCStateMachine;
@@ -25,6 +26,16 @@ public abstract class MCGameState<T extends MCGameState.StateArgs> extends MCSta
     @Override
     public void update(float delta) {
 
+    }
+
+    @Override
+    public void render(SpriteBatch batch) {
+
+    }
+
+    @Override
+    public void renderOnGridOverlay(SpriteBatch batch) {
+        
     }
 
     @Override

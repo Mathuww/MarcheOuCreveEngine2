@@ -138,6 +138,14 @@ public abstract class MCEntity {
         this.hitbox.setPosition(pos.x, pos.y);
     }
 
+    public Rectangle getHitbox() {
+        return this.hitbox;
+    }
+
+    public boolean collidesWith(MCEntity e) {
+        return this.hitbox.overlaps(e.getHitbox());
+    }
+
     public MCTerrainMap getMap() {
         return map;
     }

@@ -1,6 +1,7 @@
 package com.walk.or.die.engine.sm.entity.states;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCCharacter;
@@ -52,6 +53,8 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
         } else if (data instanceof MCInputManager.AimCommand) {
             System.out.println("oh");
             changeState("aim", new MCESAim.AimStateArgs(parent.getAttack()));
+        } else if (data instanceof MCInputManager.ClickTileCommand) {
+            parent.ai.searchShelts(MathUtils.floor(parent.getTilePosition().x), MathUtils.floor(parent.getTilePosition().y), 5);
         }
     }
 

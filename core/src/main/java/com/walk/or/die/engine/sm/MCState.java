@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.sm;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.ClickTileCommand;
@@ -26,6 +27,10 @@ public abstract class MCState<T extends MCState.StateArgs> {
     }
 
     public abstract void update(float delta);
+
+    public abstract void render(SpriteBatch batch);
+
+    public abstract void renderOnGridOverlay(SpriteBatch batch);
 
     public abstract void enter(T args);
 
