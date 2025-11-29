@@ -94,11 +94,9 @@ public class MCCharacter extends MCEntity {
         stateManager.render(batch);
     }
 
-    
     public void renderOnGridOverlay(SpriteBatch batch) {
         stateManager.renderOnGridOverlay(batch);
     }
-
 
     public MCStateMachine getStateManager() {
         return this.stateManager;

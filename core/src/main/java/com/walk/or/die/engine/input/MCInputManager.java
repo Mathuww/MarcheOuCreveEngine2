@@ -131,19 +131,19 @@ public class MCInputManager implements InputProcessor {
     @Override 
     public boolean keyDown(int k) {
         switch (k) {
-            case Input.Keys.Z:
+            case Input.Keys.W:
             case Input.Keys.UP:
                 upGoing = true;
                 bus.emit("InputPressed", new DirectionalCommand(0, +1));
                 break;
 
-            case Input.Keys.S:
+            case Input.Keys.A:
             case Input.Keys.DOWN:
                 downGoing = true;
                 bus.emit("InputPressed", new DirectionalCommand(0, -1));
                 break;
 
-            case Input.Keys.Q:
+            case Input.Keys.S:
             case Input.Keys.LEFT:
                 leftGoing = true;
                 bus.emit("InputPressed", new DirectionalCommand(-1, 0));
@@ -155,12 +155,15 @@ public class MCInputManager implements InputProcessor {
                 bus.emit("InputPressed", new DirectionalCommand(+1, 0));
                 break;
 
-            case Input.Keys.SPACE:
+            case Input.Keys.Q:
                 bus.emit("InputPressed", new AimCommand());
                 break;
             
-            case Input.Keys.M:
+            case Input.Keys.COMMA:
                 bus.emit("InputPressed", new ReadyCommand());
+                break;
+            
+            case Input.Keys.SPACE:
                 break;
                 
             default:

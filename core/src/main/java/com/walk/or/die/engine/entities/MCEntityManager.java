@@ -3,6 +3,8 @@ package com.walk.or.die.engine.entities;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import java.util.ArrayList;
+import java.util.List;
 import com.walk.or.die.engine.MCGame;
 
 public class MCEntityManager {
@@ -28,6 +30,30 @@ public class MCEntityManager {
 
     public Array<MCEntity> getEntities() {
         return this.entities;
+    }
+
+    public List<MCAlly> getAllies() {
+        List<MCAlly> list = new ArrayList<>();
+
+        for (MCEntity e: entities) {
+            if (e instanceof MCAlly ally) {
+                list.add(ally);
+            }
+        }
+        
+        return list;
+    }
+
+    public List<MCEnemy> getEnemies() {
+        List<MCEnemy> list = new ArrayList<>();
+
+        for (MCEntity e: entities) {
+            if (e instanceof MCEnemy enemy) {
+                list.add(enemy);
+            }
+        }
+        
+        return list;
     }
 
     public void clearEntities() {

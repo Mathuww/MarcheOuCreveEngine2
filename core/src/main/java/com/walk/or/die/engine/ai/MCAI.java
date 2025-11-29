@@ -3,7 +3,9 @@ package com.walk.or.die.engine.ai;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.shared.MCDebugRenderer;
 import com.walk.or.die.engine.shared.MCSharedAssets;
@@ -28,7 +30,39 @@ public class MCAI {
         this.map = map;
     }
 
+    public Vector2 getNewPos(int posX, int posY, int max_deplacement) {
+        List<Vector2> shelts = searchShelts(posX, posY, max_deplacement);
+
+        Vector2 best_shelt = new Vector2(posX, posY);
+        float best_score = -1f;
+        for (Vector2 shelt: shelts) {
+            int x = MathUtils.floor(shelt.x);
+            int y = MathUtils.floor(shelt.y);
+
+            float score = isSheltSafe(x, y) + isSheltShootSpot(x, y);
+            if (best_score == -1f || score < best_score) {
+                best_score = score;
+                best_shelt = shelt;
+            }
+        }
+
+        return best_shelt;
+    }
+
     public float isSheltSafe(int posX, int posY) {
+        List<MCAlly> list = MCEntityManager.get().getAllies();
+
+        float result = 0f;
+        for (MCAlly ally: list) {
+            List<Vector2> traj = pathfinder.getTrajectory(
+                MathUtils.floor(ally.getTilePosition().x), MathUtils.floor(ally.getTilePosition().y),
+                posX, posY);
+
+            if (pathfinder.isCorrectTrajectory(traj).success) {
+                result += 1f;
+            }
+            
+        }
         /*
         get all character
         get trajectory from character to posx posy
@@ -38,10 +72,22 @@ public class MCAI {
         0 safe, puis ensuite comparaison
         */
         
-        return 1f;
+        return result;
     }
 
     public float isSheltShootSpot(int posX, int posY) {
+        List<MCAlly> list = MCEntityManager.get().getAllies();
+
+        float result = 0f;
+        for (MCAlly ally: list) {
+            List<Vector2> traj = pathfinder.getTrajectory(
+                posX, posY,
+                MathUtils.floor(ally.getTilePosition().x), MathUtils.floor(ally.getTilePosition().y));
+
+            if (pathfinder.isCorrectTrajectory(traj).success) {
+                result += 1f;
+            }
+        }
         /*
         get all character
         get trajectory from posx posy to character
@@ -50,7 +96,7 @@ public class MCAI {
         if kill 10
         */
 
-        return 1f;
+        return result;
     }
 
     public List<Vector2> searchShelts(int posX, int posY, int max_deplacement) {
@@ -95,4 +141,5 @@ public class MCAI {
     public void showSpot(int x, int y) { 
         MCDebugRenderer.get().addDebugTile(new Vector2(x, y));
     }
+
 }
