@@ -16,8 +16,7 @@ import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 
 public class MCArrowsCamBehavior extends MCCameraBehavior {
-    private final float CAM_MOVE_SPEED = 0.025f;
-    private final float CAM_LERP = 3f;
+    private final float CAM_MOVE_SPEED = 0.05f;
 
     private Map<MCIntVector2, Boolean> currentInput;
 
@@ -58,7 +57,7 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         }
     }
 
-    public void update(OrthographicCamera gdxCam, float delta) {
+    public Vector2 update(OrthographicCamera gdxCam, float delta) {
         MCCameraManager camManager = MCCameraManager.get();
 
         Vector2 relativeMove = new Vector2(0, 0);
@@ -88,7 +87,6 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
             targetY = MathUtils.clamp(targetY, camHalfHeight, camManager.getLimitY() - camHalfHeight);
         }
 
-        gdxCam.position.x += (targetX - gdxCam.position.x); // * CAM_LERP * delta;
-        gdxCam.position.y += (targetY - gdxCam.position.y); // * CAM_LERP * delta;
+        return new Vector2(targetX, targetY);
     }
 }

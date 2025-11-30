@@ -49,6 +49,8 @@ public class MCEntityFactory {
 
         entityTypes.put("character", MCCharacter.class);
         entityTypes.put("ally", MCAlly.class);
+        entityTypes.put("enemy", MCEnemy.class);
+        entityTypes.put("projectile", MCProjectile.class);
 
         // on recupere la liste de toutes les entités possibles
         for (FileHandle entityFile : MCUtils.listFilesByExt(ENTITY_ROOT, "tmx")) {
@@ -80,7 +82,7 @@ public class MCEntityFactory {
         // Partie 1 : constuire l'instance
         // le bordel pour en arrive la déjà ...
         // ca au passage ca peut générer 4 exceptions différentes ptdr
-        MCEntity entity = null;
+        final MCEntity entity;
         try {
             entity = clazz
                 .getDeclaredConstructor(MCGame.class, MCTerrainMap.class, String.class)
@@ -131,16 +133,13 @@ public class MCEntityFactory {
             Array<TextureRegion> animRegions = new Array<>();
 
             for (TiledMapTile tile : row) {
+                int i = 0;
                 if (tile != null) {
                     if (tile.getTextureRegion() != null) 
                         animRegions.add(tile.getTextureRegion());
 
-                    String triggerStr = tile.getProperties().get("trigger", String.class);
-                    if (triggerStr != null) {
-                        // ca on gerera apres
-                    }
                 }
-
+                i++;
             }
 
             Animation<TextureRegion> rawAnim = new Animation<>(frameDuration, animRegions, playMode);

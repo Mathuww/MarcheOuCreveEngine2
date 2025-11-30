@@ -22,11 +22,11 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
     public void exit() {}
 
     @Override
-    public void update(OrthographicCamera gdxCam, float delta) {
+    public Vector2 update(OrthographicCamera gdxCam, float delta) {
         MCCameraManager camManager = MCCameraManager.get();
         MCEntity target = camManager.getFollowTarget();
 
-        if (target == null) return;
+        if (target == null) return new Vector2(gdxCam.position.x, gdxCam.position.y);
 
         float maxLeft = gdxCam.position.x - gdxCam.viewportWidth / 2 + CAM_MARGIN_X;
         float maxRight = gdxCam.position.x + gdxCam.viewportWidth / 2 - CAM_MARGIN_X;
@@ -55,7 +55,9 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
             targetY = MathUtils.clamp(targetY, camHalfHeight, camManager.getLimitY() - camHalfHeight);
         }
 
-        gdxCam.position.x += (targetX - gdxCam.position.x) * CAM_LERP * delta;
-        gdxCam.position.y += (targetY - gdxCam.position.y) * CAM_LERP * delta;
+        float newX = gdxCam.position.x + ((targetX - gdxCam.position.x) * CAM_LERP * delta);
+        float newY = gdxCam.position.y + ((targetY - gdxCam.position.y) * CAM_LERP * delta);
+        return new Vector2(newX, newY);
+
     }
 }

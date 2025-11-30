@@ -4,7 +4,7 @@ size: 512, 64
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
-attack
+projectile
   rotate: false
   xy: 1, 37
   size: 16, 16
@@ -13,12 +13,26 @@ attack
   index: 0
 attack
   rotate: false
+  xy: 1, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+projectile
+  rotate: false
   xy: 1, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 attack
+  rotate: false
+  xy: 1, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+projectile
   rotate: false
   xy: 19, 37
   size: 16, 16
@@ -27,12 +41,26 @@ attack
   index: 2
 attack
   rotate: false
+  xy: 19, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+projectile
+  rotate: false
   xy: 1, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 attack
+  rotate: false
+  xy: 1, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+projectile
   rotate: false
   xy: 19, 19
   size: 16, 16
@@ -41,12 +69,26 @@ attack
   index: 4
 attack
   rotate: false
+  xy: 19, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+projectile
+  rotate: false
   xy: 37, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 attack
+  rotate: false
+  xy: 37, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 5
+projectile
   rotate: false
   xy: 19, 1
   size: 16, 16
@@ -55,12 +97,26 @@ attack
   index: 6
 attack
   rotate: false
+  xy: 19, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 6
+projectile
+  rotate: false
   xy: 37, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 7
 attack
+  rotate: false
+  xy: 37, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 7
+projectile
   rotate: false
   xy: 55, 37
   size: 16, 16
@@ -69,12 +125,26 @@ attack
   index: 8
 attack
   rotate: false
+  xy: 55, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 8
+projectile
+  rotate: false
   xy: 37, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 9
 attack
+  rotate: false
+  xy: 37, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 9
+projectile
   rotate: false
   xy: 55, 19
   size: 16, 16
@@ -83,12 +153,26 @@ attack
   index: 10
 attack
   rotate: false
+  xy: 55, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 10
+projectile
+  rotate: false
   xy: 73, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 11
 attack
+  rotate: false
+  xy: 73, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 11
+projectile
   rotate: false
   xy: 55, 1
   size: 16, 16
@@ -97,12 +181,26 @@ attack
   index: 12
 attack
   rotate: false
+  xy: 55, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 12
+projectile
+  rotate: false
   xy: 73, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 13
 attack
+  rotate: false
+  xy: 73, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 13
+projectile
   rotate: false
   xy: 91, 37
   size: 16, 16
@@ -111,12 +209,26 @@ attack
   index: 14
 attack
   rotate: false
+  xy: 91, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 14
+projectile
+  rotate: false
   xy: 73, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 15
 attack
+  rotate: false
+  xy: 73, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 15
+projectile
   rotate: false
   xy: 91, 19
   size: 16, 16
@@ -125,12 +237,26 @@ attack
   index: 16
 attack
   rotate: false
+  xy: 91, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 16
+projectile
+  rotate: false
   xy: 109, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 17
 attack
+  rotate: false
+  xy: 109, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 17
+projectile
   rotate: false
   xy: 91, 1
   size: 16, 16
@@ -139,12 +265,26 @@ attack
   index: 18
 attack
   rotate: false
+  xy: 91, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 18
+projectile
+  rotate: false
   xy: 109, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 19
 attack
+  rotate: false
+  xy: 109, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 19
+projectile
   rotate: false
   xy: 127, 37
   size: 16, 16
@@ -153,12 +293,26 @@ attack
   index: 20
 attack
   rotate: false
+  xy: 127, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 20
+projectile
+  rotate: false
   xy: 109, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 21
 attack
+  rotate: false
+  xy: 109, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 21
+projectile
   rotate: false
   xy: 127, 19
   size: 16, 16
@@ -167,12 +321,26 @@ attack
   index: 22
 attack
   rotate: false
+  xy: 127, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 22
+projectile
+  rotate: false
   xy: 145, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 23
 attack
+  rotate: false
+  xy: 145, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 23
+projectile
   rotate: false
   xy: 127, 1
   size: 16, 16
@@ -181,12 +349,26 @@ attack
   index: 24
 attack
   rotate: false
+  xy: 127, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 24
+projectile
+  rotate: false
   xy: 145, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 25
 attack
+  rotate: false
+  xy: 145, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 25
+projectile
   rotate: false
   xy: 163, 37
   size: 16, 16
@@ -195,12 +377,26 @@ attack
   index: 26
 attack
   rotate: false
+  xy: 163, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 26
+projectile
+  rotate: false
   xy: 145, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 27
 attack
+  rotate: false
+  xy: 145, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 27
+projectile
   rotate: false
   xy: 163, 19
   size: 16, 16
@@ -209,12 +405,26 @@ attack
   index: 28
 attack
   rotate: false
+  xy: 163, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 28
+projectile
+  rotate: false
   xy: 181, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 29
 attack
+  rotate: false
+  xy: 181, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 29
+projectile
   rotate: false
   xy: 163, 1
   size: 16, 16
@@ -223,12 +433,26 @@ attack
   index: 30
 attack
   rotate: false
+  xy: 163, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 30
+projectile
+  rotate: false
   xy: 181, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 31
 attack
+  rotate: false
+  xy: 181, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 31
+projectile
   rotate: false
   xy: 199, 37
   size: 16, 16
@@ -237,12 +461,26 @@ attack
   index: 32
 attack
   rotate: false
+  xy: 199, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 32
+projectile
+  rotate: false
   xy: 181, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 33
 attack
+  rotate: false
+  xy: 181, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 33
+projectile
   rotate: false
   xy: 199, 19
   size: 16, 16
@@ -251,12 +489,26 @@ attack
   index: 34
 attack
   rotate: false
+  xy: 199, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 34
+projectile
+  rotate: false
   xy: 217, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 35
 attack
+  rotate: false
+  xy: 217, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 35
+projectile
   rotate: false
   xy: 199, 1
   size: 16, 16
@@ -265,12 +517,26 @@ attack
   index: 36
 attack
   rotate: false
+  xy: 199, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 36
+projectile
+  rotate: false
   xy: 217, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 37
 attack
+  rotate: false
+  xy: 217, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 37
+projectile
   rotate: false
   xy: 235, 37
   size: 16, 16
@@ -279,12 +545,26 @@ attack
   index: 38
 attack
   rotate: false
+  xy: 235, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 38
+projectile
+  rotate: false
   xy: 217, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 39
 attack
+  rotate: false
+  xy: 217, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 39
+projectile
   rotate: false
   xy: 235, 19
   size: 16, 16
@@ -293,12 +573,26 @@ attack
   index: 40
 attack
   rotate: false
+  xy: 235, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 40
+projectile
+  rotate: false
   xy: 253, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 41
 attack
+  rotate: false
+  xy: 253, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 41
+projectile
   rotate: false
   xy: 235, 1
   size: 16, 16
@@ -307,12 +601,26 @@ attack
   index: 42
 attack
   rotate: false
+  xy: 235, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 42
+projectile
+  rotate: false
   xy: 253, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 43
 attack
+  rotate: false
+  xy: 253, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 43
+projectile
   rotate: false
   xy: 271, 37
   size: 16, 16
@@ -321,12 +629,26 @@ attack
   index: 44
 attack
   rotate: false
+  xy: 271, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 44
+projectile
+  rotate: false
   xy: 253, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 45
 attack
+  rotate: false
+  xy: 253, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 45
+projectile
   rotate: false
   xy: 271, 19
   size: 16, 16
@@ -335,12 +657,26 @@ attack
   index: 46
 attack
   rotate: false
+  xy: 271, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 46
+projectile
+  rotate: false
   xy: 289, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 47
 attack
+  rotate: false
+  xy: 289, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 47
+projectile
   rotate: false
   xy: 271, 1
   size: 16, 16
@@ -349,12 +685,26 @@ attack
   index: 48
 attack
   rotate: false
+  xy: 271, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 48
+projectile
+  rotate: false
   xy: 289, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 49
 attack
+  rotate: false
+  xy: 289, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 49
+projectile
   rotate: false
   xy: 307, 37
   size: 16, 16
@@ -363,12 +713,26 @@ attack
   index: 50
 attack
   rotate: false
+  xy: 307, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 50
+projectile
+  rotate: false
   xy: 289, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 51
 attack
+  rotate: false
+  xy: 289, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 51
+projectile
   rotate: false
   xy: 307, 19
   size: 16, 16
@@ -377,12 +741,26 @@ attack
   index: 52
 attack
   rotate: false
+  xy: 307, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 52
+projectile
+  rotate: false
   xy: 325, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 53
 attack
+  rotate: false
+  xy: 325, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 53
+projectile
   rotate: false
   xy: 307, 1
   size: 16, 16
@@ -391,12 +769,26 @@ attack
   index: 54
 attack
   rotate: false
+  xy: 307, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 54
+projectile
+  rotate: false
   xy: 325, 19
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 55
 attack
+  rotate: false
+  xy: 325, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 55
+projectile
   rotate: false
   xy: 343, 37
   size: 16, 16
@@ -405,12 +797,26 @@ attack
   index: 56
 attack
   rotate: false
+  xy: 343, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 56
+projectile
+  rotate: false
   xy: 325, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 57
 attack
+  rotate: false
+  xy: 325, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 57
+projectile
   rotate: false
   xy: 343, 19
   size: 16, 16
@@ -419,12 +825,26 @@ attack
   index: 58
 attack
   rotate: false
+  xy: 343, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 58
+projectile
+  rotate: false
   xy: 361, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 59
 attack
+  rotate: false
+  xy: 361, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 59
+projectile
   rotate: false
   xy: 343, 1
   size: 16, 16
@@ -433,6 +853,13 @@ attack
   index: 60
 attack
   rotate: false
+  xy: 343, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 60
+projectile
+  rotate: false
   xy: 361, 19
   size: 16, 16
   orig: 16, 16
@@ -440,11 +867,32 @@ attack
   index: 61
 attack
   rotate: false
+  xy: 361, 19
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 61
+projectile
+  rotate: false
   xy: 379, 37
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 62
+attack
+  rotate: false
+  xy: 379, 37
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 62
+projectile
+  rotate: false
+  xy: 361, 1
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 63
 attack
   rotate: false
   xy: 361, 1

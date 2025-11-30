@@ -22,8 +22,10 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.utils.Array;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class MCTerrainMap extends MCMap {
     private OrthogonalTiledMapRenderer renderer;
@@ -105,13 +107,13 @@ public class MCTerrainMap extends MCMap {
         return this.stickToNearestTile(pos);
     }
 
-    public Array<MCEntity> spawnEntities(MCGame game) throws Exception {
+    public Set<MCEntity> spawnEntities(MCGame game) throws Exception {
         MCMapLayer layer = this.getLayer("Entities");
         if (layer == null) throw new DataException("no Entities layer in game map");
 
         MCEntityFactory entityFact = MCEntityFactory.get();
 
-        Array<MCEntity> entityArray = new Array<>();
+        Set<MCEntity> entityArray = new HashSet<>();
         Map<String, Integer> entityCounter = new HashMap<>();
 
         MapObjects objects = layer.getObjects();
@@ -133,7 +135,7 @@ public class MCTerrainMap extends MCMap {
                     count = 1;
                 }
                 entityCounter.put(entityName, count);
-                MCEntity entity = entityFact.build(game, this, entityName, entityName + "_ " + String.format("%03d", count));
+                MCEntity entity = entityFact.build(game, this, entityName, entityName + "_" + String.format("%03d", count));
 
                 MCMapObject obj = new MCMapObject(rawObj);
                 Vector2 pos = obj.getPosition();

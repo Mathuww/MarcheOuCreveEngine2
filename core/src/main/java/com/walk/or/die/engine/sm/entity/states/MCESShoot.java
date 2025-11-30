@@ -35,7 +35,7 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
 
     }
 
-    boolean finished = false;
+    //boolean finished = false;
 
     public MCESShoot(MCCharacter parent) {
         super(parent);
@@ -44,7 +44,7 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
 
     @Override
     public void update(float delta) {
-        if (finished) changeState("idle", new MCESIdle.IdleStateArgs()); 
+        //if (finished) changeState("idle", new MCESIdle.IdleStateArgs()); 
     }
 
     @Override
@@ -55,11 +55,20 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
     @Override
     public void enter(ShootStateArgs args) {
         super.enter(args);
+        parent.playAnimation(args.attack.getSenderAnim());
         MCPathfinder.Simulation result = MCPathfinder.get().isCorrectTrajectory(args.trajectory);
         if (result.success) {
-            finished = parent.shoot(args.target, args.attack);
-        } else {
-            finished = parent.missShoot(result.endPos);
+            int damage = args.attack.getDamageTo(args.target);
+            parent.shootThenCall(args.target.getTilePosition(), args.attack, () -> {
+                if (!args.target.isDead()) args.target.playAnimation(args.attack.getTargetAnim());
+                args.target.getHurt(damage);
+                changeState("idle", new MCESIdle.IdleStateArgs());
+            }, args.target);
+        } else { // miss shot !
+           parent.shootThenCall(args.target.getTilePosition(), args.attack, () -> {
+                System.out.println("MissShot");
+                changeState("idle", new MCESIdle.IdleStateArgs());
+            }, null);
         }
 
     }

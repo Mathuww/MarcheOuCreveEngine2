@@ -27,6 +27,7 @@ public class MCAttack {
     private Map<MCIntVector2, Float> damagePattern;
     private Array<Sprite> displaySprites = new Array<>();
     private TextureRegion validTileTexture;
+    private String projectileName = "projectile";
     public boolean display = false;
     private final Color VALID_COLOR = new Color(1f, 1f, 1f, 0.5f);
     private final Color TRAJ_COLOR = new Color(1f, 0f, 0f, 0.6f);
@@ -44,6 +45,7 @@ public class MCAttack {
     public void initFromProperties(MapProperties props) {
         this.senderAnim = props.get("senderAnim", String.class);
         this.targetAnim = props.get("targetAnim", String.class);
+        this.projectileName = props.get("projectileName", String.class);
     }
 
     public boolean isValidTile(MCIntVector2 targetPos) {
@@ -119,4 +121,15 @@ public class MCAttack {
             spr.draw(batch);
     }
 
+    public String getSenderAnim() {
+        return senderAnim;
+    }
+
+    public String getTargetAnim() {
+        return targetAnim;
+    }
+
+    public MCProjectile spawnProjectile() throws Exception {
+        return MCEntityManager.get().buildProjectile(projectileName);
+    }
 }

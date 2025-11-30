@@ -109,6 +109,7 @@ public class MCGame extends Game {
         try {
             entityFact.init(drh);
             attackFact.init(drh);
+            entityManager.init(this);
 
             playerEntityName = map.getPlayerEntityType();
             main = (MCCharacter) entityFact.build(this, map, playerEntityName, "player");
@@ -142,6 +143,10 @@ public class MCGame extends Game {
         } catch (UnexistingBehaviorException e) {
             e.printStackTrace();
         }
+
+        // si la camera bouge, la tile visée a bougé!
+        if (camManager.hasMovedThisFrame())
+            MCInputManager.get().triggerMouseUpdate();
 
         stateManager.update(delta);
         entityManager.update(delta);

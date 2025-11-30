@@ -1,6 +1,7 @@
 package com.walk.or.die.engine.ai;
 
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -49,7 +50,7 @@ public class MCAI {
     }
 
     public float isSheltSafe(MCIntVector2 pos) {
-        List<MCAlly> list = MCEntityManager.get().getAllies();
+        Set<MCAlly> list = MCEntityManager.get().getAllies();
 
         float result = 0f;
         for (MCAlly ally: list) {
@@ -75,7 +76,7 @@ public class MCAI {
     }
 
     public float isSheltShootSpot(MCIntVector2 pos) {
-        List<MCAlly> list = MCEntityManager.get().getAllies();
+        Set<MCAlly> list = MCEntityManager.get().getAllies();
 
         float result = 0f;
         for (MCAlly ally: list) {

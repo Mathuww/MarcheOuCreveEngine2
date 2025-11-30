@@ -122,22 +122,25 @@ public class MCCharacter extends MCEntity {
         return attack;
     }
     
-    public boolean shoot(MCCharacter target, MCAttack attack) {
-        if (attack == null)
-            throw new IllegalStateException("trying to shoot without a null attack !");
-        int damage = attack.getDamageTo(target);
+    public void shootThenCall(MCIntVector2 end, MCAttack attack, Runnable onArrival, MCCharacter target) {
         // System.out.println("trying to shoot with damage : " + damage);
-        target.getHurt(damage);
-        return true;
-    }
-
-    public boolean missShoot(MCIntVector2 end) {
-        System.out.println("MissShot");
-        // Hop on envoie le projectile jusqu'au bon endroit
-        return true;
+        MCProjectile proj;
+        try {
+            proj = attack.spawnProjectile();
+        } catch (Exception e) {
+            System.err.println("cant spawn projectile from " + getTilePosition().toString() + " to " + end.toString());
+            e.printStackTrace();
+            return;
+        }
+        proj.setPosition(getPosition()); // le projectile commence ici !
+        proj.callOnArrival(onArrival);
+        if (target != null) proj.setCollisionTrigger(target);
+        proj.launchTo(end);
     }
 
     public void getHurt(int damage) {
+        if (dead)
+            return;
         if (damage < 0f) 
             throw new IllegalArgumentException("cant get hurt with negative damage");
         hp = hp - damage;

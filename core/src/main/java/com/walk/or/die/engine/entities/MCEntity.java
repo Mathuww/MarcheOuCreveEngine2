@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
+import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
@@ -25,7 +26,6 @@ import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public abstract class MCEntity {
-    
     public static class TileReachedArgs {
         public MCEntity entity;
         public MCIntVector2 tile;
@@ -36,7 +36,7 @@ public abstract class MCEntity {
         }
     }
 
-    private String name;
+    private String id;
     private MCGame parent;
     private MCTerrainMap map;
     private Rectangle hitbox;
@@ -53,10 +53,17 @@ public abstract class MCEntity {
     public MCEntity(MCGame parent, MCTerrainMap map, String entityId) {
         this.parent = parent;
         this.map = map;
-        this.name = entityId;
+        this.id = entityId;
         this.animations = new HashMap<>();
 
-        sprite = new Sprite();
+        TextureRegion fallback;
+        try {
+            fallback = MCSharedAssets.get().getSavedTexture("fallback");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new IllegalStateException("cant build entity without fallback texture");
+        }
+        sprite = new Sprite(fallback);
         sprite.setSize(SIZE, SIZE);
         sprite.setPosition(0, 0);
 
@@ -67,6 +74,7 @@ public abstract class MCEntity {
 
     public void addAnimation(String animName, MCAnimation anim) {
         animations.put(animName, anim);
+        System.out.println("mes animations sont mtn : " + animations.keySet());
     }
 
     public boolean playAnimation(String animName) {
@@ -74,9 +82,10 @@ public abstract class MCEntity {
         if (newAnim != null) {
             currentAnim = newAnim;
             currentAnim.reset(); // remet statetime à 0 ms
+            System.out.println(id + ": playAnimation " + animName + " success");
             return true;
         } else {
-            System.err.println("playAnimation " + animName + " not found");
+            System.err.println(id + ": playAnimation " + animName + " not found");
             return false;
         }
     }
@@ -173,5 +182,22 @@ public abstract class MCEntity {
 
     public void hide() {
         display = false;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        MCEntity comp = (MCEntity) obj;
+        return comp.getId().equals(this.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

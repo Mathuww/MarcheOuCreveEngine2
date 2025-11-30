@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
+import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
 
 public class MCCameraManager {
@@ -24,12 +25,15 @@ public class MCCameraManager {
     }
 
     private OrthographicCamera gdxCam;
+    float oldX, oldY;
 
     private Map<CameraMode, MCCameraBehavior> behaviors = new HashMap<>();
     private CameraMode mode;
 
     private float limitX;
     private float limitY;
+
+    private boolean movedThisFrame = false;
 
     private MCEntity target;
 
@@ -80,6 +84,8 @@ public class MCCameraManager {
     public void init(float viewportWidth, float viewportHeight, CameraMode mode) {
         gdxCam = new OrthographicCamera(viewportWidth, viewportHeight);
         gdxCam.position.set(viewportWidth / 2, viewportHeight / 2, 0);
+        oldX = gdxCam.position.x;
+        oldY = gdxCam.position.y;
         limitX = 0f;
         limitY = 0f;
         setMode(mode);
@@ -98,8 +104,17 @@ public class MCCameraManager {
     }
 
     public void update(float delta) throws UnexistingBehaviorException {
+        movedThisFrame = false;
         if (mode == null) throw new UnexistingBehaviorException("camera update : need a behavior to update");
-        behaviors.get(mode).update(gdxCam, delta);
+        Vector2 newPos = behaviors.get(mode).update(gdxCam, delta);
+        if (newPos.y != oldX || newPos.x != oldX)
+            movedThisFrame = true;
+        gdxCam.position.x = newPos.x;
+        gdxCam.position.y = newPos.y;
         gdxCam.update();
+    }
+
+    public boolean hasMovedThisFrame() {
+        return this.movedThisFrame;
     }
 }

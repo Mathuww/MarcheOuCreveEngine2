@@ -48,9 +48,11 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
     @Override
     public void enter(ReadyStateArgs args) {
         super.enter(args);
+        parent.playAnimation("ready");
         this.bus.emit("connectMouseMoved", new MCInputManager.MouseListener(this::mouseMoved));
         parent.getMoveDisplay().computeValidTilesDisplay();
         parent.getMoveDisplay().display = true;
+        MCInputManager.get().triggerMouseUpdate();
     }
 
     @Override
@@ -74,8 +76,7 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
                 return;
             }
             changeState("idle", new MCESIdle.IdleStateArgs());
-        }
-        else if (!(data instanceof MCInputManager.DirectionalCommand bipboup)) {
+        } else if (!(data instanceof MCInputManager.DirectionalCommand bipboup)) {
             changeState("idle", new MCESIdle.IdleStateArgs());
         }
     }

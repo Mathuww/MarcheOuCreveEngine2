@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -23,6 +26,7 @@ public class MCSharedAssets {
 
     private MCMapLayer miscTilesLayer;
     private Map<String, TiledMapTile> savedTiles = new HashMap<>();
+    private Map<String, TextureRegion> savedTextures = new HashMap<>();
 
     private MCSharedAssets() {}
 
@@ -31,6 +35,17 @@ public class MCSharedAssets {
         miscTilesLayer = miscTilesMap.getLayer(0);
 
         addSavedTile("validAttackTile");
+        //addSavedTile("debugTile");
+        generateFailsafeTexture();
+    }
+
+    private void generateFailsafeTexture() {
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
+        pixmap.setColor(Color.MAGENTA);
+        pixmap.fill();
+        Texture fallbackTexture = new Texture(pixmap);
+        pixmap.dispose(); 
+        addSavedTexture("fallback", new TextureRegion(fallbackTexture));
     }
 
     private void addSavedTile(String nameVal) throws Exception {
@@ -41,6 +56,13 @@ public class MCSharedAssets {
         if (tile == null)
             throw new IllegalStateException("cant convert cell with tile " + nameVal + " to a tile in shared assets");
         savedTiles.put(nameVal, tile);
+        TextureRegion texture = tile.getTextureRegion();
+        if (texture != null)
+            savedTextures.put(nameVal, texture);
+    }
+
+    private void addSavedTexture(String nameVal, TextureRegion texture) {
+        savedTextures.put(nameVal, texture);
     }
 
     public TiledMapTile getSavedTile(String name) throws Exception {
@@ -51,8 +73,7 @@ public class MCSharedAssets {
     }
 
     public TextureRegion getSavedTexture(String name) throws Exception {
-        TiledMapTile tile = getSavedTile(name);
-        TextureRegion texture = tile.getTextureRegion();
+        TextureRegion texture = savedTextures.get(name);
         if (texture == null)
             throw new IllegalStateException("cant find texture region of tile " + name);
         return texture;

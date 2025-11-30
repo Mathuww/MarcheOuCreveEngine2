@@ -56,6 +56,7 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
     @Override
     public void enter(AimStateArgs args) {
         super.enter(args);
+        parent.playAnimation("aim");
         this.bus.emit("connectMouseMoved", new MCInputManager.MouseListener(this::mouseMoved));
         this.attack = args.attack;
         attack.computeValidTilesDisplay();
