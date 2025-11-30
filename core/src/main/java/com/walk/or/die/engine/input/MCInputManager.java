@@ -205,7 +205,10 @@ public class MCInputManager implements InputProcessor {
         if (mouseMovedFunction != null) {
             Vector3 worldCoords = new Vector3(x, y, 0);
             vp.getCamera().unproject(worldCoords);
-            Vector2 v = new MCIntVector2(worldCoords.x, worldCoords.y).toGdxVect();
+            Vector2 v = new Vector2(
+                MathUtils.floor(worldCoords.x), 
+                MathUtils.floor(worldCoords.y)
+            );
 
             mouseMovedFunction.accept(v);
             return true;

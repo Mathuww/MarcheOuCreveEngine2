@@ -37,6 +37,9 @@ import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class MCGame extends Game {
+    public static final int VIEWPORT_WIDTH = 12;
+    public static final int VIEWPORT_HEIGHT = 10;
+
     // Map
     private MCTerrainMap map;
     private MCPathfinder pathfinder = MCPathfinder.get();
@@ -78,7 +81,7 @@ public class MCGame extends Game {
     public void create() {
         // View objects init
         batch = new SpriteBatch();
-        viewport = new FitViewport(12, 8);
+        viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 
         // Singleton inits
         pathfinder.init(this);
@@ -94,7 +97,11 @@ public class MCGame extends Game {
         map = new MCTerrainMap(MAP_ROOT + "start.tmx", drh);
 
         // Cam manager init
-        camManager.init(16, 10, MCCameraManager.CameraMode.ARROWS);
+        camManager.init(
+            VIEWPORT_WIDTH,
+            VIEWPORT_HEIGHT,
+            MCCameraManager.CameraMode.ARROWS
+        );
         camManager.setLimitX(map.getWidth());
         camManager.setLimitY(map.getHeight());
         viewport.setCamera(camManager.getGdxCam());

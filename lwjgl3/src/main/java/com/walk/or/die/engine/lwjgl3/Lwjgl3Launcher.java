@@ -2,20 +2,25 @@ package com.walk.or.die.engine.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.math.MathUtils;
 import com.walk.or.die.engine.MCGame;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
+    public final static int WINDOW_DEFAULT_WIDTH = 640;
+    public final static int WINDOW_DEFAULT_HEIGHT = 480;
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
         createApplication();
     }
 
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new MCGame(), getDefaultConfiguration());
+        MCGame game = new MCGame();
+        Lwjgl3ApplicationConfiguration cfg = getDefaultConfiguration(game);
+        return new Lwjgl3Application(game, cfg);
     }
 
-    private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
+    private static Lwjgl3ApplicationConfiguration getDefaultConfiguration(MCGame game) {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
         configuration.setTitle("Ici, c'est soit tu marches, soit tu crèves.");
         //// Vsync limits the frames per second to what your hardware can display, and helps eliminate
@@ -28,7 +33,10 @@ public class Lwjgl3Launcher {
         //// useful for testing performance, but can also be very stressful to some hardware.
         //// You may also need to configure GPU drivers to fully disable Vsync; this can cause screen tearing.
 
-        configuration.setWindowedMode(640, 480);
+        configuration.setWindowedMode(
+            WINDOW_DEFAULT_WIDTH, 
+            WINDOW_DEFAULT_HEIGHT
+        );
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
         //// They can also be loaded from the root of assets/ .
         configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");

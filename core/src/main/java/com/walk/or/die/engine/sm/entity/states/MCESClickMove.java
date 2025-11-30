@@ -102,7 +102,8 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
 
     private void nextMove() {
         System.out.println("On redebug cette fonction de merde");
-        if (movements.size() == 0) changeState("idle", new MCESIdle.IdleStateArgs()) ;
+        if (movements.size() == 0) 
+            changeState("idle", new MCESIdle.IdleStateArgs());
         else {
             Vector2 targetPos = movements.removeFirst().toGdxVect();
 
@@ -117,6 +118,17 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
                 percent_check.add(new_percent);
             }
             //System.out.println("Percent check : " + percent_check.toString());
+
+            // tile by tile sans diag donc on peut tester comme ca
+            // (ca crash pas le jeu si l'anim existe pas juste il se passe rien)
+            if (deplacement.x > 0)
+                parent.playAnimation("walk_right");
+            else if (deplacement.x < 0)
+                parent.playAnimation("walk_left");
+            else if (deplacement.y > 0)
+                parent.playAnimation("walk_up");
+            else if (deplacement.y < 0)
+                parent.playAnimation("walk_down");
         }
     }
 

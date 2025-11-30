@@ -122,7 +122,7 @@ public class MCCharacter extends MCEntity {
         return attack;
     }
     
-    public void shootThenCall(MCIntVector2 end, MCAttack attack, Runnable onArrival, MCCharacter target) {
+    public void shootThenCall(MCIntVector2 end, MCAttack attack, Runnable onArrival) {
         // System.out.println("trying to shoot with damage : " + damage);
         MCProjectile proj;
         try {
@@ -134,7 +134,6 @@ public class MCCharacter extends MCEntity {
         }
         proj.setPosition(getPosition()); // le projectile commence ici !
         proj.callOnArrival(onArrival);
-        if (target != null) proj.setCollisionTrigger(target);
         proj.launchTo(end);
     }
 

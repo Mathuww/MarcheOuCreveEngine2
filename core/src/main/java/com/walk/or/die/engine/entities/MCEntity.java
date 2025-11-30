@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -146,6 +147,10 @@ public abstract class MCEntity {
 
     public void setPosition(Vector2 pos) {
         this.hitbox.setPosition(pos.x, pos.y);
+    }
+
+    public void setAlpha(float alpha) {
+        sprite.setAlpha(MathUtils.clamp(alpha, 0f, 1f));
     }
 
     public Rectangle getHitbox() {

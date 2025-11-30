@@ -7,7 +7,7 @@ rm -r assets/tiled/packed/** > /dev/null 2>&1
 mkdir misc
 rm misc/packing.log
 
-rsync -av --exclude '*.tmx' "$MAP_ROOT"/ "$OUTPUT_ROOT"/
+rsync -av --exclude '*.tmx' --exclude '*.tiled-project' --exclude '*.tiled-session' "$MAP_ROOT"/ "$OUTPUT_ROOT"/
 
 find "$MAP_ROOT" -type d | while read dir; do
     # si ce dossier contient des .tmx directement

@@ -63,12 +63,12 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
                 if (!args.target.isDead()) args.target.playAnimation(args.attack.getTargetAnim());
                 args.target.getHurt(damage);
                 changeState("idle", new MCESIdle.IdleStateArgs());
-            }, args.target);
+            });
         } else { // miss shot !
-           parent.shootThenCall(args.target.getTilePosition(), args.attack, () -> {
+           parent.shootThenCall(result.endPos, args.attack, () -> {
                 System.out.println("MissShot");
                 changeState("idle", new MCESIdle.IdleStateArgs());
-            }, null);
+            });
         }
 
     }

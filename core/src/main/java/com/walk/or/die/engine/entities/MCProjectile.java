@@ -6,6 +6,7 @@ import java.util.function.Function;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCIntVector2;
@@ -13,16 +14,21 @@ import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 public class MCProjectile extends MCEntity {
+    private final float COLLISION_THRESHOLD = 0.75f;
+    private final float FADING_DURATION = 0.15f;
+
     private float speed = 4f;
     private float totalDuration;
     private float elapsedTime = 0f;
+    private float fadeStateTime = 0f;
     private Vector2 startPos;
     private Vector2 newPos;
     private Vector2 targetPos;
     private MCEntity target;
     private Runnable callback;
 
-    private boolean arrived = false;
+    private boolean fading = false;
+    private boolean markedToKill = false;
 
     private final Interpolation easing = Interpolation.pow2Out;
 
@@ -38,10 +44,6 @@ public class MCProjectile extends MCEntity {
 
     public void callOnArrival(Runnable callback) {
         this.callback = callback;
-    }
-
-    public void setCollisionTrigger(MCEntity e) {
-        target = e;
     }
 
     public void launchTo(MCIntVector2 targetGridPos) {
@@ -61,26 +63,45 @@ public class MCProjectile extends MCEntity {
     // donc plus aucune vérification ici.
     @Override
     public void update(float delta) {
-        if (targetPos != null && !arrived) {
+        if (markedToKill)  // en attente de la PDM
+            return;
+
+        if (fading) {
+            fadeStateTime += delta;
+            // pas le meme alpha qu'en bas hein !
+            float alpha = 1 - (fadeStateTime / FADING_DURATION);
+            setAlpha(alpha);
+            if (fadeStateTime >= FADING_DURATION) {
+                MCEntityManager.get().kill(this); // adieu
+                markedToKill = true;
+            }
+            return;
+        }
+
+        if (targetPos != null) {
             // pas encore lancé ou alors déjà arrivé
             // (EntityManager a peut etre pas encore pu tuer le projectile donc on veut pas
             // run le callback 2 fois)
 
             elapsedTime += delta;
 
-            float alpha = Math.min(1f, elapsedTime / totalDuration);
+            float alpha = Math.min(
+                1f, 
+                elapsedTime / Math.max(totalDuration, MathUtils.FLOAT_ROUNDING_ERROR)
+            );
             alpha = easing.apply(alpha);
 
             newPos.set(startPos).lerp(targetPos, alpha);
             setPosition(newPos);
 
-            if (target != null)
-                arrived = collidesWith(target);
-            else
-                arrived = (alpha >= 1f);
-            if (arrived) { // la balle est arrivée billy !! :(
-                if (callback != null) callback.run();
-                MCEntityManager.get().kill(this); // adieu
+            // dst2 : dst^2 (+ rapide)
+            if (newPos.dst2(targetPos) <= COLLISION_THRESHOLD * COLLISION_THRESHOLD) { 
+                // la balle est arrivée billy !! :(
+                if (callback != null) {
+                    callback.run();
+                    callback = null;
+                }
+                fading = true;
             }
         }
 
