@@ -5,9 +5,11 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.shared.MCDebugRenderer;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
@@ -30,16 +32,13 @@ public class MCAI {
         this.map = map;
     }
 
-    public Vector2 getNewPos(int posX, int posY, int max_deplacement) {
-        List<Vector2> shelts = searchShelts(posX, posY, max_deplacement);
+    public MCIntVector2 getNewPos(MCIntVector2 oldPos, int max_deplacement) {
+        List<MCIntVector2> shelts = searchShelts(oldPos, max_deplacement);
 
-        Vector2 best_shelt = new Vector2(posX, posY);
+        MCIntVector2 best_shelt = oldPos;
         float best_score = -1f;
-        for (Vector2 shelt: shelts) {
-            int x = MathUtils.floor(shelt.x);
-            int y = MathUtils.floor(shelt.y);
-
-            float score = isSheltSafe(x, y) + isSheltShootSpot(x, y);
+        for (MCIntVector2 shelt: shelts) {
+            float score = isSheltSafe(shelt) + isSheltShootSpot(shelt);
             if (best_score == -1f || score < best_score) {
                 best_score = score;
                 best_shelt = shelt;
@@ -49,14 +48,14 @@ public class MCAI {
         return best_shelt;
     }
 
-    public float isSheltSafe(int posX, int posY) {
+    public float isSheltSafe(MCIntVector2 pos) {
         List<MCAlly> list = MCEntityManager.get().getAllies();
 
         float result = 0f;
         for (MCAlly ally: list) {
-            List<Vector2> traj = pathfinder.getTrajectory(
-                MathUtils.floor(ally.getTilePosition().x), MathUtils.floor(ally.getTilePosition().y),
-                posX, posY);
+            List<MCIntVector2> traj = pathfinder.getTrajectory(
+                ally.getTilePosition(),
+                pos);
 
             if (pathfinder.isCorrectTrajectory(traj).success) {
                 result += 1f;
@@ -75,14 +74,15 @@ public class MCAI {
         return result;
     }
 
-    public float isSheltShootSpot(int posX, int posY) {
+    public float isSheltShootSpot(MCIntVector2 pos) {
         List<MCAlly> list = MCEntityManager.get().getAllies();
 
         float result = 0f;
         for (MCAlly ally: list) {
-            List<Vector2> traj = pathfinder.getTrajectory(
-                posX, posY,
-                MathUtils.floor(ally.getTilePosition().x), MathUtils.floor(ally.getTilePosition().y));
+            List<MCIntVector2> traj = pathfinder.getTrajectory(
+                pos,
+                ally.getTilePosition()
+            );
 
             if (pathfinder.isCorrectTrajectory(traj).success) {
                 result += 1f;
@@ -99,18 +99,19 @@ public class MCAI {
         return result;
     }
 
-    public List<Vector2> searchShelts(int posX, int posY, int max_deplacement) {
-        List<Vector2> list = new ArrayList<>();
+    public List<MCIntVector2> searchShelts(MCIntVector2 pos, int maxMoves) {
+        List<MCIntVector2> list = new ArrayList<>();
         
-        for (int x = -max_deplacement; x <= max_deplacement; x++) {
-            for (int y = -max_deplacement; y <= max_deplacement; y++) {
-                if (Math.abs(x) + Math.abs(y) <= max_deplacement && 
-                    posX+x < map.getWidth() && posY+y < map.getHeight() &&
-                    posX+x>=0 && posY+y>=0 &&
-                    MCEntityManager.get().getEntityFromTile(1, new Vector2(posX+x, posY+y)) == null &&
-                    neighborsShelt(posX+x, posY+y)) {
-                        list.add(new Vector2(posX+x, posY+y));
-                        showSpot(posX + x, posY + y);
+        for (int x = -maxMoves; x <= maxMoves; x++) {
+            for (int y = -maxMoves; y <= maxMoves; y++) {
+                MCIntVector2 newV = new MCIntVector2(pos.x + x, pos.y + y);
+                if (Math.abs(x) + Math.abs(y) <= maxMoves && 
+                    newV.x < map.getWidth() && newV.y < map.getHeight() &&
+                    newV.x >= 0 && newV.y >=0 &&
+                    MCEntityManager.get().getEntityFromTile(1, newV) == null &&
+                    neighborsShelt(newV)) {
+                        list.add(newV);
+                        showSpot(newV);
                 }
             }
         }
@@ -118,18 +119,22 @@ public class MCAI {
         return list;
     }
 
-    public boolean neighborsShelt(int posX, int posY) {
-        if (pathfinder.isProtect(posX-1, posY) || 
-            pathfinder.isProtect(posX+1, posY) ||
-            pathfinder.isProtect(posX, posY-1) ||
-            pathfinder.isProtect(posX, posY+1))
-        System.out.println("(" + posX + "," + posY + ") : " + pathfinder.isProtect(posX-1, posY) +
-         pathfinder.isProtect(posX+1, posY) + pathfinder.isProtect(posX, posY-1) + 
-        pathfinder.isProtect(posX, posY+1) );
-        return pathfinder.isProtect(posX-1, posY) || 
-            pathfinder.isProtect(posX+1, posY) ||
-            pathfinder.isProtect(posX, posY-1) ||
-            pathfinder.isProtect(posX, posY+1) ;
+    public boolean neighborsShelt(MCIntVector2 pos) {
+        List<MCIntVector2> newPositions = new ArrayList<>();
+        newPositions.add(new MCIntVector2(pos.x - 1, pos.y));
+        newPositions.add(new MCIntVector2(pos.x+1, pos.y));
+        newPositions.add(new MCIntVector2(pos.x, pos.y-1));
+        newPositions.add(new MCIntVector2(pos.x, pos.y+1));
+
+        boolean isOneProtected = newPositions.stream().anyMatch(pathfinder::isProtect);
+
+        if (isOneProtected) {
+            String str = pos.toString();
+            for (MCIntVector2 p : newPositions)
+                str += pathfinder.isProtect(p);
+            System.out.println(str);
+        }
+        return isOneProtected;
     }
 
     public void render(SpriteBatch batch) {
@@ -138,8 +143,8 @@ public class MCAI {
         }
     }
 
-    public void showSpot(int x, int y) { 
-        MCDebugRenderer.get().addDebugTile(new Vector2(x, y));
+    public void showSpot(MCIntVector2 spot) { 
+        MCDebugRenderer.get().addDebugTile(spot);
     }
 
 }

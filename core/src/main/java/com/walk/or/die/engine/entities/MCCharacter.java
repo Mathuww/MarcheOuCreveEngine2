@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.ai.MCAI;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -130,7 +131,7 @@ public class MCCharacter extends MCEntity {
         return true;
     }
 
-    public boolean missShoot(int endX, int endY) {
+    public boolean missShoot(MCIntVector2 end) {
         System.out.println("MissShot");
         // Hop on envoie le projectile jusqu'au bon endroit
         return true;

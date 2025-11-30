@@ -1,0 +1,56 @@
+package com.walk.or.die.engine.shared;
+
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
+import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
+
+public class MCIntVector2 {
+    public int x;
+    public int y;
+
+    public MCIntVector2(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public MCIntVector2(float x, float y) {
+        this.x = MathUtils.floor(x);
+        this.y = MathUtils.floor(y);
+    }
+
+    public MCIntVector2(Vector2 v) {
+        this.x = MathUtils.floor(v.x);
+        this.y = MathUtils.floor(v.y);
+    }
+
+    public Vector2 toGdxVect() {
+        return new Vector2(x, y);
+    } 
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        MCIntVector2 comp = (MCIntVector2) obj;
+        return Integer.compare(x, comp.x) == 0 && Integer.compare(y, comp.y) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int res = Integer.hashCode(x);
+        res = 31 * res + Integer.hashCode(y);
+        return res;
+    }
+
+    public String toString() {
+        return "(" + x + "," + y + ")";
+    }
+
+    public MCIntVector2 subTo(MCIntVector2 v2) {
+        return new MCIntVector2(this.x - v2.x, this.y - v2.y);
+    }
+
+    public MCIntVector2 addTo(MCIntVector2 v2) {
+        return new MCIntVector2(v2.x + this.x, v2.y + this.y);
+    }
+}

@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array;
 import java.util.ArrayList;
 import java.util.List;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.shared.MCIntVector2;
 
 public class MCEntityManager {
     private static MCEntityManager instance = null;
@@ -66,7 +67,7 @@ public class MCEntityManager {
         }
     }
     
-    public MCEntity getEntityFromTile(int layer, Vector2 pos) {
+    public MCEntity getEntityFromTile(int layer, MCIntVector2 pos) {
         for (MCEntity e: entities) {
             if (e.getTilePosition().x == pos.x && e.getTilePosition().y == pos.y && e.getLayer() == layer) 
                 return e;

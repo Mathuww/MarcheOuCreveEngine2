@@ -24,20 +24,20 @@ public class MCDebugRenderer {
         validTileTexture = MCSharedAssets.get().getSavedTexture("validAttackTile");
     }
 
-    private Set<Vector2> debugTiles = new HashSet<>();
+    private Set<MCIntVector2> debugTiles = new HashSet<>();
     private TextureRegion validTileTexture; 
 
-    public void addDebugTile(Vector2 pos) {
+    public void addDebugTile(MCIntVector2 pos) {
         debugTiles.add(pos);
     }
 
-    public void removeDebugTile(Vector2 pos) {
+    public void removeDebugTile(MCIntVector2 pos) {
         debugTiles.remove(pos);
     }
 
     public void render(SpriteBatch batch) {
         batch.setColor(0, 1, 0, 0.5f);
-        for (Vector2 pos : debugTiles) {
+        for (MCIntVector2 pos : debugTiles) {
             batch.draw(validTileTexture, pos.x, pos.y, 1, 1);
         }
         batch.setColor(1, 1, 1, 1); 

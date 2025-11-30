@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.entities.MCEntityManager;
+import com.walk.or.die.engine.shared.MCIntVector2;
 
 import java.util.List;
 import java.beans.VetoableChangeSupport;
@@ -18,10 +19,10 @@ import java.util.Collections;
 class Tuple {
     int g;        // distance depuis le départ
     int h;        // heuristique
-    Vector2 pos;  // position
+    MCIntVector2 pos;  // position
     Tuple parent; // parent pour reconstruire le chemin
 
-    public Tuple(int g, int h, Vector2 pos, Tuple parent) {
+    public Tuple(int g, int h, MCIntVector2 pos, Tuple parent) {
         this.g = g;
         this.h = h;
         this.pos = pos;
@@ -36,13 +37,11 @@ public class MCPathfinder {
 
     public static class Simulation {
         public boolean success;
-        public int endX;
-        public int endY;
+        public MCIntVector2 endPos;
 
-        public Simulation(boolean success, int x, int y) {
+        public Simulation(boolean success, MCIntVector2 pos) {
             this.success = success;
-            endX = x;
-            endY = y;
+            endPos = pos;
         }
     }
 
@@ -55,17 +54,17 @@ public class MCPathfinder {
         this.game = game;
     }
 
-    public List<Vector2> getPath(Vector2 start, Vector2 end) {
+    public List<MCIntVector2> getPath(MCIntVector2 start, MCIntVector2 end) {
 
         PriorityQueue<Tuple> file = new PriorityQueue<>(this::comparaison);
         file.add(new Tuple(0, getDist(start, end), start, null));
 
-        HashSet<Vector2> closedList = new HashSet<>();
+        HashSet<MCIntVector2> closedList = new HashSet<>();
 
         while (!file.isEmpty()) {
 
             Tuple node = file.poll();
-            Vector2 current = node.pos;
+            MCIntVector2 current = node.pos;
 
             if (closedList.contains(current)) continue;
 
@@ -74,7 +73,7 @@ public class MCPathfinder {
                 return reconstructPath(node);
             }
 
-            for (Vector2 i : getNeighbors(current)) {
+            for (MCIntVector2 i : getNeighbors(current)) {
                 if (!closedList.contains(i)) {
                     file.add(new Tuple(node.g + 1, getDist(i, end), i, node));
                 }
@@ -84,21 +83,24 @@ public class MCPathfinder {
         return new ArrayList<>();
     }
 
-    public boolean isWalkable(int x, int y) {
-        return game.isWalkable(x, y);
+    public boolean isWalkable(MCIntVector2 pos) {
+        return game.isWalkable(pos);
     }
 
-    public boolean isProtect(int x, int y) {
-        if (MCEntityManager.get().getEntityFromTile(1, new Vector2(x,y)) == null) {
-            return game.getTerrainMap().isProtect(x, y);
+    public boolean isProtect(MCIntVector2 pos) {
+        if (MCEntityManager.get().getEntityFromTile(1, pos) == null) {
+            return game.getTerrainMap().isProtect(pos);
         }
-        System.out.println(MCEntityManager.get().getEntityFromTile(1, new Vector2(x,y)));
+        System.out.println(MCEntityManager.get().getEntityFromTile(1, pos));
         return true;
     }
 
-    public List<Vector2> getTrajectory(int x1, int y1, int x2, int y2) {
+    public List<MCIntVector2> getTrajectory(MCIntVector2 v1, MCIntVector2 v2) {
 
-        List<Vector2> result = new ArrayList<>();
+        List<MCIntVector2> result = new ArrayList<>();
+
+        int x1 = v1.x, x2 = v2.x;
+        int y1 = v1.y, y2 = v2.y;
 
         int dx = Math.abs(x2 - x1);
         int dy = Math.abs(y2 - y1);
@@ -107,7 +109,7 @@ public class MCPathfinder {
         int err = dx - dy;
 
         while (true) {
-            result.add(new Vector2(x1, y1));
+            result.add(new MCIntVector2(x1, y1));
             if (x1 == x2 && y1 == y2) break;
             int e2 = 2 * err;
             if (e2 > -dy) {
@@ -123,20 +125,20 @@ public class MCPathfinder {
         return result;
     }
 
-    public Simulation isCorrectTrajectory(List<Vector2> trajectory) {
+    public Simulation isCorrectTrajectory(List<MCIntVector2> trajectory) {
         //System.out.println(trajectory);
-        for (Vector2 pos : trajectory) {
-            if (!game.isWalkable(MathUtils.floor(pos.x), MathUtils.floor(pos.y))) 
-                return new Simulation (false, MathUtils.floor(pos.x), MathUtils.floor(pos.y));
+        for (MCIntVector2 pos : trajectory) {
+            if (!game.isWalkable(pos)) 
+                return new Simulation (false, pos);
         }
         System.out.println("hop ça marche (pas)");
-        return new Simulation(true, -1, -1);
+        return new Simulation(true, new MCIntVector2(-1, -1));
     }
 
-    public List<Vector2> clean(List<Vector2> path) {
+    public List<MCIntVector2> clean(List<MCIntVector2> path) {
         if (path.size() == 0) return path;
-        Vector2 current = path.get(0);
-        List<Vector2> newList = new ArrayList<>();
+        MCIntVector2 current = path.get(0);
+        List<MCIntVector2> newList = new ArrayList<>();
 
         for (int i=1; i < path.size(); i++) {
 
@@ -151,8 +153,8 @@ public class MCPathfinder {
         return newList;
     }
 
-    private List<Vector2> reconstructPath(Tuple endNode) {
-        List<Vector2> path = new ArrayList<>();
+    private List<MCIntVector2> reconstructPath(Tuple endNode) {
+        List<MCIntVector2> path = new ArrayList<>();
         Tuple current = endNode;
         while (current != null) {
             path.add(current.pos);
@@ -173,12 +175,12 @@ public class MCPathfinder {
         return 0;
     }
 
-    private int getDist(Vector2 x, Vector2 y) {
+    private int getDist(MCIntVector2 x, MCIntVector2 y) {
         return (int)(Math.abs(x.x - y.x) + Math.abs(y.y - x.y));
     }
 
-    private List<Vector2> getNeighbors(Vector2 current) {
-        List<Vector2> neighbors = new ArrayList<>();
+    private List<MCIntVector2> getNeighbors(MCIntVector2 current) {
+        List<MCIntVector2> neighbors = new ArrayList<>();
 
         int x = (int) current.x;
         int y = (int) current.y;
@@ -189,8 +191,9 @@ public class MCPathfinder {
             int nx = x + dir[0];
             int ny = y + dir[1];
 
-            if (game.isWalkable(nx, ny)) {
-                neighbors.add(new Vector2(nx, ny));
+            MCIntVector2 npos = new MCIntVector2(nx, ny);
+            if (game.isWalkable(npos)) {
+                neighbors.add(npos);
             }
         }
 

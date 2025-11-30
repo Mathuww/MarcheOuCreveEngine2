@@ -55,8 +55,8 @@ public class MCEventBus implements MCVehicle {
         addEvent("InputPressed", MCInputManager.Command.class);
         addEvent("InputReleased", MCInputManager.Command.class);
         addEvent("EntityTileReached", MCEntity.TileReachedArgs.class);
-        addEvent("connectMouseMoved", MCInputManager.Function.class);
-        addEvent("disconnectMouseMoved", MCInputManager.Function.class);
+        addEvent("connectMouseMoved", MCInputManager.MouseListener.class);
+        addEvent("disconnectMouseMoved", MCInputManager.MouseListener.class);
         //addEvent("ChangedFocus", MCEntity.class);
         //addEvent("ChangeState", MCStateMachine.TransitionArgs.class);
     }

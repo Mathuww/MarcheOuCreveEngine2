@@ -4,6 +4,7 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -21,18 +22,18 @@ import java.util.List;
 public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
 
     public static class MoveStateArgs extends MCEntityState.StateArgs {
-        public Vector2 target;
-        public List<Vector2> path;
+        public MCIntVector2 target;
+        public List<MCIntVector2> path;
 
-        public MoveStateArgs(Vector2 target, List<Vector2> path) {
+        public MoveStateArgs(MCIntVector2 target, List<MCIntVector2> path) {
             this.target = target;
             this.path = path;
         }
     }
 
-    private Vector2 goal;
+    private MCIntVector2 goal;
 
-    private Deque<Vector2> movements;
+    private Deque<MCIntVector2> movements;
     private Deque<Float> percent_check = new ArrayDeque<>();
     private Vector2 start;
     private Vector2 deplacement = new Vector2(0f,0f);
@@ -103,11 +104,10 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
         System.out.println("On redebug cette fonction de merde");
         if (movements.size() == 0) changeState("idle", new MCESIdle.IdleStateArgs()) ;
         else {
-            Vector2 targetPos = movements.removeFirst();
+            Vector2 targetPos = movements.removeFirst().toGdxVect();
 
             start = parent.getPosition();
-            deplacement.x = MathUtils.floor(targetPos.x - parent.getX()); // avant : cast (int)end.x....
-            deplacement.y = MathUtils.floor(targetPos.y - parent.getY());
+            deplacement = new MCIntVector2(targetPos.cpy().sub(start)).toGdxVect();
             percent = 0f;
             
             int step = Math.abs(((int) deplacement.x) + ((int) deplacement.y));

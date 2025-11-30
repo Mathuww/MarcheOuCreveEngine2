@@ -9,6 +9,7 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -24,9 +25,9 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
     public static class ShootStateArgs extends MCEntityState.StateArgs {
         MCCharacter target;
         MCAttack attack;
-        List<Vector2> trajectory;
+        List<MCIntVector2> trajectory;
 
-        public ShootStateArgs(MCCharacter e, MCAttack a, List<Vector2> traj) {
+        public ShootStateArgs(MCCharacter e, MCAttack a, List<MCIntVector2> traj) {
             target = e;
             attack = a;
             trajectory = traj;
@@ -58,7 +59,7 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
         if (result.success) {
             finished = parent.shoot(args.target, args.attack);
         } else {
-            finished = parent.missShoot(result.endX, result.endY);
+            finished = parent.missShoot(result.endPos);
         }
 
     }

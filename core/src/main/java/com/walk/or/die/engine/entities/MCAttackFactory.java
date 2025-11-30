@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.exceptions.MissingDataException;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
@@ -67,7 +68,7 @@ public class MCAttackFactory {
 
         int power = MCUtils.getIntProperty(attackProperties, "power", 1);
 
-        Map<Point, Float> damagePattern = new HashMap<>();
+        Map<MCIntVector2, Float> damagePattern = new HashMap<>();
 
         MCMapLayer layer = attackMap.getLayer(0);
         Vector2 senderPos = layer.getPosByProperty("type", "sender");
@@ -93,7 +94,7 @@ public class MCAttackFactory {
                         float decreaseFactor = MCUtils.getFloatProperty(tileProps, "decreaseFactor", 0f);
                         float damageAtPos = 1 * (1 - decreaseFactor);
 
-                        damagePattern.put(new Point(MathUtils.floor(relativePos.x), MathUtils.floor(relativePos.y)), damageAtPos);
+                        damagePattern.put(new MCIntVector2(relativePos), damageAtPos);
                     }
                 }
             }

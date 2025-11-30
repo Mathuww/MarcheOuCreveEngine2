@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
@@ -27,9 +28,9 @@ public abstract class MCEntity {
     
     public static class TileReachedArgs {
         public MCEntity entity;
-        public Vector2 tile;
+        public MCIntVector2 tile;
 
-        public TileReachedArgs(MCEntity entity, Vector2 tile) {
+        public TileReachedArgs(MCEntity entity, MCIntVector2 tile) {
             this.entity = entity;
             this.tile = tile;
         }
@@ -126,8 +127,8 @@ public abstract class MCEntity {
         return new Vector2(this.hitbox.x, this.hitbox.y);
     }
 
-    public Vector2 getTilePosition() {
-        return map.stickToNearestTile(getPosition()).cpy();
+    public MCIntVector2 getTilePosition() {
+        return map.stickToNearestTile(getPosition());
     }
 
     public void setPosition(float x, float y) {

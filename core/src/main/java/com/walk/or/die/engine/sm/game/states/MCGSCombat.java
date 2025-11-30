@@ -39,7 +39,7 @@ public class MCGSCombat extends MCGameState<MCGSCombat.CombatStateArgs> {
     protected void inputPressed(MCInputManager.Command data) {
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
             //System.out.println("Détecté par le game");
-            MCEntity e = MCEntityManager.get().getEntityFromTile(1, tileCmd.getVector());
+            MCEntity e = MCEntityManager.get().getEntityFromTile(1, tileCmd.getIntVect());
             if (e instanceof MCAlly ally) parent.changeFocus(ally);
         } else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
             if (keyCmd.key == Input.Keys.F) {

@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.utils.Disposable;
 import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.maps.MapProperties;
@@ -61,11 +62,11 @@ public class MCMap implements Disposable {
         return this.unitScale;
     }
 
-    public Vector2 stickToNearestTile(Vector2 pos) {
-        float newX = MathUtils.round(pos.x);
-        float newY = MathUtils.round(pos.y);
+    public MCIntVector2 stickToNearestTile(Vector2 pos) {
+        int newX = MathUtils.round(pos.x);
+        int newY = MathUtils.round(pos.y);
         //System.out.println("sticking to " + newX + ", " + newY);
-        return new Vector2(newX, newY);
+        return new MCIntVector2(newX, newY);
     }
 
     public MapProperties getProperties() {

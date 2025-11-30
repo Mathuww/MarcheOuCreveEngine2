@@ -13,12 +13,13 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.MCIntVector2;
 
 public class MCArrowsCamBehavior extends MCCameraBehavior {
     private final float CAM_MOVE_SPEED = 0.025f;
     private final float CAM_LERP = 3f;
 
-    private Map<DirectionalCommand, Boolean> currentInput;
+    private Map<MCIntVector2, Boolean> currentInput;
 
     public MCArrowsCamBehavior() {
         currentInput = new HashMap<>();
@@ -31,7 +32,7 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
             {+1, 0}, {-1, 0}
         };
         for (int[] dir : directions) {
-            currentInput.put(new DirectionalCommand(dir[0], dir[1]), false);
+            currentInput.put(new MCIntVector2(dir[0], dir[1]), false);
         }
         MCEventBus bus = MCEventBus.get();
         bus.on(this, "InputPressed", this::inputPressed);
@@ -47,13 +48,13 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
 
     public void inputPressed(Command data) {
         if(data instanceof DirectionalCommand cmd) {
-            currentInput.put(cmd, true);
+            currentInput.put(cmd.getIntVect(), true);
         }
     }
 
     public void inputReleased(Command data) {
         if (data instanceof DirectionalCommand cmd) {
-            currentInput.put(cmd, false);
+            currentInput.put(cmd.getIntVect(), false);
         }
     }
 
@@ -62,11 +63,11 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
 
         Vector2 relativeMove = new Vector2(0, 0);
             
-        for (Map.Entry<DirectionalCommand, Boolean> entry : currentInput.entrySet()) {
+        for (Map.Entry<MCIntVector2, Boolean> entry : currentInput.entrySet()) {
             if (entry.getValue()) { // true
-                DirectionalCommand cmd = entry.getKey();
-                relativeMove.x += cmd.dx;
-                relativeMove.y += cmd.dy;
+                MCIntVector2 cmd = entry.getKey();
+                relativeMove.x += cmd.x;
+                relativeMove.y += cmd.y;
             }
         }
         if (relativeMove.len() > 0) relativeMove.nor();

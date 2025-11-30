@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
@@ -23,7 +24,7 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 public class MCAttack {
     private final MCEntity parent;
     private int power;
-    private Map<Point, Float> damagePattern;
+    private Map<MCIntVector2, Float> damagePattern;
     private Array<Sprite> displaySprites = new Array<>();
     private TextureRegion validTileTexture;
     public boolean display = false;
@@ -33,7 +34,7 @@ public class MCAttack {
     private String senderAnim;
     private String targetAnim;
 
-    public MCAttack(MCEntity parent, int power, Map<Point, Float> pattern) throws Exception {
+    public MCAttack(MCEntity parent, int power, Map<MCIntVector2, Float> pattern) throws Exception {
         this.parent = parent;
         this.power = power;
         this.damagePattern = pattern;
@@ -45,16 +46,14 @@ public class MCAttack {
         this.targetAnim = props.get("targetAnim", String.class);
     }
 
-    public boolean isValidTile(Vector2 targetPos) {
-        Vector2 relativePos = targetPos.cpy().sub(parent.getTilePosition());
-        Point key = new Point(MathUtils.floor(relativePos.x), MathUtils.floor(relativePos.y));
-        return damagePattern.containsKey(key);
+    public boolean isValidTile(MCIntVector2 targetPos) {
+        MCIntVector2 relativePos = targetPos.subTo(parent.getTilePosition());
+        return damagePattern.containsKey(relativePos);
     }
     
-    private int getDamageAtTile(Vector2 targetPos) {
-        Vector2 relativePos = targetPos.cpy().sub(parent.getTilePosition());
-        Point key = new Point(MathUtils.floor(relativePos.x), MathUtils.floor(relativePos.y));
-        Float damage = damagePattern.get(key);
+    private int getDamageAtTile(MCIntVector2 targetPos) {
+        MCIntVector2 relativePos = targetPos.subTo(parent.getTilePosition());
+        Float damage = damagePattern.get(relativePos);
         if (damage == null)
             return -1;
         else
@@ -68,20 +67,18 @@ public class MCAttack {
     public void computeValidTilesDisplay() {
         System.out.println("updating attack");
         displaySprites.clear();
-        Vector2 parentTile = parent.getTilePosition();
-        for (Point relativeTile : damagePattern.keySet()) {
+        MCIntVector2 parentTile = parent.getTilePosition();
+        for (MCIntVector2 relativeTile : damagePattern.keySet()) {
             Float damage = damagePattern.get(relativeTile);
             if (damage != null && damage > 0f) {
-                Vector2 absoluteTile = new Vector2(relativeTile.x, relativeTile.y).add(parentTile.cpy());
-                int absTileX = MathUtils.floor(absoluteTile.x);
-                int absTileY = MathUtils.floor(absoluteTile.y);
-                if (parent.getMap().isWalkable(absTileX, absTileY)) {
+                MCIntVector2 absoluteTile = new MCIntVector2(relativeTile.x, relativeTile.y).addTo(parentTile);
+                if (parent.getMap().isWalkable(absoluteTile)) {
                     MCEntity e = MCEntityManager.get().getEntityFromTile(1, absoluteTile);
                     if (e != null && e instanceof MCAlly) // can't shoot an ally !
                         continue;
                     //System.out.println("adding attack display sprite at  : " + absTileX + ", " + absTileY);
                     Sprite spr = new Sprite(validTileTexture);
-                    spr.setPosition(absTileX, absTileY);
+                    spr.setPosition(absoluteTile.x, absoluteTile.y);
                     spr.setSize(1f, 1f);
                     spr.setColor(VALID_COLOR);
                     displaySprites.add(spr);
@@ -95,16 +92,15 @@ public class MCAttack {
             spr.setColor(VALID_COLOR);
     }
 
-    public void showTrajectory(List<Vector2> traj) {
+    public void showTrajectory(List<MCIntVector2> traj) {
         for (Sprite spr : displaySprites)
             spr.setColor(VALID_COLOR);
         //System.out.println("New trajectory");
         for (Sprite spr : displaySprites) {
             boolean isInTrajectory = false;
 
-            for (Vector2 pos : traj) {
-                if (MathUtils.floor(spr.getX()) == MathUtils.floor(pos.x) 
-                    && MathUtils.floor(spr.getY()) == MathUtils.floor(pos.y)) {
+            for (MCIntVector2 pos : traj) {
+                if (new MCIntVector2(spr.getX(), spr.getY()).equals(pos)) {
                     isInTrajectory = true;
                     break;
                 }

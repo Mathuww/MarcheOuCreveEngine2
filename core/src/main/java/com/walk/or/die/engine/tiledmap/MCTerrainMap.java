@@ -13,6 +13,7 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityFactory;
 import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.maps.MapObject;
@@ -39,12 +40,12 @@ public class MCTerrainMap extends MCMap {
         renderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale);
     }
 
-    public boolean isWalkable(int x, int y) {
+    public boolean isWalkable(MCIntVector2 pos) {
         
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         if (layer == null) return false;
-        if (x < 0 || x >= layer.getWidth() || y < 0 || y >= layer.getHeight()) return false;
-        TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+        if (pos.x < 0 || pos.x >= layer.getWidth() || pos.y < 0 || pos.y >= layer.getHeight()) return false;
+        TiledMapTileLayer.Cell cell = layer.getCell(pos.x, pos.y);
         
         if (cell == null || cell.getTile() == null) return false; // vide = non traversable
 
@@ -55,11 +56,11 @@ public class MCTerrainMap extends MCMap {
         return true;
     }
            
-    public boolean isProtect(int x, int y) {
+    public boolean isProtect(MCIntVector2 pos) {
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         if (layer == null) return false;
-        if (x < 0 || x >= layer.getWidth() || y < 0 || y >= layer.getHeight()) return false;
-        TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+        if (pos.x < 0 || pos.x >= layer.getWidth() || pos.y < 0 || pos.y >= layer.getHeight()) return false;
+        TiledMapTileLayer.Cell cell = layer.getCell(pos.x, pos.y);
         
         if (cell == null || cell.getTile() == null) return false;
 
@@ -96,7 +97,7 @@ public class MCTerrainMap extends MCMap {
         return playerEntityName;
     }
 
-    public Vector2 getPlayerSpawnPos() throws DataException {
+    public MCIntVector2 getPlayerSpawnPos() throws DataException {
         MCMapObject obj = getPlayerSpawnObject();
 
         Vector2 pos = obj.getPosition();
@@ -136,10 +137,13 @@ public class MCTerrainMap extends MCMap {
 
                 MCMapObject obj = new MCMapObject(rawObj);
                 Vector2 pos = obj.getPosition();
+                System.out.println("working on entity qui a l'object tiled de pos " + pos.x + ", " + pos.y);
                 pos = getDisplayCoordsFromTiled(pos);
-                pos = this.stickToNearestTile(pos);
+                System.out.println("display coords from tiled renvoie " + pos.x + ", " + pos.y);
+                MCIntVector2 tilePos = this.stickToNearestTile(pos);
+                System.out.println("on obtient avec stick to nearest " + tilePos.toString());
 
-                entity.setPosition(pos.x, pos.y);
+                entity.setPosition(tilePos.toGdxVect());
                 entityArray.add(entity);
             }
         }

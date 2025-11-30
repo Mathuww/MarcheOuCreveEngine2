@@ -9,6 +9,7 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -19,8 +20,7 @@ import java.util.List;
 
 
 public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
-    private int tileX = -1;
-    private int tileY = -1;
+    private MCIntVector2 tile = new MCIntVector2(-1, -1);
 
     public static class ReadyStateArgs extends MCEntityState.StateArgs {}
 
@@ -48,7 +48,7 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
     @Override
     public void enter(ReadyStateArgs args) {
         super.enter(args);
-        this.bus.emit("connectMouseMoved", new MCInputManager.Function(this::mouseMoved));
+        this.bus.emit("connectMouseMoved", new MCInputManager.MouseListener(this::mouseMoved));
         parent.getMoveDisplay().computeValidTilesDisplay();
         parent.getMoveDisplay().display = true;
     }
@@ -56,8 +56,7 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
     @Override
     public void exit() {
         parent.getMoveDisplay().display = false;
-        tileX = -1;
-        tileY = -1;
+        tile = new MCIntVector2(-1, -1);
         this.bus.emit("disconnectMouseMoved", null);
         super.exit();
     }
@@ -66,9 +65,9 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
-            Vector2 v = tileCmd.getVector();
-            if (MCPathfinder.get().isWalkable(MathUtils.floor(v.x), MathUtils.floor(v.y))) {
-                List<Vector2> path = MCPathfinder.get().getPath(parent.getPosition(), v);
+            MCIntVector2 v = tileCmd.getIntVect();
+            if (MCPathfinder.get().isWalkable(v)) {
+                List<MCIntVector2> path = MCPathfinder.get().getPath(parent.getTilePosition(), v);
                 if (path.size() == 0 || path.size() > parent.getMaxMoves())
                     changeState("idle", new MCESIdle.IdleStateArgs());
                 changeState("click_move", new MCESClickMove.MoveStateArgs(v, MCPathfinder.get().clean(path)));
@@ -82,28 +81,24 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
     }
 
     private void mouseMoved(Vector2 pos) {
-        int newx = MathUtils.floor(pos.x);
-        int newy = MathUtils.floor(pos.y);
-        if (newx != tileX || newy != tileY) {
-            tileX = newx;
-            tileY = newy;
+        MCIntVector2 newPos = new MCIntVector2(pos);
+        if (!newPos.equals(tile)) {
+            tile = newPos;
             
-            if (!MCPathfinder.get().isWalkable(MathUtils.floor(tileX), MathUtils.floor(tileY))) {
+            if (!MCPathfinder.get().isWalkable(tile)) {
                 parent.getMoveDisplay().clearTrajectory();
                 return;
             }
 
-            int startx = MathUtils.floor(parent.getX());
-            int starty = MathUtils.floor(parent.getY());
+            MCIntVector2 start = parent.getTilePosition();
 
-            List<Vector2> traj = MCPathfinder.get().getPath(new Vector2(startx, starty), new Vector2(tileX, tileY));
+            List<MCIntVector2> traj = MCPathfinder.get().getPath(start, tile);
             if (traj.size() == 0 || traj.size() > parent.getMaxMoves()) {
                 parent.getMoveDisplay().clearTrajectory();
                 return;
             }
 
 
-            System.out.println("switching trajectory");
             parent.getMoveDisplay().showTrajectory(traj);
         }
     }

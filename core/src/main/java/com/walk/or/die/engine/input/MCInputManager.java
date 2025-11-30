@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.MCIntVector2;
 
 public class MCInputManager implements InputProcessor {
     private static MCInputManager instance = null;
@@ -28,36 +29,28 @@ public class MCInputManager implements InputProcessor {
     public static abstract class Command {}
 
     public static class DirectionalCommand extends Command {
-        public float dx, dy;
-        public DirectionalCommand(float dx, float dy) {
-            this.dx = dx;
-            this.dy = dy;
+        private MCIntVector2 v;
+
+        public DirectionalCommand(MCIntVector2 v) {
+            this.v = v;
         }
 
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
-            DirectionalCommand comp = (DirectionalCommand) obj;
-            return Float.compare(dx, comp.dx) == 0 && Float.compare(dy, comp.dy) == 0;
+        public DirectionalCommand(int x, int y) {
+            this.v = new MCIntVector2(x, y);
         }
-
-        @Override
-        public int hashCode() {
-            int res = Float.hashCode(dx);
-            res = 31 * res + Float.hashCode(dy);
-            return res;
+        
+        public MCIntVector2 getIntVect() {
+            return this.v;
         }
     }
 
     public static class ClickTileCommand extends Command {
-        public float tileX, tileY;
-        public ClickTileCommand(float tileX, float tileY) {
-            this.tileX = tileX;
-            this.tileY = tileY;
+        private MCIntVector2 v;
+        public ClickTileCommand(MCIntVector2 v) {
+            this.v = v;
         }
-        public Vector2 getVector() {
-            return new Vector2(tileX, tileY);
+        public MCIntVector2 getIntVect() {
+            return this.v;
         }
     }
 
@@ -76,10 +69,10 @@ public class MCInputManager implements InputProcessor {
         }
     }
 
-    public static class Function {
+    public static class MouseListener {
         public Consumer<Vector2> mouseMovedFunction;
 
-        public Function(Consumer<Vector2> consumer) {
+        public MouseListener(Consumer<Vector2> consumer) {
             this.mouseMovedFunction = consumer;
         }
     }
@@ -118,13 +111,13 @@ public class MCInputManager implements InputProcessor {
         return this.rightGoing;
     }
 
-    public void connectMouseMoved(Function consumer) {
+    public void connectMouseMoved(MouseListener consumer) {
         if (mouseMovedFunction != null) 
             throw new IllegalStateException("cant connect multiple mouse moved listeners at the same time"); // C'est la merde faudrait une erreur
         mouseMovedFunction = consumer.mouseMovedFunction;
     }
 
-    public void disconnectMouseMoved(Function consumer) {
+    public void disconnectMouseMoved(MouseListener consumer) {
         mouseMovedFunction = null;
     }
 
@@ -137,13 +130,13 @@ public class MCInputManager implements InputProcessor {
                 bus.emit("InputPressed", new DirectionalCommand(0, +1));
                 break;
 
-            case Input.Keys.A:
+            case Input.Keys.S:
             case Input.Keys.DOWN:
                 downGoing = true;
                 bus.emit("InputPressed", new DirectionalCommand(0, -1));
                 break;
 
-            case Input.Keys.S:
+            case Input.Keys.A:
             case Input.Keys.LEFT:
                 leftGoing = true;
                 bus.emit("InputPressed", new DirectionalCommand(-1, 0));
@@ -159,13 +152,10 @@ public class MCInputManager implements InputProcessor {
                 bus.emit("InputPressed", new AimCommand());
                 break;
             
-            case Input.Keys.COMMA:
+            case Input.Keys.SEMICOLON:
                 bus.emit("InputPressed", new ReadyCommand());
                 break;
-            
-            case Input.Keys.SPACE:
-                break;
-                
+
             default:
                 bus.emit("InputPressed", new OtherKeyCommand(k));
         }
@@ -175,7 +165,7 @@ public class MCInputManager implements InputProcessor {
     @Override 
     public boolean keyUp(int k){
         switch (k) {
-            case Input.Keys.Z:
+            case Input.Keys.W:
             case Input.Keys.UP:
                 upGoing = false;
                 bus.emit("InputReleased", new DirectionalCommand(0, +1));
@@ -187,7 +177,7 @@ public class MCInputManager implements InputProcessor {
                 bus.emit("InputReleased", new DirectionalCommand(0, -1));
                 break;
 
-            case Input.Keys.Q:
+            case Input.Keys.A:
             case Input.Keys.LEFT:
                 leftGoing = false;
                 bus.emit("InputReleased", new DirectionalCommand(-1, 0));
@@ -205,9 +195,9 @@ public class MCInputManager implements InputProcessor {
     @Override public boolean touchDown(int x, int y, int pointer, int button) {
         Vector3 worldCoords = new Vector3(x, y, 0);
         vp.getCamera().unproject(worldCoords);
-        Vector2 v = new Vector2(MathUtils.floor(worldCoords.x), MathUtils.floor(worldCoords.y));
+        MCIntVector2 v = new MCIntVector2(worldCoords.x, worldCoords.y);
 
-        bus.emit("InputPressed", new ClickTileCommand(v.x, v.y));
+        bus.emit("InputPressed", new ClickTileCommand(v));
         return true;
     }
 
@@ -215,7 +205,7 @@ public class MCInputManager implements InputProcessor {
         if (mouseMovedFunction != null) {
             Vector3 worldCoords = new Vector3(x, y, 0);
             vp.getCamera().unproject(worldCoords);
-            Vector2 v = new Vector2(MathUtils.floor(worldCoords.x), MathUtils.floor(worldCoords.y));
+            Vector2 v = new MCIntVector2(worldCoords.x, worldCoords.y).toGdxVect();
 
             mouseMovedFunction.accept(v);
             return true;

@@ -54,7 +54,7 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
             System.out.println("oh");
             changeState("aim", new MCESAim.AimStateArgs(parent.getAttack()));
         } else if (data instanceof MCInputManager.ClickTileCommand) {
-            parent.ai.searchShelts(MathUtils.floor(parent.getTilePosition().x), MathUtils.floor(parent.getTilePosition().y), 5);
+            parent.ai.searchShelts(parent.getTilePosition(), 5);
         }
     }
 

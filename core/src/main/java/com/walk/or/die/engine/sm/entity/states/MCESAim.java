@@ -12,6 +12,7 @@ import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -24,8 +25,7 @@ import java.util.List;
 
 public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
     private MCAttack attack;
-    private int tileX = -1;
-    private int tileY = -1;
+    private MCIntVector2 tile = new MCIntVector2(-1, -1);
     public static class AimStateArgs extends MCEntityState.StateArgs {
         public MCAttack attack;
 
@@ -56,7 +56,7 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
     @Override
     public void enter(AimStateArgs args) {
         super.enter(args);
-        this.bus.emit("connectMouseMoved", new MCInputManager.Function(this::mouseMoved));
+        this.bus.emit("connectMouseMoved", new MCInputManager.MouseListener(this::mouseMoved));
         this.attack = args.attack;
         attack.computeValidTilesDisplay();
         attack.display = true;
@@ -68,8 +68,7 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
     @Override
     public void exit() {
         attack.display = false;
-        tileX = -1;
-        tileY = -1;
+        tile = new MCIntVector2(-1, -1);
         this.bus.emit("disconnectMouseMoved", null);
         super.exit();
     }
@@ -78,7 +77,7 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
-            MCEntity e = MCEntityManager.get().getEntityFromTile(1, tileCmd.getVector());
+            MCEntity e = MCEntityManager.get().getEntityFromTile(1, tileCmd.getIntVect());
             if (e != null && e instanceof MCCharacter c) { // plus tard : remplacer par MCEnemy !!!!
                 // a améliorer plus trad !!!
                 if (e instanceof MCAlly) {
@@ -87,18 +86,16 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
                 }
 
                 MCPathfinder pathfinder = MCPathfinder.get();
-                List<Vector2> traj = pathfinder.getTrajectory(
-                    MathUtils.floor(parent.getX()), 
-                    MathUtils.floor(parent.getY()), 
-                    MathUtils.floor(tileX),
-                    MathUtils.floor(tileY));
+                List<MCIntVector2> traj = pathfinder.getTrajectory(
+                    parent.getTilePosition(),
+                    tile);
                 if (traj.size() < 2) { // y tires sur soi meme !!!! il est fou ou quoi ????
                     changeState("idle", new MCESIdle.IdleStateArgs());
                     return;
                 }
                 traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
                 traj.remove(0); // l'attaquant occupe forcément aussi une case
-                if (attack.isValidTile(c.getPosition())) {
+                if (attack.isValidTile(c.getTilePosition())) {
                     changeState("shoot", new MCESShoot.ShootStateArgs(c, attack, traj));
                     return;
                 }
@@ -112,20 +109,17 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
 
 
     private void mouseMoved(Vector2 pos) {
-        int newx = MathUtils.floor(pos.x);
-        int newy = MathUtils.floor(pos.y);
-        if (newx != tileX || newy != tileY) {
-            tileX = newx;
-            tileY = newy;
+        MCIntVector2 newPos = new MCIntVector2(pos);
+        if (!tile.equals(newPos)) {
+            tile = newPos;
 
-            if (!attack.isValidTile(new Vector2(tileX, tileY))) {
+            if (!attack.isValidTile(tile)) {
                 attack.clearTrajectory();
                 return;
             }
-            int startx = MathUtils.floor(parent.getX());
-            int starty = MathUtils.floor(parent.getY());
 
-            List<Vector2> traj = MCPathfinder.get().getTrajectory(startx, starty, tileX, tileY);
+
+            List<MCIntVector2> traj = MCPathfinder.get().getTrajectory(parent.getTilePosition(), tile);
             if (traj.size() < 2) {
                 attack.clearTrajectory();
                 return;
@@ -133,7 +127,6 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
 
 
             
-            System.out.println("switching trajectory");
             attack.showTrajectory(traj);
         }
     }

@@ -24,6 +24,7 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.screens.MCGameScreen;
 import com.walk.or.die.engine.shared.MCDebugRenderer;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.game.MCGameState;
@@ -111,7 +112,7 @@ public class MCGame extends Game {
 
             playerEntityName = map.getPlayerEntityType();
             main = (MCCharacter) entityFact.build(this, map, playerEntityName, "player");
-            main.setPosition(map.getPlayerSpawnPos());
+            main.setPosition(map.getPlayerSpawnPos().toGdxVect());
             camManager.setFollowTarget(main);
             entityManager.addEntity(main);
             entityManager.addAllEntities(map.spawnEntities(this));
@@ -170,9 +171,9 @@ public class MCGame extends Game {
         return focusedEntity;
     }
 
-    public boolean isWalkable(int x, int y) {
-        if (entityManager.getEntityFromTile(1, new Vector2(x,y)) == null) {
-            return map.isWalkable(x, y);
+    public boolean isWalkable(MCIntVector2 pos) {
+        if (entityManager.getEntityFromTile(1, pos) == null) {
+            return map.isWalkable(pos);
         }
         return false;
     }
