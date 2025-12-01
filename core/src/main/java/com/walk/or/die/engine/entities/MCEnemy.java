@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.entities;
 
+import java.util.List;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -9,7 +10,9 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
+import com.walk.or.die.engine.sm.entity.states.MCESDead;
 import com.walk.or.die.engine.sm.entity.states.MCESEnemyIdle;
+import com.walk.or.die.engine.sm.entity.states.MCESHurt;
 import com.walk.or.die.engine.sm.entity.states.MCESIdle;
 import com.walk.or.die.engine.sm.entity.states.MCESShoot;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
@@ -23,12 +26,13 @@ public class MCEnemy extends MCCharacter{
 
     public MCEnemy(MCGame parent, MCTerrainMap map, String entityGenericName) throws Exception {
         super(parent, map, entityGenericName);
-        ai = new MCAI(map);
+        ai = new MCAI(map, this);
         MCStateMachine stateManager = getStateManager();
         stateManager.addState(new MCESEnemyIdle(this));
         stateManager.addState(new MCESClickMove(this));
         stateManager.addState(new MCESShoot(this));
-        stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
+        stateManager.addState(new MCESHurt(this));
+        stateManager.addState(new MCESDead(this));
         stateManager.setCallback(this::nextDecision);
     }
 
@@ -44,14 +48,20 @@ public class MCEnemy extends MCCharacter{
         return false;
 
         // J'avoue c'est une méthode de brigand
+        // .... plus maintenant eheh
     }
 
     public boolean shootDecision(MCESEnemyIdle state) {
         MCAlly victim = ai.getBestShootableAlly(getTilePosition(), 4);
-        System.out.println("shoot decision");
-        if (victim != null)
-            state.shoot(victim, MCPathfinder.get().getTrajectory(getTilePosition(), victim.getTilePosition()));
-        else {action_finished.run();}
+        //System.out.println("shoot decision");
+        if (victim != null) {
+            List<MCIntVector2> traj = MCPathfinder.get().getTrajectory(getTilePosition(), victim.getTilePosition());
+            traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
+            traj.remove(0);
+            state.shoot(victim, traj);
+        }
+        else 
+            action_finished.run();
         return true;
     }
 
@@ -64,5 +74,4 @@ public class MCEnemy extends MCCharacter{
             action_finished.run();
     }
     
-
 }

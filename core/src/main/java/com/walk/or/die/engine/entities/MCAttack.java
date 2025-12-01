@@ -67,7 +67,7 @@ public class MCAttack {
     }
 
     public void computeValidTilesDisplay() {
-        System.out.println("updating attack");
+        //System.out.println("updating attack");
         displaySprites.clear();
         MCIntVector2 parentTile = parent.getTilePosition();
         for (MCIntVector2 relativeTile : damagePattern.keySet()) {

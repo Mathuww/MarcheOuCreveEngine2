@@ -37,7 +37,10 @@ import com.walk.or.die.engine.tiledmap.MCMapLayer;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+/**
+ * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
+ * platforms.
+ */
 public class MCGame extends Game {
     public static final int VIEWPORT_WIDTH = 12;
     public static final int VIEWPORT_HEIGHT = 10;
@@ -53,7 +56,7 @@ public class MCGame extends Game {
     private final MCAttackFactory attackFact = MCAttackFactory.get();
     private final MCSharedAssets sharedAssets = MCSharedAssets.get();
 
-    private final MCStateMachine<MCGameState, MCGame> stateManager = new MCStateMachine<MCGameState,MCGame>(this);
+    private final MCStateMachine<MCGameState, MCGame> stateManager = new MCStateMachine<MCGameState, MCGame>(this);
     private final MCEventBus bus = MCEventBus.get();
 
     // Camera
@@ -61,12 +64,11 @@ public class MCGame extends Game {
 
     // Input
     private MCInputManager inputHandler = MCInputManager.get();
-    
+
     // Entity
     private MCEntityManager entityManager = MCEntityManager.get();
     private String playerEntityName;
     private MCCharacter main;
-    private MCEntity focusedEntity;
 
     // Debug
     private MCDebugRenderer debugRenderer = MCDebugRenderer.get();
@@ -74,12 +76,13 @@ public class MCGame extends Game {
     public SpriteBatch batch;
     public FitViewport viewport;
 
-    public MCGame() {}
+    public MCGame() {
+    }
 
     @Override // commence pas je vais t'attraper
-    // cast me if you can ;)
-    // MCGaia sale_terrorist = (MCGaia) anothercoderterrorist
-    
+              // cast me if you can ;)
+              // MCGaia sale_terrorist = (MCGaia) anothercoderterrorist
+
     public void create() {
         // View objects init
         batch = new SpriteBatch();
@@ -100,10 +103,9 @@ public class MCGame extends Game {
 
         // Cam manager init
         camManager.init(
-            VIEWPORT_WIDTH,
-            VIEWPORT_HEIGHT,
-            MCCameraManager.CameraMode.ARROWS
-        );
+                VIEWPORT_WIDTH,
+                VIEWPORT_HEIGHT,
+                MCCameraManager.CameraMode.ARROWS);
         camManager.setLimitX(map.getWidth());
         camManager.setLimitY(map.getHeight());
         viewport.setCamera(camManager.getGdxCam());
@@ -112,7 +114,7 @@ public class MCGame extends Game {
         inputHandler.init(viewport);
         Gdx.input.setInputProcessor(inputHandler);
 
-        //bus.on(this, "ChangedFocus", this::changeFocus);
+        // bus.on(this, "ChangedFocus", this::changeFocus);
 
         // Entities init
         try {
@@ -130,14 +132,17 @@ public class MCGame extends Game {
             e.printStackTrace();
         }
 
-        entityManager.playGlobalAnimation("idle");
+        // sinon les entités ne sont pas créées
+        entityManager.update(Gdx.graphics.getDeltaTime());
 
-        stateManager.addState(new MCGSCombat(this));
+        //stateManager.addState(new MCGSCombat(this));
         stateManager.addState(new MCGSAlliesPlaying(this));
         stateManager.addState(new MCGSEnemiesPlaying(this));
         stateManager.addState(new MCGSExploration(this));
-        //stateManager.setCurrentState("combat", new MCGSCombat.CombatStateArgs());
+        // stateManager.setCurrentState("combat", new MCGSCombat.CombatStateArgs());
         stateManager.setCurrentState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
+
+        // entityManager.playGlobalAnimation("idle");
 
         try {
             setScreen(new MCGameScreen(this));
@@ -148,7 +153,8 @@ public class MCGame extends Game {
 
     private void logic(float delta) {
         // We don't give a fuck about logic
-        // Because we implement MVC (Modular Venomous Contraception) // co autored by mathuww
+        // Because we implement MVC (Modular Venomous Contraception) // co autored by
+        // mathuww
 
         try {
             camManager.update(delta);
@@ -170,7 +176,7 @@ public class MCGame extends Game {
         logic(delta);
         super.render();
     }
-    
+
     @Override
     public void dispose() {
         batch.dispose();
@@ -184,32 +190,10 @@ public class MCGame extends Game {
         return this.map;
     }
 
-    public MCEntity getFocusedEntity() {
-        return focusedEntity;
-    }
-
     public boolean isWalkable(MCIntVector2 pos) {
         if (entityManager.getEntityFromTile(1, pos) == null) {
             return map.isWalkable(pos);
         }
         return false;
     }
-
-    public void changeFocus(MCEntity e) {
-        if (focusedEntity != null) {
-            System.out.println("Yey");
-            if (focusedEntity.loseFocus()) {
-                focusedEntity = e;
-                if (e != null) {
-                    e.getFocus();
-                    System.out.println("Haha");
-                }
-            }
-        } else {
-            System.out.println("AAAAAAAAA");
-            focusedEntity = e;
-            if (e != null) e.getFocus();
-        }
-    }
-    
 }

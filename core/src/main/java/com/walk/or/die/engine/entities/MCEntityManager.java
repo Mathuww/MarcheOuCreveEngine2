@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.entities;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -33,7 +34,9 @@ public class MCEntityManager {
 
     //private MCGame parent;
     private Set<MCEntity> entities = new HashSet<>();
-    private List<MCEntity> toKill = new ArrayList<>();
+    private Set<MCEntity> toKill = new HashSet<>();
+    private Set<MCEntity> toAdd = new HashSet<>();
+    private Array<Sprite> corpses = new Array<>();
 
     // projectiles can only be built once !!!!! once at a time !!!
     public MCProjectile buildProjectile(String projType) throws Exception {
@@ -43,7 +46,8 @@ public class MCEntityManager {
             projType, 
             "projectile");
         if (proj != null) {
-            entities.add(proj);
+            addEntity(proj);
+            //entities.add(proj);
         }
         return proj;
     }
@@ -52,17 +56,25 @@ public class MCEntityManager {
         toKill.add(e);
     }
 
+    public void killAndKeepCorpse(MCEntity e) {
+        corpses.add(e.getSprite());
+        toKill.add(e);
+    }
+
     public void addEntity(MCEntity e) {
-        entities.add(e);
+        toAdd.add(e);
+        //entities.add(e);
     }
 
     public void addAllEntities(Set<MCEntity> e) {
-        entities.addAll(e);
+        toAdd.addAll(e);
+        //entities.addAll(e);
     }
 
     public Set<MCEntity> getEntities() {
         return this.entities;
     }
+
 
     public Set<MCAlly> getAllies() {
         Set<MCAlly> list = new HashSet<>();
@@ -106,6 +118,15 @@ public class MCEntityManager {
         return null;
     }
 
+    public boolean isAnyoneBusy() {
+        for (MCEntity e : getEntities()) {
+            if (e instanceof MCCharacter chara)
+                if (chara.isBusy())
+                    return true;
+        }
+        return false;
+    }
+
     public void update(float delta) {
         for (MCEntity e : entities) {
             e.update(delta);
@@ -113,17 +134,26 @@ public class MCEntityManager {
         // si on fait pas ca
         // ca fait des concurrent modification exception de partout
         if (!toKill.isEmpty()) {
+            //System.out.println("hehe");
             entities.removeAll(toKill);
             toKill.clear();
         }
+        if (!toAdd.isEmpty()) {
+            entities.addAll(toAdd);
+            toAdd.clear();
+        }
+        
     }
 
     public void render(SpriteBatch batch) {
-        // 1  : render base entities
+        // 1 : render corpses
+        for (Sprite spr : corpses)
+            spr.draw(batch);
+        // 2  : render base entities
         for (MCEntity e : entities) {
             e.render(batch);
         }
-        // 2 : render on-terrain overlays (like the big tonneau)
+        // 3 : render on-terrain overlays (like the big tonneau)
         // to make sure they're always on top !
         for (MCEntity e : entities) {
             if (e instanceof MCCharacter c)

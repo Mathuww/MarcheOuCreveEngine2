@@ -71,11 +71,13 @@ public abstract class MCEntity {
         hitbox = new Rectangle(0, 0, sprite.getWidth(), sprite.getHeight());
     }
 
+    public abstract void onSpawn();
+
     public abstract void initFromProperties(MapProperties props) throws Exception;
 
     public void addAnimation(String animName, MCAnimation anim) {
         animations.put(animName, anim);
-        System.out.println("mes animations sont mtn : " + animations.keySet());
+        //System.out.println("mes animations sont mtn : " + animations.keySet());
     }
 
     public MCAnimation getAnimation(String animName) {
@@ -87,10 +89,10 @@ public abstract class MCEntity {
         if (newAnim != null) {
             currentAnim = newAnim;
             currentAnim.reset(); // remet statetime à 0 ms
-            System.out.println(id + ": playAnimation " + animName + " success");
+            //System.out.println(id + ": playAnimation " + animName + " success");
             return true;
         } else {
-            System.err.println(id + ": playAnimation " + animName + " not found");
+            //System.err.println(id + ": playAnimation " + animName + " not found");
             return false;
         }
     }
@@ -163,6 +165,10 @@ public abstract class MCEntity {
 
     public boolean collidesWith(MCEntity e) {
         return this.hitbox.overlaps(e.getHitbox());
+    }
+
+    public Sprite getSprite() {
+        return sprite;
     }
 
     public MCTerrainMap getMap() {

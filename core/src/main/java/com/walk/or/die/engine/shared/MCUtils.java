@@ -9,7 +9,7 @@ import com.badlogic.gdx.maps.MapProperties;
 
 public abstract class MCUtils {
     public static List<FileHandle> listFilesByExt(String folder, String ext) {
-        System.out.println("listfilesbyext on folder " + folder);
+        //System.out.println("listfilesbyext on folder " + folder);
 
         if (!folder.endsWith("/")) {
             folder += "/";
@@ -23,7 +23,7 @@ public abstract class MCUtils {
             if (line.isEmpty()) continue;
 
             if (line.startsWith(folder) && line.endsWith(".tmx")) {
-                System.out.println(line);
+                //System.out.println(line);
                 res.add(Gdx.files.internal(line));
             }
         }

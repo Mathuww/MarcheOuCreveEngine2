@@ -48,6 +48,11 @@ public abstract class MCEntityState<T extends MCEntityState.StateArgs> extends M
     public void exit() {
         bus.off(this, "InputPressed");
     }
+
+    // à override pour tous les états bloquants !
+    public boolean isBlocking() {
+        return false;
+    }
     
     protected void inputPressed(MCInputManager.Command data) {
         if (!(data instanceof MCInputManager.Command)) return;

@@ -91,7 +91,7 @@ public class MCPathfinder {
         if (MCEntityManager.get().getEntityFromTile(1, pos) == null) {
             return game.getTerrainMap().isProtect(pos);
         }
-        System.out.println(MCEntityManager.get().getEntityFromTile(1, pos));
+        //System.out.println(MCEntityManager.get().getEntityFromTile(1, pos));
         return true;
     }
 
@@ -131,7 +131,7 @@ public class MCPathfinder {
             if (!game.isWalkable(pos)) 
                 return new Simulation (false, pos);
         }
-        System.out.println("hop ça marche (pas)");
+        //System.out.println("hop ça marche (pas)");
         return new Simulation(true, new MCIntVector2(-1, -1));
     }
 

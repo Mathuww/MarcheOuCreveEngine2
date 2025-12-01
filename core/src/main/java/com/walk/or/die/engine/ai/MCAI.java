@@ -9,6 +9,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.entities.MCAlly;
+import com.walk.or.die.engine.entities.MCCharacter;
+import com.walk.or.die.engine.entities.MCEnemy;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.shared.MCDebugRenderer;
 import com.walk.or.die.engine.shared.MCIntVector2;
@@ -25,13 +27,15 @@ public class MCAI {
     private MCTerrainMap map;
     private MCPathfinder pathfinder;
     private TextureRegion validTileTexture;
+    private MCEnemy parent;
 
     //debug
     private List<Sprite> sprList;
 
-    public MCAI(MCTerrainMap map) throws Exception {
+    public MCAI(MCTerrainMap map, MCEnemy parent) throws Exception {
         pathfinder = MCPathfinder.get();
         this.map = map;
+        this.parent = parent;
     }
 
     public MCAlly getBestShootableAlly(MCIntVector2 pos, float degats) {
@@ -41,6 +45,7 @@ public class MCAI {
         for (MCAlly ally: getShootableAllies(pos)) {
             float newScore = scoreVictim(pos, ally, degats);
             if (newScore > best_score) {
+                //System.out.println("Selection AI" + ally + " : " + newScore);
                 bestVictim = ally;
                 best_score = newScore;
             } 
@@ -52,7 +57,7 @@ public class MCAI {
         float score = 0f;
         if (ally.getHealth() <= degats) score += 10f;
         if (pathfinder.isCorrectTrajectory(pathfinder.getTrajectory(ally.getTilePosition(), pos)).success) score += 2f;
-        score += pos.dst2(ally.getTilePosition())*0.2f;
+        //score += pos.dst2(ally.getTilePosition())*0.2f;
 
         return score;
     }
@@ -60,10 +65,15 @@ public class MCAI {
     public Set<MCAlly> getShootableAllies(MCIntVector2 pos) {
         Set<MCAlly> allies = new HashSet<>();
         for (MCAlly ally: MCEntityManager.get().getAllies()) {
-            if (pathfinder.isCorrectTrajectory(pathfinder.getTrajectory(pos, ally.getTilePosition())).success) {
+            List<MCIntVector2> traj = pathfinder.getTrajectory(pos, ally.getTilePosition());
+            traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
+            traj.remove(0);
+            if (pathfinder.isCorrectTrajectory(traj).success && parent.getAttack().isValidTile(ally.getTilePosition())) {
+                //System.out.println(ally);
                 allies.add(ally);
             }
         }
+        //System.out.println("##########################" + allies);
         return allies;
     }
 
@@ -73,7 +83,7 @@ public class MCAI {
         MCIntVector2 best_shelt = oldPos;
         float best_score = -1f;
         for (MCIntVector2 shelt: shelts) {
-            float score = isSheltSafe(shelt) + isSheltShootSpot(shelt);
+            float score = isSheltSafe(shelt) - isSheltShootSpot(shelt);
             if (best_score == -1f || score < best_score) {
                 best_score = score;
                 best_shelt = shelt;
@@ -87,6 +97,7 @@ public class MCAI {
         Set<MCAlly> list = MCEntityManager.get().getAllies();
 
         float result = 0f;
+        if (MCEntityManager.get().getEntityFromTile(1, pos) instanceof MCCharacter) return 100f;
         for (MCAlly ally: list) {
             List<MCIntVector2> traj = pathfinder.getTrajectory(
                 ally.getTilePosition(),
@@ -161,15 +172,21 @@ public class MCAI {
         newPositions.add(new MCIntVector2(pos.x, pos.y-1));
         newPositions.add(new MCIntVector2(pos.x, pos.y+1));
 
-        boolean isOneProtected = newPositions.stream().anyMatch(pathfinder::isProtect);
+        boolean isOneProtected = newPositions.stream().anyMatch(this::check); // || ....
 
+        /*
         if (isOneProtected) {
             String str = pos.toString();
-            for (MCIntVector2 p : newPositions)
+            for (MCIntVector2 p : newPositions)   
                 str += pathfinder.isProtect(p);
-            System.out.println(str);
-        }
+            //System.out.println(str);
+        } */
         return isOneProtected;
+    }
+
+    // j pense vaut mieux creer une fonction ici
+    private boolean check(MCIntVector2 v) {
+        return pathfinder.isProtect(v) && !(MCEntityManager.get().getEntityFromTile(1, v) instanceof MCAlly);
     }
 
     public void render(SpriteBatch batch) {

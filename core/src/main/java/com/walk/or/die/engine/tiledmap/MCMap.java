@@ -37,7 +37,7 @@ public class MCMap implements Disposable {
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         this.tileSize = layer.getTileWidth();
         this.unitScale = 1 / ((float)this.tileSize);
-        System.out.println("tile size : " + this.tileSize + " so unit scale is " + this.unitScale);
+        //System.out.println("tile size : " + this.tileSize + " so unit scale is " + this.unitScale);
     }
 
     public float getWidth() {

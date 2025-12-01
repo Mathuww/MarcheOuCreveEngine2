@@ -31,7 +31,7 @@ public class MCMoveDisplay {
     }
 
     public void computeValidTilesDisplay() {
-        System.out.println("updating attack");
+        //System.out.println("updating attack");
         displaySprites.clear();
         int maxMoves = parent.getMaxMoves();
         MCIntVector2 parentTile = parent.getTilePosition();

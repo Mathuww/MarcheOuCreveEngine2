@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.sm.entity.states;
 
+import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
@@ -101,10 +102,15 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
     }
 
     private void nextMove() {
-        System.out.println("On redebug cette fonction de merde");
-        if (movements.size() == 0) 
+        if (movements.size() == 0) {
+            if (parent instanceof MCAlly) {
+                bus.emit(
+                    "ActionDone", 
+                    new MCCharacter.ActionDoneEvent(parent, MCCharacter.ActionDoneEvent.Action.MOVE)
+                );
+            }
             changeState("idle", new MCESIdle.IdleStateArgs());
-        else {
+        } else {
             Vector2 targetPos = movements.removeFirst().toGdxVect();
 
             start = parent.getPosition();
@@ -132,4 +138,8 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
         }
     }
 
+    @Override
+    public boolean isBlocking() {
+        return true;
+    }
 }

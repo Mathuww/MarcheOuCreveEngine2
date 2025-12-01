@@ -18,6 +18,7 @@ import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESAim;
 import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
+import com.walk.or.die.engine.sm.entity.states.MCESHurt;
 import com.walk.or.die.engine.sm.entity.states.MCESIdle;
 import com.walk.or.die.engine.sm.entity.states.MCESReady;
 import com.walk.or.die.engine.sm.entity.states.MCESShoot;
@@ -25,6 +26,42 @@ import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCCharacter extends MCEntity {
+    public static class ChangeStateCommandEvent {
+        public static enum State {
+            READY,
+            AIM
+        }
+
+        public MCCharacter character;
+        public State newState;
+
+        public ChangeStateCommandEvent(MCCharacter c, State s) {
+            character = c;
+            newState = s;
+        }
+    }
+
+    public static class ActionCancelledEvent {
+        public MCCharacter character;
+        public ActionCancelledEvent(MCCharacter c) {
+            character = c;
+        }
+    }
+
+    public static class ActionDoneEvent {
+        public static enum Action {
+            MOVE,
+            ATTACK
+        }
+
+        public MCCharacter character;
+        public Action action;
+
+        public ActionDoneEvent(MCCharacter c, Action a) {
+            character = c;
+            action = a;
+        }
+    }
     
     protected final int MAX_ATTACK_NUMBER = 6;
 
@@ -36,7 +73,6 @@ public class MCCharacter extends MCEntity {
     private String baseAttack;
     private String displayedAttack;
     private MCMoveDisplay moveDisplay;
-    public MCAI ai;
 
     public MCCharacter(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
@@ -44,11 +80,15 @@ public class MCCharacter extends MCEntity {
         stateManager = new MCStateMachine<>(this);
         try {
             moveDisplay = new MCMoveDisplay(this);
-            ai = new MCAI(map); // non c'était moi eheheh
         } catch(Exception e) { 
             // Mouahahaha e.printStackTrace(); // pitié :'''''''''''''''''')
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onSpawn() {
+        stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
     }
 
     @Override
@@ -59,14 +99,14 @@ public class MCCharacter extends MCEntity {
         MCAttackFactory attackFact = MCAttackFactory.get();
         for (int i = 1; i < MAX_ATTACK_NUMBER; i++) {
             // on vient chercher attack1, attack2, etc.
-            System.out.println("searching for " + "attack" + i);
+            //System.out.println("searching for " + "attack" + i);
             String attackName = props.get("attack" + i, String.class);
             if (attackName == null) {
-                System.out.println("not found");
+                //System.out.println("not found");
                 break;
             }
             MCAttack attack = attackFact.build(this, attackName);
-            System.out.println(attackName + attack.toString());
+            //System.out.println(attackName + attack.toString());
             addAttack(attackName, attack);
         }
 
@@ -135,14 +175,13 @@ public class MCCharacter extends MCEntity {
         return hp;
     }
 
-    public void getHurt(int damage) {
+    public void getHurt(int damage, String targetAnim) {
         if (dead)
             return;
         if (damage < 0f) 
             throw new IllegalArgumentException("cant get hurt with negative damage");
-        hp = hp - damage;
-        if (hp <= 0)
-            die();
+        hp = Math.max(0, hp - damage);
+        stateManager.setCurrentState("hurt", new MCESHurt.HurtStateArgs(damage, targetAnim));
         System.out.println("J'ai pris " + damage + "dégats !");
     }
     
@@ -150,11 +189,13 @@ public class MCCharacter extends MCEntity {
         return dead;
     }
 
-    private void die() {
-        hp = 0;
+    public void setDead() {
         dead = true;
-        if (!playAnimation("dead"))
-            hide();
     }
 
+    public boolean isBusy() {
+        if (stateManager.getCurrentState() == null) 
+            return false;
+        return stateManager.getCurrentState().isBlocking();
+    }
 }

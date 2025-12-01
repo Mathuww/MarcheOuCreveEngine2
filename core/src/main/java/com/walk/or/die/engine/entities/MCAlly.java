@@ -4,6 +4,8 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.states.MCESAim;
 import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
+import com.walk.or.die.engine.sm.entity.states.MCESDead;
+import com.walk.or.die.engine.sm.entity.states.MCESHurt;
 import com.walk.or.die.engine.sm.entity.states.MCESIdle;
 import com.walk.or.die.engine.sm.entity.states.MCESReady;
 import com.walk.or.die.engine.sm.entity.states.MCESShoot;
@@ -19,6 +21,7 @@ public class MCAlly extends MCCharacter {
         stateManager.addState(new MCESAim(this));
         stateManager.addState(new MCESShoot(this));
         stateManager.addState(new MCESReady(this));
-        stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
+        stateManager.addState(new MCESHurt(this));
+        stateManager.addState(new MCESDead(this));
     }
 }

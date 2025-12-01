@@ -34,28 +34,29 @@ public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
     public void enter(IdleStateArgs args) {
         parent.keep = false;
         parent.playAnimation("idle");
+        bus.on(this, "ChangeStateCommand", this::onChangeStateCommand);
         super.enter(args);
     }
 
     @Override
     public void exit() {
         parent.keep = true;
+        bus.off(this, "ChangeStateCommand");
         super.exit();
     }
     
     @Override
     protected void inputPressed(MCInputManager.Command data) {
-        //System.out.println("Input pressed detect in Idle");
-        if (!parent.focus) return;
-        if (data instanceof MCInputManager.ReadyCommand) {
-            changeState("ready", new MCESReady.ReadyStateArgs());
-            
-        } else if (data instanceof MCInputManager.AimCommand) {
-            System.out.println("oh");
-            changeState("aim", new MCESAim.AimStateArgs(parent.getAttack()));
-        } else if (data instanceof MCInputManager.ClickTileCommand) {
-            parent.ai.searchShelts(parent.getTilePosition(), 5);
-        }
+
     }
 
+    private void onChangeStateCommand(MCCharacter.ChangeStateCommandEvent evt) {
+        if (!evt.character.equals(parent))
+            return; // pas pour nous !
+
+        switch (evt.newState) {
+            case READY -> changeState("ready", new MCESReady.ReadyStateArgs());
+            case AIM -> changeState("aim", new MCESAim.AimStateArgs(parent.getAttack()));
+        }
+    }
 }

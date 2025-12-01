@@ -139,11 +139,11 @@ public class MCTerrainMap extends MCMap {
 
                 MCMapObject obj = new MCMapObject(rawObj);
                 Vector2 pos = obj.getPosition();
-                System.out.println("working on entity qui a l'object tiled de pos " + pos.x + ", " + pos.y);
+                //System.out.println("working on entity qui a l'object tiled de pos " + pos.x + ", " + pos.y);
                 pos = getDisplayCoordsFromTiled(pos);
-                System.out.println("display coords from tiled renvoie " + pos.x + ", " + pos.y);
+                //System.out.println("display coords from tiled renvoie " + pos.x + ", " + pos.y);
                 MCIntVector2 tilePos = this.stickToNearestTile(pos);
-                System.out.println("on obtient avec stick to nearest " + tilePos.toString());
+                //System.out.println("on obtient avec stick to nearest " + tilePos.toString());
 
                 entity.setPosition(tilePos.toGdxVect());
                 entityArray.add(entity);

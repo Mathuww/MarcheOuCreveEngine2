@@ -37,6 +37,8 @@ public class MCProjectile extends MCEntity {
         display = false;
     }
 
+    @Override public void onSpawn() {}
+
     @Override
     public void initFromProperties(MapProperties props) {
         speed = MCUtils.getFloatProperty(props, "speed", speed);

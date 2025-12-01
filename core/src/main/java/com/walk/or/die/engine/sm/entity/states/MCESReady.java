@@ -63,6 +63,11 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
         super.exit();
     }
     
+    private void cancel() {
+        bus.emit("ActionCancelled", new MCCharacter.ActionCancelledEvent(parent));
+        changeState("idle", new MCESIdle.IdleStateArgs());
+    }
+
     @Override
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
@@ -70,14 +75,16 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
             MCIntVector2 v = tileCmd.getIntVect();
             if (MCPathfinder.get().isWalkable(v)) {
                 List<MCIntVector2> path = MCPathfinder.get().getPath(parent.getTilePosition(), v);
-                if (path.size() == 0 || path.size() > parent.getMaxMoves())
-                    changeState("idle", new MCESIdle.IdleStateArgs());
+                if (path.size() == 0 || path.size() > parent.getMaxMoves()) {
+                    cancel();
+                    return;
+                }
                 changeState("click_move", new MCESClickMove.MoveStateArgs(v, MCPathfinder.get().clean(path)));
                 return;
             }
-            changeState("idle", new MCESIdle.IdleStateArgs());
+            cancel();
         } else if (!(data instanceof MCInputManager.DirectionalCommand bipboup)) {
-            changeState("idle", new MCESIdle.IdleStateArgs());
+            cancel();
         }
     }
 
@@ -98,7 +105,6 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
                 parent.getMoveDisplay().clearTrajectory();
                 return;
             }
-
 
             parent.getMoveDisplay().showTrajectory(traj);
         }

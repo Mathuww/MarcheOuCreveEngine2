@@ -73,6 +73,11 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
         this.bus.emit("disconnectMouseMoved", null);
         super.exit();
     }
+
+    private void cancel() {
+        bus.emit("ActionCancelled", new MCCharacter.ActionCancelledEvent(parent));
+        changeState("idle", new MCESIdle.IdleStateArgs());
+    }
     
     @Override
     protected void inputPressed(MCInputManager.Command data) {
@@ -82,7 +87,7 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
             if (e != null && e instanceof MCCharacter c) { // plus tard : remplacer par MCEnemy !!!!
                 // a améliorer plus trad !!!
                 if (e instanceof MCAlly) {
-                    changeState("idle", new MCESIdle.IdleStateArgs());
+                    cancel();
                     return;
                 }
 
@@ -91,7 +96,7 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
                     parent.getTilePosition(),
                     tile);
                 if (traj.size() < 2) { // y tires sur soi meme !!!! il est fou ou quoi ????
-                    changeState("idle", new MCESIdle.IdleStateArgs());
+                    cancel();
                     return;
                 }
                 traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
@@ -101,13 +106,12 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
                     return;
                 }
             }
-            changeState("idle", new MCESIdle.IdleStateArgs());
+            cancel();
         }
         else if (!(data instanceof MCInputManager.DirectionalCommand bipboup)) {
-            changeState("idle", new MCESIdle.IdleStateArgs());
+            cancel();
         }
     }
-
 
     private void mouseMoved(Vector2 pos) {
         MCIntVector2 newPos = new MCIntVector2(pos);
@@ -119,15 +123,12 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
                 return;
             }
 
-
             List<MCIntVector2> traj = MCPathfinder.get().getTrajectory(parent.getTilePosition(), tile);
             if (traj.size() < 2) {
                 attack.clearTrajectory();
                 return;
             }
 
-
-            
             attack.showTrajectory(traj);
         }
     }
