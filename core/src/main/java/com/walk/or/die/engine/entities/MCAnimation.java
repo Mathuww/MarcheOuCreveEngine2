@@ -30,6 +30,10 @@ public class MCAnimation {
         return animation.getKeyFrame(stateTime);
     }
 
+    public float getDuration() {
+        return animation.getAnimationDuration();
+    }
+
     public boolean isOver() {
         return stateTime >= animation.getAnimationDuration();
     }

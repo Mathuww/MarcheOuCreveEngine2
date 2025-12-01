@@ -28,7 +28,9 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.game.MCGameState;
+import com.walk.or.die.engine.sm.game.states.MCGSAlliesPlaying;
 import com.walk.or.die.engine.sm.game.states.MCGSCombat;
+import com.walk.or.die.engine.sm.game.states.MCGSEnemiesPlaying;
 import com.walk.or.die.engine.sm.game.states.MCGSExploration;
 import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
@@ -131,8 +133,11 @@ public class MCGame extends Game {
         entityManager.playGlobalAnimation("idle");
 
         stateManager.addState(new MCGSCombat(this));
+        stateManager.addState(new MCGSAlliesPlaying(this));
+        stateManager.addState(new MCGSEnemiesPlaying(this));
         stateManager.addState(new MCGSExploration(this));
-        stateManager.setCurrentState("combat", new MCGSCombat.CombatStateArgs());
+        //stateManager.setCurrentState("combat", new MCGSCombat.CombatStateArgs());
+        stateManager.setCurrentState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
 
         try {
             setScreen(new MCGameScreen(this));

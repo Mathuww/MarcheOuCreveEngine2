@@ -53,10 +53,10 @@ public abstract class MCEntityState<T extends MCEntityState.StateArgs> extends M
         if (!(data instanceof MCInputManager.Command)) return;
         
         if (data instanceof MCInputManager.ClickTileCommand) {
-            System.out.println("Oh, on a clické");
+            //System.out.println("Oh, on a clické");
         }
         else if (data instanceof MCInputManager.DirectionalCommand) {
-            System.out.println("Oh on a pressé les touches du clavier");
+            //System.out.println("Oh on a pressé les touches du clavier");
         }
     }
 

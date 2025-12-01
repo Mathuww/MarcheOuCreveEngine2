@@ -3,6 +3,7 @@ package com.walk.or.die.engine.ai;
 import java.util.List;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -31,6 +32,39 @@ public class MCAI {
     public MCAI(MCTerrainMap map) throws Exception {
         pathfinder = MCPathfinder.get();
         this.map = map;
+    }
+
+    public MCAlly getBestShootableAlly(MCIntVector2 pos, float degats) {
+        float best_score = -1f;
+        MCAlly bestVictim = null;
+
+        for (MCAlly ally: getShootableAllies(pos)) {
+            float newScore = scoreVictim(pos, ally, degats);
+            if (newScore > best_score) {
+                bestVictim = ally;
+                best_score = newScore;
+            } 
+        }
+        return bestVictim;
+    }
+
+    public float scoreVictim(MCIntVector2 pos, MCAlly ally, float degats) {
+        float score = 0f;
+        if (ally.getHealth() <= degats) score += 10f;
+        if (pathfinder.isCorrectTrajectory(pathfinder.getTrajectory(ally.getTilePosition(), pos)).success) score += 2f;
+        score += pos.dst2(ally.getTilePosition())*0.2f;
+
+        return score;
+    }
+
+    public Set<MCAlly> getShootableAllies(MCIntVector2 pos) {
+        Set<MCAlly> allies = new HashSet<>();
+        for (MCAlly ally: MCEntityManager.get().getAllies()) {
+            if (pathfinder.isCorrectTrajectory(pathfinder.getTrajectory(pos, ally.getTilePosition())).success) {
+                allies.add(ally);
+            }
+        }
+        return allies;
     }
 
     public MCIntVector2 getNewPos(MCIntVector2 oldPos, int max_deplacement) {

@@ -49,12 +49,6 @@ public class MCCharacter extends MCEntity {
             // Mouahahaha e.printStackTrace(); // pitié :'''''''''''''''''')
             e.printStackTrace();
         }
-        stateManager.addState(new MCESClickMove(this));
-        stateManager.addState(new MCESIdle(this));
-        stateManager.addState(new MCESAim(this));
-        stateManager.addState(new MCESShoot(this));
-        stateManager.addState(new MCESReady(this));
-        stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
     }
 
     @Override
@@ -135,6 +129,10 @@ public class MCCharacter extends MCEntity {
         proj.setPosition(getPosition()); // le projectile commence ici !
         proj.callOnArrival(onArrival);
         proj.launchTo(end);
+    }
+
+    public int getHealth() {
+        return hp;
     }
 
     public void getHurt(int damage) {

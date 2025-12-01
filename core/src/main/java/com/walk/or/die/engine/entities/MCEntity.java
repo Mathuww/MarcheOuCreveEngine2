@@ -78,6 +78,10 @@ public abstract class MCEntity {
         System.out.println("mes animations sont mtn : " + animations.keySet());
     }
 
+    public MCAnimation getAnimation(String animName) {
+        return animations.get(animName);
+    }
+
     public boolean playAnimation(String animName) {
         MCAnimation newAnim = animations.get(animName);
         if (newAnim != null) {

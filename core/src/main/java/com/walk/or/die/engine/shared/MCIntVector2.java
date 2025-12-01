@@ -53,4 +53,8 @@ public class MCIntVector2 {
     public MCIntVector2 addTo(MCIntVector2 v2) {
         return new MCIntVector2(v2.x + this.x, v2.y + this.y);
     }
+
+    public float dst2(MCIntVector2 v2) {
+        return ((v2.y - y) * (v2.y - y)) + ((v2.x - x) * (v2.x - x));
+    }
 }

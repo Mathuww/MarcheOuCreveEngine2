@@ -7,15 +7,20 @@ import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.sm.game.MCGameState;
+import com.walk.or.die.engine.sm.game.states.MCGSCombat.CombatStateArgs;
 
-public class MCGSCombat extends MCGameState<MCGSCombat.CombatStateArgs> {
-    public static class CombatStateArgs extends MCGameState.StateArgs {}
+public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayingArgs> {
+    //private Map<MCAlly, boolean> 
 
-    public MCGSCombat(MCGame parent) {
+    public static class AlliesPlayingArgs extends MCGameState.StateArgs {
+        public AlliesPlayingArgs() {}
+    }
+
+
+    public MCGSAlliesPlaying(MCGame parent) {
         super(parent);
-        this.name = "combat";
+        this.name = "AlliesPlaying";
     }
 
     @Override
@@ -24,11 +29,10 @@ public class MCGSCombat extends MCGameState<MCGSCombat.CombatStateArgs> {
     }
 
     @Override
-    public void enter(CombatStateArgs args) {
-        MCCameraManager.get().setMode(MCCameraManager.CameraMode.ARROWS);
+    public void enter(AlliesPlayingArgs args) {
         bus.on(this, "InputPressed", this::inputPressed);
+        System.out.println("entering allies playing");
         super.enter(args);
-        changeState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
     }
 
     @Override
@@ -38,11 +42,17 @@ public class MCGSCombat extends MCGameState<MCGSCombat.CombatStateArgs> {
     }
     
     protected void inputPressed(MCInputManager.Command data) {
-         /* else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
+        if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
+            System.out.println("Détecté par le game");
+            MCEntity e = MCEntityManager.get().getEntityFromTile(1, tileCmd.getIntVect());
+            if (e instanceof MCAlly ally) parent.changeFocus(ally);
+        } else if (data instanceof MCInputManager.NextTurnCommand) {
+            changeState("EnemiesPlaying", new MCGSEnemiesPlaying.EnemiesPlayingArgs());
+        } else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
             if (keyCmd.key == Input.Keys.F) {
                 System.out.println("f!!!!");
                 changeState("exploration", new MCGSExploration.ExplStateArgs());
             }
-        } */
+        }
     }
 }

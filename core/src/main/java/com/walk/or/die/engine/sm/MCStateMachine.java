@@ -1,9 +1,13 @@
 package com.walk.or.die.engine.sm;
 
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.sm.entity.MCEntityState;
 
 import java.util.ArrayList;
 
@@ -25,6 +29,7 @@ public class MCStateMachine<T extends MCState, U> {
     protected U parent;
     private List<T> states;
     private T currentState;
+    private BiConsumer<T, T> callback;
 
     public MCStateMachine(U parent) {
         this.parent = parent;
@@ -99,5 +104,10 @@ public class MCStateMachine<T extends MCState, U> {
         currentState.exit();
         nextState.enter(args);
         currentState = nextState;
+        if (callback != null) callback.accept(prevState, nextState);
+    }
+    
+    public void setCallback(BiConsumer<T, T> callback) {
+        this.callback = callback;
     }
 }

@@ -69,6 +69,10 @@ public class MCInputManager implements InputProcessor {
         }
     }
 
+    public static class NextTurnCommand extends Command {
+        public NextTurnCommand() {}
+    }
+    
     public static class MouseListener {
         public Consumer<Vector2> mouseMovedFunction;
 
@@ -188,6 +192,8 @@ public class MCInputManager implements InputProcessor {
                 rightGoing = false;
                 bus.emit("InputReleased", new DirectionalCommand(+1, 0));
                 break;
+            case Input.Keys.SPACE:
+                bus.emit("InputPressed", new NextTurnCommand());
         }
         return true;
     }
