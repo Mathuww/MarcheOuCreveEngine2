@@ -36,16 +36,21 @@ public class MCSharedAssets {
 
         addSavedTile("validAttackTile");
         //addSavedTile("debugTile");
-        generateFailsafeTexture();
+        addOnePixelTexture("fallback", Color.MAGENTA);
+        addOnePixelTexture("black", Color.BLACK);
+        addOnePixelTexture("white", Color.WHITE);
+        addOnePixelTexture("yellow", Color.YELLOW);
+        addOnePixelTexture("green", Color.GREEN);
+        addOnePixelTexture("red", Color.RED);
     }
 
-    private void generateFailsafeTexture() {
+    private void addOnePixelTexture(String name, Color color) {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
-        pixmap.setColor(Color.MAGENTA);
+        pixmap.setColor(color);
         pixmap.fill();
-        Texture fallbackTexture = new Texture(pixmap);
+        Texture texture = new Texture(pixmap);
         pixmap.dispose(); 
-        addSavedTexture("fallback", new TextureRegion(fallbackTexture));
+        addSavedTexture(name, new TextureRegion(texture));
     }
 
     private void addSavedTile(String nameVal) throws Exception {

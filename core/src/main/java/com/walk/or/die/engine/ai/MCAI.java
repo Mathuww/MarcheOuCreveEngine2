@@ -1,25 +1,21 @@
 package com.walk.or.die.engine.ai;
 
-import java.util.List;
-import java.util.Set;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEnemy;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.shared.MCDebugRenderer;
 import com.walk.or.die.engine.shared.MCIntVector2;
-import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 
 public class MCAI {
@@ -53,7 +49,7 @@ public class MCAI {
         return bestVictim;
     }
 
-    public float scoreVictim(MCIntVector2 pos, MCAlly ally, float degats) {
+    private float scoreVictim(MCIntVector2 pos, MCAlly ally, float degats) {
         float score = 0f;
         if (ally.getHealth() <= degats) score += 10f;
         if (pathfinder.isCorrectTrajectory(pathfinder.getTrajectory(ally.getTilePosition(), pos)).success) score += 2f;
@@ -62,7 +58,7 @@ public class MCAI {
         return score;
     }
 
-    public Set<MCAlly> getShootableAllies(MCIntVector2 pos) {
+    private Set<MCAlly> getShootableAllies(MCIntVector2 pos) {
         Set<MCAlly> allies = new HashSet<>();
         for (MCAlly ally: MCEntityManager.get().getAllies()) {
             List<MCIntVector2> traj = pathfinder.getTrajectory(pos, ally.getTilePosition());
@@ -81,10 +77,11 @@ public class MCAI {
         List<MCIntVector2> shelts = searchShelts(oldPos, max_deplacement);
 
         MCIntVector2 best_shelt = oldPos;
-        float best_score = -1f;
+        float best_score = -1000f;
         for (MCIntVector2 shelt: shelts) {
-            float score = isSheltSafe(shelt) - isSheltShootSpot(shelt);
-            if (best_score == -1f || score < best_score) {
+            float score = isSheltShootSpot(shelt) - isSheltSafe(shelt)*2f; // CACA
+            if (best_score == -1000f || score > best_score) {
+                System.out.println("Total :" + score + "pour la pos" + shelt);
                 best_score = score;
                 best_shelt = shelt;
             }
@@ -93,7 +90,7 @@ public class MCAI {
         return best_shelt;
     }
 
-    public float isSheltSafe(MCIntVector2 pos) {
+    private float isSheltSafe(MCIntVector2 pos) {
         Set<MCAlly> list = MCEntityManager.get().getAllies();
 
         float result = 0f;
@@ -102,12 +99,14 @@ public class MCAI {
             List<MCIntVector2> traj = pathfinder.getTrajectory(
                 ally.getTilePosition(),
                 pos);
-
+            traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
+            traj.remove(0);
             if (pathfinder.isCorrectTrajectory(traj).success) {
                 result += 1f;
             }
             
         }
+        System.out.println("score safe " + result + " pour la pos " + pos);
         /*
         get all character
         get trajectory from character to posx posy
@@ -120,7 +119,7 @@ public class MCAI {
         return result;
     }
 
-    public float isSheltShootSpot(MCIntVector2 pos) {
+    private float isSheltShootSpot(MCIntVector2 pos) {
         Set<MCAlly> list = MCEntityManager.get().getAllies();
 
         float result = 0f;
@@ -129,7 +128,8 @@ public class MCAI {
                 pos,
                 ally.getTilePosition()
             );
-
+            traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
+            traj.remove(0);
             if (pathfinder.isCorrectTrajectory(traj).success) {
                 result += 1f;
             }
@@ -141,11 +141,11 @@ public class MCAI {
         if is moyenne trajectory 0.33
         if kill 10
         */
-
+        System.out.println("score attaque " + result + " pour la pos " + pos);
         return result;
     }
 
-    public List<MCIntVector2> searchShelts(MCIntVector2 pos, int maxMoves) {
+    private List<MCIntVector2> searchShelts(MCIntVector2 pos, int maxMoves) {
         List<MCIntVector2> list = new ArrayList<>();
         
         for (int x = -maxMoves; x <= maxMoves; x++) {
@@ -154,7 +154,7 @@ public class MCAI {
                 if (Math.abs(x) + Math.abs(y) <= maxMoves && 
                     newV.x < map.getWidth() && newV.y < map.getHeight() &&
                     newV.x >= 0 && newV.y >=0 &&
-                    MCEntityManager.get().getEntityFromTile(1, newV) == null &&
+                    (MCEntityManager.get().getEntityFromTile(1, newV) == null || MCEntityManager.get().getEntityFromTile(1, newV) == parent) &&
                     neighborsShelt(newV)) {
                         list.add(newV);
                         showSpot(newV);
@@ -162,10 +162,12 @@ public class MCAI {
             }
         }
 
+
+
         return list;
     }
 
-    public boolean neighborsShelt(MCIntVector2 pos) {
+    private boolean neighborsShelt(MCIntVector2 pos) {
         List<MCIntVector2> newPositions = new ArrayList<>();
         newPositions.add(new MCIntVector2(pos.x - 1, pos.y));
         newPositions.add(new MCIntVector2(pos.x+1, pos.y));
@@ -184,7 +186,6 @@ public class MCAI {
         return isOneProtected;
     }
 
-    // j pense vaut mieux creer une fonction ici
     private boolean check(MCIntVector2 v) {
         return pathfinder.isProtect(v) && !(MCEntityManager.get().getEntityFromTile(1, v) instanceof MCAlly);
     }

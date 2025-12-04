@@ -1,23 +1,14 @@
 package com.walk.or.die.engine.sm.entity.states;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCAttack;
 import com.walk.or.die.engine.entities.MCCharacter;
-import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
-import com.walk.or.die.engine.sm.MCState;
-import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
-import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -56,22 +47,21 @@ public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
     @Override
     public void enter(ShootStateArgs args) {
         super.enter(args);
+
+        if (parent instanceof MCAlly ally)
+            ally.getTurnState().attacked();
+
         parent.playAnimation(args.attack.getSenderAnim());
         MCPathfinder.Simulation result = MCPathfinder.get().isCorrectTrajectory(args.trajectory);
         if (result.success) {
             int damage = args.attack.getDamageTo(args.target);
             parent.shootThenCall(args.target.getTilePosition(), args.attack, () -> {
-                //if (!args.target.isDead()) args.target.playAnimation(args.attack.getTargetAnim());
                 args.target.getHurt(damage, args.attack.getTargetAnim());
-                if (parent instanceof MCAlly) {
-                    bus.emit("ActionDone", new MCCharacter.ActionDoneEvent(parent, MCCharacter.ActionDoneEvent.Action.ATTACK));
-                }
                 changeState("idle", new MCESIdle.IdleStateArgs());
             });
         } else { // miss shot !
            parent.shootThenCall(result.endPos, args.attack, () -> {
                 System.out.println("MissShot");
-                bus.emit("ActionDone", new MCCharacter.ActionDoneEvent(parent, MCCharacter.ActionDoneEvent.Action.ATTACK));
                 changeState("idle", new MCESIdle.IdleStateArgs());
             });
         }

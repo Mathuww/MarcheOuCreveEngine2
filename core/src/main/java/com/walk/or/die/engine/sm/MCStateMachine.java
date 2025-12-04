@@ -73,7 +73,7 @@ public class MCStateMachine<T extends MCState, U> {
             return ;
         }
 
-        System.out.println("Transition from " + args.prevState + " to " + args.nextState);
+        // System.out.println("Transition from " + args.prevState + " to " + args.nextState);
         stateTransition(currentState, getState(args.nextState), args.args);
         
     }
@@ -110,4 +110,5 @@ public class MCStateMachine<T extends MCState, U> {
     public void setCallback(BiConsumer<T, T> callback) {
         this.callback = callback;
     }
+
 }

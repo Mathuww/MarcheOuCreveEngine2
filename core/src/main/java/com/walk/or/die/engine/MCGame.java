@@ -29,7 +29,6 @@ import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.sm.game.states.MCGSAlliesPlaying;
-import com.walk.or.die.engine.sm.game.states.MCGSCombat;
 import com.walk.or.die.engine.sm.game.states.MCGSEnemiesPlaying;
 import com.walk.or.die.engine.sm.game.states.MCGSExploration;
 import com.walk.or.die.engine.tiledmap.MCMap;
@@ -44,6 +43,8 @@ import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 public class MCGame extends Game {
     public static final int VIEWPORT_WIDTH = 12;
     public static final int VIEWPORT_HEIGHT = 10;
+    public static final Vector2 CAM_LOWER_LIMIT_OFFSET = new Vector2(-2f, -4f);
+    public static final Vector2 CAM_UPPER_LIMIT_OFFSET = new Vector2(2f, 2f); 
 
     // Map
     private MCTerrainMap map;
@@ -69,6 +70,7 @@ public class MCGame extends Game {
     private MCEntityManager entityManager = MCEntityManager.get();
     private String playerEntityName;
     private MCCharacter main;
+    private MCCharacter focusedCharacter;
 
     // Debug
     private MCDebugRenderer debugRenderer = MCDebugRenderer.get();
@@ -102,12 +104,16 @@ public class MCGame extends Game {
         map = new MCTerrainMap(MAP_ROOT + "start.tmx", drh);
 
         // Cam manager init
+        camManager.setLowerLimit(CAM_LOWER_LIMIT_OFFSET);
+        camManager.setUpperLimit(new Vector2(
+            CAM_UPPER_LIMIT_OFFSET.x + map.getWidth(),
+            CAM_UPPER_LIMIT_OFFSET.y + map.getHeight()
+        ));
         camManager.init(
-                VIEWPORT_WIDTH,
-                VIEWPORT_HEIGHT,
-                MCCameraManager.CameraMode.ARROWS);
-        camManager.setLimitX(map.getWidth());
-        camManager.setLimitY(map.getHeight());
+            VIEWPORT_WIDTH,
+            VIEWPORT_HEIGHT,
+            MCCameraManager.CameraMode.ARROWS
+        );
         viewport.setCamera(camManager.getGdxCam());
 
         // Input init
@@ -181,6 +187,21 @@ public class MCGame extends Game {
     public void dispose() {
         batch.dispose();
     }
+
+    public void changeFocus(MCCharacter c) {
+        if (focusedCharacter != null) {
+            if (focusedCharacter.loseFocus()) {
+                focusedCharacter = c;
+                if (c != null) 
+                    c.getFocus();
+            }
+        } else {
+            focusedCharacter = c;
+            if (c != null)
+                c.getFocus();
+        }
+    }
+
 
     public MCStateMachine getStateManager() {
         return this.stateManager;

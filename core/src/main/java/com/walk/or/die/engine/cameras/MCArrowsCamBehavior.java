@@ -1,15 +1,11 @@
 package com.walk.or.die.engine.cameras;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Disposable;
-import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
 import com.walk.or.die.engine.shared.MCEventBus;
@@ -80,12 +76,19 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         float camHalfWidth = gdxCam.viewportWidth / 2;
         float camHalfHeight = gdxCam.viewportHeight / 2;
 
-        if (camManager.getLimitX() != 0f) {
-            targetX = MathUtils.clamp(targetX, camHalfWidth, camManager.getLimitX() - camHalfWidth);
-        }
-        if (camManager.getLimitY() != 0f) {
-            targetY = MathUtils.clamp(targetY, camHalfHeight, camManager.getLimitY() - camHalfHeight);
-        }
+        Vector2 lowerLimit = camManager.getGlobalLowerLimit();
+        Vector2 upperLimit = camManager.getGlobalUpperLimit();
+
+        targetX = MathUtils.clamp(
+            targetX, 
+            lowerLimit.x + camHalfWidth, 
+            upperLimit.x - camHalfWidth
+        );
+        targetY = MathUtils.clamp(
+            targetY, 
+            lowerLimit.y + camHalfHeight, 
+            upperLimit.y - camHalfHeight
+        );
 
         return new Vector2(targetX, targetY);
     }

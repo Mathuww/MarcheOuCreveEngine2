@@ -1,21 +1,13 @@
 package com.walk.or.die.engine.sm.entity.states;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCCharacter;
-import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
-import com.walk.or.die.engine.sm.MCState;
-import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -64,7 +56,6 @@ public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
     }
     
     private void cancel() {
-        bus.emit("ActionCancelled", new MCCharacter.ActionCancelledEvent(parent));
         changeState("idle", new MCESIdle.IdleStateArgs());
     }
 

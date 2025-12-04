@@ -1,7 +1,5 @@
 package com.walk.or.die.engine.input;
 
-import java.util.ArrayDeque;
-import java.util.Queue;
 import java.util.function.Consumer;
 
 import com.badlogic.gdx.Gdx;
@@ -200,7 +198,8 @@ public class MCInputManager implements InputProcessor {
 
     @Override public boolean touchDown(int x, int y, int pointer, int button) {
         Vector3 worldCoords = new Vector3(x, y, 0);
-        vp.getCamera().unproject(worldCoords);
+        System.out.println(vp.getScreenWidth() + vp.getScreenHeight());
+        vp.unproject(worldCoords);
         MCIntVector2 v = new MCIntVector2(worldCoords.x, worldCoords.y);
 
         bus.emit("InputPressed", new ClickTileCommand(v));
@@ -210,7 +209,7 @@ public class MCInputManager implements InputProcessor {
     @Override public boolean mouseMoved(int x,int y){
         if (mouseMovedFunction != null) {
             Vector3 worldCoords = new Vector3(x, y, 0);
-            vp.getCamera().unproject(worldCoords);
+            vp.unproject(worldCoords);
             Vector2 v = new Vector2(
                 MathUtils.floor(worldCoords.x), 
                 MathUtils.floor(worldCoords.y)

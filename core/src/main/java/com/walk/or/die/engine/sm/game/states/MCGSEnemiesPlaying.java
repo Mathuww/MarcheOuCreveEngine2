@@ -3,16 +3,11 @@ package com.walk.or.die.engine.sm.game.states;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-import com.badlogic.gdx.Input;
 import com.walk.or.die.engine.MCGame;
-import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCEnemy;
-import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityManager;
-import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.game.MCGameState;
-import com.walk.or.die.engine.sm.game.states.MCGSAlliesPlaying.AlliesPlayingArgs;
 
 public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPlayingArgs> {
 

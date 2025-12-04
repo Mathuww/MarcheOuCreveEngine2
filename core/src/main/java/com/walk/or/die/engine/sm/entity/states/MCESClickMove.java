@@ -4,18 +4,11 @@ import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
-import com.walk.or.die.engine.sm.MCState;
-import com.walk.or.die.engine.sm.MCState.StateArgs;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
-import com.walk.or.die.engine.sm.entity.states.MCESIdle.IdleStateArgs;
-import com.walk.or.die.engine.tiledmap.MCPathfinder;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
@@ -83,6 +76,8 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
 
     @Override
     public void enter(MoveStateArgs args) {
+        if (parent instanceof MCAlly ally)
+            ally.getTurnState().moved();
         goal = args.target;
         movements.clear();
         movements.addAll(args.path);
@@ -103,12 +98,6 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
 
     private void nextMove() {
         if (movements.size() == 0) {
-            if (parent instanceof MCAlly) {
-                bus.emit(
-                    "ActionDone", 
-                    new MCCharacter.ActionDoneEvent(parent, MCCharacter.ActionDoneEvent.Action.MOVE)
-                );
-            }
             changeState("idle", new MCESIdle.IdleStateArgs());
         } else {
             Vector2 targetPos = movements.removeFirst().toGdxVect();
@@ -142,4 +131,5 @@ public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
     public boolean isBlocking() {
         return true;
     }
+    
 }

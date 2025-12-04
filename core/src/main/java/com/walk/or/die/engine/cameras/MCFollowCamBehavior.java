@@ -48,16 +48,23 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
         if (py < maxBottom) targetY = py + camHalfHeight - CAM_MARGIN_Y; // eloi
         else if (py > maxTop) targetY = py - camHalfHeight + CAM_MARGIN_Y; // matheo
 
-        if (camManager.getLimitX() != 0f) {
-            targetX = MathUtils.clamp(targetX, camHalfWidth, camManager.getLimitX() - camHalfWidth);
-        }
-        if (camManager.getLimitY() != 0f) {
-            targetY = MathUtils.clamp(targetY, camHalfHeight, camManager.getLimitY() - camHalfHeight);
-        }
+        Vector2 lowerLimit = camManager.getGlobalLowerLimit();
+        Vector2 upperLimit = camManager.getGlobalUpperLimit();
+
+        targetX = MathUtils.clamp(
+            targetX, 
+            lowerLimit.x + camHalfWidth, 
+            upperLimit.x - camHalfWidth
+        );
+        targetY = MathUtils.clamp(
+            targetY, 
+            lowerLimit.y + camHalfHeight, 
+            upperLimit.y - camHalfHeight
+        );
+
 
         float newX = gdxCam.position.x + ((targetX - gdxCam.position.x) * CAM_LERP * delta);
         float newY = gdxCam.position.y + ((targetY - gdxCam.position.y) * CAM_LERP * delta);
         return new Vector2(newX, newY);
-
     }
 }

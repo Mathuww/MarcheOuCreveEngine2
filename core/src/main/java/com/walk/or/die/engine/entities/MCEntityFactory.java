@@ -1,28 +1,20 @@
 package com.walk.or.die.engine.entities;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader.AlignMode;
-import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.exceptions.DataException;
-import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCUtils;
-import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
+import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 public class MCEntityFactory {
     private static MCEntityFactory instance = null;

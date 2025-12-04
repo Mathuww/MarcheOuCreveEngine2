@@ -3,49 +3,22 @@ package com.walk.or.die.engine.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-//import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
-
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
-import java.util.Queue;
-
-
+import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.walk.or.die.engine.MCGame;
-import com.walk.or.die.engine.cameras.MCArrowsCamBehavior;
-import com.walk.or.die.engine.cameras.MCCameraBehavior;
 import com.walk.or.die.engine.cameras.MCCameraManager;
-import com.walk.or.die.engine.cameras.MCFollowCamBehavior;
-import com.walk.or.die.engine.entities.MCAlly;
-import com.walk.or.die.engine.entities.MCAttackFactory;
-import com.walk.or.die.engine.entities.MCCharacter;
-import com.walk.or.die.engine.entities.MCEntity;
-import com.walk.or.die.engine.entities.MCEntityFactory;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.exceptions.DataException;
-import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
-import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.input.MCInputManager.Command;
-import com.walk.or.die.engine.shared.MCDebugRenderer;
-import com.walk.or.die.engine.shared.MCEventBus;
-import com.walk.or.die.engine.sm.MCStateMachine;
-import com.walk.or.die.engine.sm.game.MCGameState;
-import com.walk.or.die.engine.sm.game.states.MCGSCombat;
-import com.walk.or.die.engine.sm.game.states.MCGSExploration;
-import com.walk.or.die.engine.tiledmap.MCTerrainMap;
-import com.walk.or.die.engine.tiledmap.MCMap;
 
 public class MCGameScreen implements Screen {
     private MCGame game;
     private MCCameraManager camManager = MCCameraManager.get();
+    private Stage stage = new Stage(new ScreenViewport());
+    private Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
+
 
     public MCGameScreen(MCGame game) throws DataException {
         this.game = game;
@@ -53,7 +26,10 @@ public class MCGameScreen implements Screen {
     
     // Called once (when the window oppened)
     @Override
-    public void show() {}
+    public void show() {
+        // bug fix tempoaire ,faudra que je regarde plus..
+        game.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+    }
 
     // Called every frame
     @Override
@@ -67,14 +43,17 @@ public class MCGameScreen implements Screen {
 
         game.getStateManager().render(game.batch);
         MCEntityManager.get().render(game.batch);
-        //MCDebugRenderer.get().render(game.batch);
 
         game.batch.end();
+
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-       game.viewport.update(width, height, false);
+       game.viewport.update(width, height, true);
+       stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -95,5 +74,6 @@ public class MCGameScreen implements Screen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
+        stage.dispose();
     }
 }

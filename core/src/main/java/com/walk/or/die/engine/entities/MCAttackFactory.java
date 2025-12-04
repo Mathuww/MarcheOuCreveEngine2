@@ -1,26 +1,18 @@
 package com.walk.or.die.engine.entities;
 
-import java.awt.Point;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.exceptions.DataException;
-import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
-import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
 

@@ -1,6 +1,5 @@
 package com.walk.or.die.engine.entities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,20 +10,10 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
-import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCSharedAssets;
-import com.walk.or.die.engine.sm.MCStateMachine;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
-import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
-import com.walk.or.die.engine.sm.entity.states.MCESIdle;
-import com.walk.or.die.engine.sm.entity.states.MCESAim;
-import com.walk.or.die.engine.sm.entity.states.MCESShoot;
-import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
-import com.walk.or.die.engine.tiledmap.MCMap;
 
 public abstract class MCEntity {
     public static class TileReachedArgs {

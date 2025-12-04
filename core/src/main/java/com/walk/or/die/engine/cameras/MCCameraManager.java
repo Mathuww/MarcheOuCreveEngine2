@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.walk.or.die.engine.entities.MCEntity;
@@ -30,32 +31,36 @@ public class MCCameraManager {
     private Map<CameraMode, MCCameraBehavior> behaviors = new HashMap<>();
     private CameraMode mode;
 
-    private float limitX;
-    private float limitY;
+    private Vector2 lowerLimit = new Vector2(0f, 0f);
+    private Vector2 upperLimit = new Vector2(16f, 16f); // arbitraire
 
     private boolean movedThisFrame = false;
 
     private MCEntity target;
+
+    private float shakeDuration = 0f;  
+    private float shakeStateTime = 0f;   
+    private float shakeIntensity = 0f;
 
     private MCCameraManager() {
         register(CameraMode.FOLLOW, new MCFollowCamBehavior());
         register(CameraMode.ARROWS, new MCArrowsCamBehavior());
     }
 
-    public float getLimitX() {
-        return this.limitX;
+    public Vector2 getGlobalLowerLimit() {
+        return this.lowerLimit;
     }
 
-    public void setLimitX(float limitX) {
-        this.limitX = limitX;
+    public void setLowerLimit(Vector2 limit) {
+        this.lowerLimit = limit;
     }
 
-    public float getLimitY() {
-        return this.limitY;
+    public Vector2 getGlobalUpperLimit() {
+        return this.upperLimit;
     }
 
-    public void setLimitY(float limitY) {
-        this.limitY = limitY;
+    public void setUpperLimit(Vector2 limit) {
+        this.upperLimit = limit;
     }
 
     public Vector2 getPosition() {
@@ -86,9 +91,24 @@ public class MCCameraManager {
         gdxCam.position.set(viewportWidth / 2, viewportHeight / 2, 0);
         oldX = gdxCam.position.x;
         oldY = gdxCam.position.y;
-        limitX = 0f;
-        limitY = 0f;
         setMode(mode);
+    }
+
+    public float getCurrentUpperLimitX() {
+        return gdxCam.position.x + gdxCam.viewportWidth / 2;
+    }
+
+    public float getCurrentUpperLimitY() {
+        return gdxCam.position.y + gdxCam.viewportHeight / 2;
+    }
+
+    /* à enlever si on s'en est pas servi */
+    public float getCurrentLowerLimitX() {
+        return gdxCam.position.x - gdxCam.viewportWidth / 2;
+    }
+
+    public float getCurrentLowerLimitY() {
+        return gdxCam.position.y - gdxCam.viewportHeight / 2;
     }
 
     public OrthographicCamera getGdxCam() {
@@ -103,14 +123,36 @@ public class MCCameraManager {
         this.target = target;
     }
 
+    public void shake(float intensity, float duration) {
+        this.shakeIntensity = intensity;
+        this.shakeDuration = duration;
+        this.shakeStateTime = 0f;
+    }
+
     public void update(float delta) throws UnexistingBehaviorException {
         movedThisFrame = false;
         if (mode == null) throw new UnexistingBehaviorException("camera update : need a behavior to update");
         Vector2 newPos = behaviors.get(mode).update(gdxCam, delta);
-        if (newPos.y != oldX || newPos.x != oldX)
+
+        if (newPos.x != oldX || newPos.y != oldY)
             movedThisFrame = true;
         gdxCam.position.x = newPos.x;
         gdxCam.position.y = newPos.y;
+        oldX = gdxCam.position.x;
+        oldY = gdxCam.position.y;
+
+        float offsetX = 0f, offsetY = 0f;
+        if (shakeStateTime <= shakeDuration) {
+            shakeStateTime += delta;
+            
+            float currentPower = shakeIntensity * ((shakeDuration - shakeStateTime) / shakeDuration);
+        
+            offsetX = MathUtils.randomTriangular(-1f, 1f, 0f) * currentPower;
+            offsetY = MathUtils.randomTriangular(-1f, 1f, 0f) * currentPower;
+
+            gdxCam.translate(offsetX, offsetY);
+        }
+
         gdxCam.update();
     }
 

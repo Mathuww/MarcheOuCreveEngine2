@@ -1,19 +1,15 @@
 package com.walk.or.die.engine.entities;
 
 import java.util.List;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.ai.MCAI;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.MCStateMachine;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
 import com.walk.or.die.engine.sm.entity.states.MCESDead;
 import com.walk.or.die.engine.sm.entity.states.MCESEnemyIdle;
 import com.walk.or.die.engine.sm.entity.states.MCESHurt;
-import com.walk.or.die.engine.sm.entity.states.MCESIdle;
 import com.walk.or.die.engine.sm.entity.states.MCESShoot;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;

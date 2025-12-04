@@ -3,68 +3,22 @@ package com.walk.or.die.engine.entities;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.Mac;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapProperties;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
-import com.walk.or.die.engine.ai.MCAI;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
-import com.walk.or.die.engine.sm.entity.states.MCESAim;
-import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
 import com.walk.or.die.engine.sm.entity.states.MCESHurt;
 import com.walk.or.die.engine.sm.entity.states.MCESIdle;
-import com.walk.or.die.engine.sm.entity.states.MCESReady;
-import com.walk.or.die.engine.sm.entity.states.MCESShoot;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
-import com.walk.or.die.engine.tiledmap.MCMap;
+import com.walk.or.die.engine.ui.MCOnGridHealth;
 
 public class MCCharacter extends MCEntity {
-    public static class ChangeStateCommandEvent {
-        public static enum State {
-            READY,
-            AIM
-        }
-
-        public MCCharacter character;
-        public State newState;
-
-        public ChangeStateCommandEvent(MCCharacter c, State s) {
-            character = c;
-            newState = s;
-        }
-    }
-
-    public static class ActionCancelledEvent {
-        public MCCharacter character;
-        public ActionCancelledEvent(MCCharacter c) {
-            character = c;
-        }
-    }
-
-    public static class ActionDoneEvent {
-        public static enum Action {
-            MOVE,
-            ATTACK
-        }
-
-        public MCCharacter character;
-        public Action action;
-
-        public ActionDoneEvent(MCCharacter c, Action a) {
-            character = c;
-            action = a;
-        }
-    }
-    
     protected final int MAX_ATTACK_NUMBER = 6;
 
+    private Integer maxHp;
     private Integer hp;
     private boolean dead = false;
     private Integer maxDeplacements;
@@ -73,6 +27,9 @@ public class MCCharacter extends MCEntity {
     private String baseAttack;
     private String displayedAttack;
     private MCMoveDisplay moveDisplay;
+    private boolean shoot = true;
+
+    private MCOnGridHealth healthBar;
 
     public MCCharacter(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
@@ -89,11 +46,13 @@ public class MCCharacter extends MCEntity {
     @Override
     public void onSpawn() {
         stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
+        healthBar = new MCOnGridHealth(this);
     }
 
     @Override
     public void initFromProperties(MapProperties props) throws Exception {
-        hp = MCUtils.getIntProperty(props, "hp", 100);
+        maxHp = MCUtils.getIntProperty(props, "hp", 100);
+        hp = maxHp;
         maxDeplacements = MCUtils.getIntProperty(props, "maxMoves", 2);
 
         MCAttackFactory attackFact = MCAttackFactory.get();
@@ -121,6 +80,8 @@ public class MCCharacter extends MCEntity {
     public void update(float delta) {
         super.update(delta);
         stateManager.update(delta);
+        if (healthBar != null)
+            healthBar.update(delta);
     }
 
     @Override
@@ -130,7 +91,13 @@ public class MCCharacter extends MCEntity {
     }
 
     public void renderOnGridOverlay(SpriteBatch batch) {
+        // j'ai séparé le rendu de l'entité proprement dit
+        // et celles de ses overlays
+        // dans EntityManager,
+        // sinon les prochaines entités viennent par dessus
         stateManager.renderOnGridOverlay(batch);
+        if (healthBar != null && hp < maxHp)
+            healthBar.render(batch);
     }
 
     public MCStateMachine getStateManager() {
@@ -171,6 +138,10 @@ public class MCCharacter extends MCEntity {
         proj.launchTo(end);
     }
 
+    public int getMaxHp() {
+        return maxHp;
+    }
+
     public int getHealth() {
         return hp;
     }
@@ -198,4 +169,5 @@ public class MCCharacter extends MCEntity {
             return false;
         return stateManager.getCurrentState().isBlocking();
     }
+
 }
