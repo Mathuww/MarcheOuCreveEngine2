@@ -14,6 +14,7 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.entity.states.MCESAim;
 import com.walk.or.die.engine.sm.entity.states.MCESReady;
 import com.walk.or.die.engine.sm.game.MCGameState;
+import com.walk.or.die.engine.ui.MCHUDManager;
 
 public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayingArgs> {
 
@@ -58,6 +59,12 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
             //System.out.println("Détecté par le game");
             MCEntity e = MCEntityManager.get().getEntityFromTile(1, tileCmd.getIntVect());
+
+            if (e instanceof MCCharacter c)
+                MCHUDManager.get().setHudTarget(c);
+            else if (e == null) // pour cacher le hud en cliquant sur une tile vide
+                MCHUDManager.get().setHudTarget(null);
+
             if (e instanceof MCAlly ally) 
                 parent.changeFocus(ally);
         } else if (data instanceof MCInputManager.NextTurnCommand) {

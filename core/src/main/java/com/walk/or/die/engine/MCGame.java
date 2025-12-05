@@ -286,6 +286,8 @@ public class MCGame extends Game {
 
         stateManager.update(delta);
         entityManager.update(delta);
+
+        hudManager.update(delta);
     }
 
     @Override
@@ -310,14 +312,12 @@ public class MCGame extends Game {
                 focusedCharacter = c;
                 if (c != null) {
                     c.getFocus();
-                    hudManager.setHudTarget(c);
                 }
             }
         } else {
             focusedCharacter = c;
             if (c != null) {
                 c.getFocus();
-                hudManager.setHudTarget(c);
             }
         }
     }

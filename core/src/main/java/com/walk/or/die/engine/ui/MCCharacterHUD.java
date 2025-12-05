@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.entities.MCCharacter;
@@ -27,18 +28,27 @@ public class MCCharacterHUD {
     private final float INSIDE_PADDING_HEIGHT = HUD_HEIGHT * 0.05f;
 
     private final float EFFECTIVE_INFO_PANEL_WIDTH = INFO_PANEL_WIDTH - INSIDE_PADDING_WIDTH * 3f;
-    private final float CHARA_SPRITE_SIZE = EFFECTIVE_INFO_PANEL_WIDTH * 0.33f;
+    private final float CHARA_SPRITE_SIZE = EFFECTIVE_INFO_PANEL_WIDTH * 0.16f;
+    private final float NAME_FONT_SCALE = 1.25f;
     private final float NAME_WIDTH = EFFECTIVE_INFO_PANEL_WIDTH * 0.67f;
     private final float NAME_HEIGHT = HUD_HEIGHT - (RECT_BORDER  + INSIDE_PADDING_HEIGHT) * 2f;
+
+    private final float SCROLL_LERP = 300f;
+    private final float SCROLL_Y = -(HUD_HEIGHT * 1.15f);
 
     private final MCSharedAssets sharedAssets = MCSharedAssets.get();
     private TextureRegion blackTexture;
     private TextureRegion whiteTexture;
     private BitmapFont font;
-    private MCCharacter character;
+    private MCCharacter characterAfterScroll;
+    private MCCharacter currentCharacter;
 
     private Sprite characterSprite = new Sprite();
     private SpriteBatch currentBatch;
+
+    private float offsetY = 0f;
+    private float targetOffsetY = 0f;
+    private boolean scrolling = false;
 
     public MCCharacterHUD() {
         try {
@@ -110,7 +120,19 @@ public class MCCharacterHUD {
     }
 
     public void setHudTarget(MCCharacter character) {
-        this.character = character;
+        if (character != null && this.currentCharacter == null) {
+            currentCharacter = character;
+            characterAfterScroll = character;
+            scrolling = true;
+            targetOffsetY = 0f;
+        } else if (character == null && this.currentCharacter != null) {
+            characterAfterScroll = character;
+            scrolling = true;
+            targetOffsetY = SCROLL_Y;
+        } else {
+            currentCharacter = character;
+            characterAfterScroll = character;
+        }
     }
 
     /**
@@ -120,16 +142,26 @@ public class MCCharacterHUD {
      * 1/3 sprite - 2/3 noms : HP
      */
     public void renderInfoPanel() {
-        Rectangle panel = new Rectangle(INTERPANEL_PADDING_WIDTH, BOTTOM_MARGIN, INFO_PANEL_WIDTH, HUD_HEIGHT);
+        Rectangle panel = new Rectangle(
+            INTERPANEL_PADDING_WIDTH, 
+            offsetY + BOTTOM_MARGIN, 
+            INFO_PANEL_WIDTH, 
+            HUD_HEIGHT
+        );
         drawCornerlessRectangle(panel, RECT_BORDER);
 
         // partie gauche : sprite joueur
-        float panelStartX = INTERPANEL_PADDING_WIDTH + RECT_BORDER;
-        float panelStartY = BOTTOM_MARGIN + RECT_BORDER;
+        float panelStartX = panel.x + RECT_BORDER;
+        float panelStartY = panel.y + RECT_BORDER;
 
-        TextureRegion characterTexture = new TextureRegion(character.getSprite().getTexture());
+        if (currentCharacter == null) 
+            return;
+        TextureRegion characterTexture = new TextureRegion(currentCharacter.getSprite());
         characterSprite.setRegion(characterTexture);
-        characterSprite.setPosition(panelStartX + INSIDE_PADDING_WIDTH, panelStartY + INSIDE_PADDING_HEIGHT);
+        characterSprite.setPosition(
+            panelStartX + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE / 2f, 
+            panelStartY + INSIDE_PADDING_HEIGHT + CHARA_SPRITE_SIZE / 2f
+        );
         characterSprite.setSize(CHARA_SPRITE_SIZE, CHARA_SPRITE_SIZE);
         characterSprite.draw(currentBatch);
 
@@ -140,13 +172,34 @@ public class MCCharacterHUD {
             NAME_WIDTH, 
             NAME_HEIGHT
         );
-        drawCenteredText(character.getId(), idRect, Color.BLACK, 1f, 4f);
+        drawCenteredText(currentCharacter.getId(), idRect, Color.BLACK, NAME_FONT_SCALE, 4f);
     }
 
     public void render(SpriteBatch batch) {
-        if (character == null)
-            return;
         currentBatch = batch;
         renderInfoPanel();
+    }
+
+    public void update(float delta) {
+        if (scrolling) {
+            if (targetOffsetY >= -0.001f && offsetY >= targetOffsetY) {
+                scrolling = false;
+                currentCharacter = characterAfterScroll;
+            } else if (targetOffsetY <= (SCROLL_Y + 0.001f) && offsetY <= targetOffsetY) {
+                scrolling = false;
+                currentCharacter = characterAfterScroll;
+            }
+
+            float diff = targetOffsetY - offsetY;
+            float maxChange = SCROLL_LERP * delta;
+
+            if (Math.abs(diff) <= maxChange) {
+                offsetY = targetOffsetY;
+            } else {
+                offsetY += Math.signum(diff) * maxChange;
+            }
+
+            offsetY = MathUtils.clamp(offsetY, SCROLL_Y, 0f);
+        }
     }
 }

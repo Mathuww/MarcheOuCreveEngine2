@@ -45,7 +45,7 @@ public class MCHUDManager {
     }
 
     public void update(float delta) {
-
+        characterHUD.update(delta);
     }
 
     public void render(SpriteBatch batch) {
