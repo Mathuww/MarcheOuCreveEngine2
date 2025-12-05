@@ -1,3 +1,4 @@
 #!/bin/bash
 ./mcgradlew javadoc
-cp -r core/build/docs/javadoc public/javadoc
+rm -r public/javadoc
+cp -r core/build/docs/javadoc public/

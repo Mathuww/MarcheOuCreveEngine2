@@ -18,6 +18,8 @@ import com.walk.or.die.engine.ui.MCOnGridHealth;
 
 public class MCCharacter extends MCEntity {
     protected final int MAX_ATTACK_NUMBER = 6;
+    
+    private String displayName;
 
     private Integer maxHp;
     private Integer hp;
@@ -172,4 +174,14 @@ public class MCCharacter extends MCEntity {
         return stateManager.getCurrentState().isBlocking();
     }
 
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        if (displayName != null)
+            return displayName;
+        else 
+            return getId();
+    }
 }

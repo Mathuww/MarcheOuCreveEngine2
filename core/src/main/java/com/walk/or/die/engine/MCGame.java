@@ -150,14 +150,6 @@ public class MCGame extends Game {
      */
     private MCEntityManager entityManager = MCEntityManager.get();
     /**
-     * @deprecated
-     */
-    private String playerEntityName;
-    /**
-     * @deprecated
-     */
-    private MCCharacter main;
-    /**
      * The current focus Character, null there's no focusCharacter.
      * @see MCCharacter
      */
@@ -231,12 +223,6 @@ public class MCGame extends Game {
             entityFact.init(drh);
             attackFact.init(drh);
             entityManager.init(this);
-
-            playerEntityName = map.getPlayerEntityType();
-            main = (MCCharacter) entityFact.build(this, map, playerEntityName, "player");
-            main.setPosition(map.getPlayerSpawnPos().toGdxVect());
-            camManager.setFollowTarget(main);
-            entityManager.addEntity(main);
             entityManager.addAllEntities(map.spawnEntities(this));
         } catch (Exception e) {
             e.printStackTrace();

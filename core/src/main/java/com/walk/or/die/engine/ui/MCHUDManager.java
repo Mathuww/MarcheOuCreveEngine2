@@ -20,7 +20,7 @@ public class MCHUDManager {
         return instance;
     }
 
-    private FitViewport hudViewport;
+    public FitViewport hudViewport;
     private OrthographicCamera hudCamera;
 
     private MCCharacterHUD characterHUD;

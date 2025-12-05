@@ -3,7 +3,7 @@ package com.walk.or.die.engine.tiledmap;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+//import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
@@ -13,22 +13,44 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
-
+/**
+ * The class who give us an interface for MapLayer from gdx
+ * @see MapLayer
+ */
 public class MCMapLayer {
     private MapLayer ml;
 
+    /**
+     * The constructor
+     * @param ml
+     */
     public MCMapLayer(MapLayer ml) {
         this.ml = ml;
     }
 
+    /**
+     * Return the MapLayer
+     * @return
+     */
     public MapLayer getRawLayer() {
         return ml;
     }
 
+    /**
+     * Get all the objects on the layer
+     * @return
+     */
     public MapObjects getObjects() {
         return this.ml.getObjects();
     }
 
+    /**
+     * Get all the objects with a specified property
+     * @param name
+     * @param value
+     * @return A list of these objects
+     * @see MCMapObject
+     */
     public List<MCMapObject> getObjectsByProperty(String name, String value) {
         List<MCMapObject> ret = new ArrayList<>();
         for (MapObject obj : this.getObjects()) {
@@ -44,7 +66,14 @@ public class MCMapLayer {
         return ret;
     }
 
-    public TiledMapTileLayer.Cell getCell(int x, int y) {
+    /**
+     * Return the specified cell
+     * @param x
+     * @param y
+     * @return the cell
+     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer
+     */
+    public TiledMapTileLayer.Cell getCell(int x, int y) throws IllegalStateException{
         if (!(ml instanceof TiledMapTileLayer)) {
             throw new IllegalStateException("cant split a map layer in tiles if its not a tiledmaptilelayer instance");
         }
@@ -54,6 +83,13 @@ public class MCMapLayer {
         return cell;
     }
 
+    /**
+     * Get the position of the first tile with the given property
+     * @param name of the property
+     * @param value of the property
+     * @return
+     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer
+     */
     public Vector2 getPosByProperty(String name, String value) {
          if (!(ml instanceof TiledMapTileLayer)) {
             throw new IllegalStateException("cant split a map layer in tiles if its not a tiledmaptilelayer instance");
@@ -77,6 +113,13 @@ public class MCMapLayer {
         return null;
     }
 
+    /**
+     * Get the first cell with the given property
+     * @param name of the property
+     * @param value of the property
+     * @return
+     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer
+     */
     public TiledMapTileLayer.Cell getCellByProperty(String name, String value) {
          if (!(ml instanceof TiledMapTileLayer)) {
             throw new IllegalStateException("cant split a map layer in tiles if its not a tiledmaptilelayer instance");
@@ -100,6 +143,11 @@ public class MCMapLayer {
         return null;
     }
 
+    /**
+     * Return the layer split in a matrix of tiles
+     * @return
+     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer
+     */
     public Array<Array<TiledMapTile>> splitInTiles() {
         if (!(ml instanceof TiledMapTileLayer)) {
             throw new IllegalStateException("cant split a map layer in tiles if its not a tiledmaptilelayer instance");

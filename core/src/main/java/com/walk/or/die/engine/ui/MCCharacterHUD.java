@@ -43,8 +43,13 @@ public class MCCharacterHUD {
     private MCCharacter characterAfterScroll;
     private MCCharacter currentCharacter;
 
+    private Rectangle infoPanelZone;
+
     private Sprite characterSprite = new Sprite();
     private SpriteBatch currentBatch;
+
+    private MCUIScrollingText characterNameText;
+    private Rectangle characterNameZone;
 
     private float offsetY = 0f;
     private float targetOffsetY = 0f;
@@ -59,31 +64,31 @@ public class MCCharacterHUD {
             System.err.println("cant load character hud assets");
             e.printStackTrace();
         }
+
+        infoPanelZone = new Rectangle(
+            INTERPANEL_PADDING_WIDTH, 
+            offsetY + BOTTOM_MARGIN, 
+            INFO_PANEL_WIDTH, 
+            HUD_HEIGHT
+        );
+
+        characterNameZone = new Rectangle(
+            infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE + INSIDE_PADDING_WIDTH, 
+            infoPanelZone.y + RECT_BORDER + INSIDE_PADDING_HEIGHT, 
+            NAME_WIDTH, 
+            NAME_HEIGHT
+        );
+        characterNameText = new MCUIScrollingText(
+            font, 
+            characterNameZone, 
+            Color.BLACK, 
+            NAME_FONT_SCALE, 
+            4f
+        );
+
+        characterSprite.setSize(CHARA_SPRITE_SIZE, CHARA_SPRITE_SIZE);
     }
-
-    private void drawSpacedText(String text, float x, float y, float spacing) {
-        float cursor = x;
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
-            GlyphLayout layout = new GlyphLayout(font, String.valueOf(c));
-            font.draw(currentBatch, String.valueOf(c), cursor, y);
-            cursor += layout.width + spacing;
-        }
-    }
-
-    private void drawCenteredText(String text, Rectangle drawingZone, Color color, float scale, float spacing) {
-        font.setColor(color);
-        font.getData().setScale(scale);
-
-        GlyphLayout layout = new GlyphLayout(font, text);
-
-        float realWidth = layout.width + spacing * (text.length() - 1);
-        float x = drawingZone.x + (drawingZone.width - realWidth) / 2f;
-        float y = drawingZone.y + (drawingZone.height + layout.height) / 2f;
-
-        drawSpacedText(text, x, y, spacing);
-    }
-
+    
     private void drawWhiteRectangle(Rectangle rect) {
         currentBatch.draw(whiteTexture, rect.x, rect.y, rect.width, rect.height);
     }
@@ -142,37 +147,18 @@ public class MCCharacterHUD {
      * 1/3 sprite - 2/3 noms : HP
      */
     public void renderInfoPanel() {
-        Rectangle panel = new Rectangle(
-            INTERPANEL_PADDING_WIDTH, 
-            offsetY + BOTTOM_MARGIN, 
-            INFO_PANEL_WIDTH, 
-            HUD_HEIGHT
-        );
-        drawCornerlessRectangle(panel, RECT_BORDER);
+        drawCornerlessRectangle(infoPanelZone, RECT_BORDER);
 
         // partie gauche : sprite joueur
-        float panelStartX = panel.x + RECT_BORDER;
-        float panelStartY = panel.y + RECT_BORDER;
+        float panelStartX = infoPanelZone.x + RECT_BORDER;
+        float panelStartY = infoPanelZone.y + RECT_BORDER;
 
-        if (currentCharacter == null) 
-            return;
-        TextureRegion characterTexture = new TextureRegion(currentCharacter.getSprite());
-        characterSprite.setRegion(characterTexture);
-        characterSprite.setPosition(
-            panelStartX + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE / 2f, 
-            panelStartY + INSIDE_PADDING_HEIGHT + CHARA_SPRITE_SIZE / 2f
-        );
-        characterSprite.setSize(CHARA_SPRITE_SIZE, CHARA_SPRITE_SIZE);
-        characterSprite.draw(currentBatch);
+        if (currentCharacter != null) {
+            characterSprite.draw(currentBatch);
+            characterNameText.render(currentBatch);
+        }
 
         // partie droite : infos (pour l'instant que l'ID mdr)
-        Rectangle idRect = new Rectangle(
-            panelStartX + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE + INSIDE_PADDING_WIDTH, 
-            panelStartY + INSIDE_PADDING_HEIGHT, 
-            NAME_WIDTH, 
-            NAME_HEIGHT
-        );
-        drawCenteredText(currentCharacter.getId(), idRect, Color.BLACK, NAME_FONT_SCALE, 4f);
     }
 
     public void render(SpriteBatch batch) {
@@ -182,10 +168,12 @@ public class MCCharacterHUD {
 
     public void update(float delta) {
         if (scrolling) {
-            if (targetOffsetY >= -0.001f && offsetY >= targetOffsetY) {
+            if (MathUtils.isEqual(targetOffsetY, 0f, 0.001f) 
+                && offsetY >= targetOffsetY) {
                 scrolling = false;
                 currentCharacter = characterAfterScroll;
-            } else if (targetOffsetY <= (SCROLL_Y + 0.001f) && offsetY <= targetOffsetY) {
+            } else if (MathUtils.isEqual(targetOffsetY, SCROLL_Y, 0.001f) 
+                && offsetY <= targetOffsetY) {
                 scrolling = false;
                 currentCharacter = characterAfterScroll;
             }
@@ -201,5 +189,21 @@ public class MCCharacterHUD {
 
             offsetY = MathUtils.clamp(offsetY, SCROLL_Y, 0f);
         }
+
+        infoPanelZone.y = offsetY + BOTTOM_MARGIN;
+
+        if (currentCharacter != null) {
+            characterNameZone.x = infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE + INSIDE_PADDING_WIDTH;
+            characterNameZone.y = infoPanelZone.y + RECT_BORDER + INSIDE_PADDING_HEIGHT;
+            characterNameText.setText(currentCharacter.getDisplayName());
+            characterNameText.update(delta);
+
+            characterSprite.setRegion(currentCharacter.getSprite());
+            characterSprite.setPosition(
+                infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE / 2f, 
+                infoPanelZone.y + RECT_BORDER + INSIDE_PADDING_HEIGHT + CHARA_SPRITE_SIZE / 2f
+            );
+        }
     }
+
 }

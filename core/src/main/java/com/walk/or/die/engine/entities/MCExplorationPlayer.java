@@ -10,13 +10,13 @@ import com.walk.or.die.engine.sm.entity.states.MCESHurt;
 import com.walk.or.die.engine.sm.entity.states.MCESIdle;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
-public class MCPlayerExploration extends MCEntity {
+public class MCExplorationPlayer extends MCEntity {
     private Integer hp;
     private boolean dead = false;
     private Float speed;
     private MCStateMachine<MCEntityState, MCEntity> stateManager;
 
-    public MCPlayerExploration(MCGame parent, MCTerrainMap map, String entityGenericName) {
+    public MCExplorationPlayer(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
         stateManager = new MCStateMachine<>(this);
     }

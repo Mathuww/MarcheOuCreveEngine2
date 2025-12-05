@@ -69,11 +69,11 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
                 parent.changeFocus(ally);
         } else if (data instanceof MCInputManager.NextTurnCommand) {
             changeState("EnemiesPlaying", new MCGSEnemiesPlaying.EnemiesPlayingArgs());
-        } /* else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
-            if (keyCmd.key == Input.Keys.F) {
-                System.out.println("f!!!!");
+        } else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
+            if (keyCmd.key == Input.Keys.E) {
+                System.out.println("Je m'ennuis, p'tit pause s'impose");
                 changeState("exploration", new MCGSExploration.ExplStateArgs());
             }
-        } */
+        }
     }
 }

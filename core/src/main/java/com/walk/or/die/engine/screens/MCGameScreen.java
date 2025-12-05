@@ -55,7 +55,7 @@ public class MCGameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
        game.gameViewport.update(width, height, true);
-       game.hudViewport.update(width, height, true);
+       MCHUDManager.get().hudViewport.update(width, height, true);
     }
 
     @Override

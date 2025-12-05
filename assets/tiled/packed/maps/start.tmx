@@ -95,23 +95,22 @@
  <objectgroup id="5" name="Entities">
   <object id="42" x="146.653" y="43.4685">
    <properties>
-    <property name="name" value="character"/>
+    <property name="name" value="ally"/>
    </properties>
   </object>
-  <object height="17.6008" id="45" name="player_spawn" width="17.6008" x="126.625" y="127.527">
+  <object height="17.6008" id="45" width="17.6008" x="126.625" y="127.527">
    <properties>
-    <property name="name" value="character"/>
-    <property name="type" value="player_spawn"/>
+    <property name="name" value="ally"/>
    </properties>
   </object>
   <object id="44" x="169.413" y="110.23">
    <properties>
-    <property name="name" value="character"/>
+    <property name="name" value="ally"/>
    </properties>
   </object>
   <object height="16.9938" id="43" width="18.5111" x="30.1242" y="59.8554">
    <properties>
-    <property name="name" value="character"/>
+    <property name="name" value="ally"/>
    </properties>
   </object>
   <object height="16.9938" id="46" width="18.5111" x="65.3959" y="19.725">

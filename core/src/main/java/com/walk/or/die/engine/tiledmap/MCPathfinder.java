@@ -1,24 +1,24 @@
 package com.walk.or.die.engine.tiledmap ;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
+//import com.badlogic.gdx.math.MathUtils;
+//import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
 
 import java.util.List;
-import java.beans.VetoableChangeSupport;
+//import java.beans.VetoableChangeSupport;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
-import javax.xml.parsers.ParserConfigurationException;
+//import javax.xml.parsers.ParserConfigurationException;
 
 import java.util.HashSet;
 import java.util.Collections;
 
 class Tuple {
     int g;        // distance depuis le départ
-    int h;        // heuristique
+    int h;        // istance min jusqu'à la fin
     MCIntVector2 pos;  // position
     Tuple parent; // parent pour reconstruire le chemin
 
@@ -30,30 +30,54 @@ class Tuple {
     }
 }
 
+/**
+ * A singleton class who give us methods to know paths and trajectories
+ */
 public class MCPathfinder {
     // A* ma gueule, algo de zigzaging
     private MCGame game;
     private static MCPathfinder instance = null;
 
+    /**
+     * A class who returns a simulation of a trajectory, with the success and where it ends
+     */
     public static class Simulation {
         public boolean success;
         public MCIntVector2 endPos;
 
+        /**
+         * The constructor
+         * @param success
+         * @param pos
+         */
         public Simulation(boolean success, MCIntVector2 pos) {
             this.success = success;
             endPos = pos;
         }
     }
 
+    /**
+     * The getter
+     */
     public static MCPathfinder get() {
         if (instance == null) instance = new MCPathfinder();
         return instance;
     }
 
+    /**
+     * The init
+     * @param game
+     */
     public void init (MCGame game) {
         this.game = game;
     }
 
+    /**
+     * 
+     * @param start
+     * @param end
+     * @return
+     */
     public List<MCIntVector2> getPath(MCIntVector2 start, MCIntVector2 end) {
 
         PriorityQueue<Tuple> file = new PriorityQueue<>(this::comparaison);
@@ -81,6 +105,13 @@ public class MCPathfinder {
         }
 
         return new ArrayList<>();
+    }
+
+    public List<MCIntVector2> getValidPath(MCIntVector2 start, MCIntVector2 end) {
+        List<MCIntVector2> list = getPath(start, end);
+        list.remove(0);
+        list.remove(list.size()-1);
+        return list;
     }
 
     public boolean isWalkable(MCIntVector2 pos) {

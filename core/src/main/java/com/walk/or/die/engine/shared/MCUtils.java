@@ -2,6 +2,7 @@ package com.walk.or.die.engine.shared;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -39,5 +40,21 @@ public abstract class MCUtils {
     public static float getFloatProperty(MapProperties props, String key, float defaultVal) {
         Number n = props.get(key, Number.class);
         return (n != null) ? n.floatValue() : defaultVal;
+    }
+
+    public static String getRandomLineFromFile(String nameType) {
+        int n;
+        Random r = new Random();
+        List<String> names = new ArrayList<>();
+        FileHandle file = Gdx.files.internal(nameType);
+
+        for (String line : file.readString().split("\\R")) {
+            line = line.trim();
+            if (line.isEmpty()) continue;
+            names.add(line);
+        }
+        n = r.nextInt(names.size());
+
+        return names.get(n);
     }
 }

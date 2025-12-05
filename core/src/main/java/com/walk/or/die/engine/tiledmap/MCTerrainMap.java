@@ -10,10 +10,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.utils.Disposable;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityFactory;
 import com.walk.or.die.engine.exceptions.DataException;
 import com.walk.or.die.engine.shared.MCIntVector2;
+import com.walk.or.die.engine.shared.MCUtils;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.maps.MapObject;
@@ -122,10 +124,10 @@ public class MCTerrainMap extends MCMap {
             if (!props.containsKey("name")) continue;
             String entityName = props.get("name", String.class);
             if (entityName != null) {
-                if (props.containsKey("type")
+                 /* if (props.containsKey("type")
                     && props.get("type", String.class).equals("player_spawn")) {
                     continue; // le player spawn est géré à part
-                }
+                } */
 
                 int count;
                 if (entityCounter.containsKey(entityName)) {
@@ -136,6 +138,14 @@ public class MCTerrainMap extends MCMap {
                 }
                 entityCounter.put(entityName, count);
                 MCEntity entity = entityFact.build(game, this, entityName, entityName + "_" + String.format("%03d", count));
+
+                if (entity instanceof MCCharacter character) {
+                    String entityDisplayName = props.get("displayName", String.class);
+                    if (entityDisplayName != null) 
+                        character.setDisplayName(entityDisplayName);
+                    else 
+                        character.setDisplayName(MCUtils.getRandomLineFromFile("random_names/" + entityName + ".txt"));
+                }
 
                 MCMapObject obj = new MCMapObject(rawObj);
                 Vector2 pos = obj.getPosition();

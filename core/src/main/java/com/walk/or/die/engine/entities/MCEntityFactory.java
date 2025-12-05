@@ -42,7 +42,7 @@ public class MCEntityFactory {
         entityTypes.put("character", MCCharacter.class);
         entityTypes.put("ally", MCAlly.class);
         entityTypes.put("enemy", MCEnemy.class);
-        entityTypes.put("explorationPlayer", MCPlayerExploration.class);
+        entityTypes.put("explorationPlayer", MCExplorationPlayer.class);
         entityTypes.put("projectile", MCProjectile.class);
 
         System.out.println("INIIIIIIIIIIIIIIIIT COME INUITTTTTTTTTTTTT");

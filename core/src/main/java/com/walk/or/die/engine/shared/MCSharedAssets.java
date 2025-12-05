@@ -15,6 +15,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.exceptions.NotBeautifulFontException;
 import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
 import com.walk.or.die.engine.tiledmap.MCMapObject;
@@ -48,8 +49,11 @@ public class MCSharedAssets {
         addOnePixelTexture("green", Color.GREEN);
         addOnePixelTexture("red", Color.RED);
 
+        addGradientTexture("whiteFade", Color.WHITE);
+
         this.fontPath = fontPath;
         addSavedBitmapFont("Minecraft");
+        addSavedBitmapFont("ari16");
     }
 
     private void addOnePixelTexture(String name, Color color) {
@@ -58,6 +62,19 @@ public class MCSharedAssets {
         pixmap.fill();
         Texture texture = new Texture(pixmap);
         pixmap.dispose(); 
+        addSavedTexture(name, new TextureRegion(texture));
+    }
+
+    private void addGradientTexture(String name, Color color) {
+        int width = 64;
+        Pixmap pixmap = new Pixmap(width, 1, Pixmap.Format.RGBA8888);
+        for (int x = 0; x < width; x++) {
+            float alpha = 1f - ((float) x / width);
+            pixmap.setColor(color.r, color.g, color.b, alpha);
+            pixmap.drawPixel(x, 0);
+        }
+        Texture texture = new Texture(pixmap);
+        pixmap.dispose();
         addSavedTexture(name, new TextureRegion(texture));
     }
 
@@ -78,7 +95,10 @@ public class MCSharedAssets {
         savedTextures.put(nameVal, texture);
     }
  
-    private void addSavedBitmapFont(String filename) { 
+    private void addSavedBitmapFont(String filename) throws NotBeautifulFontException { 
+        if (filename.contains("Arial")) {
+            throw new NotBeautifulFontException(filename);
+        }
         BitmapFont font = new BitmapFont(Gdx.files.internal(fontPath + filename + ".fnt"));
         // pour pas smooth la police (garder rendu pixel perfect)
         font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);

@@ -37,7 +37,7 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
-            if (keyCmd.key == Input.Keys.F) {
+            if (keyCmd.key == Input.Keys.C) {
                 changeState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
             }
         }
