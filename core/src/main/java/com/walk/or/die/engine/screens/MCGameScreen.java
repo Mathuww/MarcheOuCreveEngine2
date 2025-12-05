@@ -10,15 +10,15 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.cameras.MCCameraManager;
+import com.walk.or.die.engine.cameras.MCCameraManager.CameraMode;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.ui.MCHUDManager;
 
 public class MCGameScreen implements Screen {
     private MCGame game;
     private MCCameraManager camManager = MCCameraManager.get();
-    private Stage stage = new Stage(new ScreenViewport());
-    private Skin skin = new Skin(Gdx.files.internal("ui/uiskin.json"));
-
+    private MCHUDManager hudManager = MCHUDManager.get();
 
     public MCGameScreen(MCGame game) throws DataException {
         this.game = game;
@@ -27,15 +27,13 @@ public class MCGameScreen implements Screen {
     // Called once (when the window oppened)
     @Override
     public void show() {
-        // bug fix tempoaire ,faudra que je regarde plus..
-        game.viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
     }
 
     // Called every frame
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
-        game.viewport.apply();
+        game.gameViewport.apply();
 
         game.getTerrainMap().render(camManager.getGdxCam());
         game.batch.setProjectionMatrix(camManager.getGdxCam().combined);       
@@ -46,14 +44,18 @@ public class MCGameScreen implements Screen {
 
         game.batch.end();
 
-        stage.act(delta);
-        stage.draw();
+        // 2 : HUD
+        game.hudViewport.apply();
+        game.batch.setProjectionMatrix(hudManager.getCamera().combined);
+        game.batch.begin();
+        hudManager.render(game.batch);
+        game.batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
-       game.viewport.update(width, height, true);
-       stage.getViewport().update(width, height, true);
+       game.gameViewport.update(width, height, true);
+       game.hudViewport.update(width, height, true);
     }
 
     @Override
@@ -74,6 +76,5 @@ public class MCGameScreen implements Screen {
     @Override
     public void dispose() {
         // Destroy screen's assets here.
-        stage.dispose();
     }
 }

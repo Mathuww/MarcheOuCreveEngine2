@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -24,13 +27,15 @@ public class MCSharedAssets {
         return instance;
     }
 
+    private String fontPath;
     private MCMapLayer miscTilesLayer;
     private Map<String, TiledMapTile> savedTiles = new HashMap<>();
     private Map<String, TextureRegion> savedTextures = new HashMap<>();
+    private Map<String, BitmapFont> savedBitmapFonts = new HashMap<>();
 
     private MCSharedAssets() {}
 
-    public void init(String miscMapPath, AssetManager drh) throws Exception {
+    public void init(String miscMapPath, String fontPath, AssetManager drh) throws Exception {
         MCMap miscTilesMap = new MCMap(miscMapPath, drh);
         miscTilesLayer = miscTilesMap.getLayer(0);
 
@@ -42,6 +47,9 @@ public class MCSharedAssets {
         addOnePixelTexture("yellow", Color.YELLOW);
         addOnePixelTexture("green", Color.GREEN);
         addOnePixelTexture("red", Color.RED);
+
+        this.fontPath = fontPath;
+        addSavedBitmapFont("Minecraft");
     }
 
     private void addOnePixelTexture(String name, Color color) {
@@ -69,6 +77,14 @@ public class MCSharedAssets {
     private void addSavedTexture(String nameVal, TextureRegion texture) {
         savedTextures.put(nameVal, texture);
     }
+ 
+    private void addSavedBitmapFont(String filename) { 
+        BitmapFont font = new BitmapFont(Gdx.files.internal(fontPath + filename + ".fnt"));
+        // pour pas smooth la police (garder rendu pixel perfect)
+        font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+        font.setUseIntegerPositions(true);
+        savedBitmapFonts.put(filename, font);
+    }
 
     public TiledMapTile getSavedTile(String name) throws Exception {
         TiledMapTile tile = savedTiles.get(name);
@@ -82,5 +98,12 @@ public class MCSharedAssets {
         if (texture == null)
             throw new IllegalStateException("cant find texture region of tile " + name);
         return texture;
+    }
+
+    public BitmapFont getSavedFont(String name) throws Exception {
+        BitmapFont font = savedBitmapFonts.get(name);
+        if (font == null)
+            throw new IllegalStateException("cant find font in shared assets : " + name);
+        return font;
     }
 }

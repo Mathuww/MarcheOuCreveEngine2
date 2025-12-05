@@ -6,6 +6,7 @@ import java.util.List;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -24,6 +25,7 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.screens.MCGameScreen;
 import com.walk.or.die.engine.shared.MCDebugRenderer;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.vehicles.MCVehicle;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.sm.MCStateMachine;
@@ -35,71 +37,175 @@ import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
+import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
  * platforms.
+ * tu peux me voir écrire en sdsdsdsdqd temps !!!
+ * MOTEUR ! ACTION !
+ * THIS WAS NOT CREATED WITH A TEMPLATE.
+ * 
+ * This is the main class of the game, who manage the whole game.
  */
 public class MCGame extends Game {
+    /**
+     * Width of the viewport.
+     */
     public static final int VIEWPORT_WIDTH = 12;
+    /**
+     * Height of the viewport.
+     */
     public static final int VIEWPORT_HEIGHT = 10;
+    /**
+     * Describe how far the camera can exceed the map lower boundaries.
+    */
     public static final Vector2 CAM_LOWER_LIMIT_OFFSET = new Vector2(-2f, -4f);
+    /**
+     * Describe how far the camera can exceed the map upper boundaries.
+    */
     public static final Vector2 CAM_UPPER_LIMIT_OFFSET = new Vector2(2f, 2f); 
 
-    // Map
-    private MCTerrainMap map;
-    private MCPathfinder pathfinder = MCPathfinder.get();
-    private AssetManager drh = new AssetManager();
-    private final String TILED_ROOT = "tiled/packed/";
-    private final String MAP_ROOT = TILED_ROOT + "maps/";
+    /** 
+     * Sets fixed HUD viewport height
+    */
+    public final static int WINDOW_DEFAULT_HEIGHT = 480;
+      /** 
+     * Sets fixed HUD viewport width
+    */
+    public final static int WINDOW_DEFAULT_WIDTH = WINDOW_DEFAULT_HEIGHT * (VIEWPORT_WIDTH / VIEWPORT_HEIGHT);
 
+    /**
+     * The current map we are playing on.
+     * @see MCTerrainMap
+     */
+    private MCTerrainMap map;
+    /**
+     * The pathfinder's singleton.
+     * @see MCPathfinder
+     */
+    private MCPathfinder pathfinder = MCPathfinder.get();
+    /**
+     * Another HR manager who treats his assets as disposable and replaceable resources.
+     * @see AssetManager
+     */
+    private AssetManager drh = new AssetManager();
+    /**
+     * The path were all tiled files are.
+     */
+    private final String TILED_ROOT = "tiled/packed/";
+    /**
+     * The path wera all tiled maps are.
+     */
+    private final String MAP_ROOT = TILED_ROOT + "maps/";
+    /**
+     * The path where all fonts are stored.
+     */
+    private final String FONT_ROOT = "fonts/";
+
+    /**
+     * The MCEntityFactory's singleton.
+     * @see MCEntityFactory
+     */
     private final MCEntityFactory entityFact = MCEntityFactory.get();
+    /**
+     * The MCAttackFactory's singleton.
+     * @see MCAttackFactory
+     */
     private final MCAttackFactory attackFact = MCAttackFactory.get();
+    /**
+     * The MCSharedAssets's singleton.
+     * @see MCSharedAssets
+     */
     private final MCSharedAssets sharedAssets = MCSharedAssets.get();
 
+    /**
+     * The StateMachine of the game, which determines how the game progresses.
+     * @see MCStateMachine
+     * @see MCGameState
+     */
     private final MCStateMachine<MCGameState, MCGame> stateManager = new MCStateMachine<MCGameState, MCGame>(this);
+    /**
+     * The unpredictible EventBus, riding your fears, straight towards the wall.
+     * @see MCEventBus
+     * @see MCVehicle
+     */
     private final MCEventBus bus = MCEventBus.get();
 
-    // Camera
+    /**
+     * The CameraManager's singleton.
+     * @see MCCameraManager
+     */
     private final MCCameraManager camManager = MCCameraManager.get();
 
-    // Input
+    /**
+     * The InputManager's singleton.
+     * @see MCInputManager
+     */
     private MCInputManager inputHandler = MCInputManager.get();
 
-    // Entity
+    /**
+     * The EntityManager's singleton
+     * @see MCEntityManager
+     */
     private MCEntityManager entityManager = MCEntityManager.get();
+    /**
+     * @deprecated
+     */
     private String playerEntityName;
+    /**
+     * @deprecated
+     */
     private MCCharacter main;
+    /**
+     * The current focus Character, null there's no focusCharacter.
+     * @see MCCharacter
+     */
     private MCCharacter focusedCharacter;
 
-    // Debug
+    /**
+     * The debug's singleton.
+     * @see MCDebugRenderer
+     */
     private MCDebugRenderer debugRenderer = MCDebugRenderer.get();
 
+    /**
+     * @see SpriteBatch
+     */
     public SpriteBatch batch;
-    public FitViewport viewport;
+    /**
+     * @see FitViewport
+     */
+    public FitViewport gameViewport;
+    public FitViewport hudViewport;
 
-    public MCGame() {
-    }
+    /**
+     * HUD manager singleton
+     */
+    private MCHUDManager hudManager = MCHUDManager.get();
+
+    /**
+     * A very big constructor
+     */
+    public MCGame() {}
 
     @Override // commence pas je vais t'attraper
               // cast me if you can ;)
               // MCGaia sale_terrorist = (MCGaia) anothercoderterrorist
-
     public void create() {
         // View objects init
         batch = new SpriteBatch();
-        viewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
+        gameViewport = new FitViewport(VIEWPORT_WIDTH, VIEWPORT_HEIGHT);
 
-        // Singleton inits
+        // Singleton init
         pathfinder.init(this);
-
+        // Debug init
         try {
-            sharedAssets.init(MAP_ROOT + "misc.tmx", drh);
+            sharedAssets.init(MAP_ROOT + "misc.tmx", FONT_ROOT, drh);
             debugRenderer.init();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         // Map init (start.tmx)
         map = new MCTerrainMap(MAP_ROOT + "start.tmx", drh);
 
@@ -114,13 +220,11 @@ public class MCGame extends Game {
             VIEWPORT_HEIGHT,
             MCCameraManager.CameraMode.ARROWS
         );
-        viewport.setCamera(camManager.getGdxCam());
+        gameViewport.setCamera(camManager.getGdxCam());
 
         // Input init
-        inputHandler.init(viewport);
+        inputHandler.init(gameViewport);
         Gdx.input.setInputProcessor(inputHandler);
-
-        // bus.on(this, "ChangedFocus", this::changeFocus);
 
         // Entities init
         try {
@@ -141,6 +245,7 @@ public class MCGame extends Game {
         // sinon les entités ne sont pas créées
         entityManager.update(Gdx.graphics.getDeltaTime());
 
+        // State init
         //stateManager.addState(new MCGSCombat(this));
         stateManager.addState(new MCGSAlliesPlaying(this));
         stateManager.addState(new MCGSEnemiesPlaying(this));
@@ -150,6 +255,9 @@ public class MCGame extends Game {
 
         // entityManager.playGlobalAnimation("idle");
 
+        hudViewport = new FitViewport(WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
+        hudManager.init(hudViewport);
+
         try {
             setScreen(new MCGameScreen(this));
         } catch (DataException e) {
@@ -157,6 +265,10 @@ public class MCGame extends Game {
         }
     }
 
+    /**
+     * The global logic of the game, triggered each frame.
+     * @param delta
+     */
     private void logic(float delta) {
         // We don't give a fuck about logic
         // Because we implement MVC (Modular Venomous Contraception) // co autored by
@@ -188,29 +300,46 @@ public class MCGame extends Game {
         batch.dispose();
     }
 
+    /**
+     * Change the focused Character
+     * @param c le nouveau character focus (peut être null)
+     */
     public void changeFocus(MCCharacter c) {
         if (focusedCharacter != null) {
             if (focusedCharacter.loseFocus()) {
                 focusedCharacter = c;
-                if (c != null) 
+                if (c != null) {
                     c.getFocus();
+                    hudManager.setHudTarget(c);
+                }
             }
         } else {
             focusedCharacter = c;
-            if (c != null)
+            if (c != null) {
                 c.getFocus();
+                hudManager.setHudTarget(c);
+            }
         }
     }
 
-
+    /**
+     * @return the state manager.
+     */
     public MCStateMachine getStateManager() {
         return this.stateManager;
     }
 
+    /**
+     * @return the terrain map.
+     */
     public MCTerrainMap getTerrainMap() {
         return this.map;
     }
 
+    /**
+     * @param pos the case's position
+     * @return if we can walk on this case
+     */
     public boolean isWalkable(MCIntVector2 pos) {
         if (entityManager.getEntityFromTile(1, pos) == null) {
             return map.isWalkable(pos);

@@ -2,6 +2,7 @@ package com.walk.or.die.engine.sm.entity.states;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.walk.or.die.engine.cameras.MCCameraManager;
+import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCAnimation;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
@@ -34,10 +35,12 @@ public class MCESHurt extends MCEntityState<MCESHurt.HurtStateArgs> {
         stateTime = 0f;
         blinkingTime = 0f;
         parent.playAnimation(args.targetAnim);
-        MCCameraManager.get().shake(
-            MathUtils.clamp(((float)args.damage / (float)parent.getMaxHp()), 0f, 0.05f), 
-            0.3f
-        );
+        if (parent instanceof MCAlly) {
+            MCCameraManager.get().shake(
+                MathUtils.clamp(((float)args.damage / (float)parent.getMaxHp()), 0f, 0.6f), 
+                0.25f
+            );
+        }
     }  
 
     @Override

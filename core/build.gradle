@@ -3,6 +3,14 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
+javadoc {
+    options.memberLevel = JavadocMemberLevel.PRIVATE
+
+    options.encoding = 'UTF-8'
+    options.author = true
+    options.version = true
+}
+
 // Dependencies
 dependencies {
     //api "com.badlogicgames.ashley:ashley:$ashleyVersion"
@@ -11,7 +19,7 @@ dependencies {
     //api "com.badlogicgames.gdx:gdx-ai:$aiVersion"
     //api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
     //api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-    //api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+    api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
     api "com.badlogicgames.gdx:gdx:$gdxVersion"
 }
 

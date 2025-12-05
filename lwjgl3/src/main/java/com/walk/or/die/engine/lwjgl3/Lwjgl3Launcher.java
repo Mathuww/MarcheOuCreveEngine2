@@ -7,8 +7,6 @@ import com.walk.or.die.engine.MCGame;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
-    public final static int WINDOW_DEFAULT_WIDTH = 640;
-    public final static int WINDOW_DEFAULT_HEIGHT = 480;
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
         createApplication();
@@ -34,8 +32,8 @@ public class Lwjgl3Launcher {
         //// You may also need to configure GPU drivers to fully disable Vsync; this can cause screen tearing.
 
         configuration.setWindowedMode(
-            WINDOW_DEFAULT_WIDTH, 
-            WINDOW_DEFAULT_HEIGHT
+            MCGame.WINDOW_DEFAULT_WIDTH, 
+            MCGame.WINDOW_DEFAULT_HEIGHT
         );
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
         //// They can also be loaded from the root of assets/ .

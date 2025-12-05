@@ -13,6 +13,7 @@ import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.sm.entity.states.MCESHurt;
 import com.walk.or.die.engine.sm.entity.states.MCESIdle;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
+import com.walk.or.die.engine.ui.MCCharacterHUD;
 import com.walk.or.die.engine.ui.MCOnGridHealth;
 
 public class MCCharacter extends MCEntity {
@@ -30,6 +31,7 @@ public class MCCharacter extends MCEntity {
     private boolean shoot = true;
 
     private MCOnGridHealth healthBar;
+    private boolean displayHud = true;
 
     public MCCharacter(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);

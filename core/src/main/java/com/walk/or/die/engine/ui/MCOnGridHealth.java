@@ -26,6 +26,7 @@ public class MCOnGridHealth {
     private final float BAR_HEIGHT = 0.08f; // tile
     private final float BAR_WIDTH = 0.85f; // tile
     private final float BAR_Y_OFFSET = 1.1f; // (tile) par rapport au bas de tile
+    private final float BAR_Y_LOWER_OFFSET = 1f - BAR_HEIGHT - CONTOUR_SIZE;
 
     private final float MID_HP_THRESHOLD = 0.66f;
     private final float LOW_HP_THRESHOLD = 0.34f; // AHAHAHAAHAH
@@ -95,6 +96,8 @@ public class MCOnGridHealth {
 
         startX = gdxParentPos.x + 0.5f - (BAR_WIDTH / 2f);
         startY = gdxParentPos.y + BAR_Y_OFFSET;
+        if (startY > parent.getMap().getHeight())
+            startY = gdxParentPos.y + BAR_Y_LOWER_OFFSET;
         // là on a startX et startY c'est bon
 
         if (fading) {

@@ -78,4 +78,13 @@ subprojects {
     compileJava {
         options.incremental = true
     }
+
+    tasks.named('javadoc') {
+        options.memberLevel = JavadocMemberLevel.PRIVATE
+
+        options.encoding = 'UTF-8'
+        options.author = true
+        options.version = true
+    }
+
 }

@@ -53,9 +53,7 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
         this.attack = args.attack;
         attack.computeValidTilesDisplay();
         attack.display = true;
-        // Pour régler le bug qui se produit si on bouge pas la souris en entrant dans Aim 
-        // (ca actualise pas la traj + ca fait miss shot car tileX et tileY changent pas)
-        MCInputManager.get().triggerMouseUpdate();
+        MCInputManager.get().triggerMouseUpdate(); // Initialise la position de la souris
     }
 
     @Override

@@ -41,6 +41,7 @@ public class MCCameraManager {
     private float shakeDuration = 0f;  
     private float shakeStateTime = 0f;   
     private float shakeIntensity = 0f;
+    private boolean shaking = false;
 
     private MCCameraManager() {
         register(CameraMode.FOLLOW, new MCFollowCamBehavior());
@@ -124,6 +125,7 @@ public class MCCameraManager {
     }
 
     public void shake(float intensity, float duration) {
+        shaking = true;
         this.shakeIntensity = intensity;
         this.shakeDuration = duration;
         this.shakeStateTime = 0f;
@@ -132,25 +134,34 @@ public class MCCameraManager {
     public void update(float delta) throws UnexistingBehaviorException {
         movedThisFrame = false;
         if (mode == null) throw new UnexistingBehaviorException("camera update : need a behavior to update");
-        Vector2 newPos = behaviors.get(mode).update(gdxCam, delta);
 
-        if (newPos.x != oldX || newPos.y != oldY)
-            movedThisFrame = true;
-        gdxCam.position.x = newPos.x;
-        gdxCam.position.y = newPos.y;
-        oldX = gdxCam.position.x;
-        oldY = gdxCam.position.y;
 
         float offsetX = 0f, offsetY = 0f;
-        if (shakeStateTime <= shakeDuration) {
-            shakeStateTime += delta;
+        if (shaking) {
+            if (shakeStateTime < shakeDuration) {
+                shakeStateTime += delta;
+                
+                float currentPower = shakeIntensity * ((shakeDuration - shakeStateTime) / shakeDuration);
             
-            float currentPower = shakeIntensity * ((shakeDuration - shakeStateTime) / shakeDuration);
-        
-            offsetX = MathUtils.randomTriangular(-1f, 1f, 0f) * currentPower;
-            offsetY = MathUtils.randomTriangular(-1f, 1f, 0f) * currentPower;
+                offsetX = MathUtils.randomTriangular(-1f, 1f, 0f) * currentPower;
+                offsetY = MathUtils.randomTriangular(-1f, 1f, 0f) * currentPower;
 
-            gdxCam.translate(offsetX, offsetY);
+                gdxCam.translate(offsetX, offsetY);
+            } else {
+                gdxCam.position.x = oldX;
+                gdxCam.position.y = oldY;
+                shaking = false;
+            }
+        } else {
+            Vector2 newPos = behaviors.get(mode).update(gdxCam, delta);
+
+            if (newPos.x != oldX || newPos.y != oldY)
+                movedThisFrame = true;
+            
+            gdxCam.position.x = newPos.x;
+            gdxCam.position.y = newPos.y;
+            oldX = gdxCam.position.x;
+            oldY = gdxCam.position.y;
         }
 
         gdxCam.update();

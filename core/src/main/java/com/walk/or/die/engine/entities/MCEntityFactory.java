@@ -42,11 +42,14 @@ public class MCEntityFactory {
         entityTypes.put("character", MCCharacter.class);
         entityTypes.put("ally", MCAlly.class);
         entityTypes.put("enemy", MCEnemy.class);
+        entityTypes.put("explorationPlayer", MCPlayerExploration.class);
         entityTypes.put("projectile", MCProjectile.class);
 
+        System.out.println("INIIIIIIIIIIIIIIIIT COME INUITTTTTTTTTTTTT");
         // on recupere la liste de toutes les entités possibles
         for (FileHandle entityFile : MCUtils.listFilesByExt(ENTITY_ROOT, "tmx")) {
             String entityGenericName = entityFile.nameWithoutExtension();
+            System.out.println(entityGenericName);
             //System.out.println("adding : " + entityGenericName);
             if (possibleEntities.containsKey(entityGenericName)) {
                 throw new DataException("duplicate entity tmx files exist for entity name " + entityGenericName);

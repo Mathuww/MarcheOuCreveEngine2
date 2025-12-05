@@ -13,7 +13,7 @@ import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 public class MCPlayerExploration extends MCEntity {
     private Integer hp;
     private boolean dead = false;
-    private Integer maxDeplacements;
+    private Float speed;
     private MCStateMachine<MCEntityState, MCEntity> stateManager;
 
     public MCPlayerExploration(MCGame parent, MCTerrainMap map, String entityGenericName) {
@@ -23,29 +23,30 @@ public class MCPlayerExploration extends MCEntity {
 
     @Override
     public void onSpawn() {
-        stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
+        playAnimation("idle");
+        //stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
     }
 
     @Override
     public void initFromProperties(MapProperties props) throws Exception {
         hp = MCUtils.getIntProperty(props, "hp", 100);
-        maxDeplacements = MCUtils.getIntProperty(props, "maxMoves", 2);
+        speed = MCUtils.getFloatProperty(props, "speed", 2);
     }
 
     @Override
     public void update(float delta) {
         super.update(delta);
-        stateManager.update(delta);
+        //stateManager.update(delta);
     }
 
     @Override
     public void render(SpriteBatch batch) {
         super.render(batch);
-        stateManager.render(batch);
+        //stateManager.render(batch);
     }
 
     public void renderOnGridOverlay(SpriteBatch batch) {
-        stateManager.renderOnGridOverlay(batch);
+        //stateManager.renderOnGridOverlay(batch);
     }
 
     public MCStateMachine getStateManager() {
@@ -56,10 +57,6 @@ public class MCPlayerExploration extends MCEntity {
         this.stateManager = stateManager;
     }
 
-    public int getMaxMoves() {
-        return this.maxDeplacements;
-    }
-    
     public int getHealth() {
         return hp;
     }
@@ -87,5 +84,4 @@ public class MCPlayerExploration extends MCEntity {
             return false;
         return stateManager.getCurrentState().isBlocking();
     }
-
 }
