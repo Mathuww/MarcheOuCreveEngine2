@@ -81,15 +81,13 @@ public class MCESAim extends MCEntityState<MCESAim.AimStateArgs> {
                 }
 
                 MCPathfinder pathfinder = MCPathfinder.get();
-                List<MCIntVector2> traj = pathfinder.getTrajectory(
+                List<MCIntVector2> traj = pathfinder.getValidTrajectory(
                     parent.getTilePosition(),
                     tile);
-                if (traj.size() < 2) { // y tires sur soi meme !!!! il est fou ou quoi ????
+                if (traj.size() <= 0) { // y tires sur soi meme !!!! il est fou ou quoi ????
                     cancel();
                     return;
                 }
-                traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
-                traj.remove(0); // l'attaquant occupe forcément aussi une case
                 if (attack.isValidTile(c.getTilePosition())) {
                     changeState("shoot", new MCESShoot.ShootStateArgs(c, attack, traj));
                     return;

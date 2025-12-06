@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector4;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 
@@ -47,6 +49,8 @@ public class MCUIScrollingText {
             GlyphLayout layout = new GlyphLayout(font, String.valueOf(c));
             font.draw(currentBatch, String.valueOf(c), cursor, y);
             cursor += layout.width + spacing;
+            if (c == ' ')
+                cursor += 2f * spacing;
         }
     }
 
@@ -77,12 +81,13 @@ public class MCUIScrollingText {
         float y = drawingZone.y + (drawingZone.height + layout.height) / 2f;
 
         Rectangle scissors = new Rectangle();
+        batch.flush();
         ScissorStack.calculateScissors(MCHUDManager.get().getCamera(), batch.getTransformMatrix(), drawingZone, scissors);
 
         if (ScissorStack.pushScissors(scissors)) {
             if (textWidth <= drawingZone.width) {
                 //System.out.println("not too large");
-                float x = drawingZone.x + (drawingZone.width - textWidth) / 2f;
+                float x = drawingZone.x + FADE_WIDTH / 2f  + (drawingZone.width - textWidth) / 2f;
                 drawSpacedText(currentText, x, y);
             } else {
                 //System.out.println("too large");
@@ -99,6 +104,10 @@ public class MCUIScrollingText {
         }
 
         edgeGradient(batch);
+
+        System.out.println("zone = " + drawingZone);
+        System.out.println("cam pos = " + MCHUDManager.get().getCamera().position);
+        System.out.println("viewport size = " + MCHUDManager.get().getCamera().viewportWidth + " x " + MCHUDManager.get().getCamera().viewportHeight);
     }
 
     public void setText(String text) {

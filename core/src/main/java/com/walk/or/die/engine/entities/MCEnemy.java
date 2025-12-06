@@ -51,9 +51,7 @@ public class MCEnemy extends MCCharacter{
         MCAlly victim = ai.getBestShootableAlly(getTilePosition(), 4);
         //System.out.println("shoot decision");
         if (victim != null) {
-            List<MCIntVector2> traj = MCPathfinder.get().getTrajectory(getTilePosition(), victim.getTilePosition());
-            traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
-            traj.remove(0);
+            List<MCIntVector2> traj = MCPathfinder.get().getValidTrajectory(getTilePosition(), victim.getTilePosition());
             state.shoot(victim, traj);
         }
         else 

@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.shared.MCUtils;
 
 /**
- * The class who give us an interface for MapObject from gdx
+ * The class which gives us an interface for MapObject from gdx
  * @see MapObject
  */
 public class MCMapObject {

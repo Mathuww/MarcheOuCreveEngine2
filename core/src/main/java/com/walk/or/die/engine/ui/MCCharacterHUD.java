@@ -13,7 +13,7 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 
 public class MCCharacterHUD {
-    private final String FONT_FAMILY = "Minecraft";
+    private final String FONT_FAMILY = "ariBlackAlpha";
 
     private final float HUD_HEIGHT = MCGame.WINDOW_DEFAULT_HEIGHT * 0.18f;
     private final float BOTTOM_MARGIN = MCGame.WINDOW_DEFAULT_HEIGHT * 0.05f;
@@ -24,12 +24,12 @@ public class MCCharacterHUD {
     private final float INFO_PANEL_WIDTH = EFFECTIVE_PANELS_WIDTH * 0.6f;
     private final float CHOICE_PANEL_WIDTH = EFFECTIVE_PANELS_WIDTH * 0.6f;
 
-    private final float INSIDE_PADDING_WIDTH = EFFECTIVE_PANELS_WIDTH * 0.05f;
+    private final float INSIDE_PADDING_WIDTH = EFFECTIVE_PANELS_WIDTH * 0.035f;
     private final float INSIDE_PADDING_HEIGHT = HUD_HEIGHT * 0.05f;
 
     private final float EFFECTIVE_INFO_PANEL_WIDTH = INFO_PANEL_WIDTH - INSIDE_PADDING_WIDTH * 3f;
     private final float CHARA_SPRITE_SIZE = EFFECTIVE_INFO_PANEL_WIDTH * 0.16f;
-    private final float NAME_FONT_SCALE = 1.25f;
+    private final float NAME_FONT_SCALE = 0.48f;
     private final float NAME_WIDTH = EFFECTIVE_INFO_PANEL_WIDTH * 0.67f;
     private final float NAME_HEIGHT = HUD_HEIGHT - (RECT_BORDER  + INSIDE_PADDING_HEIGHT) * 2f;
 

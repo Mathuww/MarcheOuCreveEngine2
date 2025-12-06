@@ -16,7 +16,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import java.util.List;
 
 /**
- * The class who read a tiledMap from an atlas.
+ * The class which reads a tiledMap from an atlas.
  */
 public class MCMap implements Disposable {
     /**

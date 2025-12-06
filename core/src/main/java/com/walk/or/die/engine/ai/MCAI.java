@@ -52,7 +52,7 @@ public class MCAI {
     private float scoreVictim(MCIntVector2 pos, MCAlly ally, float degats) {
         float score = 0f;
         if (ally.getHealth() <= degats) score += 10f;
-        if (pathfinder.isCorrectTrajectory(pathfinder.getTrajectory(ally.getTilePosition(), pos)).success) score += 2f;
+        if (pathfinder.isCorrectTrajectory(pathfinder.getValidTrajectory(ally.getTilePosition(), pos)).success) score += 2f;
         //score += pos.dst2(ally.getTilePosition())*0.2f;
 
         return score;
@@ -61,9 +61,7 @@ public class MCAI {
     private Set<MCAlly> getShootableAllies(MCIntVector2 pos) {
         Set<MCAlly> allies = new HashSet<>();
         for (MCAlly ally: MCEntityManager.get().getAllies()) {
-            List<MCIntVector2> traj = pathfinder.getTrajectory(pos, ally.getTilePosition());
-            traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
-            traj.remove(0);
+            List<MCIntVector2> traj = pathfinder.getValidTrajectory(pos, ally.getTilePosition());
             if (pathfinder.isCorrectTrajectory(traj).success && parent.getAttack().isValidTile(ally.getTilePosition())) {
                 //System.out.println(ally);
                 allies.add(ally);
@@ -96,11 +94,9 @@ public class MCAI {
         float result = 0f;
         if (MCEntityManager.get().getEntityFromTile(1, pos) instanceof MCCharacter) return 100f;
         for (MCAlly ally: list) {
-            List<MCIntVector2> traj = pathfinder.getTrajectory(
+            List<MCIntVector2> traj = pathfinder.getValidTrajectory(
                 ally.getTilePosition(),
                 pos);
-            traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
-            traj.remove(0);
             if (pathfinder.isCorrectTrajectory(traj).success) {
                 result += 1f;
             }
@@ -124,12 +120,10 @@ public class MCAI {
 
         float result = 0f;
         for (MCAlly ally: list) {
-            List<MCIntVector2> traj = pathfinder.getTrajectory(
+            List<MCIntVector2> traj = pathfinder.getValidTrajectory(
                 pos,
                 ally.getTilePosition()
             );
-            traj.remove(traj.size() - 1); // on prend pas en compte le dernier, c'est la cible (donc forcément pas walkable)
-            traj.remove(0);
             if (pathfinder.isCorrectTrajectory(traj).success) {
                 result += 1f;
             }

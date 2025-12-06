@@ -16,6 +16,9 @@ import java.util.PriorityQueue;
 import java.util.HashSet;
 import java.util.Collections;
 
+/**
+ * A useful class for A*
+ */
 class Tuple {
     int g;        // distance depuis le départ
     int h;        // istance min jusqu'à la fin
@@ -31,7 +34,7 @@ class Tuple {
 }
 
 /**
- * A singleton class who give us methods to know paths and trajectories
+ * A singleton class which gives us methods to know paths and trajectories.
  */
 public class MCPathfinder {
     // A* ma gueule, algo de zigzaging
@@ -39,7 +42,7 @@ public class MCPathfinder {
     private static MCPathfinder instance = null;
 
     /**
-     * A class who returns a simulation of a trajectory, with the success and where it ends
+     * A class who returns a simulation of a trajectory, with the success and where it ends.
      */
     public static class Simulation {
         public boolean success;
@@ -57,7 +60,7 @@ public class MCPathfinder {
     }
 
     /**
-     * The getter
+     * The getter.
      */
     public static MCPathfinder get() {
         if (instance == null) instance = new MCPathfinder();
@@ -65,7 +68,7 @@ public class MCPathfinder {
     }
 
     /**
-     * The init
+     * The init.
      * @param game
      */
     public void init (MCGame game) {
@@ -73,10 +76,11 @@ public class MCPathfinder {
     }
 
     /**
-     * 
+     * Get a path between 2 points using A*. Return a empty list if there's no path.
      * @param start
      * @param end
      * @return
+     * @see MCIntVector2
      */
     public List<MCIntVector2> getPath(MCIntVector2 start, MCIntVector2 end) {
 
@@ -107,17 +111,20 @@ public class MCPathfinder {
         return new ArrayList<>();
     }
 
-    public List<MCIntVector2> getValidPath(MCIntVector2 start, MCIntVector2 end) {
-        List<MCIntVector2> list = getPath(start, end);
-        list.remove(0);
-        list.remove(list.size()-1);
-        return list;
-    }
-
+    /**
+     * Return if the tile at the given position is.
+     * @param pos
+     * @return
+     */
     public boolean isWalkable(MCIntVector2 pos) {
         return game.isWalkable(pos);
     }
 
+    /**
+     * Return if a position contains something who protects from bullets.
+     * @param pos
+     * @return 
+     */
     public boolean isProtect(MCIntVector2 pos) {
         if (MCEntityManager.get().getEntityFromTile(1, pos) == null) {
             return game.getTerrainMap().isProtect(pos);
@@ -126,6 +133,12 @@ public class MCPathfinder {
         return true;
     }
 
+    /**
+     * Get a straight trajectory between two points, useful for bullets.
+     * @param v1
+     * @param v2
+     * @return
+     */
     public List<MCIntVector2> getTrajectory(MCIntVector2 v1, MCIntVector2 v2) {
 
         List<MCIntVector2> result = new ArrayList<>();
@@ -156,6 +169,25 @@ public class MCPathfinder {
         return result;
     }
 
+    /**
+     * Get a trajectory between two points, without those points, for being tested.
+     * @param start
+     * @param end
+     * @return
+     */
+    public List<MCIntVector2> getValidTrajectory(MCIntVector2 start, MCIntVector2 end) {
+        List<MCIntVector2> list = getTrajectory(start, end);
+        list.remove(0);
+        list.remove(list.size()-1);
+        return list;
+    }
+
+    /**
+     * Test if the given trajectory can be achieved.
+     * @param trajectory
+     * @return the results of the Test
+     * @see Simulation
+     */
     public Simulation isCorrectTrajectory(List<MCIntVector2> trajectory) {
         //System.out.println(trajectory);
         for (MCIntVector2 pos : trajectory) {
@@ -166,6 +198,12 @@ public class MCPathfinder {
         return new Simulation(true, new MCIntVector2(-1, -1));
     }
 
+    /**
+     * Clean the given path, by leaving only the intersection's positions.
+     * @param path
+     * @return
+     * @see MCIntVector2
+     */
     public List<MCIntVector2> clean(List<MCIntVector2> path) {
         if (path.size() == 0) return path;
         MCIntVector2 current = path.get(0);

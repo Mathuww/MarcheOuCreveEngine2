@@ -29,10 +29,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The class which contains the maps we play on.
+ * @see MCMap
+ */
 public class MCTerrainMap extends MCMap {
     private OrthogonalTiledMapRenderer renderer;
     private MCGame parent;
 
+    /**
+     * The constructor.
+     * @param mapPath
+     * @param assetManager
+     */
     public MCTerrainMap(String mapPath, AssetManager assetManager) {
         super(mapPath, assetManager);
     }
@@ -44,6 +53,11 @@ public class MCTerrainMap extends MCMap {
         renderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale);
     }
 
+    /**
+     * Return if the tile itself's at the given position is walkable.
+     * @param pos
+     * @return
+     */
     public boolean isWalkable(MCIntVector2 pos) {
         
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
@@ -60,6 +74,11 @@ public class MCTerrainMap extends MCMap {
         return true;
     }
            
+    /**
+     * Return if the tile itself's at the given position blocks bullets.
+     * @param pos
+     * @return
+     */
     public boolean isProtect(MCIntVector2 pos) {
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         if (layer == null) return false;
@@ -75,40 +94,13 @@ public class MCTerrainMap extends MCMap {
         return false;
     }
 
-    public MCMapObject getPlayerSpawnObject() throws DataException {
-        MCMapLayer layer = this.getLayer("Entities");
-        if (layer == null) throw new DataException("no Entities layer in Tiled map");
-
-        // normalement y en a un seul 
-        List<MCMapObject> objs = layer.getObjectsByProperty("type", "player_spawn");
-        MCMapObject obj;
-        try {
-            obj = objs.get(0); 
-        } catch (Exception e) {
-            throw new DataException("player spawn not found in Entities");
-        } 
-
-        return obj;
-    }
-
-    // n'a vocation à être appelée que pour start.tmx
-    public String getPlayerEntityType() throws DataException {
-        MCMapObject obj = getPlayerSpawnObject();
-
-        String playerEntityName = obj.getRawObject().getProperties().get("name", String.class);
-        if (playerEntityName == null)
-            throw new DataException("in start.tmx, player entity name need to filled in property 'name' for tile with type player_spawn");
-        return playerEntityName;
-    }
-
-    public MCIntVector2 getPlayerSpawnPos() throws DataException {
-        MCMapObject obj = getPlayerSpawnObject();
-
-        Vector2 pos = obj.getPosition();
-        pos = getDisplayCoordsFromTiled(pos);
-        return this.stickToNearestTile(pos);
-    }
-
+    /**
+     * Create all the entities on the map
+     * @param game
+     * @return
+     * @throws Exception
+     * @see MCEntity
+     */
     public Set<MCEntity> spawnEntities(MCGame game) throws Exception {
         MCMapLayer layer = this.getLayer("Entities");
         if (layer == null) throw new DataException("no Entities layer in game map");
@@ -163,6 +155,10 @@ public class MCTerrainMap extends MCMap {
         return entityArray;
     }
 
+    /**
+     * Render the map
+     * @param camera
+     */
     public void render(OrthographicCamera camera) {
         //camera.update();
         renderer.setView(camera);

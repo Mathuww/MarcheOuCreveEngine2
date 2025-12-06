@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * The class who give us an interface for MapLayer from gdx
+ * The class which gives us an interface for MapLayer from gdx
  * @see MapLayer
  */
 public class MCMapLayer {
