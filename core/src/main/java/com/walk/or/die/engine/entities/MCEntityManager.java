@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCIntVector2;
 
 public class MCEntityManager {
@@ -91,6 +92,22 @@ public class MCEntityManager {
         }
         
         return list;
+    }
+
+    
+    public MCExplorationPlayer getExplorationPlayer()  {
+        try {
+            for (MCEntity e: entities) {
+                if (e instanceof MCExplorationPlayer player) {
+                    return player;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            //throw new MissingDataException("player doesn't exist in this map!");
+        }
+    
+        return null;
     }
 
     public void clearEntities() {

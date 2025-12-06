@@ -18,20 +18,37 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import com.walk.or.die.engine.vehicles.MCVehicle;
 
+/**
+ * The singleton which creates, handles and manages events through the game.
+ * @see MCVehicle
+ */
 public class MCEventBus implements MCVehicle {
     private static MCEventBus instance;
 
+    /**
+     * Get the singleton instance.
+     * @return
+     */
     public static MCEventBus get() {
         if (instance == null) instance = new MCEventBus();
         return instance;
     }
 
+    /**
+     * A class wich represents a subscription at an event.
+     */
     public static class Subscription {
         Class cl;
         int id;
         String eventName;
         Consumer<?> listener;
 
+        /**
+         * The constructor.
+         * @param obj
+         * @param eventName
+         * @param listener
+         */
         public Subscription(Object obj, String eventName, Consumer<?> listener) {
             this.cl = obj.getClass();
             this.id = System.identityHashCode(obj);
@@ -39,16 +56,28 @@ public class MCEventBus implements MCVehicle {
             this.listener = listener;
         }
 
+        /**
+         * Return if the subscription concerns the given object and event.
+         * @param obj
+         * @param eventName
+         * @return 
+         */
         public boolean check(Object obj, String eventName) {
             return (obj.getClass() == cl && id == System.identityHashCode(obj) && eventName == this.eventName);
         }
 
+        /**
+         * End a subscription.
+         */
         public void unsubscribe() {
             MCEventBus.get().unsubscribe(this);
         }
     
     }
 
+    /**
+     * The constructor.
+     */
     private MCEventBus() {
         this.listeners = new HashMap<>();
         this.eventTypes = new HashMap<>();
@@ -62,6 +91,9 @@ public class MCEventBus implements MCVehicle {
         //addEvent("ChangeState", MCStateMachine.TransitionArgs.class);
     }
 
+    /**
+     * The performative deconstructor.
+     */
     private void MCDeconstructor() {
         System.out.println("Je suis un homme déconstruit");
     }
@@ -73,11 +105,24 @@ public class MCEventBus implements MCVehicle {
     private int lineNumber = 62;
     private String destination = "Aspremont";
 
+    /**
+     * Create a new event, with a name and the type of argument it needs.
+     * @param <T>
+     * @param eventName
+     * @param argType
+     */
     public <T> void addEvent(String eventName, Class<T> argType) {
         eventTypes.put(eventName, argType);
         listeners.putIfAbsent(eventName, new ArrayList<>());
     }
 
+    /**
+     * Connect an object's function at an event. 
+     * @param <T>
+     * @param obj
+     * @param eventName
+     * @param listener
+     */
     public <T> void on(Object obj, String eventName, Consumer<T> listener) {
         Class<?> argType = eventTypes.get(eventName);
         if (argType == null) {
@@ -87,7 +132,7 @@ public class MCEventBus implements MCVehicle {
         subscriptions.add(new Subscription(obj, eventName, listener));
     }
 
-    protected void unsubscribe(Subscription sub) {
+    private void unsubscribe(Subscription sub) {
         List<Consumer<?>> listenersList = listeners.get(sub.eventName);
         /* je me demandais si c'était néceessaire d'ajouter une exception si on n'a pas enregistré de listener en vrai jsp */
         if (listenersList == null) return;
@@ -101,7 +146,12 @@ public class MCEventBus implements MCVehicle {
         }
     }
 
-    public <T> void off(Object obj, String eventName) {
+    /**
+     * Disconnect an object's function from an event.
+     * @param obj
+     * @param eventName
+     */
+    public void off(Object obj, String eventName) {
         List list = new ArrayList<>();
         for (Subscription sub : new ArrayList<>(subscriptions)) {
             if (sub.check(obj, eventName)) {
@@ -112,6 +162,12 @@ public class MCEventBus implements MCVehicle {
         clear(list);
     }
 
+    /**
+     * Call each functions linked to the event.
+     * @param <T>
+     * @param eventName
+     * @param data
+     */
     public <T> void emit(String eventName, T data) {
         Class<?> argType = eventTypes.get(eventName);
         if (argType == null) {
@@ -131,19 +187,30 @@ public class MCEventBus implements MCVehicle {
         }
     }
 
+    /**
+     * Call each functions linked to the event.
+     * @param eventName
+     */
     public void emit(String eventName) {
         emit(eventName, null);
     }
+
 
     public void start() {
         System.out.println("le bus demarre !");
     }
 
+    /**
+     * NO ONE STOP US, IDIOT
+     */
     public void stop() throws VoluntaryCrashException {
         System.out.println("We never stop idiot");
         crash();
     }
 
+    /**
+     * CRASH THE BUS IN YOUR FACE
+     */
     public void crash() throws VoluntaryCrashException {
         throw new VoluntaryCrashException("EXPLOSION !!!!!! over. *Fermeture des rideaux*");
     }

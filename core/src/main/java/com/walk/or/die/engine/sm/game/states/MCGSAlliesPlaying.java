@@ -10,6 +10,8 @@ import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityManager;
+import com.walk.or.die.engine.entities.MCExplorationPlayer;
+import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.entity.states.MCESAim;
 import com.walk.or.die.engine.sm.entity.states.MCESReady;
@@ -21,7 +23,6 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
     public static class AlliesPlayingArgs extends MCGameState.StateArgs {
         public AlliesPlayingArgs() {}
     }
-
 
     public MCGSAlliesPlaying(MCGame parent) {
         super(parent);
@@ -71,8 +72,16 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
             changeState("EnemiesPlaying", new MCGSEnemiesPlaying.EnemiesPlayingArgs());
         } else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
             if (keyCmd.key == Input.Keys.E) {
-                System.out.println("Je m'ennuis, p'tit pause s'impose");
+                try {
+                    MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
+                    MCCameraManager.get().setFollowTarget(player);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.err.println("no player in this map");
+                }
+                MCCameraManager.get().setMode(MCCameraManager.CameraMode.FOLLOW);
                 changeState("exploration", new MCGSExploration.ExplStateArgs());
+                System.out.println("Je m'ennuis, p'tit pause s'impose");
             }
         }
     }

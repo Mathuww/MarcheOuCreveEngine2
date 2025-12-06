@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
@@ -120,7 +121,10 @@ public class MCCameraManager {
         return this.target;
     }
 
-    public void setFollowTarget(MCEntity target) {
+    public void setFollowTarget(MCEntity target) throws MissingDataException{
+        if (target == null) {
+            throw new MissingDataException("Missing Entity");
+        }
         this.target = target;
     }
 

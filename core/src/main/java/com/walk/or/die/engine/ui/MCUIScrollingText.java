@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.walk.or.die.engine.shared.MCSharedAssets;
@@ -27,6 +29,7 @@ public class MCUIScrollingText {
     private float scale;
     private float spacing;
 
+    private ShapeRenderer debugRenderer = new ShapeRenderer();
 
     public MCUIScrollingText(BitmapFont font, Rectangle zone, Color color, float scale, float spacing) {
         this.font = font;
@@ -73,17 +76,64 @@ public class MCUIScrollingText {
     public void render(SpriteBatch batch) {
         currentBatch = batch;
 
+        /*
+        Color previousColor = batch.getColor().cpy();
+        batch.setColor(Color.PURPLE);
+        if (gradientTexture != null) {
+            batch.draw(
+                gradientTexture,
+                drawingZone.x,
+                drawingZone.y,
+                drawingZone.width,
+                drawingZone.height
+            );
+        }
+        batch.setColor(previousColor);
+        */
+
         font.setColor(color);
         font.getData().setScale(scale);
 
         GlyphLayout layout = new GlyphLayout(font, currentText);
         float textWidth = textWidth(currentText);
         float y = drawingZone.y + (drawingZone.height + layout.height) / 2f;
+        
+        /*
+        Vector3 tmp = new Vector3(drawingZone.x, drawingZone.y, 0);
+        MCHUDManager.get().getCamera().project(tmp);
 
-        Rectangle scissors = new Rectangle();
+        Vector3 tmp2 = new Vector3(drawingZone.x + drawingZone.width,
+                                drawingZone.y + drawingZone.height,
+                                0);
+        MCHUDManager.get().getCamera().project(tmp2);
+
+        Rectangle scissors = new Rectangle(
+                tmp.x,
+                tmp.y,
+                tmp2.x - tmp.x,
+                tmp2.y - tmp.y
+        );
+        */
+        /*
+        Rectangle scissors = new Rectangle(
+                drawingZone.x,
+                drawingZone.y,
+                drawingZone.width,
+                drawingZone.height
+        );
+        */
+       Rectangle scissors = new Rectangle();
         batch.flush();
         ScissorStack.calculateScissors(MCHUDManager.get().getCamera(), batch.getTransformMatrix(), drawingZone, scissors);
 
+        /*
+        debugRenderer.setProjectionMatrix(batch.getProjectionMatrix());
+        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+        debugRenderer.setColor(Color.RED);
+        debugRenderer.rect(scissors.x, scissors.y, scissors.width, scissors.height);
+        debugRenderer.end();
+        */
+        
         if (ScissorStack.pushScissors(scissors)) {
             if (textWidth <= drawingZone.width) {
                 //System.out.println("not too large");
@@ -105,9 +155,11 @@ public class MCUIScrollingText {
 
         edgeGradient(batch);
 
+        /*
         System.out.println("zone = " + drawingZone);
         System.out.println("cam pos = " + MCHUDManager.get().getCamera().position);
         System.out.println("viewport size = " + MCHUDManager.get().getCamera().viewportWidth + " x " + MCHUDManager.get().getCamera().viewportHeight);
+        */
     }
 
     public void setText(String text) {

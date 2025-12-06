@@ -10,9 +10,16 @@ import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
+/**
+ * A singleton only used to debug.
+ */
 public class MCDebugRenderer {
     private static MCDebugRenderer instance = null;
 
+    /**
+     * Get the singleton instance.
+     * @return
+     */
     public static MCDebugRenderer get() {
         if (instance == null) instance = new MCDebugRenderer();
         return instance;
@@ -20,6 +27,10 @@ public class MCDebugRenderer {
 
     private MCDebugRenderer() {}
 
+    /**
+     * Init the singleton and load textures.
+     * @throws Exception
+     */
     public void init() throws Exception {
         validTileTexture = MCSharedAssets.get().getSavedTexture("validAttackTile");
     }
@@ -27,14 +38,26 @@ public class MCDebugRenderer {
     private Set<MCIntVector2> debugTiles = new HashSet<>();
     private TextureRegion validTileTexture; 
 
+    /**
+     * Highlight a tile with his position.
+     * @param pos
+     */
     public void addDebugTile(MCIntVector2 pos) {
         debugTiles.add(pos);
     }
 
+    /**
+     * Un-highlight a tile with his position.
+     * @param pos
+     */
     public void removeDebugTile(MCIntVector2 pos) {
         debugTiles.remove(pos);
     }
 
+    /**
+     * Render the debug.
+     * @param batch
+     */
     public void render(SpriteBatch batch) {
         batch.setColor(0, 1, 0, 0.5f);
         for (MCIntVector2 pos : debugTiles) {
@@ -42,4 +65,5 @@ public class MCDebugRenderer {
         }
         batch.setColor(1, 1, 1, 1); 
     }
+
 }

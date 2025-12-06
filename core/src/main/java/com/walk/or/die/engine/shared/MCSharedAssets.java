@@ -20,9 +20,16 @@ import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
 import com.walk.or.die.engine.tiledmap.MCMapObject;
 
+/**
+ * A singleton useful to load only one time assets used in many classes.
+ */
 public class MCSharedAssets {
     private static MCSharedAssets instance = null;
 
+    /**
+     * Get the singleton instance.
+     * @return
+     */
     public static MCSharedAssets get() {
         if (instance == null) instance = new MCSharedAssets();
         return instance;
@@ -36,6 +43,13 @@ public class MCSharedAssets {
 
     private MCSharedAssets() {}
 
+    /**
+     * Init the singleton.
+     * @param miscMapPath
+     * @param fontPath
+     * @param drh
+     * @throws Exception
+     */
     public void init(String miscMapPath, String fontPath, AssetManager drh) throws Exception {
         MCMap miscTilesMap = new MCMap(miscMapPath, drh);
         miscTilesLayer = miscTilesMap.getLayer(0);
@@ -106,6 +120,12 @@ public class MCSharedAssets {
         savedBitmapFonts.put(filename, font);
     }
 
+    /**
+     * Get a tiled from his name.
+     * @param name
+     * @return
+     * @throws Exception if the tile doesn't exist or the name is false.
+     */
     public TiledMapTile getSavedTile(String name) throws Exception {
         TiledMapTile tile = savedTiles.get(name);
         if (tile == null)
@@ -113,6 +133,12 @@ public class MCSharedAssets {
         return tile;
     }
 
+    /**
+     * Get a texture from his name.
+     * @param name
+     * @return
+     * @throws Exception if the texture doesn't exist or the name is false.
+     */
     public TextureRegion getSavedTexture(String name) throws Exception {
         TextureRegion texture = savedTextures.get(name);
         if (texture == null)
@@ -120,6 +146,12 @@ public class MCSharedAssets {
         return texture;
     }
 
+    /**
+     * Get a font from his name.
+     * @param name
+     * @return
+     * @throws Exception if the font doesn't exist or the name is false.
+     */
     public BitmapFont getSavedFont(String name) throws Exception {
         BitmapFont font = savedBitmapFonts.get(name);
         if (font == null)

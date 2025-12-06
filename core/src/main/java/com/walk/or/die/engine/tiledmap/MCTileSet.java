@@ -4,7 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 
 /**
- * An personal extend of TiledMapTileSet
+ * Our personal extend of TiledMapTileSet
  * @see TiledMapTileSet
  */
 public class MCTileSet extends TiledMapTileSet {

@@ -38,6 +38,7 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
             if (keyCmd.key == Input.Keys.C) {
+                MCCameraManager.get().setMode(MCCameraManager.CameraMode.ARROWS);
                 changeState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
             }
         }
