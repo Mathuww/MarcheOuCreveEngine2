@@ -14,6 +14,9 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
+/**
+ * A class to display movements options.
+ */
 public class MCMoveDisplay {
     private final MCCharacter parent;
     private Array<Sprite> displaySprites = new Array<>();
@@ -25,11 +28,19 @@ public class MCMoveDisplay {
     private String senderAnim;
     private String targetAnim;
 
+    /**
+     * The constructor.
+     * @param parent
+     * @throws Exception
+     */
     public MCMoveDisplay(MCCharacter parent) throws Exception {
         this.parent = parent;
         validTileTexture = MCSharedAssets.get().getSavedTexture("validAttackTile");
     }
 
+    /**
+     * Update the tiles to show.
+     */
     public void computeValidTilesDisplay() {
         //System.out.println("updating attack");
         displaySprites.clear();
@@ -54,11 +65,18 @@ public class MCMoveDisplay {
         }
     }
 
+    /**
+     * Erase trajectories.
+     */
     public void clearTrajectory() {
         for (Sprite spr : displaySprites)
             spr.setColor(VALID_COLOR);
     }
 
+    /**
+     * Show a trajectory.
+     * @param traj
+     */
     public void showTrajectory(List<MCIntVector2> traj) {
         //System.out.println("New trajectory");
         for (Sprite spr : displaySprites) {
@@ -81,6 +99,10 @@ public class MCMoveDisplay {
         }
     }
 
+    /**
+     * Render (call each frame)
+     * @param batch
+     */
     public void render(SpriteBatch batch) {
         if (!display) return;
         for (Sprite spr : displaySprites)

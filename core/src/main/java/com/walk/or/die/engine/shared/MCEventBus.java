@@ -1,7 +1,7 @@
 package com.walk.or.die.engine.shared;
 
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;

@@ -1,15 +1,15 @@
-package com.walk.or.die.engine.sm.entity.states;
+package com.walk.or.die.engine.sm.entity.character.states;
 
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 
 
-public class MCESIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
+public class MCESIdle extends MCCharacterState<MCESIdle.IdleStateArgs> {
 
-    public static class IdleStateArgs extends MCEntityState.StateArgs {}
+    public static class IdleStateArgs extends MCCharacterState.StateArgs {}
 
     public MCESIdle(MCCharacter parent) {
         super(parent);

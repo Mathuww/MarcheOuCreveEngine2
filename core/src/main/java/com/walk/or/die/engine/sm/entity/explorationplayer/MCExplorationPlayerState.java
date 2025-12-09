@@ -1,33 +1,31 @@
-package com.walk.or.die.engine.sm.entity;
+package com.walk.or.die.engine.sm.entity.explorationplayer;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCStateMachine;
+import com.walk.or.die.engine.sm.entity.MCEntityState;
 
-public abstract class MCEntityState<T extends MCEntityState.StateArgs, U extends MCEntity> extends MCState<T> {
-    protected U parent;
+public abstract class MCExplorationPlayerState<T extends MCExplorationPlayerState.StateArgs> extends MCEntityState<T, MCExplorationPlayer>  {
 
-    public MCEntityState(U parent) {
-        super();
-        this.parent = parent;
+    public MCExplorationPlayerState(MCExplorationPlayer parent) {
+        super(parent);
     }
 
-    public U getParent() {
+    public MCExplorationPlayer getParent() {
         return parent;
     }
 
     @Override
-    public void enter(T args) {
-        listen("InputPressed", this::inputPressed);
-        // Je rentre dans tes MC en bus
-    }
+    public void update(float delta) {}
 
     @Override
-    public void exit() {
-        bus.off(this, "InputPressed");
-    }
+    public void render(SpriteBatch batch) {}
+
+    @Override
+    public void renderOnGridOverlay(SpriteBatch batch) {}
+
 
     // à override pour tous les états bloquants !
     public boolean isBlocking() {
@@ -45,7 +43,7 @@ public abstract class MCEntityState<T extends MCEntityState.StateArgs, U extends
         }
     }
 
-    protected void changeState(String newState, MCEntityState.StateArgs args) {
+    protected void changeState(String newState, MCExplorationPlayerState.StateArgs args) {
        parent.getStateManager().stateTransitionCheck(new MCStateMachine.TransitionArgs(getName(), newState, args));
     }
 

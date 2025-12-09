@@ -1,11 +1,11 @@
-package com.walk.or.die.engine.sm.entity.states;
+package com.walk.or.die.engine.sm.entity.character.states;
 
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayDeque;
@@ -13,9 +13,9 @@ import java.util.Deque;
 import java.util.List;
 
 
-public class MCESClickMove extends MCEntityState<MCESClickMove.MoveStateArgs> {
+public class MCESClickMove extends MCCharacterState<MCESClickMove.MoveStateArgs> {
 
-    public static class MoveStateArgs extends MCEntityState.StateArgs {
+    public static class MoveStateArgs extends MCCharacterState.StateArgs {
         public MCIntVector2 target;
         public List<MCIntVector2> path;
 

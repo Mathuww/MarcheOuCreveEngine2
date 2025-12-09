@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.shared.MCEventBus;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 
 import java.util.ArrayList;
 

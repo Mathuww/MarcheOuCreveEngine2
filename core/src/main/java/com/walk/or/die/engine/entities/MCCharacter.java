@@ -9,13 +9,16 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
-import com.walk.or.die.engine.sm.entity.states.MCESHurt;
-import com.walk.or.die.engine.sm.entity.states.MCESIdle;
+import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
+import com.walk.or.die.engine.sm.entity.character.states.MCESHurt;
+import com.walk.or.die.engine.sm.entity.character.states.MCESIdle;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.ui.MCCharacterHUD;
 import com.walk.or.die.engine.ui.MCOnGridHealth;
 
+/**
+ * An entity wich can move and shoot.
+ */
 public class MCCharacter extends MCEntity {
     protected final int MAX_ATTACK_NUMBER = 6;
     
@@ -25,7 +28,7 @@ public class MCCharacter extends MCEntity {
     private Integer hp;
     private boolean dead = false;
     private Integer maxDeplacements;
-    private MCStateMachine<MCEntityState, MCEntity> stateManager;
+    private MCStateMachine<MCCharacterState, MCEntity> stateManager;
     private Map<String, MCAttack> attacks;
     private String baseAttack;
     private String displayedAttack;
@@ -35,6 +38,12 @@ public class MCCharacter extends MCEntity {
     private MCOnGridHealth healthBar;
     private boolean displayHud = true;
 
+    /**
+     * The creator.
+     * @param parent
+     * @param map
+     * @param entityGenericName
+     */
     public MCCharacter(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
         attacks = new HashMap<>();
@@ -76,6 +85,12 @@ public class MCCharacter extends MCEntity {
         baseAttack = props.get("baseAttack", String.class);
     }
 
+    /**
+     * Add a attack to your character.
+     * @param name
+     * @param attack
+     * @see MCAttack
+     */
     public void addAttack(String name, MCAttack attack) {
         attacks.put(name, attack);
     }
@@ -94,6 +109,10 @@ public class MCCharacter extends MCEntity {
         stateManager.render(batch);
     }
 
+    /**
+     * Render effect (call each frame, after classic render)
+     * @param batch
+     */
     public void renderOnGridOverlay(SpriteBatch batch) {
         // j'ai séparé le rendu de l'entité proprement dit
         // et celles de ses overlays
@@ -104,22 +123,37 @@ public class MCCharacter extends MCEntity {
             healthBar.render(batch);
     }
 
-    public MCStateMachine getStateManager() {
-        return this.stateManager;
-    }
-
-    public void setStateManager(MCStateMachine<MCEntityState, MCEntity> stateManager) {
+    /**
+     * Set the stage manager.
+     * @param stateManager
+     */
+    public void setStateManager(MCStateMachine<MCCharacterState, MCEntity> stateManager) {
         this.stateManager = stateManager;
     }
 
+    /**
+     * Get max moves.
+     * @return
+     */
     public int getMaxMoves() {
         return this.maxDeplacements;
     }
 
+    /**
+     * Get the move display
+     * @return
+     * @see MCMoveDisplay
+     */
     public MCMoveDisplay getMoveDisplay() {
         return moveDisplay;
     }
 
+    /**
+     * Get the current attack
+     * @return
+     * @throws IllegalStateException
+     * @see MCAttack
+     */
     public MCAttack getAttack() {
         MCAttack attack = attacks.get(baseAttack);
         if (attack == null)
@@ -127,6 +161,12 @@ public class MCCharacter extends MCEntity {
         return attack;
     }
     
+    /**
+     * Shoot and call a function when the action ends.
+     * @param end
+     * @param attack
+     * @param onArrival
+     */
     public void shootThenCall(MCIntVector2 end, MCAttack attack, Runnable onArrival) {
         // System.out.println("trying to shoot with damage : " + damage);
         MCProjectile proj;
@@ -142,14 +182,27 @@ public class MCCharacter extends MCEntity {
         proj.launchTo(end);
     }
 
+    /**
+     * Get the max hp.
+     * @return
+     */
     public int getMaxHp() {
         return maxHp;
     }
 
+    /**
+     * Get current health.
+     * @return
+     */
     public int getHealth() {
         return hp;
     }
 
+    /**
+     * Hurt behavior.
+     * @param damage
+     * @param targetAnim
+     */
     public void getHurt(int damage, String targetAnim) {
         if (dead)
             return;
@@ -160,28 +213,54 @@ public class MCCharacter extends MCEntity {
         System.out.println("J'ai pris " + damage + "dégats !");
     }
     
+    /**
+     * If the character is already dead.
+     * @return
+     */
     public boolean isDead() {
         return dead;
     }
 
+    /**
+     * Set dead state.
+     */
     public void setDead() {
         dead = true;
     }
 
+    /**
+     * If there's currently an action running.
+     * @return
+     */
     public boolean isBusy() {
         if (stateManager.getCurrentState() == null) 
             return false;
         return stateManager.getCurrentState().isBlocking();
     }
 
+    /**
+     * Set the name to display.
+     * @param displayName
+     */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
+    /**
+     * Get the name to display.
+     * @return
+     */
     public String getDisplayName() {
         if (displayName != null)
             return displayName;
         else 
             return getId();
+    }
+
+    /**
+     * Get the state manager.
+     */
+    public MCStateMachine getStateManager() {
+        return stateManager;
     }
 }

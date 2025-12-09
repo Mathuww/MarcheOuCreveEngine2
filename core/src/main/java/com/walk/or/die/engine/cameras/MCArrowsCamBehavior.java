@@ -11,11 +11,17 @@ import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 
+/**
+ * Behavior class which allows player to control the camera with the arrows.
+ */
 public class MCArrowsCamBehavior extends MCCameraBehavior {
     private final float CAM_MOVE_SPEED = 0.05f;
 
     private Map<MCIntVector2, Boolean> currentInput;
 
+    /**
+     * The constructor.
+     */
     public MCArrowsCamBehavior() {
         currentInput = new HashMap<>();
     }
@@ -41,18 +47,27 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         bus.off(this, "InputReleased");
     }
 
+    /**
+     * Call when a input is pressed.
+     * @param data
+     */
     public void inputPressed(Command data) {
         if(data instanceof DirectionalCommand cmd) {
             currentInput.put(cmd.getIntVect(), true);
         }
     }
 
+    /**
+     * Call when a input is released.
+     * @param data
+     */
     public void inputReleased(Command data) {
         if (data instanceof DirectionalCommand cmd) {
             currentInput.put(cmd.getIntVect(), false);
         }
     }
 
+    @Override
     public Vector2 update(OrthographicCamera gdxCam, float delta) {
         MCCameraManager camManager = MCCameraManager.get();
 

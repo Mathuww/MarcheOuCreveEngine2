@@ -5,16 +5,16 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
-import com.walk.or.die.engine.sm.entity.states.MCESHurt;
-import com.walk.or.die.engine.sm.entity.states.MCESIdle;
+import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
+import com.walk.or.die.engine.sm.entity.character.states.MCESHurt;
+import com.walk.or.die.engine.sm.entity.character.states.MCESIdle;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 public class MCExplorationPlayer extends MCEntity {
     private Integer hp;
     private boolean dead = false;
     private Float speed;
-    private MCStateMachine<MCEntityState, MCEntity> stateManager;
+    private MCStateMachine<MCCharacterState, MCEntity> stateManager;
 
     public MCExplorationPlayer(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
@@ -49,11 +49,7 @@ public class MCExplorationPlayer extends MCEntity {
         //stateManager.renderOnGridOverlay(batch);
     }
 
-    public MCStateMachine getStateManager() {
-        return this.stateManager;
-    }
-
-    public void setStateManager(MCStateMachine<MCEntityState, MCEntity> stateManager) {
+    public void setStateManager(MCStateMachine<MCCharacterState, MCEntity> stateManager) {
         this.stateManager = stateManager;
     }
 
@@ -83,5 +79,9 @@ public class MCExplorationPlayer extends MCEntity {
         if (stateManager.getCurrentState() == null) 
             return false;
         return stateManager.getCurrentState().isBlocking();
+    }
+
+    public MCStateMachine getStateManager() {
+        return stateManager;
     }
 }

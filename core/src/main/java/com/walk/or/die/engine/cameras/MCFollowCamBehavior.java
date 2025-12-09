@@ -5,6 +5,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCEntity;
 
+/**
+ * Behavior class which causes the camera to follow a target.
+ */
 public class MCFollowCamBehavior extends MCCameraBehavior {
     private MCEntity target;
     
@@ -20,7 +23,7 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
 
     @Override
     public void exit() {}
-
+    
     @Override
     public Vector2 update(OrthographicCamera gdxCam, float delta) {
         MCCameraManager camManager = MCCameraManager.get();

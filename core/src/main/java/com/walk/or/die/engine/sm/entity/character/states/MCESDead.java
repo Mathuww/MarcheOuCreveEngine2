@@ -1,12 +1,12 @@
-package com.walk.or.die.engine.sm.entity.states;
+package com.walk.or.die.engine.sm.entity.character.states;
 
 import com.walk.or.die.engine.entities.MCAnimation;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntityManager;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 
-public class MCESDead extends MCEntityState<MCESDead.DeadStateArgs> {
-    public static class DeadStateArgs extends MCEntityState.StateArgs {}
+public class MCESDead extends MCCharacterState<MCESDead.DeadStateArgs> {
+    public static class DeadStateArgs extends MCCharacterState.StateArgs {}
 
     private float DEAD_DURATION = 2f; // si jamais pas d'anim
     private float stateTime = 0f;

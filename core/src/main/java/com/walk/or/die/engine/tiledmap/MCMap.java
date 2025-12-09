@@ -8,7 +8,7 @@ import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.utils.Disposable;
-import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;

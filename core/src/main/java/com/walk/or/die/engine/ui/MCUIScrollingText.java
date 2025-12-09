@@ -1,16 +1,23 @@
 package com.walk.or.die.engine.ui;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector4;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 
 public class MCUIScrollingText {
@@ -18,22 +25,26 @@ public class MCUIScrollingText {
     private final float SCROLL_GAP = 50f;
     private final float FADE_WIDTH = 25f; 
 
-    public Rectangle drawingZone;
-
+    private Rectangle initialZone;
+    private Rectangle currentZone;
+    private MCAbstractHUD parent;
     private SpriteBatch currentBatch;
     private TextureRegion gradientTexture;
     private String currentText = "AAAHH";
     private float scrollX = 0f;
     private BitmapFont font;
+    private Vector2 dimensions;
     private Color color;
     private float scale;
     private float spacing;
 
     private ShapeRenderer debugRenderer = new ShapeRenderer();
 
-    public MCUIScrollingText(BitmapFont font, Rectangle zone, Color color, float scale, float spacing) {
+    public MCUIScrollingText(MCAbstractHUD parent, BitmapFont font, Rectangle zone, Color color, float scale, float spacing) {
+        this.parent = parent;
         this.font = font;
-        this.drawingZone = zone;
+        this.initialZone = zone;
+        this.currentZone = new Rectangle(initialZone);
         this.color = color;
         this.scale = scale;
         this.spacing = spacing;
@@ -43,9 +54,13 @@ public class MCUIScrollingText {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    
     }
 
     private void drawSpacedText(String text, float x, float y) {
+        font.setColor(color);
+        font.getData().setScale(scale);
         float cursor = x;
         for (int i = 0; i < text.length(); i++) {
             char c = text.charAt(i);
@@ -57,18 +72,18 @@ public class MCUIScrollingText {
         }
     }
 
-    private float textWidth(String text) {
+    private Vector2 textDimensions(String text) {
         GlyphLayout layout = new GlyphLayout(font, text);
         float realWidth = layout.width + spacing * (text.length() - 1);
-        return realWidth;
+        return new Vector2(realWidth, layout.height);
     }
 
     private void edgeGradient(SpriteBatch batch) {
-        batch.draw(gradientTexture, drawingZone.x, drawingZone.y, FADE_WIDTH, drawingZone.height);
+        batch.draw(gradientTexture, currentZone.x, currentZone.y, FADE_WIDTH, currentZone.height);
         if (!gradientTexture.isFlipX())
             gradientTexture.flip(true, false); // flip x
     
-        batch.draw(gradientTexture, drawingZone.x + drawingZone.width - FADE_WIDTH, drawingZone.y, FADE_WIDTH, drawingZone.height);
+        batch.draw(gradientTexture, currentZone.x + currentZone.width - FADE_WIDTH, currentZone.y, FADE_WIDTH, currentZone.height);
 
         gradientTexture.flip(true, false);
     }
@@ -76,110 +91,114 @@ public class MCUIScrollingText {
     public void render(SpriteBatch batch) {
         currentBatch = batch;
 
-        /*
-        Color previousColor = batch.getColor().cpy();
-        batch.setColor(Color.PURPLE);
-        if (gradientTexture != null) {
-            batch.draw(
-                gradientTexture,
-                drawingZone.x,
-                drawingZone.y,
-                drawingZone.width,
-                drawingZone.height
-            );
-        }
-        batch.setColor(previousColor);
-        */
 
-        font.setColor(color);
-        font.getData().setScale(scale);
+        System.out.println(currentZone.x + " " + currentZone.y + " " + currentZone.width + " " + currentZone.height);
 
-        GlyphLayout layout = new GlyphLayout(font, currentText);
-        float textWidth = textWidth(currentText);
-        float y = drawingZone.y + (drawingZone.height + layout.height) / 2f;
-        
-        /*
-        Vector3 tmp = new Vector3(drawingZone.x, drawingZone.y, 0);
-        MCHUDManager.get().getCamera().project(tmp);
+        //debugRenderer.rect(currentZone.x, currentZone.y, currentZone.width, currentZone.height);
 
-        Vector3 tmp2 = new Vector3(drawingZone.x + drawingZone.width,
-                                drawingZone.y + drawingZone.height,
-                                0);
-        MCHUDManager.get().getCamera().project(tmp2);
 
-        Rectangle scissors = new Rectangle(
-                tmp.x,
-                tmp.y,
-                tmp2.x - tmp.x,
-                tmp2.y - tmp.y
-        );
-        */
-        /*
-        Rectangle scissors = new Rectangle(
-                drawingZone.x,
-                drawingZone.y,
-                drawingZone.width,
-                drawingZone.height
-        );
-        */
-       Rectangle scissors = new Rectangle();
-        batch.flush();
-        ScissorStack.calculateScissors(MCHUDManager.get().getCamera(), batch.getTransformMatrix(), drawingZone, scissors);
-
-        /*
-        debugRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-        debugRenderer.begin(ShapeRenderer.ShapeType.Line);
-        debugRenderer.setColor(Color.RED);
-        debugRenderer.rect(scissors.x, scissors.y, scissors.width, scissors.height);
-        debugRenderer.end();
-        */
-        
-        if (ScissorStack.pushScissors(scissors)) {
-            if (textWidth <= drawingZone.width) {
+        float y = currentZone.y + (currentZone.height + dimensions.y) / 2f;
+        if (dimensions.x <= currentZone.width) {
                 //System.out.println("not too large");
-                float x = drawingZone.x + FADE_WIDTH / 2f  + (drawingZone.width - textWidth) / 2f;
+                float x = currentZone.x + FADE_WIDTH / 2f  + (currentZone.width - dimensions.x) / 2f;
                 drawSpacedText(currentText, x, y);
-            } else {
-                //System.out.println("too large");
-                float x1 = drawingZone.x + scrollX;
-                float x2 = x1 + textWidth + 50f;
+                return;
+        }
 
-                drawSpacedText(currentText, x1, y);
-                drawSpacedText(currentText, x2, y);
-            }
+        Camera hudCamera = MCHUDManager.get().getCamera();
+        Viewport hudViewport = MCHUDManager.get().getViewport();
 
-            batch.flush();
+        
+        Vector3 ll = new Vector3(currentZone.x, currentZone.y, 0f);
+        //hudCamera.project(ll, hudViewport.getScreenX(), hudViewport.getScreenY(),
+        //                    hudViewport.getWorldWidth(), hudViewport.getScreenHeight());
+        hudViewport.project(ll);
 
+        Vector3 ur = new Vector3(
+            currentZone.x + currentZone.width,
+            currentZone.y + currentZone.height,
+            0f
+        );
+        //hudCamera.project(ur, hudViewport.getScreenX(), hudViewport.getScreenY(),
+        //                    hudViewport.getWorldWidth(), hudViewport.getScreenHeight());
+        hudViewport.project(ur);
+
+        int scissorWidth = (int) (ur.x - ll.x);
+        int scissorHeight = (int) (ur.y - ll.y);
+        int scissorX = (int) ll.x;
+        int scissorY = (int) ll.y;
+        
+        //ScissorStack.calculateScissors(hudCamera, batch.getTransformMatrix(), currentZone, scissors);
+        Rectangle scissors = new Rectangle(scissorX, scissorY, scissorWidth, scissorHeight);
+        System.out.println(scissors.x + " " + scissors.y + " " + scissors.width + " " + scissors.height);
+
+    
+        //Gdx.gl.glEnable(GL20.GL_SCISSOR_TEST);
+        //Gdx.gl.glScissor((int)scissors.x, (int)scissors.y, (int)scissors.width, (int)scissors.height);
+        
+        currentBatch.flush();
+        if (ScissorStack.pushScissors(scissors)) {
+            
+            /* debugRenderer.begin(ShapeType.Filled);
+            debugRenderer.setProjectionMatrix(hudCamera.combined);
+            debugRenderer.rect(0, 0, hudViewport.getWorldWidth(), hudViewport.getWorldHeight());
+            //Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST); 
+
+            debugRenderer.end(); */
+            
+            float x1 = currentZone.x + scrollX;
+            float x2 = x1 + dimensions.x + SCROLL_GAP;
+
+            drawSpacedText(currentText, x1, y);
+            drawSpacedText(currentText, x2, y);
+            currentBatch.flush();
             ScissorStack.popScissors();
         }
+        edgeGradient(currentBatch);
 
-        edgeGradient(batch);
+        //System.out.println("too large");
+        /*
+        float x1 = currentZone.x + scrollX;
+        float x2 = x1 + dimensions.x + SCROLL_GAP;
+
+        drawSpacedText(currentText, x1, y);
+        drawSpacedText(currentText, x2, y);
+
+        currentBatch.flush();
+        Gdx.gl.glDisable(GL20.GL_SCISSOR_TEST);
+        */
+        //edgeGradient(batch);
 
         /*
         System.out.println("zone = " + drawingZone);
         System.out.println("cam pos = " + MCHUDManager.get().getCamera().position);
         System.out.println("viewport size = " + MCHUDManager.get().getCamera().viewportWidth + " x " + MCHUDManager.get().getCamera().viewportHeight);
         */
+        System.out.println("Viewport: " + hudViewport.getWorldWidth() + " x " + hudViewport.getWorldHeight());
+        System.out.println("Camera pos: " + hudCamera.position);
+
     }
 
     public void setText(String text) {
         if (text.equals(currentText))
             return;
         currentText = text;
+        dimensions = textDimensions(text);
         scrollX = 0f;
     }
 
     public void update(float delta) {
-        float textWidth = textWidth(currentText);
+        System.out.println("offset y : " + parent.getOffsetY());
+        currentZone.y = initialZone.y + parent.getOffsetY();
 
-        if (textWidth <= drawingZone.width) {
+        if (dimensions.x <= currentZone.width) {
             scrollX = 0f;
             return;
         }
 
         scrollX -= SCROLL_SPEED * delta;
 
-        if (scrollX < -(textWidth + SCROLL_GAP)) {
+        if (scrollX < -(dimensions.x + SCROLL_GAP)) {
             scrollX = 0f;
         }
     }

@@ -12,76 +12,141 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 
+/**
+ * Our singleton which manages inputs.
+ */
 public class MCInputManager implements InputProcessor {
     private static MCInputManager instance = null;
 
+    /**
+     * The getter.
+     * @return
+     */
     public static MCInputManager get() {
         if (instance == null) instance = new MCInputManager();
         return instance;
     }
 
+    /**
+     * Init the singleton.
+     * @param v
+     */
     public void init(Viewport v) {
         vp = v;
     }
 
+    /**
+     * Command class, destinate to be extend.
+     */
     public static abstract class Command {}
 
+    /**
+     * Directional input.
+     */
     public static class DirectionalCommand extends Command {
         private MCIntVector2 v;
 
+        /**
+         * The creator, by a (MC)vector.
+         * @param v
+         */
         public DirectionalCommand(MCIntVector2 v) {
             this.v = v;
         }
 
+        /**
+         * The creator, by int.
+         * @param x
+         * @param y
+         */
         public DirectionalCommand(int x, int y) {
             this.v = new MCIntVector2(x, y);
         }
         
+        /**
+         * Get the direction pressed.
+         * @return
+         */
         public MCIntVector2 getIntVect() {
             return this.v;
         }
     }
 
+    /**
+     * Tile clicked.
+     */
     public static class ClickTileCommand extends Command {
         private MCIntVector2 v;
+
+        /**
+         * The creator.
+         * @param v
+         */
         public ClickTileCommand(MCIntVector2 v) {
             this.v = v;
         }
+
+        /**
+         * Return the tile position.
+         * @return
+         */
         public MCIntVector2 getIntVect() {
             return this.v;
         }
     }
 
+    /**
+     * Aim input.
+     */
     public static class AimCommand extends Command {
         public AimCommand() {}
     }
 
+    /**
+     * Ready input.
+     */
     public static class ReadyCommand extends Command {
         public ReadyCommand() {}    
     }
 
+    /**
+     * Non-handled input.
+     */
     public static class OtherKeyCommand extends Command {
         public int key;
+
+        /**
+         * The creator.
+         * @param key
+         */
         public OtherKeyCommand(int key) {
             this.key = key;
         }
     }
 
+    /**
+     * Next-turn input.
+     */
     public static class NextTurnCommand extends Command {
         public NextTurnCommand() {}
     }
     
+    /**
+     * A class to store functions to call when the mouse move.
+     */
     public static class MouseListener {
         public Consumer<Vector2> mouseMovedFunction;
 
+        /**
+         * The constructor.
+         * @param consumer
+         */
         public MouseListener(Consumer<Vector2> consumer) {
             this.mouseMovedFunction = consumer;
         }
     }
 
     private Viewport vp;
-
-    private boolean upGoing, downGoing, leftGoing, rightGoing;
 
     private MCEventBus bus;
     private Consumer<Vector2> mouseMovedFunction;
@@ -90,35 +155,22 @@ public class MCInputManager implements InputProcessor {
         this.bus = MCEventBus.get();
         bus.on(this, "connectMouseMoved", this::connectMouseMoved);
         bus.on(this, "disconnectMouseMoved", this::disconnectMouseMoved);
-        //this.vp = vp;
-        this.upGoing = false;
-        this.downGoing = false;
-        this.leftGoing = false;
-        this.rightGoing = false; 
     }
 
-    public boolean isUpGoing() {
-        return this.upGoing;
-    }
-
-    public boolean isDownGoing() {
-        return this.downGoing;
-    }
-
-    public boolean isLeftGoing() {
-        return this.leftGoing;
-    }
-
-    public boolean isRightGoing() {
-        return this.rightGoing;
-    }
-
+    /**
+     * Call teh given function when the mouse move.
+     * @param consumer
+     */
     public void connectMouseMoved(MouseListener consumer) {
         if (mouseMovedFunction != null) 
             throw new IllegalStateException("cant connect multiple mouse moved listeners at the same time"); // C'est la merde faudrait une erreur
         mouseMovedFunction = consumer.mouseMovedFunction;
     }
 
+    /**
+     * Stop to call the function
+     * @param consumer
+     */
     public void disconnectMouseMoved(MouseListener consumer) {
         mouseMovedFunction = null;
     }
@@ -128,25 +180,21 @@ public class MCInputManager implements InputProcessor {
         switch (k) {
             case Input.Keys.W:
             case Input.Keys.UP:
-                upGoing = true;
                 bus.emit("InputPressed", new DirectionalCommand(0, +1));
                 break;
 
             case Input.Keys.S:
             case Input.Keys.DOWN:
-                downGoing = true;
                 bus.emit("InputPressed", new DirectionalCommand(0, -1));
                 break;
 
             case Input.Keys.A:
             case Input.Keys.LEFT:
-                leftGoing = true;
                 bus.emit("InputPressed", new DirectionalCommand(-1, 0));
                 break;
 
             case Input.Keys.D:
             case Input.Keys.RIGHT:
-                rightGoing = true;
                 bus.emit("InputPressed", new DirectionalCommand(+1, 0));
                 break;
 
@@ -169,25 +217,21 @@ public class MCInputManager implements InputProcessor {
         switch (k) {
             case Input.Keys.W:
             case Input.Keys.UP:
-                upGoing = false;
                 bus.emit("InputReleased", new DirectionalCommand(0, +1));
                 break;
 
             case Input.Keys.S:
             case Input.Keys.DOWN:
-                downGoing = false;
                 bus.emit("InputReleased", new DirectionalCommand(0, -1));
                 break;
 
             case Input.Keys.A:
             case Input.Keys.LEFT:
-                leftGoing = false;
                 bus.emit("InputReleased", new DirectionalCommand(-1, 0));
                 break;
 
             case Input.Keys.D:
             case Input.Keys.RIGHT:
-                rightGoing = false;
                 bus.emit("InputReleased", new DirectionalCommand(+1, 0));
                 break;
             case Input.Keys.SPACE:
@@ -221,6 +265,9 @@ public class MCInputManager implements InputProcessor {
         return false;
     }
 
+    /**
+     * To force a mouse update.
+     */
     public void triggerMouseUpdate() {
         int x = Gdx.input.getX();
         int y = Gdx.input.getY();

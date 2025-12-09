@@ -13,7 +13,7 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityFactory;
-import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.badlogic.gdx.math.MathUtils;
@@ -103,7 +103,7 @@ public class MCTerrainMap extends MCMap {
      */
     public Set<MCEntity> spawnEntities(MCGame game) throws Exception {
         MCMapLayer layer = this.getLayer("Entities");
-        if (layer == null) throw new DataException("no Entities layer in game map");
+        if (layer == null) throw new InvalidDataException("no Entities layer in game map");
 
         MCEntityFactory entityFact = MCEntityFactory.get();
 

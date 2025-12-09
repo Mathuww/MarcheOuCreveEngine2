@@ -21,9 +21,12 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 // ne pas mettre de point d'attaque 
 
+/**
+ * A class that represents an attack.
+ */
 public class MCAttack {
     private final MCEntity parent;
-    private int power;
+    private int power; // A multiplier...
     private Map<MCIntVector2, Float> damagePattern;
     private Array<Sprite> displaySprites = new Array<>();
     private TextureRegion validTileTexture;
@@ -35,6 +38,13 @@ public class MCAttack {
     private String senderAnim;
     private String targetAnim;
 
+    /**
+     * The creator.
+     * @param parent
+     * @param power
+     * @param pattern
+     * @throws Exception
+     */
     public MCAttack(MCEntity parent, int power, Map<MCIntVector2, Float> pattern) throws Exception {
         this.parent = parent;
         this.power = power;
@@ -42,17 +52,31 @@ public class MCAttack {
         validTileTexture = MCSharedAssets.get().getSavedTexture("validAttackTile");
     }
 
+    /**
+     * Initialize parameters from tiled datas.
+     * @param props
+     */
     public void initFromProperties(MapProperties props) {
         this.senderAnim = props.get("senderAnim", String.class);
         this.targetAnim = props.get("targetAnim", String.class);
         this.projectileName = props.get("projectileName", String.class);
     }
 
+    /**
+     * Get if the tile is concerned by the attack.
+     * @param targetPos
+     * @return
+     */
     public boolean isValidTile(MCIntVector2 targetPos) {
         MCIntVector2 relativePos = targetPos.subTo(parent.getTilePosition());
         return damagePattern.containsKey(relativePos);
     }
     
+    /**
+     * Get the damage to a specific tile.
+     * @param targetPos
+     * @return
+     */
     private int getDamageAtTile(MCIntVector2 targetPos) {
         MCIntVector2 relativePos = targetPos.subTo(parent.getTilePosition());
         Float damage = damagePattern.get(relativePos);
@@ -62,10 +86,18 @@ public class MCAttack {
             return MathUtils.round(damage * power);
     }
 
+    /**
+     * Get the damage to an entity.
+     * @param targetEntity
+     * @return
+     */
     public int getDamageTo(MCEntity targetEntity) {
         return getDamageAtTile(targetEntity.getTilePosition());
     }
 
+    /**
+     * Compute all the tile to displaye.
+     */
     public void computeValidTilesDisplay() {
         //System.out.println("updating attack");
         displaySprites.clear();
@@ -89,11 +121,18 @@ public class MCAttack {
         }
     }
 
+    /**
+     * Clear the shown trajectories.
+     */
     public void clearTrajectory() {
         for (Sprite spr : displaySprites)
             spr.setColor(VALID_COLOR);
     }
 
+    /**
+     * Show a trajectory.
+     * @param traj
+     */
     public void showTrajectory(List<MCIntVector2> traj) {
         for (Sprite spr : displaySprites)
             spr.setColor(VALID_COLOR);
@@ -115,21 +154,39 @@ public class MCAttack {
         }
     }
 
+    /**
+     * Render (call each frame).
+     * @param batch
+     */
     public void render(SpriteBatch batch) {
         if (!display) return;
         for (Sprite spr : displaySprites)
             spr.draw(batch);
     }
 
+    /**
+     * Get the name of the anim to play on the sender.
+     * @return
+     */
     public String getSenderAnim() {
         return senderAnim;
     }
 
+    /**
+     * Get the name of the anim to play on the target.
+     * @return
+     */
     public String getTargetAnim() {
         return targetAnim;
     }
 
+    /**
+     * Create the right projectile.
+     * @return
+     * @throws Exception
+     */
     public MCProjectile spawnProjectile() throws Exception {
         return MCEntityManager.get().buildProjectile(projectileName);
     }
+
 }

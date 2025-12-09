@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -19,7 +20,7 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityFactory;
 import com.walk.or.die.engine.entities.MCEntityManager;
-import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.screens.MCGameScreen;
@@ -73,7 +74,8 @@ public class MCGame extends Game {
       /** 
      * Sets fixed HUD viewport width
     */
-    public final static int WINDOW_DEFAULT_WIDTH = WINDOW_DEFAULT_HEIGHT * (VIEWPORT_WIDTH / VIEWPORT_HEIGHT);
+    public final static int WINDOW_DEFAULT_WIDTH = 
+        MathUtils.round((float)WINDOW_DEFAULT_HEIGHT * ((float)VIEWPORT_WIDTH / (float)VIEWPORT_HEIGHT));
 
     /**
      * The current map we are playing on.
@@ -169,7 +171,6 @@ public class MCGame extends Game {
      * @see FitViewport
      */
     public FitViewport gameViewport;
-    public FitViewport hudViewport;
 
     /**
      * HUD manager singleton
@@ -241,12 +242,12 @@ public class MCGame extends Game {
 
         // entityManager.playGlobalAnimation("idle");
 
-        hudViewport = new FitViewport(WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
-        hudManager.init(hudViewport);
+        //hudViewport = new FitViewport(WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
+        hudManager.init(WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
 
         try {
             setScreen(new MCGameScreen(this));
-        } catch (DataException e) {
+        } catch (InvalidDataException e) {
             e.printStackTrace();
         }
     }

@@ -13,6 +13,9 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
+/**
+ * An bullet entity.
+ */
 public class MCProjectile extends MCEntity {
     private final float COLLISION_THRESHOLD = 0.75f;
     private final float FADING_DURATION = 0.15f;
@@ -32,6 +35,12 @@ public class MCProjectile extends MCEntity {
 
     private final Interpolation easing = Interpolation.pow2Out;
 
+    /**
+     * The constructor.
+     * @param parent
+     * @param map
+     * @param entityGenericName
+     */
     public MCProjectile(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
         display = false;
@@ -44,10 +53,18 @@ public class MCProjectile extends MCEntity {
         speed = MCUtils.getFloatProperty(props, "speed", speed);
     }
 
+    /**
+     * Call the callback when the run ends.
+     * @param callback
+     */
     public void callOnArrival(Runnable callback) {
         this.callback = callback;
     }
 
+    /**
+     * Shoot the bullet towards a tile.
+     * @param targetGridPos
+     */
     public void launchTo(MCIntVector2 targetGridPos) {
         playAnimation("idle");
         this.targetPos = targetGridPos.toGdxVect();

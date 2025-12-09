@@ -13,8 +13,8 @@ import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.sm.entity.states.MCESAim;
-import com.walk.or.die.engine.sm.entity.states.MCESReady;
+import com.walk.or.die.engine.sm.entity.character.states.MCESAim;
+import com.walk.or.die.engine.sm.entity.character.states.MCESReady;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
@@ -36,8 +36,8 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
 
     @Override
     public void enter(AlliesPlayingArgs args) {
-        bus.on(this, "InputPressed", this::inputPressed);
         System.out.println("entering allies playing");
+        bus.on(this, "InputPressed", this::inputPressed);
         super.enter(args);
 
         for (MCAlly a : MCEntityManager.get().getAllies()) {
@@ -49,6 +49,7 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
 
     @Override
     public void exit() {
+        System.out.println("off input pressed allies playing state");
         bus.off(this, "InputPressed");
         super.exit();
     }
@@ -78,6 +79,7 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.err.println("no player in this map");
+                    return;
                 }
                 MCCameraManager.get().setMode(MCCameraManager.CameraMode.FOLLOW);
                 changeState("exploration", new MCGSExploration.ExplStateArgs());

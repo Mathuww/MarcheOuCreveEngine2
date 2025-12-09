@@ -12,7 +12,7 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 
-public class MCCharacterHUD {
+public class MCCharacterHUD extends MCAbstractHUD {
     private final String FONT_FAMILY = "ariBlackAlpha";
 
     private final float HUD_HEIGHT = MCGame.WINDOW_DEFAULT_HEIGHT * 0.18f;
@@ -51,8 +51,8 @@ public class MCCharacterHUD {
     private MCUIScrollingText characterNameText;
     private Rectangle characterNameZone;
 
-    private float offsetY = 0f;
-    private float targetOffsetY = 0f;
+    private float offsetY = SCROLL_Y;
+    private float targetOffsetY = SCROLL_Y;
     private boolean scrolling = false;
 
     public MCCharacterHUD() {
@@ -73,12 +73,13 @@ public class MCCharacterHUD {
         );
 
         characterNameZone = new Rectangle(
-            infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE + INSIDE_PADDING_WIDTH, 
-            infoPanelZone.y + RECT_BORDER + INSIDE_PADDING_HEIGHT, 
+            infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE + INSIDE_PADDING_WIDTH * 2f, 
+            infoPanelZone.y - SCROLL_Y + RECT_BORDER + INSIDE_PADDING_HEIGHT, 
             NAME_WIDTH, 
             NAME_HEIGHT
         );
         characterNameText = new MCUIScrollingText(
+            this,
             font, 
             characterNameZone, 
             Color.BLACK, 
@@ -155,6 +156,7 @@ public class MCCharacterHUD {
 
         if (currentCharacter != null) {
             characterSprite.draw(currentBatch);
+            //drawCornerlessRectangle(characterNameZone, RECT_BORDER);
             characterNameText.render(currentBatch);
         }
 
@@ -193,8 +195,8 @@ public class MCCharacterHUD {
         infoPanelZone.y = offsetY + BOTTOM_MARGIN;
 
         if (currentCharacter != null) {
-            characterNameZone.x = infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE + INSIDE_PADDING_WIDTH;
-            characterNameZone.y = infoPanelZone.y + RECT_BORDER + INSIDE_PADDING_HEIGHT;
+            //characterNameZone.x = infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE + INSIDE_PADDING_WIDTH;
+            //characterNameZone.y = infoPanelZone.y + RECT_BORDER + INSIDE_PADDING_HEIGHT;
             characterNameText.setText(currentCharacter.getDisplayName());
             characterNameText.update(delta);
 
@@ -202,7 +204,7 @@ public class MCCharacterHUD {
             characterSprite.setPosition(
                 infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE / 2f, 
                 infoPanelZone.y + RECT_BORDER + INSIDE_PADDING_HEIGHT + CHARA_SPRITE_SIZE / 2f
-            );
+            ); 
         }
     }
 

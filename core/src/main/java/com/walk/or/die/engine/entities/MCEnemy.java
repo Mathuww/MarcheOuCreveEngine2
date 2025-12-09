@@ -6,20 +6,30 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.ai.MCAI;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.MCStateMachine;
-import com.walk.or.die.engine.sm.entity.states.MCESClickMove;
-import com.walk.or.die.engine.sm.entity.states.MCESDead;
-import com.walk.or.die.engine.sm.entity.states.MCESEnemyIdle;
-import com.walk.or.die.engine.sm.entity.states.MCESHurt;
-import com.walk.or.die.engine.sm.entity.states.MCESShoot;
+import com.walk.or.die.engine.sm.entity.character.states.MCESClickMove;
+import com.walk.or.die.engine.sm.entity.character.states.MCESDead;
+import com.walk.or.die.engine.sm.entity.character.states.MCESEnemyIdle;
+import com.walk.or.die.engine.sm.entity.character.states.MCESHurt;
+import com.walk.or.die.engine.sm.entity.character.states.MCESShoot;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
+/**
+ * A character run by an AI.
+ */
 public class MCEnemy extends MCCharacter{
 
     private MCAI ai;
     private int current_decision = 0;
     private Runnable action_finished;
 
+    /**
+     * The constructor.
+     * @param parent
+     * @param map
+     * @param entityGenericName
+     * @throws Exception
+     */
     public MCEnemy(MCGame parent, MCTerrainMap map, String entityGenericName) throws Exception {
         super(parent, map, entityGenericName);
         ai = new MCAI(map, this);
@@ -32,6 +42,11 @@ public class MCEnemy extends MCCharacter{
         stateManager.setCallback(this::nextDecision);
     }
 
+    /**
+     * Start to play.
+     * @param callback
+     * @return
+     */
     public boolean playDecision(Runnable callback) {
         action_finished = callback;
         current_decision = 0;
@@ -47,6 +62,11 @@ public class MCEnemy extends MCCharacter{
         // .... plus maintenant eheh
     }
 
+    /**
+     * Shoot.
+     * @param state
+     * @return
+     */
     public boolean shootDecision(MCESEnemyIdle state) {
         MCAlly victim = ai.getBestShootableAlly(getTilePosition(), 4);
         //System.out.println("shoot decision");
@@ -59,6 +79,11 @@ public class MCEnemy extends MCCharacter{
         return true;
     }
 
+    /**
+     * Handle decisions.
+     * @param prev
+     * @param next
+     */
     public void nextDecision(Object prev, Object next) {
         if (current_decision == 0 && prev instanceof MCESClickMove moveState && next instanceof MCESEnemyIdle idleState) {
             shootDecision(idleState);

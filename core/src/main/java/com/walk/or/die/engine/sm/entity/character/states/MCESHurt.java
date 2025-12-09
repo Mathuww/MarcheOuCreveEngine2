@@ -1,14 +1,14 @@
-package com.walk.or.die.engine.sm.entity.states;
+package com.walk.or.die.engine.sm.entity.character.states;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCAnimation;
 import com.walk.or.die.engine.entities.MCCharacter;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 
-public class MCESHurt extends MCEntityState<MCESHurt.HurtStateArgs> {
-    public static class HurtStateArgs extends MCEntityState.StateArgs {
+public class MCESHurt extends MCCharacterState<MCESHurt.HurtStateArgs> {
+    public static class HurtStateArgs extends MCCharacterState.StateArgs {
         private int damage;
         private String targetAnim;
 

@@ -1,3 +1,5 @@
+package com.walk.or.die.engine.sm.entity.character.states;
+/*
 package com.walk.or.die.engine.sm.entity.states;
 
 import java.util.List;
@@ -6,14 +8,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEnemy;
+import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
-public class MCESEnemyIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
-
-    public MCESEnemyIdle(MCCharacter parent) {
+public class MCESIdleExploration extends MCEntityState<MCESIdle.IdleStateArgs> {
+    public MCESIdleExploration(MCEntity parent) {
         super(parent);
         this.name = "idle";
     }
@@ -48,5 +49,5 @@ public class MCESEnemyIdle extends MCEntityState<MCESIdle.IdleStateArgs> {
     public void shoot(MCAlly ally, List<MCIntVector2> traj) {
         changeState("shoot", new MCESShoot.ShootStateArgs((MCCharacter)ally, parent.getAttack(), traj));
     }
-
 }
+*/

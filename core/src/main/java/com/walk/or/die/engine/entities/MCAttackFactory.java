@@ -10,15 +10,22 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
 
+/**
+ * An other singleton factory, for attacks this time.
+ */
 public class MCAttackFactory {
     private static MCAttackFactory instance = null;
 
+    /**
+     * The getter.
+     * @return
+     */
     public static MCAttackFactory get() {
         if (instance == null) instance = new MCAttackFactory();
         return instance;
@@ -34,20 +41,32 @@ public class MCAttackFactory {
         mapCache = new HashMap<>();
     }
 
-    public void init(AssetManager assetManager) throws DataException {
+    /**
+     * Init the singleton.
+     * @param assetManager
+     * @throws InvalidDataException
+     */
+    public void init(AssetManager assetManager) throws InvalidDataException {
         this.assetManager = assetManager;
 
         // on recupere la liste de toutes les entités possibles
         for (FileHandle attackFile : MCUtils.listFilesByExt(ATTACK_ROOT, "tmx")) {
             String attackName = attackFile.nameWithoutExtension();
             if (possibleAttacks.containsKey(attackName)) {
-                throw new DataException("duplicate attack tmx files exist for attack name " + attackName);
+                throw new InvalidDataException("duplicate attack tmx files exist for attack name " + attackName);
             }
             MCMap attackMap = new MCMap(attackFile.path(), assetManager);
             mapCache.put(attackName, attackMap);
         }
     }
 
+    /**
+     * Create a new attack instance.
+     * @param parent
+     * @param attackName
+     * @return
+     * @throws Exception
+     */
     public MCAttack build(MCEntity parent, String attackName) throws Exception {
         if (assetManager == null) 
             throw new IllegalStateException("must init attack factory before using it");
@@ -65,7 +84,7 @@ public class MCAttackFactory {
         MCMapLayer layer = attackMap.getLayer(0);
         Vector2 senderPos = layer.getPosByProperty("type", "sender");
         if (senderPos == null)
-            throw new DataException("cant build attack " + attackName + " : no sender tile in attack map");
+            throw new InvalidDataException("cant build attack " + attackName + " : no sender tile in attack map");
 
         if (!(layer.getRawLayer() instanceof TiledMapTileLayer))
             throw new IllegalStateException("the MapLayer in attack Map layer 0 is not a TiledMapTileLayer");

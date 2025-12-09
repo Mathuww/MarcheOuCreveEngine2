@@ -12,15 +12,24 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraManager.CameraMode;
 import com.walk.or.die.engine.entities.MCEntityManager;
-import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
+/**
+ * Our personal screen.
+ * @see Screen
+ */
 public class MCGameScreen implements Screen {
     private MCGame game;
     private MCCameraManager camManager = MCCameraManager.get();
     private MCHUDManager hudManager = MCHUDManager.get();
 
-    public MCGameScreen(MCGame game) throws DataException {
+    /**
+     * The constructor.
+     * @param game
+     * @throws InvalidDataException
+     */
+    public MCGameScreen(MCGame game) throws InvalidDataException {
         this.game = game;
     }
     
@@ -44,18 +53,14 @@ public class MCGameScreen implements Screen {
 
         game.batch.end();
 
-        // 2 : HUD
-        game.hudViewport.apply();
-        game.batch.setProjectionMatrix(hudManager.getCamera().combined);
-        game.batch.begin();
+        // 2 : HUD (le manager s'occupe de out)
         hudManager.render(game.batch);
-        game.batch.end();
     }
 
     @Override
     public void resize(int width, int height) {
        game.gameViewport.update(width, height, true);
-       MCHUDManager.get().hudViewport.update(width, height, true);
+       hudManager.getViewport().update(width, height, true);
     }
 
     @Override

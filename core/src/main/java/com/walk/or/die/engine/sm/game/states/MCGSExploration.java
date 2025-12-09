@@ -24,8 +24,8 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
     @Override
     public void enter(ExplStateArgs args) {
         MCCameraManager.get().setMode(MCCameraManager.CameraMode.FOLLOW);
-        bus.on(this, "InputPressed", this::inputPressed);
         super.enter(args);
+        bus.on(this, "InputPressed", this::inputPressed);
     }
 
     @Override

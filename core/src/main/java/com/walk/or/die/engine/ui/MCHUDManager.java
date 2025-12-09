@@ -25,15 +25,20 @@ public class MCHUDManager {
 
     private MCCharacterHUD characterHUD;
 
-    public void init(FitViewport viewport) {
-        hudViewport = viewport;
-        hudCamera = new OrthographicCamera(viewport.getWorldWidth(), viewport.getWorldHeight());
-        hudViewport.setCamera(hudCamera);
+    public void init(int width, int height) {
+        hudCamera = new OrthographicCamera();
+        //hudCamera = new OrthographicCamera(viewport.getWorldWidth(), viewport.getWorldHeight());
+        //hudViewport.setCamera(hudCamera);
+        hudViewport = new FitViewport(width, height, hudCamera);
         characterHUD = new MCCharacterHUD();
 
         // faut bien tester
-        List<MCAlly> test = new ArrayList<>(MCEntityManager.get().getAllies());
-        characterHUD.setHudTarget(test.get(0));
+        //List<MCAlly> test = new ArrayList<>(MCEntityManager.get().getAllies());
+        //characterHUD.setHudTarget(test.get(0));
+    }
+
+    public FitViewport getViewport() {
+        return hudViewport;
     }
 
     public OrthographicCamera getCamera() {
@@ -45,10 +50,15 @@ public class MCHUDManager {
     }
 
     public void update(float delta) {
+        hudCamera.update();
         characterHUD.update(delta);
     }
 
     public void render(SpriteBatch batch) {
+        hudViewport.apply();
+        batch.setProjectionMatrix(hudCamera.combined);
+        batch.begin();
         characterHUD.render(batch);
+        batch.end();
     }
 }

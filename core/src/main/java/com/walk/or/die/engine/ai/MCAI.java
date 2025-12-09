@@ -17,7 +17,10 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
-
+/**
+ * The class which takes decision for ennemies, for moving or shooting.<br>
+ * All decisions are based on a score system.
+ */
 public class MCAI {
     
     private MCTerrainMap map;
@@ -28,12 +31,24 @@ public class MCAI {
     //debug
     private List<Sprite> sprList;
 
+    /**
+     * The creator.
+     * @param map
+     * @param parent
+     * @throws Exception
+     */
     public MCAI(MCTerrainMap map, MCEnemy parent) throws Exception {
         pathfinder = MCPathfinder.get();
         this.map = map;
         this.parent = parent;
     }
 
+    /**
+     * Get the target.
+     * @param pos
+     * @param degats
+     * @return
+     */
     public MCAlly getBestShootableAlly(MCIntVector2 pos, float degats) {
         float best_score = -1f;
         MCAlly bestVictim = null;
@@ -49,6 +64,13 @@ public class MCAI {
         return bestVictim;
     }
 
+    /**
+     * Return the score of shooting the given ally.
+     * @param pos
+     * @param ally
+     * @param degats
+     * @return
+     */
     private float scoreVictim(MCIntVector2 pos, MCAlly ally, float degats) {
         float score = 0f;
         if (ally.getHealth() <= degats) score += 10f;
@@ -58,6 +80,11 @@ public class MCAI {
         return score;
     }
 
+    /**
+     * Get allies in range.
+     * @param pos
+     * @return
+     */
     private Set<MCAlly> getShootableAllies(MCIntVector2 pos) {
         Set<MCAlly> allies = new HashSet<>();
         for (MCAlly ally: MCEntityManager.get().getAllies()) {
@@ -71,6 +98,12 @@ public class MCAI {
         return allies;
     }
 
+    /**
+     * Get the position to move on.
+     * @param oldPos
+     * @param max_deplacement
+     * @return
+     */
     public MCIntVector2 getNewPos(MCIntVector2 oldPos, int max_deplacement) {
         List<MCIntVector2> shelts = searchShelts(oldPos, max_deplacement);
 
@@ -88,6 +121,11 @@ public class MCAI {
         return best_shelt;
     }
 
+    /**
+     * Note if a spot is protected.
+     * @param pos
+     * @return
+     */
     private float isSheltSafe(MCIntVector2 pos) {
         Set<MCAlly> list = MCEntityManager.get().getAllies();
 
@@ -115,6 +153,11 @@ public class MCAI {
         return result;
     }
 
+    /**
+     * Note if a spot is good for shooting.
+     * @param pos
+     * @return
+     */
     private float isSheltShootSpot(MCIntVector2 pos) {
         Set<MCAlly> list = MCEntityManager.get().getAllies();
 
@@ -139,6 +182,12 @@ public class MCAI {
         return result;
     }
 
+    /**
+     * Get a list of potential protected positions
+     * @param pos
+     * @param maxMoves
+     * @return
+     */
     private List<MCIntVector2> searchShelts(MCIntVector2 pos, int maxMoves) {
         List<MCIntVector2> list = new ArrayList<>();
         
@@ -161,6 +210,11 @@ public class MCAI {
         return list;
     }
 
+    /**
+     * Return if something around protect the position.
+     * @param pos
+     * @return
+     */
     private boolean neighborsShelt(MCIntVector2 pos) {
         List<MCIntVector2> newPositions = new ArrayList<>();
         newPositions.add(new MCIntVector2(pos.x - 1, pos.y));
@@ -180,16 +234,29 @@ public class MCAI {
         return isOneProtected;
     }
 
+    /**
+     * Return if the position is fill.
+     * @param v
+     * @return
+     */
     private boolean check(MCIntVector2 v) {
         return pathfinder.isProtect(v) && !(MCEntityManager.get().getEntityFromTile(1, v) instanceof MCAlly);
     }
 
+    /**
+     * Render (call each frame)
+     * @param batch
+     */
     public void render(SpriteBatch batch) {
         for (Sprite spr : sprList) {
             spr.draw(batch);
         }
     }
 
+    /**
+     * Debug function.
+     * @param spot
+     */
     public void showSpot(MCIntVector2 spot) { 
         MCDebugRenderer.get().addDebugTile(spot);
     }

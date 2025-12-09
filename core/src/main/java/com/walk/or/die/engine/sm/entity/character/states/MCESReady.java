@@ -1,20 +1,20 @@
-package com.walk.or.die.engine.sm.entity.states;
+package com.walk.or.die.engine.sm.entity.character.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 import java.util.List;
 
 
-public class MCESReady extends MCEntityState<MCESReady.ReadyStateArgs> {
+public class MCESReady extends MCCharacterState<MCESReady.ReadyStateArgs> {
     private MCIntVector2 tile = new MCIntVector2(-1, -1);
 
-    public static class ReadyStateArgs extends MCEntityState.StateArgs {}
+    public static class ReadyStateArgs extends MCCharacterState.StateArgs {}
 
     public MCESReady (MCCharacter parent) {
         super(parent);

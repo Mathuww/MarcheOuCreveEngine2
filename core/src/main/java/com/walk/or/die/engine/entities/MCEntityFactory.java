@@ -11,14 +11,21 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
-import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
+/**
+ * A singleton wich create entities, based on tiled data.
+ */
 public class MCEntityFactory {
     private static MCEntityFactory instance = null;
 
+    /**
+     * The getter.
+     * @return
+     */
     public static MCEntityFactory get() {
         if (instance == null) instance = new MCEntityFactory();
         return instance;
@@ -36,7 +43,12 @@ public class MCEntityFactory {
         mapCache = new HashMap<>();
     }
 
-    public void init(AssetManager assetManager) throws DataException {
+    /**
+     * Init the singleton.
+     * @param assetManager
+     * @throws InvalidDataException
+     */
+    public void init(AssetManager assetManager) throws InvalidDataException {
         this.assetManager = assetManager;
 
         entityTypes.put("character", MCCharacter.class);
@@ -45,20 +57,30 @@ public class MCEntityFactory {
         entityTypes.put("explorationPlayer", MCExplorationPlayer.class);
         entityTypes.put("projectile", MCProjectile.class);
 
-        System.out.println("INIIIIIIIIIIIIIIIIT COME INUITTTTTTTTTTTTT");
+        //System.out.println("INIIIIIIIIIIIIIIIIT COME INUITTTTTTTTTTTTT");
         // on recupere la liste de toutes les entités possibles
-        for (FileHandle entityFile : MCUtils.listFilesByExt(ENTITY_ROOT, "tmx")) {
+        for (FileHandle entityFile : MCUtils.listFilesByExt(ENTITY_ROOT, " hdoihv soh spichq zhgepd")) {
             String entityGenericName = entityFile.nameWithoutExtension();
-            System.out.println(entityGenericName);
+            //System.out.println(entityGenericName);
             //System.out.println("adding : " + entityGenericName);
             if (possibleEntities.containsKey(entityGenericName)) {
-                throw new DataException("duplicate entity tmx files exist for entity name " + entityGenericName);
+                throw new InvalidDataException("duplicate entity tmx files exist for entity name " + entityGenericName);
             }
             MCMap entityMap = new MCMap(entityFile.path(), assetManager);
             mapCache.put(entityGenericName, entityMap);
         }
     }
 
+    /**
+     * Create a new instance of an entity.
+     * @param parentScreen
+     * @param parentMap
+     * @param entityGenericName
+     * @param entityId
+     * @return
+     * @throws IllegalStateException
+     * @throws InvalidDataException
+     */
     public MCEntity build(MCGame parentScreen, MCTerrainMap parentMap, String entityGenericName, String entityId) throws Exception {  
         if (assetManager == null) 
             throw new IllegalStateException("must init entity factory before using it");
@@ -69,7 +91,7 @@ public class MCEntityFactory {
         
         String typeStr = entityMap.getProperty("type");
         if (typeStr == null) 
-            throw new DataException("cant decide of type of entity " + entityGenericName + " because its type is not filled in map properties");
+            throw new InvalidDataException("cant decide of type of entity " + entityGenericName + " because its type is not filled in map properties");
         Class<? extends MCEntity> clazz = entityTypes.get(typeStr);
         if (clazz == null)
             throw new IllegalStateException("cannot find type " + typeStr + " in entity types map in factory");
@@ -96,15 +118,6 @@ public class MCEntityFactory {
         // Partie 3 : construire les animations (lignes dans la map)
         // (ces maps la ont une seule layer)
         Array<Array<TiledMapTile>> tiles = entityMap.getLayer(0).splitInTiles();
-
-        /*
-        System.out.println("firstRow size = " + tiles.get(0).size);
-        //System.out.println("firstTile = " + tiles.get(0));
-        TiledMapTileLayer tml = (TiledMapTileLayer) entityMap.getLayer(0).getRawLayer();
-        TiledMapTileLayer.Cell cell = ((TiledMapTileLayer.Cell) (tml.getCell(0,0)));
-        System.out.println("cell = " + cell);
-        System.out.println("tile = " + (cell != null ? cell.getTile() : "null"));
-        */
 
         for (Array<TiledMapTile> row : tiles) {
             TiledMapTile firstTile = row.get(0);

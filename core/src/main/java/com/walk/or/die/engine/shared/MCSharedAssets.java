@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.walk.or.die.engine.exceptions.DataException;
+import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.exceptions.NotBeautifulFontException;
 import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
@@ -95,7 +95,7 @@ public class MCSharedAssets {
     private void addSavedTile(String nameVal) throws Exception {
         TiledMapTileLayer.Cell cell = miscTilesLayer.getCellByProperty("name", nameVal);
         if (cell == null)
-            throw new DataException("cant find tile named " + nameVal + " in shared assets map (" + nameVal + ")");
+            throw new InvalidDataException("cant find tile named " + nameVal + " in shared assets map (" + nameVal + ")");
         TiledMapTile tile = cell.getTile();
         if (tile == null)
             throw new IllegalStateException("cant convert cell with tile " + nameVal + " to a tile in shared assets");

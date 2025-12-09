@@ -1,4 +1,4 @@
-package com.walk.or.die.engine.sm.entity.states;
+package com.walk.or.die.engine.sm.entity.character.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.entities.MCAlly;
@@ -6,15 +6,15 @@ import com.walk.or.die.engine.entities.MCAttack;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
-import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 import java.util.List;
 
 
-public class MCESShoot extends MCEntityState<MCESShoot.ShootStateArgs> {
+public class MCESShoot extends MCCharacterState<MCESShoot.ShootStateArgs> {
 
-    public static class ShootStateArgs extends MCEntityState.StateArgs {
+    public static class ShootStateArgs extends MCCharacterState.StateArgs {
         MCCharacter target;
         MCAttack attack;
         List<MCIntVector2> trajectory;
