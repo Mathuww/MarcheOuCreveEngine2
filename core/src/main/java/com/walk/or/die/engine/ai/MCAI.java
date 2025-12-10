@@ -112,7 +112,7 @@ public class MCAI {
         for (MCIntVector2 shelt: shelts) {
             float score = isSheltShootSpot(shelt) - isSheltSafe(shelt)*2f; // CACA
             if (best_score == -1000f || score > best_score) {
-                System.out.println("Total :" + score + "pour la pos" + shelt);
+                //System.out.println("Total :" + score + "pour la pos" + shelt);
                 best_score = score;
                 best_shelt = shelt;
             }
@@ -140,7 +140,7 @@ public class MCAI {
             }
             
         }
-        System.out.println("score safe " + result + " pour la pos " + pos);
+        //System.out.println("score safe " + result + " pour la pos " + pos);
         /*
         get all character
         get trajectory from character to posx posy
@@ -178,7 +178,7 @@ public class MCAI {
         if is moyenne trajectory 0.33
         if kill 10
         */
-        System.out.println("score attaque " + result + " pour la pos " + pos);
+        //System.out.println("score attaque " + result + " pour la pos " + pos);
         return result;
     }
 

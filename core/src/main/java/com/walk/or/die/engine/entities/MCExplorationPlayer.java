@@ -5,7 +5,7 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
-import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
+import com.walk.or.die.engine.sm.entity.explorationplayer.MCExplorationPlayerState;
 import com.walk.or.die.engine.sm.entity.character.states.MCESHurt;
 import com.walk.or.die.engine.sm.entity.character.states.MCESIdle;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
@@ -14,7 +14,7 @@ public class MCExplorationPlayer extends MCEntity {
     private Integer hp;
     private boolean dead = false;
     private Float speed;
-    private MCStateMachine<MCCharacterState, MCEntity> stateManager;
+    private MCStateMachine<MCExplorationPlayerState, MCEntity> stateManager;
 
     public MCExplorationPlayer(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
@@ -49,7 +49,7 @@ public class MCExplorationPlayer extends MCEntity {
         //stateManager.renderOnGridOverlay(batch);
     }
 
-    public void setStateManager(MCStateMachine<MCCharacterState, MCEntity> stateManager) {
+    public void setStateManager(MCStateMachine<MCExplorationPlayerState, MCEntity> stateManager) {
         this.stateManager = stateManager;
     }
 

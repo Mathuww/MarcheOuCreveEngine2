@@ -25,28 +25,23 @@ developpeurs dont le but est de créer le meilleur moteur de jeu du monde
 
 "Pourquoi avoir une attackfactory, il semblerait plus logique d'avoir une complète factory non ?"
 
-"Je veux bien une petite explication de ça dans entity factory
-    entity = clazz
-        .getDeclaredConstructor(MCGame.class, MCTerrainMap.class, String.class)
-        .newInstance(parentScreen, parentMap, entityId);"
-
 "modifier le shoot, pour que si ça miss ça fasse quand même des dégats (rajouter un getHurt dans entity ?) à ce qui a bloquer"
 
 "Move display e pourrrait-il pas servir aussi pour le shoot ? La class me semble un peu trop précise. Pk pas une areadisplay ou jsp quoi"
 
-"Modifier power dans attack, c'est plutôt un multiplieur non ? Signé ASD"
+"Modifier power dans attack, c'est plutôt un multiplieur non ? Signé AST"
 
 "Pour ajouter un bouclier, ajouter une fonction dans entity ou character qui est multiplie des dégats par jsp la valeur de défense et l'utiliser dans attack getDamageTo"
 
 "Fonctions suspectes :
-    - clearEntities() : inutile ?
-    - playGloabalAnimation(String anim) : utilisé quand ?
+    - playGloabalAnimation(String anim) : utilisé quand ? A enlever
     - setStateManager(MCStateMachine<MCCharacterState, MCEntity> stateManager) : pas osé y toucher, mais ça devrait être MCCharacter non ?
     - getMoveDisplay() : a quoi ça sert ?
     - getAttack() : exception non throws
     - getTargetAnim() : Très chelou non ? Parce que l'anim ne dépend pas que de l'attaque...
 
 "
+"Revoir structure des states (ajouté listen input pressed dans la base etc). Copiez la javadoc au passage. Pareil pour change state. et y'en a d'autres"
 
 ## Structure des données 
 - assets/
@@ -129,3 +124,26 @@ Si une entité existe dans *entities_anims*, on peut la build à travers cette f
 
 ### MCAttackFactory
 Si une attaque existe dans *attacks*, on peut la build à travers cette factory.
+
+
+# pseudo code collisions
+
+On fonctionne avec 2 rectangle, la hitbox et la projection de la hitbox (on déplace la hitbox uniquement si sa projection overlappe rien)
+
+targetX = currentX + relativeMove.x
+targetY = currentY + relativeMove.y
+
+for (i = floor(startX), i < ceil(endX), i++)
+    for (j= floor(startY), j < ceil(endY), j++>)
+        if (!map.isWalkable(... (i,j)))
+            return false
+
+for (e: entities) {
+    if !e.equals(this) 
+        if e.overlappswith(next_hitbox)
+            return false.
+
+setPosition(next_hitbox.x, next_hitbox.y)
+}
+
+créer nouvelle fonction collides with avec en paramètre le nouveau rectangle

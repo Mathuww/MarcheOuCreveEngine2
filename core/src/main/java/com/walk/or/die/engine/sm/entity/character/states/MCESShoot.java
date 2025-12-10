@@ -11,14 +11,26 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 import java.util.List;
 
-
+/**
+ * The state of shooting on something.<br>
+ * Name = "shoot"
+ */
 public class MCESShoot extends MCCharacterState<MCESShoot.ShootStateArgs> {
 
+    /**
+     * Class wich represents args needed by shoot state to start.
+     */
     public static class ShootStateArgs extends MCCharacterState.StateArgs {
         MCCharacter target;
         MCAttack attack;
         List<MCIntVector2> trajectory;
 
+        /**
+         * The constructor.
+         * @param e - the target
+         * @param a - the used attack
+         * @param traj - path of the bullet
+         */
         public ShootStateArgs(MCCharacter e, MCAttack a, List<MCIntVector2> traj) {
             target = e;
             attack = a;
@@ -27,8 +39,10 @@ public class MCESShoot extends MCCharacterState<MCESShoot.ShootStateArgs> {
 
     }
 
-    //boolean finished = false;
-
+    /**
+     * The constructor.
+     * @param parent
+     */
     public MCESShoot(MCCharacter parent) {
         super(parent);
         this.name = "shoot";
@@ -71,11 +85,6 @@ public class MCESShoot extends MCCharacterState<MCESShoot.ShootStateArgs> {
     @Override
     public void exit() {
         super.exit();
-    }
-
-    @Override
-    public boolean isBlocking() {
-        return true;
     }
     
     @Override

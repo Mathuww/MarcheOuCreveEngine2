@@ -6,11 +6,22 @@ import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 
-
+/**
+ * The idle state for ally.<br>
+ * Name = "idle"<br>
+ * This is a non-blocking state.
+ */
 public class MCESIdle extends MCCharacterState<MCESIdle.IdleStateArgs> {
 
+    /**
+     * Class which represents args needed by idle move to start.
+     */
     public static class IdleStateArgs extends MCCharacterState.StateArgs {}
 
+    /**
+     * The constructor.
+     * @param parent
+     */
     public MCESIdle(MCCharacter parent) {
         super(parent);
         this.name = "idle";
@@ -52,5 +63,10 @@ public class MCESIdle extends MCCharacterState<MCESIdle.IdleStateArgs> {
             }
         }
 
+    }
+
+    @Override
+    public boolean isBlocking(){
+        return false;
     }
 }

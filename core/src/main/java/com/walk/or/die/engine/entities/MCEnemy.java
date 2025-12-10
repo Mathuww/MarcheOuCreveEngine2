@@ -11,6 +11,7 @@ import com.walk.or.die.engine.sm.entity.character.states.MCESDead;
 import com.walk.or.die.engine.sm.entity.character.states.MCESEnemyIdle;
 import com.walk.or.die.engine.sm.entity.character.states.MCESHurt;
 import com.walk.or.die.engine.sm.entity.character.states.MCESShoot;
+import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCESMoveExploration;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 

@@ -158,7 +158,7 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * Call teh given function when the mouse move.
+     * Call the given function when the mouse move.
      * @param consumer
      */
     public void connectMouseMoved(MouseListener consumer) {
@@ -206,6 +206,10 @@ public class MCInputManager implements InputProcessor {
                 bus.emit("InputPressed", new ReadyCommand());
                 break;
 
+            case Input.Keys.SPACE:
+                bus.emit("InputPressed", new NextTurnCommand());
+                break;
+
             default:
                 bus.emit("InputPressed", new OtherKeyCommand(k));
         }
@@ -234,8 +238,6 @@ public class MCInputManager implements InputProcessor {
             case Input.Keys.RIGHT:
                 bus.emit("InputReleased", new DirectionalCommand(+1, 0));
                 break;
-            case Input.Keys.SPACE:
-                bus.emit("InputPressed", new NextTurnCommand());
         }
         return true;
     }

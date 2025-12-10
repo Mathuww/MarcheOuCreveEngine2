@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.shared.MCSharedAssets;
+import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
 public class MCCharacterHUD extends MCAbstractHUD {
     private final String FONT_FAMILY = "ariBlackAlpha";
@@ -20,34 +22,24 @@ public class MCCharacterHUD extends MCAbstractHUD {
     private final float RECT_BORDER = MCGame.WINDOW_DEFAULT_HEIGHT * 0.015f;
 
     private final float INTERPANEL_PADDING_WIDTH = MCGame.WINDOW_DEFAULT_WIDTH * 0.05f;
-    private final float EFFECTIVE_PANELS_WIDTH = MCGame.WINDOW_DEFAULT_WIDTH - INTERPANEL_PADDING_WIDTH * 3f;
-    private final float INFO_PANEL_WIDTH = EFFECTIVE_PANELS_WIDTH * 0.6f;
-    private final float CHOICE_PANEL_WIDTH = EFFECTIVE_PANELS_WIDTH * 0.6f;
 
-    private final float INSIDE_PADDING_WIDTH = EFFECTIVE_PANELS_WIDTH * 0.035f;
-    private final float INSIDE_PADDING_HEIGHT = HUD_HEIGHT * 0.05f;
+    private final float INSIDE_PADDING_WIDTH = RECT_BORDER * 2f;
+    private final float INSIDE_PADDING_HEIGHT = RECT_BORDER * 2f;
 
-    private final float EFFECTIVE_INFO_PANEL_WIDTH = INFO_PANEL_WIDTH - INSIDE_PADDING_WIDTH * 3f;
-    private final float CHARA_SPRITE_SIZE = EFFECTIVE_INFO_PANEL_WIDTH * 0.16f;
-    private final float NAME_FONT_SCALE = 0.48f;
-    private final float NAME_WIDTH = EFFECTIVE_INFO_PANEL_WIDTH * 0.67f;
-    private final float NAME_HEIGHT = HUD_HEIGHT - (RECT_BORDER  + INSIDE_PADDING_HEIGHT) * 2f;
+    private final float CHARA_SPRITE_SIZE = 15f;
+    private final float NAME_FONT_SCALE = 0.34f;
+    private final float NAME_FONT_SPACING = 4f;
 
     private final float SCROLL_LERP = 300f;
     private final float SCROLL_Y = -(HUD_HEIGHT * 1.15f);
 
-    private final MCSharedAssets sharedAssets = MCSharedAssets.get();
-    private TextureRegion blackTexture;
-    private TextureRegion whiteTexture;
     private BitmapFont font;
     private MCCharacter characterAfterScroll;
     private MCCharacter currentCharacter;
 
-    private Rectangle infoPanelZone;
+    private MCUILayout layout = new MCUILayout();
 
     private Sprite characterSprite = new Sprite();
-    private SpriteBatch currentBatch;
-
     private MCUIScrollingText characterNameText;
     private Rectangle characterNameZone;
 
@@ -58,71 +50,36 @@ public class MCCharacterHUD extends MCAbstractHUD {
     public MCCharacterHUD() {
         try {
             font = sharedAssets.getSavedFont(FONT_FAMILY);
-            blackTexture = sharedAssets.getSavedTexture("black");
-            whiteTexture = sharedAssets.getSavedTexture("white");
         } catch (Exception e) {
             System.err.println("cant load character hud assets");
             e.printStackTrace();
         }
+        
+        layout.addZone(
+            "characterHud", 
+            new Rectangle(
+                0f,
+                0f,
+                MCGame.WINDOW_DEFAULT_WIDTH,
+                HUD_HEIGHT
+            )
+        ).pad(INTERPANEL_PADDING_WIDTH, BOTTOM_MARGIN);
 
-        infoPanelZone = new Rectangle(
-            INTERPANEL_PADDING_WIDTH, 
-            offsetY + BOTTOM_MARGIN, 
-            INFO_PANEL_WIDTH, 
-            HUD_HEIGHT
-        );
-
-        characterNameZone = new Rectangle(
-            infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE + INSIDE_PADDING_WIDTH * 2f, 
-            infoPanelZone.y - SCROLL_Y + RECT_BORDER + INSIDE_PADDING_HEIGHT, 
-            NAME_WIDTH, 
-            NAME_HEIGHT
-        );
-        characterNameText = new MCUIScrollingText(
-            this,
-            font, 
-            characterNameZone, 
-            Color.BLACK, 
-            NAME_FONT_SCALE, 
-            4f
-        );
+        layout.splitX("characterHud", 0.35f, "infoPanel", "choicePanel");
+        layout.zone("infoPanel").pad(INTERPANEL_PADDING_WIDTH, 0f);
+        layout.splitX("infoPanel", 0.15f, "charaSprite", "charaInfos");
+        layout.zone("charaSprite").pad(INSIDE_PADDING_WIDTH, INSIDE_PADDING_HEIGHT);
+        layout.zone("charaInfos").pad(INSIDE_PADDING_WIDTH, INSIDE_PADDING_HEIGHT);
 
         characterSprite.setSize(CHARA_SPRITE_SIZE, CHARA_SPRITE_SIZE);
-    }
-    
-    private void drawWhiteRectangle(Rectangle rect) {
-        currentBatch.draw(whiteTexture, rect.x, rect.y, rect.width, rect.height);
-    }
-
-    private void drawCorner(float x, float y, float cornerSize) {
-        float tiersCorner = cornerSize / 3f;
-        currentBatch.draw(blackTexture, x + tiersCorner, y, tiersCorner, tiersCorner);
-        currentBatch.draw(blackTexture, x, y + tiersCorner, tiersCorner, tiersCorner);
-        currentBatch.draw(blackTexture, x + tiersCorner * 2f, y + tiersCorner, tiersCorner, tiersCorner);
-        currentBatch.draw(blackTexture, x + tiersCorner, y + tiersCorner * 2f, tiersCorner, tiersCorner);
-    }
-
-    private void drawCornerlessRectangle(Rectangle rect, float borderSize) {
-        drawWhiteRectangle(rect);
-
-        float tiersBorder = borderSize / 3f;
-        // bord inférieur
-        currentBatch.draw(blackTexture, rect.x + borderSize, rect.y, rect.width - borderSize * 2f, tiersBorder);
-        currentBatch.draw(blackTexture, rect.x + borderSize, rect.y + tiersBorder * 2f, rect.width - borderSize * 2f, tiersBorder);
-        // bord supérieur
-        currentBatch.draw(blackTexture, rect.x + borderSize, rect.y + rect.height - borderSize, rect.width - borderSize * 2f, tiersBorder);
-        currentBatch.draw(blackTexture, rect.x + borderSize, rect.y + rect.height - tiersBorder, rect.width - borderSize * 2f, tiersBorder);
-        // bord gauche
-        currentBatch.draw(blackTexture, rect.x, rect.y + borderSize, tiersBorder, rect.height - borderSize * 2f);
-        currentBatch.draw(blackTexture, rect.x + tiersBorder * 2f, rect.y + borderSize, tiersBorder, rect.height - borderSize * 2f);
-        // bord droit
-        currentBatch.draw(blackTexture, rect.x + rect.width - borderSize, rect.y + borderSize, tiersBorder, rect.height - borderSize * 2f);
-        currentBatch.draw(blackTexture, rect.x + rect.width - tiersBorder, rect.y + borderSize, tiersBorder, rect.height - borderSize * 2f);
-
-        drawCorner(rect.x, rect.y, borderSize);
-        drawCorner(rect.x, rect.y + rect.height - borderSize, borderSize);
-        drawCorner(rect.x + rect.width - borderSize, rect.y, borderSize);
-        drawCorner(rect.x + rect.width - borderSize, rect.y + rect.height - borderSize, borderSize);
+        characterNameText = new MCUIScrollingText(
+            this, 
+            font, 
+            layout.zone("charaInfos"), 
+            Color.BLACK, 
+            NAME_FONT_SCALE, 
+            NAME_FONT_SPACING
+        );
     }
 
     public void setHudTarget(MCCharacter character) {
@@ -141,33 +98,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
         }
     }
 
-    /**
-     * HUD :
-     * 1/3 infos - 2/3 choix
-     * Parties infos :
-     * 1/3 sprite - 2/3 noms : HP
-     */
-    public void renderInfoPanel() {
-        drawCornerlessRectangle(infoPanelZone, RECT_BORDER);
-
-        // partie gauche : sprite joueur
-        float panelStartX = infoPanelZone.x + RECT_BORDER;
-        float panelStartY = infoPanelZone.y + RECT_BORDER;
-
-        if (currentCharacter != null) {
-            characterSprite.draw(currentBatch);
-            //drawCornerlessRectangle(characterNameZone, RECT_BORDER);
-            characterNameText.render(currentBatch);
-        }
-
-        // partie droite : infos (pour l'instant que l'ID mdr)
-    }
-
-    public void render(SpriteBatch batch) {
-        currentBatch = batch;
-        renderInfoPanel();
-    }
-
+    @Override
     public void update(float delta) {
         if (scrolling) {
             if (MathUtils.isEqual(targetOffsetY, 0f, 0.001f) 
@@ -192,20 +123,43 @@ public class MCCharacterHUD extends MCAbstractHUD {
             offsetY = MathUtils.clamp(offsetY, SCROLL_Y, 0f);
         }
 
-        infoPanelZone.y = offsetY + BOTTOM_MARGIN;
+        layout.zone("infoPanel").setOffset(0f, offsetY);
 
         if (currentCharacter != null) {
             //characterNameZone.x = infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE + INSIDE_PADDING_WIDTH;
-            //characterNameZone.y = infoPanelZone.y + RECT_BORDER + INSIDE_PADDING_HEIGHT;
             characterNameText.setText(currentCharacter.getDisplayName());
             characterNameText.update(delta);
 
             characterSprite.setRegion(currentCharacter.getSprite());
+            Vector2 spriteCenter = layout.zone("charaSprite").center(CHARA_SPRITE_SIZE, CHARA_SPRITE_SIZE);
             characterSprite.setPosition(
-                infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE / 2f, 
-                infoPanelZone.y + RECT_BORDER + INSIDE_PADDING_HEIGHT + CHARA_SPRITE_SIZE / 2f
+                spriteCenter.x,
+                spriteCenter.y
             ); 
         }
+    }
+
+    /**
+     * HUD :
+     * 1/3 infos - 2/3 choix
+     * Parties infos :
+     * 1/3 sprite - 2/3 noms : HP
+     */
+    public void renderInfoPanel() {
+        drawCornerlessRectangle(layout.zone("infoPanel"), RECT_BORDER);
+
+        // partie droite : infos (pour l'instant que l'ID mdr)
+        if (currentCharacter != null) {
+            characterSprite.draw(currentBatch);
+            //drawCornerlessRectangle(characterNameZone, RECT_BORDER);
+            characterNameText.render(currentBatch);
+        }      
+    }
+
+    @Override
+    public void render(SpriteBatch batch) {
+        currentBatch = batch;
+        renderInfoPanel();
     }
 
 }

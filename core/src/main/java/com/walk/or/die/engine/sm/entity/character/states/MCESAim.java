@@ -15,13 +15,24 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 import java.util.List;
 
-
+/**
+ * The state to symbolize when we choose the target to shoot.<br>
+ * Name = "aim"
+ */
 public class MCESAim extends MCCharacterState<MCESAim.AimStateArgs> {
     private MCAttack attack;
     private MCIntVector2 tile = new MCIntVector2(-1, -1);
+    /**
+     * Class which represents args needed by the aim state to start.
+     */
     public static class AimStateArgs extends MCCharacterState.StateArgs {
         public MCAttack attack;
 
+        /**
+         * Constructor
+         * @param attack - the attack represented
+         * @see MCAttack
+         */
         public AimStateArgs(MCAttack attack) {
             this.attack = attack;
         }

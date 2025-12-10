@@ -6,21 +6,31 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
+import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCESMoveExploration;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 import java.util.List;
 
-
+/**
+ * The state to symbolize when you choose your tile to move on.<br>
+ * Name = "ready"
+ */
 public class MCESReady extends MCCharacterState<MCESReady.ReadyStateArgs> {
     private MCIntVector2 tile = new MCIntVector2(-1, -1);
 
+    /**
+     * Class wich represents args needed by the ready state to start.
+     */
     public static class ReadyStateArgs extends MCCharacterState.StateArgs {}
 
+    /**
+     * The constructor.
+     * @param parent 
+     */
     public MCESReady (MCCharacter parent) {
         super(parent);
         this.name = "ready";
     }
-
 
     @Override
     public void update(float delta) {
@@ -54,7 +64,7 @@ public class MCESReady extends MCCharacterState<MCESReady.ReadyStateArgs> {
         this.bus.emit("disconnectMouseMoved", null);
         super.exit();
     }
-    
+
     private void cancel() {
         changeState("idle", new MCESIdle.IdleStateArgs());
     }

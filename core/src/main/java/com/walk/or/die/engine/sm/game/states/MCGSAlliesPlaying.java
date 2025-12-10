@@ -41,7 +41,7 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
         super.enter(args);
 
         for (MCAlly a : MCEntityManager.get().getAllies()) {
-            System.out.println("adding to allies turn states " + a.getId());
+            //System.out.println("adding to allies turn states " + a.getId());
             a.getTurnState().reset();
         }
 
@@ -49,14 +49,15 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
 
     @Override
     public void exit() {
-        System.out.println("off input pressed allies playing state");
         bus.off(this, "InputPressed");
         super.exit();
     }
 
     protected void inputPressed(MCInputManager.Command data) {
-        if (MCEntityManager.get().isAnyoneBusy())
+        if (MCEntityManager.get().isAnyoneBusy()) {
+            System.out.println("cant process input, someone s busy");
             return; // on attend tranquillement qu'un ennemi finisse d'etre hurt, etc.
+        }
 
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
             //System.out.println("Détecté par le game");
@@ -73,15 +74,6 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
             changeState("EnemiesPlaying", new MCGSEnemiesPlaying.EnemiesPlayingArgs());
         } else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
             if (keyCmd.key == Input.Keys.E) {
-                try {
-                    MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
-                    MCCameraManager.get().setFollowTarget(player);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.err.println("no player in this map");
-                    return;
-                }
-                MCCameraManager.get().setMode(MCCameraManager.CameraMode.FOLLOW);
                 changeState("exploration", new MCGSExploration.ExplStateArgs());
                 System.out.println("Je m'ennuis, p'tit pause s'impose");
             }

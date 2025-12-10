@@ -5,12 +5,23 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 
+/**
+ * The state to kill a character.<br>
+ * Name = "dead"
+ */
 public class MCESDead extends MCCharacterState<MCESDead.DeadStateArgs> {
+    /**
+     * Class which represents args needed by the dead state to start.
+     */
     public static class DeadStateArgs extends MCCharacterState.StateArgs {}
 
     private float DEAD_DURATION = 2f; // si jamais pas d'anim
     private float stateTime = 0f;
 
+    /**
+     * The constructor.
+     * @param parent
+     */
     public MCESDead(MCCharacter parent) {
         super(parent);
         this.name = "dead";
@@ -41,8 +52,4 @@ public class MCESDead extends MCCharacterState<MCESDead.DeadStateArgs> {
         //parent.display = true;
     }
 
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
 }

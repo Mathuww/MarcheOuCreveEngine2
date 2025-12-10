@@ -4,6 +4,8 @@ import com.badlogic.gdx.Input;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.entities.MCEntityManager;
+import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.sm.game.MCGameState;
@@ -23,8 +25,16 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
 
     @Override
     public void enter(ExplStateArgs args) {
-        MCCameraManager.get().setMode(MCCameraManager.CameraMode.FOLLOW);
         super.enter(args);
+        try {
+            MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
+            MCCameraManager.get().setFollowTarget(player);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("no player in this map");
+            return;
+        }
+        MCCameraManager.get().setMode(MCCameraManager.CameraMode.FOLLOW);
         bus.on(this, "InputPressed", this::inputPressed);
     }
 

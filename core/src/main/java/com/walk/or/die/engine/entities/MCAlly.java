@@ -9,6 +9,7 @@ import com.walk.or.die.engine.sm.entity.character.states.MCESHurt;
 import com.walk.or.die.engine.sm.entity.character.states.MCESIdle;
 import com.walk.or.die.engine.sm.entity.character.states.MCESReady;
 import com.walk.or.die.engine.sm.entity.character.states.MCESShoot;
+import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCESMoveExploration;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**

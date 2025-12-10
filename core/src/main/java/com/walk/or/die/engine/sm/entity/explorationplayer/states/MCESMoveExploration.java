@@ -1,40 +1,20 @@
-package com.walk.or.die.engine.sm.entity.character.states;
+package com.walk.or.die.engine.sm.entity.explorationplayer.states;
 
-import com.walk.or.die.engine.entities.MCAlly;
-import com.walk.or.die.engine.entities.MCCharacter;
+import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
-import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
+import com.walk.or.die.engine.sm.entity.explorationplayer.MCExplorationPlayerState;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
-/**
- * The state to move to a given position.<br>
- * Name = "move"
- */
-public class MCESClickMove extends MCCharacterState<MCESClickMove.MoveStateArgs> {
 
-    /**
-     * Class which represents args needed by the clickMove state to start.
-     */
-    public static class MoveStateArgs extends MCCharacterState.StateArgs {
-        public MCIntVector2 target;
-        public List<MCIntVector2> path;
+public class MCESMoveExploration extends MCExplorationPlayerState<MCESMoveExploration.MoveStateArgs> {
 
-        /**
-         * The constructor.
-         * @param target - The targeted pos.
-         * @param path - The path to follow.
-         */
-        public MoveStateArgs(MCIntVector2 target, List<MCIntVector2> path) {
-            this.target = target;
-            this.path = path;
-        }
-    }
+    public static class MoveStateArgs extends MCExplorationPlayerState.StateArgs {}
 
     private MCIntVector2 goal;
 
@@ -45,15 +25,12 @@ public class MCESClickMove extends MCCharacterState<MCESClickMove.MoveStateArgs>
     private float percent = 0f;
     private float speed = 4f;
 
-    /**
-     * The constructor.
-     * @param parent
-     */
-    public MCESClickMove(MCCharacter parent) {
+    public MCESMoveExploration(MCExplorationPlayer parent) {
         super(parent);
-        movements = new ArrayDeque<>();
-        this.name = "click_move";
+        this.name = "move";
     }
+
+/*
 
     @Override
     public void update(float delta) {
@@ -111,9 +88,6 @@ public class MCESClickMove extends MCCharacterState<MCESClickMove.MoveStateArgs>
         super.inputPressed(data);
     }
 
-    /**
-     * Process the next movement. Change state to idle if finished.
-     */
     private void nextMove() {
         if (movements.size() == 0) {
             changeState("idle", new MCESIdle.IdleStateArgs());
@@ -144,5 +118,10 @@ public class MCESClickMove extends MCCharacterState<MCESClickMove.MoveStateArgs>
                 parent.playAnimation("walk_down");
         }
     }
-    
+
+    @Override
+    public boolean isBlocking() {
+        return true;
+    }
+    */
 }

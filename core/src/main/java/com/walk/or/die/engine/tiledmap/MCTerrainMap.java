@@ -73,6 +73,7 @@ public class MCTerrainMap extends MCMap {
         }
         return true;
     }
+    
            
     /**
      * Return if the tile itself's at the given position blocks bullets.

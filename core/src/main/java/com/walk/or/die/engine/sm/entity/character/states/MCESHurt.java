@@ -7,11 +7,23 @@ import com.walk.or.die.engine.entities.MCAnimation;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 
+/**
+ * The state to take damages.<br>
+ * Name = "hurt"
+ */
 public class MCESHurt extends MCCharacterState<MCESHurt.HurtStateArgs> {
+    /**
+     * The class which represents args needed by hurt state to start.
+     */
     public static class HurtStateArgs extends MCCharacterState.StateArgs {
         private int damage;
         private String targetAnim;
 
+        /**
+         * The constructor.
+         * @param damage - taken by the character
+         * @param targetAnim - to play
+         */
         public HurtStateArgs(int damage, String targetAnim) {
             this.damage = damage;
             this.targetAnim = targetAnim;
@@ -24,6 +36,10 @@ public class MCESHurt extends MCCharacterState<MCESHurt.HurtStateArgs> {
     private float stateTime = 0f;
     private float blinkingTime = 0f;
 
+    /**
+     * The constructor.
+     * @param parent
+     */
     public MCESHurt(MCCharacter parent) {
         super(parent);
         this.name = "hurt";
@@ -64,9 +80,5 @@ public class MCESHurt extends MCCharacterState<MCESHurt.HurtStateArgs> {
     public void exit() {
         parent.display = true;
     }
-
-    @Override
-    public boolean isBlocking() {
-        return true;
-    }
+    
 }

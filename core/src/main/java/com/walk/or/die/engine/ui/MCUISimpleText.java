@@ -11,23 +11,28 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector4;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
-public class MCUIScrollingText extends MCUISimpleText {
-    private final float SCROLL_SPEED = 50f; // pixels/s
-    private final float SCROLL_GAP = 30f;
-    private final float FADE_WIDTH = 25f; 
+public class MCUISimpleText {
+    protected Zone zone;
+    protected MCAbstractHUD parent;
+    protected SpriteBatch currentBatch;
+    protected String currentText = "AAAHH";
+    protected BitmapFont font;
+    protected Vector2 dimensions;
+    protected Color color;
+    protected float scale;
+    protected float spacing;
 
-    private TextureRegion gradientTexture;
-    private float scrollX = 0f;
-
-    public MCUIScrollingText(
+    public MCUISimpleText(
         MCAbstractHUD parent, 
         BitmapFont font, 
         Zone zone, 
@@ -35,49 +40,43 @@ public class MCUIScrollingText extends MCUISimpleText {
         float scale, 
         float spacing
     ) {
-        super(parent, font, zone, color, scale, spacing);
+        this.parent = parent;
+        this.font = font;
+        this.zone = zone;
+        this.color = color;
+        this.scale = scale;
+        this.spacing = spacing;
+    }
 
-        try {
-            gradientTexture = MCSharedAssets.get().getSavedTexture("whiteFade");
-        } catch (Exception e) {
-            e.printStackTrace();
+    protected void drawSpacedText(String text, float x, float y) {
+        font.setColor(color);
+        font.getData().setScale(scale);
+        float cursor = x;
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            GlyphLayout layout = new GlyphLayout(font, String.valueOf(c));
+            font.draw(currentBatch, String.valueOf(c), cursor, y);
+            cursor += layout.width + spacing;
+            if (c == ' ')
+                cursor += 2f * spacing;
         }
     }
 
-    private void edgeGradient() {
-        currentBatch.draw(
-            gradientTexture, 
-            zone.displayX(), 
-            zone.displayY(), 
-            FADE_WIDTH, 
-            zone.displayHeight()
-        );
-        if (!gradientTexture.isFlipX())
-            gradientTexture.flip(true, false); // flip x
-    
-        currentBatch.draw(
-            gradientTexture, 
-            zone.displayX() + zone.displayWidth() - FADE_WIDTH, 
-            zone.displayY(), 
-            FADE_WIDTH, 
-            zone.displayHeight()
-        );
-
-        gradientTexture.flip(true, false);
+    protected Vector2 textDimensions(String text) {
+        GlyphLayout layout = new GlyphLayout(font, text);
+        float realWidth = layout.width + spacing * (text.length() - 1);
+        return new Vector2(realWidth, layout.height);
     }
 
-    @Override
     public void render(SpriteBatch batch) {
         currentBatch = batch;
-
-        //float ascent = -font.getData().ascent * font.getScaleY(); 
-        float y = zone.displayY() + (zone.displayHeight() + dimensions.y) / 2f; // + ascent;
+        float y = zone.displayY() + (zone.displayHeight() - dimensions.y) / 2f;
+        float x = zone.displayX() + (zone.displayWidth() - dimensions.x) / 2f;
         if (dimensions.x <= zone.displayWidth()) {
                 //System.out.println("not too large");
-                float x = zone.displayX() + (zone.displayWidth() - dimensions.x) / 2f;
                 drawSpacedText(currentText, x, y);
                 return;
-        }
+        } 
 
         Viewport hudViewport = MCHUDManager.get().getViewport();
         
@@ -100,38 +99,20 @@ public class MCUIScrollingText extends MCUISimpleText {
         
         currentBatch.flush();
         if (ScissorStack.pushScissors(scissors)) {
-            float x1 = zone.displayX() + scrollX;
-            float x2 = x1 + dimensions.x + SCROLL_GAP;
-
-            drawSpacedText(currentText, x1, y);
-            drawSpacedText(currentText, x2, y);
+            drawSpacedText(currentText, x, y);
             currentBatch.flush();
             ScissorStack.popScissors();
         }
-        edgeGradient();
     }
 
-    @Override
     public void setText(String text) {
         if (text.equals(currentText))
             return;
-        super.setText(text);
-        scrollX = 0f;
+        currentText = text;
+        dimensions = textDimensions(text);
     }
 
-    @Override
     public void update(float delta) {
-        super.update(delta);
 
-        if (dimensions.x <= zone.displayWidth()) {
-            scrollX = 0f;
-            return;
-        }
-
-        scrollX -= SCROLL_SPEED * delta;
-
-        if (scrollX < -(dimensions.x + SCROLL_GAP)) {
-            scrollX = 0f;
-        }
     }
 }
