@@ -162,8 +162,8 @@ public class MCUILayout {
             effRect.x += padX;
             effRect.y += padY;
             // sécurité
-            effRect.width = Math.min(effRect.width - padX * 2f, 0f);
-            effRect.height = Math.min(effRect.height - padY * 2f, 0f);
+            effRect.width = Math.max(effRect.width - padX * 2f, 0f);
+            effRect.height = Math.max(effRect.height - padY * 2f, 0f);
             return effRect;
         }
 
