@@ -19,7 +19,7 @@ import java.util.List;
  * The state to symbolize when we choose the target to shoot.<br>
  * Name = "aim"
  */
-public class MCESAim extends MCCharacterState<MCESAim.AimStateArgs> {
+public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
     private MCAttack attack;
     private MCIntVector2 tile = new MCIntVector2(-1, -1);
     /**
@@ -38,7 +38,7 @@ public class MCESAim extends MCCharacterState<MCESAim.AimStateArgs> {
         }
     }
 
-    public MCESAim(MCCharacter parent) {
+    public MCCSAim(MCCharacter parent) {
         super(parent);
         this.name = "aim";
     }
@@ -77,7 +77,7 @@ public class MCESAim extends MCCharacterState<MCESAim.AimStateArgs> {
     }
 
     private void cancel() {
-        changeState("idle", new MCESIdle.IdleStateArgs());
+        changeState("idle", new MCCSIdle.IdleStateArgs());
     }
     
     @Override
@@ -101,7 +101,7 @@ public class MCESAim extends MCCharacterState<MCESAim.AimStateArgs> {
                     return;
                 }
                 if (attack.isValidTile(c.getTilePosition())) {
-                    changeState("shoot", new MCESShoot.ShootStateArgs(c, attack, traj));
+                    changeState("shoot", new MCCSShoot.ShootStateArgs(c, attack, traj));
                     return;
                 }
             }

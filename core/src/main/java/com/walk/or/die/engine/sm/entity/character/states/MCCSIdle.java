@@ -11,7 +11,7 @@ import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
  * Name = "idle"<br>
  * This is a non-blocking state.
  */
-public class MCESIdle extends MCCharacterState<MCESIdle.IdleStateArgs> {
+public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
 
     /**
      * Class which represents args needed by idle move to start.
@@ -22,7 +22,7 @@ public class MCESIdle extends MCCharacterState<MCESIdle.IdleStateArgs> {
      * The constructor.
      * @param parent
      */
-    public MCESIdle(MCCharacter parent) {
+    public MCCSIdle(MCCharacter parent) {
         super(parent);
         this.name = "idle";
     }
@@ -56,10 +56,10 @@ public class MCESIdle extends MCCharacterState<MCESIdle.IdleStateArgs> {
                 return;
             if (data instanceof MCInputManager.ReadyCommand) {
                 if (ally.getTurnState().canMove())
-                    changeState("ready", new MCESReady.ReadyStateArgs());
+                    changeState("ready", new MCCSReady.ReadyStateArgs());
             } else if (data instanceof MCInputManager.AimCommand) {
                 if (ally.getTurnState().canAttack())
-                    changeState("aim", new MCESAim.AimStateArgs(parent.getAttack()));
+                    changeState("aim", new MCCSAim.AimStateArgs(parent.getAttack()));
             }
         }
 

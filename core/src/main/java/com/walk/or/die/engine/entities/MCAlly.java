@@ -2,14 +2,13 @@ package com.walk.or.die.engine.entities;
 
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.sm.MCStateMachine;
-import com.walk.or.die.engine.sm.entity.character.states.MCESAim;
-import com.walk.or.die.engine.sm.entity.character.states.MCESClickMove;
-import com.walk.or.die.engine.sm.entity.character.states.MCESDead;
-import com.walk.or.die.engine.sm.entity.character.states.MCESHurt;
-import com.walk.or.die.engine.sm.entity.character.states.MCESIdle;
-import com.walk.or.die.engine.sm.entity.character.states.MCESReady;
-import com.walk.or.die.engine.sm.entity.character.states.MCESShoot;
-import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCESMoveExploration;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSAim;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSClickMove;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSDead;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSIdle;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSReady;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSShoot;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**
@@ -53,13 +52,13 @@ public class MCAlly extends MCCharacter {
         super(parent, map, entityGenericName);
 
         MCStateMachine stateManager = getStateManager();
-        stateManager.addState(new MCESClickMove(this));
-        stateManager.addState(new MCESIdle(this));
-        stateManager.addState(new MCESAim(this));
-        stateManager.addState(new MCESShoot(this));
-        stateManager.addState(new MCESReady(this));
-        stateManager.addState(new MCESHurt(this));
-        stateManager.addState(new MCESDead(this));
+        stateManager.addState(new MCCSClickMove(this));
+        stateManager.addState(new MCCSIdle(this));
+        stateManager.addState(new MCCSAim(this));
+        stateManager.addState(new MCCSShoot(this));
+        stateManager.addState(new MCCSReady(this));
+        stateManager.addState(new MCCSHurt(this));
+        stateManager.addState(new MCCSDead(this));
     }
 
     /**

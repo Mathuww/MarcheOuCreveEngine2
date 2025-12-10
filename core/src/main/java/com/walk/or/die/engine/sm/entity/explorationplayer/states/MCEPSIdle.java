@@ -1,24 +1,15 @@
 package com.walk.or.die.engine.sm.entity.explorationplayer.states;
 
-import java.util.List;
-
-import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.entities.MCExplorationPlayer;
-import com.walk.or.die.engine.entities.MCAlly;
-import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityManager;
+import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.shared.MCIntVector2;
-import com.walk.or.die.engine.sm.entity.character.states.MCESAim;
-import com.walk.or.die.engine.sm.entity.character.states.MCESReady;
 import com.walk.or.die.engine.sm.entity.explorationplayer.MCExplorationPlayerState;
-import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
-public class MCESIdleExploration extends MCExplorationPlayerState<MCESIdleExploration.IdleStateArgs> {
+public class MCEPSIdle extends MCExplorationPlayerState<MCEPSIdle.IdleStateArgs> {
 
     public static class IdleStateArgs extends MCExplorationPlayerState.StateArgs {}
 
-    public MCESIdleExploration(MCExplorationPlayer parent) {
+    public MCEPSIdle(MCExplorationPlayer parent) {
         super(parent);
         this.name = "idle";
     }
@@ -29,7 +20,7 @@ public class MCESIdleExploration extends MCExplorationPlayerState<MCESIdleExplor
     }
 
     @Override
-    public void enter(MCESIdleExploration.IdleStateArgs args) {
+    public void enter(MCEPSIdle.IdleStateArgs args) {
         parent.keep = false;
         parent.playAnimation("idle");
         super.enter(args);
@@ -43,13 +34,13 @@ public class MCESIdleExploration extends MCExplorationPlayerState<MCESIdleExplor
     
     @Override
     protected void inputPressed(MCInputManager.Command data) {
-        if (!parent.focus)
-            return;
-        if (!parent.getParent().getStateManager().isIn("MCGSExploration"))
+        if (!parent.getParent().getStateManager().isIn("Exploration"))
             return;
         if (MCEntityManager.get().isAnyoneBusy())
             return;
-        super.inputPressed(data);
+        if (data instanceof MCInputManager.DirectionalCommand deplacement) {
+            changeState("move", new MCEPSMove.MoveStateArgs(deplacement));
+        }
     }
 
     /*

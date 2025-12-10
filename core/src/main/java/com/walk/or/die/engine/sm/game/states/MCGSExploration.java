@@ -15,7 +15,7 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
 
     public MCGSExploration(MCGame parent) {
         super(parent);
-        this.name = "exploration";
+        this.name = "Exploration";
     }
 
     @Override

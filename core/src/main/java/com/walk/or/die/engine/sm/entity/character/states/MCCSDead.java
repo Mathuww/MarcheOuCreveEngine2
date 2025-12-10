@@ -9,7 +9,7 @@ import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
  * The state to kill a character.<br>
  * Name = "dead"
  */
-public class MCESDead extends MCCharacterState<MCESDead.DeadStateArgs> {
+public class MCCSDead extends MCCharacterState<MCCSDead.DeadStateArgs> {
     /**
      * Class which represents args needed by the dead state to start.
      */
@@ -22,7 +22,7 @@ public class MCESDead extends MCCharacterState<MCESDead.DeadStateArgs> {
      * The constructor.
      * @param parent
      */
-    public MCESDead(MCCharacter parent) {
+    public MCCSDead(MCCharacter parent) {
         super(parent);
         this.name = "dead";
     }

@@ -11,7 +11,7 @@ import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
  * The state to take damages.<br>
  * Name = "hurt"
  */
-public class MCESHurt extends MCCharacterState<MCESHurt.HurtStateArgs> {
+public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
     /**
      * The class which represents args needed by hurt state to start.
      */
@@ -40,7 +40,7 @@ public class MCESHurt extends MCCharacterState<MCESHurt.HurtStateArgs> {
      * The constructor.
      * @param parent
      */
-    public MCESHurt(MCCharacter parent) {
+    public MCCSHurt(MCCharacter parent) {
         super(parent);
         this.name = "hurt";
     }
@@ -65,9 +65,9 @@ public class MCESHurt extends MCCharacterState<MCESHurt.HurtStateArgs> {
         blinkingTime += delta;
         if (stateTime >= HURT_DURATION) { // c'est bon un peu de discipline, releve toi non ? va pas chialer 1000 ans lui
             if (parent.getHealth() <= 0)
-                changeState("dead", new MCESDead.DeadStateArgs());
+                changeState("dead", new MCCSDead.DeadStateArgs());
             else
-                changeState("idle", new MCESIdle.IdleStateArgs());
+                changeState("idle", new MCCSIdle.IdleStateArgs());
             return;
         }
         if (blinkingTime >= BLINKING_INTERVAL) {

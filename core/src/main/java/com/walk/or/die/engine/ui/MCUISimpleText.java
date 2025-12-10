@@ -70,9 +70,9 @@ public class MCUISimpleText {
 
     public void render(SpriteBatch batch) {
         currentBatch = batch;
-        float y = zone.displayY() + (zone.displayHeight() - dimensions.y) / 2f;
-        float x = zone.displayX() + (zone.displayWidth() - dimensions.x) / 2f;
-        if (dimensions.x <= zone.displayWidth()) {
+        float y = zone.inY() + (zone.inHeight() - dimensions.y) / 2f;
+        float x = zone.inX() + (zone.inWidth() - dimensions.x) / 2f;
+        if (dimensions.x <= zone.inWidth()) {
                 //System.out.println("not too large");
                 drawSpacedText(currentText, x, y);
                 return;
@@ -80,12 +80,12 @@ public class MCUISimpleText {
 
         Viewport hudViewport = MCHUDManager.get().getViewport();
         
-        Vector3 ll = new Vector3(zone.displayX(), zone.displayY(), 0f);
+        Vector3 ll = new Vector3(zone.inX(), zone.inY(), 0f);
         hudViewport.project(ll);
 
         Vector3 ur = new Vector3(
-            zone.displayX() + zone.displayWidth(),
-            zone.displayY() + zone.displayHeight(),
+            zone.inX() + zone.inWidth(),
+            zone.inY() + zone.inHeight(),
             0f
         );
         hudViewport.project(ur);
@@ -109,6 +109,8 @@ public class MCUISimpleText {
         if (text.equals(currentText))
             return;
         currentText = text;
+        font.setColor(color);
+        font.getData().setScale(scale);
         dimensions = textDimensions(text);
     }
 

@@ -3,8 +3,6 @@ package com.walk.or.die.engine.sm.entity.explorationplayer;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.sm.MCState;
-import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 
 public abstract class MCExplorationPlayerState<T extends MCExplorationPlayerState.StateArgs> extends MCEntityState<T, MCExplorationPlayer>  {
@@ -26,7 +24,6 @@ public abstract class MCExplorationPlayerState<T extends MCExplorationPlayerStat
     @Override
     public void renderOnGridOverlay(SpriteBatch batch) {}
 
-
     // à override pour tous les états bloquants !
     public boolean isBlocking() {
         return false;
@@ -41,10 +38,6 @@ public abstract class MCExplorationPlayerState<T extends MCExplorationPlayerStat
         else if (data instanceof MCInputManager.DirectionalCommand) {
             //System.out.println("Oh on a pressé les touches du clavier");
         }
-    }
-
-    protected void changeState(String newState, MCExplorationPlayerState.StateArgs args) {
-       parent.getStateManager().stateTransitionCheck(new MCStateMachine.TransitionArgs(getName(), newState, args));
     }
 
 }

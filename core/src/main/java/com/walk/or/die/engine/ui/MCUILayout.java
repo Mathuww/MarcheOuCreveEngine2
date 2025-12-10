@@ -3,11 +3,15 @@ package com.walk.or.die.engine.ui;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
 public class MCUILayout {
     private Map<String, Zone> zones = new HashMap<>();
+    private ShapeRenderer debugRenderer = new ShapeRenderer();
 
     public MCUILayout() {}
 
@@ -24,27 +28,27 @@ public class MCUILayout {
         return z;
     }
 
-    public void splitY(String name, float topRatio, String topName, String bottomName) {
+    public void splitY(String name, float topRatio, float gap, String topName, String bottomName) {
         if (topRatio > 1)
             throw new IllegalArgumentException("cant split zone " + name + " vertically if top and bottom ratios add to more than 1");
         Zone z = zones.get(name);
         if (z == null)
             throw new IllegalStateException("cant split zone vertically : zone " + name + " not found in ui layout zones map");
         
-        float effectiveHeight = z.realHeight() - z.padY;
+        float effectiveHeight = z.logicHeight() - 2f * z.padY - gap;
         float topHeight = effectiveHeight * topRatio;
         float bottomHeight = effectiveHeight * (1 - topRatio);
 
         Rectangle top = new Rectangle(
-            z.realX() + z.padX, 
-            z.realY() + z.padY + bottomHeight, 
-            z.realWidth() - z.padX, 
+            z.logicX() + z.padX, 
+            z.logicY() + z.padY + gap + bottomHeight, 
+            z.logicWidth() - 2f * z.padX, 
             topHeight
         );
         Rectangle bottom = new Rectangle(
-            z.realX() + z.padX, 
-            z.realY() + z.padY, 
-            z.realWidth() - z.padX, 
+            z.logicX() + z.padX, 
+            z.logicY() + z.padY, 
+            z.logicWidth() - 2f * z.padX, 
             bottomHeight
         );
         
@@ -52,32 +56,41 @@ public class MCUILayout {
         zones.put(bottomName, new Zone(z, bottom));
     }  
 
-    public void splitX(String name, float leftRatio, String leftName, String rightName) {
+    public void splitX(String name, float leftRatio, float gap, String leftName, String rightName) {
         if (leftRatio > 1)
             throw new IllegalArgumentException("cant split zone " + name + " horizontally if left and right ratios add to more than 1");
         Zone z = zones.get(name);
         if (z == null)
             throw new IllegalStateException("cant split zone horizontally : zone " + name + " not found in ui layout zones map");
         
-        float effectiveWidth = z.realWidth() - z.padX;
+        float effectiveWidth = z.logicWidth() - 2f * z.padX - gap;
         float leftWidth = effectiveWidth * leftRatio;
         float rightWidth = effectiveWidth * (1 - leftRatio);
 
         Rectangle left = new Rectangle(
-            z.realX() + z.padX, 
-            z.realY() + z.padY, 
+            z.logicX() + z.padX, 
+            z.logicY() + z.padY, 
             leftWidth, 
-            z.realHeight() - z.padY
+            z.logicHeight() - 2f * z.padY
         );
         Rectangle right = new Rectangle(
-            z.realX() + z.padX + leftWidth, 
-            z.realY() + z.padY, 
+            z.logicX() + z.padX + leftWidth + gap, 
+            z.logicY() + z.padY, 
             rightWidth, 
-            z.realHeight() - z.padY
+            z.logicHeight() - 2f * z.padY
         );
         
         zones.put(leftName, new Zone(z, left));
         zones.put(rightName, new Zone(z, right));
+    }
+
+    public void renderDebug() {
+        debugRenderer.begin(ShapeType.Line);
+        debugRenderer.setProjectionMatrix(MCHUDManager.get().getCamera().combined);
+        for (Zone z : zones.values()) {
+            z.renderDebug(debugRenderer);
+        }
+        debugRenderer.end();
     }
 
     public static class Zone {
@@ -102,22 +115,28 @@ public class MCUILayout {
         }
 
         public Vector2 center(float width, float height) {
-            float x = displayX() + (displayWidth() - width) / 2f;
-            float y = displayY() + (displayHeight() - height) / 2f;
+            float x = inX() + (inWidth() - width) / 2f;
+            float y = inY() + (inHeight() - height) / 2f;
             return new Vector2(x, y);
         }
 
-        public Vector2 centerY(float height) {
-            float x = displayX();
-            float y = displayY() + (displayHeight() - height) / 2f;
+        public Vector2 alignLeft(float height) {
+            float x = inX();
+            float y = inY() + (inHeight() - height) / 2f;
+            return new Vector2(x, y);
+        }
+
+        public Vector2 alignRight(float width, float height) {
+            float x = inX() + inWidth() - width;
+            float y = inY() + (inHeight() - height) / 2f;
             return new Vector2(x, y);
         }
 
         // "real" dimensions (no padding, no offset - useful to calculate splits)
-        public float realX() { return rect.x; }
-        public float realY() { return rect.y; }
-        public float realWidth() { return rect.width; }
-        public float realHeight() { return rect.height; }
+        public float logicX() { return rect.x; }
+        public float logicY() { return rect.y; }
+        public float logicWidth() { return rect.width; }
+        public float logicHeight() { return rect.height; }
 
         private float totalOffsetX() {
             return offsetX + (parent != null ? parent.totalOffsetX() : 0f);
@@ -128,7 +147,7 @@ public class MCUILayout {
         }
 
         // rectangle w/ cumulative offsets
-        public Rectangle effectiveRect() {
+        public Rectangle outside() {
             return new Rectangle(
                 rect.x + totalOffsetX(),
                 rect.y + totalOffsetY(),
@@ -138,19 +157,36 @@ public class MCUILayout {
         }
 
         // rectangle w/ offsets + padding
-        public Rectangle paddedRect() {
-            Rectangle effRect = effectiveRect();
+        public Rectangle inside() {
+            Rectangle effRect = outside();
             effRect.x += padX;
             effRect.y += padY;
-            effRect.width -= padX;
-            effRect.height -= padY;
+            // sécurité
+            effRect.width = Math.min(effRect.width - padX * 2f, 0f);
+            effRect.height = Math.min(effRect.height - padY * 2f, 0f);
             return effRect;
         }
 
         // effective (padded + w/ offset) dimensions
-        public float displayX() { return effectiveRect().x + padX; }
-        public float displayY() { return effectiveRect().y + padY; }
-        public float displayWidth() { return effectiveRect().width - padX; }
-        public float displayHeight() { return effectiveRect().height - padY; }
+        public float inX() { return inside().x; }
+        public float inY() { return inside().y; }
+        public float inWidth() { return inside().width; }
+        public float inHeight() { return inside().height; }
+
+        public float size() {
+            return Math.min(inWidth(), inHeight());
+        }
+
+        public void renderDebug(ShapeRenderer debugRenderer) {
+            // censé être déjà begin et setProjectionMatrix à cet endroit
+            // extérieur (sans padding)
+            debugRenderer.setColor(Color.RED);
+            Rectangle out = outside();
+            debugRenderer.rect(out.x, out.y, out.width, out.height);
+            // intérieur (padding)
+            debugRenderer.setColor(Color.MAGENTA);
+            Rectangle in = inside();
+            debugRenderer.rect(in.x, in.y, in.width, in.height);
+        }
     }
 }

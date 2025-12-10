@@ -10,8 +10,8 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
-import com.walk.or.die.engine.sm.entity.character.states.MCESHurt;
-import com.walk.or.die.engine.sm.entity.character.states.MCESIdle;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSIdle;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.ui.MCCharacterHUD;
 import com.walk.or.die.engine.ui.MCOnGridHealth;
@@ -58,7 +58,7 @@ public class MCCharacter extends MCEntity {
 
     @Override
     public void onSpawn() {
-        stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
+        stateManager.setCurrentState("idle", new MCCSIdle.IdleStateArgs());
         healthBar = new MCOnGridHealth(this);
     }
 
@@ -209,7 +209,7 @@ public class MCCharacter extends MCEntity {
         if (damage < 0f) 
             throw new IllegalArgumentException("cant get hurt with negative damage");
         hp = Math.max(0, hp - damage);
-        stateManager.setCurrentState("hurt", new MCESHurt.HurtStateArgs(damage, targetAnim));
+        stateManager.setCurrentState("hurt", new MCCSHurt.HurtStateArgs(damage, targetAnim));
         System.out.println("J'ai pris " + damage + "dégats !");
     }
     

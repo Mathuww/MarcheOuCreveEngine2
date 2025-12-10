@@ -60,5 +60,6 @@ public class MCHUDManager {
         batch.begin();
         characterHUD.render(batch);
         batch.end();
+        characterHUD.renderDebug();
     }
 }

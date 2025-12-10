@@ -47,20 +47,20 @@ public class MCUIScrollingText extends MCUISimpleText {
     private void edgeGradient() {
         currentBatch.draw(
             gradientTexture, 
-            zone.displayX(), 
-            zone.displayY(), 
+            zone.inX(), 
+            zone.inY(), 
             FADE_WIDTH, 
-            zone.displayHeight()
+            zone.inHeight()
         );
         if (!gradientTexture.isFlipX())
             gradientTexture.flip(true, false); // flip x
     
         currentBatch.draw(
             gradientTexture, 
-            zone.displayX() + zone.displayWidth() - FADE_WIDTH, 
-            zone.displayY(), 
+            zone.inX() + zone.inWidth() - FADE_WIDTH, 
+            zone.inY(), 
             FADE_WIDTH, 
-            zone.displayHeight()
+            zone.inHeight()
         );
 
         gradientTexture.flip(true, false);
@@ -71,22 +71,22 @@ public class MCUIScrollingText extends MCUISimpleText {
         currentBatch = batch;
 
         //float ascent = -font.getData().ascent * font.getScaleY(); 
-        float y = zone.displayY() + (zone.displayHeight() + dimensions.y) / 2f; // + ascent;
-        if (dimensions.x <= zone.displayWidth()) {
+        float y = zone.inY() + (zone.inHeight() + dimensions.y) / 2f; // + ascent;
+        if (dimensions.x <= zone.inWidth()) {
                 //System.out.println("not too large");
-                float x = zone.displayX() + (zone.displayWidth() - dimensions.x) / 2f;
+                float x = zone.inX() + (zone.inWidth() - dimensions.x) / 2f;
                 drawSpacedText(currentText, x, y);
                 return;
         }
 
         Viewport hudViewport = MCHUDManager.get().getViewport();
         
-        Vector3 ll = new Vector3(zone.displayX(), zone.displayY(), 0f);
+        Vector3 ll = new Vector3(zone.inX(), zone.inY(), 0f);
         hudViewport.project(ll);
 
         Vector3 ur = new Vector3(
-            zone.displayX() + zone.displayWidth(),
-            zone.displayY() + zone.displayHeight(),
+            zone.inX() + zone.inWidth(),
+            zone.inY() + zone.inHeight(),
             0f
         );
         hudViewport.project(ur);
@@ -100,7 +100,7 @@ public class MCUIScrollingText extends MCUISimpleText {
         
         currentBatch.flush();
         if (ScissorStack.pushScissors(scissors)) {
-            float x1 = zone.displayX() + scrollX;
+            float x1 = zone.inX() + scrollX;
             float x2 = x1 + dimensions.x + SCROLL_GAP;
 
             drawSpacedText(currentText, x1, y);
@@ -123,7 +123,7 @@ public class MCUIScrollingText extends MCUISimpleText {
     public void update(float delta) {
         super.update(delta);
 
-        if (dimensions.x <= zone.displayWidth()) {
+        if (dimensions.x <= zone.inWidth()) {
             scrollX = 0f;
             return;
         }

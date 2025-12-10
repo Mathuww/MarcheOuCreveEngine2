@@ -16,7 +16,7 @@ import java.util.List;
  * The state to move to a given position.<br>
  * Name = "move"
  */
-public class MCESClickMove extends MCCharacterState<MCESClickMove.MoveStateArgs> {
+public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs> {
 
     /**
      * Class which represents args needed by the clickMove state to start.
@@ -49,7 +49,7 @@ public class MCESClickMove extends MCCharacterState<MCESClickMove.MoveStateArgs>
      * The constructor.
      * @param parent
      */
-    public MCESClickMove(MCCharacter parent) {
+    public MCCSClickMove(MCCharacter parent) {
         super(parent);
         movements = new ArrayDeque<>();
         this.name = "click_move";
@@ -116,7 +116,7 @@ public class MCESClickMove extends MCCharacterState<MCESClickMove.MoveStateArgs>
      */
     private void nextMove() {
         if (movements.size() == 0) {
-            changeState("idle", new MCESIdle.IdleStateArgs());
+            changeState("idle", new MCCSIdle.IdleStateArgs());
         } else {
             Vector2 targetPos = movements.removeFirst().toGdxVect();
 

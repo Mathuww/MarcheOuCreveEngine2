@@ -38,7 +38,7 @@ public abstract class MCAbstractHUD {
     }
 
     protected void drawCornerlessRectangle(Zone zone, float borderSize) {
-        Rectangle rect = zone.paddedRect();
+        Rectangle rect = zone.outside();
         drawWhiteRectangle(rect);
 
         float tiersBorder = borderSize / 3f;

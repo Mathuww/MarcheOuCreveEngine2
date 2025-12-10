@@ -5,9 +5,11 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSIdle;
 import com.walk.or.die.engine.sm.entity.explorationplayer.MCExplorationPlayerState;
-import com.walk.or.die.engine.sm.entity.character.states.MCESHurt;
-import com.walk.or.die.engine.sm.entity.character.states.MCESIdle;
+import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSIdle;
+import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSMove;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 public class MCExplorationPlayer extends MCEntity {
@@ -19,12 +21,14 @@ public class MCExplorationPlayer extends MCEntity {
     public MCExplorationPlayer(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
         stateManager = new MCStateMachine<>(this);
+        stateManager.addState(new MCEPSIdle(this));
+        stateManager.addState(new MCEPSMove(this));
     }
 
     @Override
     public void onSpawn() {
-        playAnimation("idle");
-        //stateManager.setCurrentState("idle", new MCESIdle.IdleStateArgs());
+        stateManager.setCurrentState("idle", new MCEPSIdle.IdleStateArgs());
+        //playAnimation("idle");
     }
 
     @Override
@@ -36,7 +40,7 @@ public class MCExplorationPlayer extends MCEntity {
     @Override
     public void update(float delta) {
         super.update(delta);
-        //stateManager.update(delta);
+        stateManager.update(delta);
     }
 
     @Override
@@ -63,7 +67,7 @@ public class MCExplorationPlayer extends MCEntity {
         if (damage < 0f) 
             throw new IllegalArgumentException("cant get hurt with negative damage");
         hp = Math.max(0, hp - damage);
-        stateManager.setCurrentState("hurt", new MCESHurt.HurtStateArgs(damage, targetAnim));
+        stateManager.setCurrentState("hurt", new MCCSHurt.HurtStateArgs(damage, targetAnim));
         System.out.println("J'ai pris " + damage + "dégats !");
     }
     

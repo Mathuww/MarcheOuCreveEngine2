@@ -13,8 +13,8 @@ import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.sm.entity.character.states.MCESAim;
-import com.walk.or.die.engine.sm.entity.character.states.MCESReady;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSAim;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSReady;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
 

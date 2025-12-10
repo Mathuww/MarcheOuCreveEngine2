@@ -9,7 +9,7 @@ import com.walk.or.die.engine.entities.MCEnemy;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
-import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCESMoveExploration;
+import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSMove;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 /**
@@ -17,9 +17,9 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
  * Name = "idle".<br>
  * This is a non-blocking state.
  */
-public class MCESEnemyIdle extends MCCharacterState<MCESIdle.IdleStateArgs> {
+public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
 
-    public MCESEnemyIdle(MCCharacter parent) {
+    public MCCSEnemyIdle(MCCharacter parent) {
         super(parent);
         this.name = "idle";
     }
@@ -30,7 +30,7 @@ public class MCESEnemyIdle extends MCCharacterState<MCESIdle.IdleStateArgs> {
     }
 
     @Override
-    public void enter(MCESIdle.IdleStateArgs args) {
+    public void enter(MCCSIdle.IdleStateArgs args) {
         parent.keep = false;
         parent.playAnimation("idle");
         super.enter(args);
@@ -53,7 +53,7 @@ public class MCESEnemyIdle extends MCCharacterState<MCESIdle.IdleStateArgs> {
      * @param pos - to move on.
      */
     public void play(MCIntVector2 pos) {
-        changeState("click_move", new MCESClickMove.MoveStateArgs(pos, MCPathfinder.get().getPath(parent.getTilePosition(), pos)));
+        changeState("click_move", new MCCSClickMove.MoveStateArgs(pos, MCPathfinder.get().getPath(parent.getTilePosition(), pos)));
     }
 
     /**
@@ -62,7 +62,7 @@ public class MCESEnemyIdle extends MCCharacterState<MCESIdle.IdleStateArgs> {
      * @param traj - of the bullet.
      */
     public void shoot(MCAlly ally, List<MCIntVector2> traj) {
-        changeState("shoot", new MCESShoot.ShootStateArgs((MCCharacter)ally, parent.getAttack(), traj));
+        changeState("shoot", new MCCSShoot.ShootStateArgs((MCCharacter)ally, parent.getAttack(), traj));
     }
 
     @Override

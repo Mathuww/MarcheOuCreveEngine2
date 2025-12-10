@@ -6,7 +6,7 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
-import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCESMoveExploration;
+import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSMove;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 import java.util.List;
@@ -15,7 +15,7 @@ import java.util.List;
  * The state to symbolize when you choose your tile to move on.<br>
  * Name = "ready"
  */
-public class MCESReady extends MCCharacterState<MCESReady.ReadyStateArgs> {
+public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
     private MCIntVector2 tile = new MCIntVector2(-1, -1);
 
     /**
@@ -27,7 +27,7 @@ public class MCESReady extends MCCharacterState<MCESReady.ReadyStateArgs> {
      * The constructor.
      * @param parent 
      */
-    public MCESReady (MCCharacter parent) {
+    public MCCSReady (MCCharacter parent) {
         super(parent);
         this.name = "ready";
     }
@@ -66,7 +66,7 @@ public class MCESReady extends MCCharacterState<MCESReady.ReadyStateArgs> {
     }
 
     private void cancel() {
-        changeState("idle", new MCESIdle.IdleStateArgs());
+        changeState("idle", new MCCSIdle.IdleStateArgs());
     }
 
     @Override
@@ -80,11 +80,11 @@ public class MCESReady extends MCCharacterState<MCESReady.ReadyStateArgs> {
                     cancel();
                     return;
                 }
-                changeState("click_move", new MCESClickMove.MoveStateArgs(v, MCPathfinder.get().clean(path)));
+                changeState("click_move", new MCCSClickMove.MoveStateArgs(v, MCPathfinder.get().clean(path)));
                 return;
             }
             cancel();
-        } else if (!(data instanceof MCInputManager.DirectionalCommand bipboup)) {
+        } else if (!(data instanceof MCInputManager.DirectionalCommand)) {
             cancel();
         }
     }

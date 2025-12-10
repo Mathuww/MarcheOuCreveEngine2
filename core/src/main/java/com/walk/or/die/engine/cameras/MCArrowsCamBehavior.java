@@ -6,6 +6,7 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
 import com.walk.or.die.engine.shared.MCEventBus;
@@ -16,6 +17,7 @@ import com.walk.or.die.engine.shared.MCIntVector2;
  */
 public class MCArrowsCamBehavior extends MCCameraBehavior {
     private final float CAM_MOVE_SPEED = 0.05f;
+    private MCEntity target;
 
     private Map<MCIntVector2, Boolean> currentInput;
 

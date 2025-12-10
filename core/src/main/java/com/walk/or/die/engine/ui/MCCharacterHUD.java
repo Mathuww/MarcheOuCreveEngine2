@@ -22,9 +22,10 @@ public class MCCharacterHUD extends MCAbstractHUD {
     private final float RECT_BORDER = MCGame.WINDOW_DEFAULT_HEIGHT * 0.015f;
 
     private final float INTERPANEL_PADDING_WIDTH = MCGame.WINDOW_DEFAULT_WIDTH * 0.05f;
+    private final float MAIN_PADDING_HEIGHT = MCGame.WINDOW_DEFAULT_HEIGHT * 0.025f;
 
-    private final float INSIDE_PADDING_WIDTH = RECT_BORDER * 2f;
-    private final float INSIDE_PADDING_HEIGHT = RECT_BORDER * 2f;
+    private final float INSIDE_PADDING_WIDTH = 2f;
+    private final float INSIDE_PADDING_HEIGHT = 2f;
 
     private final float CHARA_SPRITE_SIZE = 15f;
     private final float NAME_FONT_SCALE = 0.34f;
@@ -59,19 +60,20 @@ public class MCCharacterHUD extends MCAbstractHUD {
             "characterHud", 
             new Rectangle(
                 0f,
-                0f,
+                BOTTOM_MARGIN,
                 MCGame.WINDOW_DEFAULT_WIDTH,
                 HUD_HEIGHT
             )
-        ).pad(INTERPANEL_PADDING_WIDTH, BOTTOM_MARGIN);
+        ).pad(INTERPANEL_PADDING_WIDTH, MAIN_PADDING_HEIGHT);
 
-        layout.splitX("characterHud", 0.35f, "infoPanel", "choicePanel");
+        layout.splitX("characterHud", 0.35f, 30f, "infoPanel", "choicePanel");
         layout.zone("infoPanel").pad(INTERPANEL_PADDING_WIDTH, 0f);
-        layout.splitX("infoPanel", 0.15f, "charaSprite", "charaInfos");
+        layout.splitX("infoPanel", 0.15f, 5f, "charaSprite", "charaInfos");
         layout.zone("charaSprite").pad(INSIDE_PADDING_WIDTH, INSIDE_PADDING_HEIGHT);
         layout.zone("charaInfos").pad(INSIDE_PADDING_WIDTH, INSIDE_PADDING_HEIGHT);
 
-        characterSprite.setSize(CHARA_SPRITE_SIZE, CHARA_SPRITE_SIZE);
+        float characterSpriteSize = layout.zone("charaSprite").size();
+        characterSprite.setSize(characterSpriteSize, characterSpriteSize);
         characterNameText = new MCUIScrollingText(
             this, 
             font, 
@@ -96,6 +98,9 @@ public class MCCharacterHUD extends MCAbstractHUD {
             currentCharacter = character;
             characterAfterScroll = character;
         }
+
+        if (currentCharacter != null)
+            characterNameText.setText(currentCharacter.getDisplayName());
     }
 
     @Override
@@ -127,7 +132,6 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
         if (currentCharacter != null) {
             //characterNameZone.x = infoPanelZone.x + RECT_BORDER + INSIDE_PADDING_WIDTH + CHARA_SPRITE_SIZE + INSIDE_PADDING_WIDTH;
-            characterNameText.setText(currentCharacter.getDisplayName());
             characterNameText.update(delta);
 
             characterSprite.setRegion(currentCharacter.getSprite());
@@ -160,6 +164,10 @@ public class MCCharacterHUD extends MCAbstractHUD {
     public void render(SpriteBatch batch) {
         currentBatch = batch;
         renderInfoPanel();
+    }
+
+    public void renderDebug() {
+        layout.renderDebug();
     }
 
 }

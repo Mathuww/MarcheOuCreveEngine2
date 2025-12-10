@@ -15,7 +15,7 @@ import java.util.List;
  * The state of shooting on something.<br>
  * Name = "shoot"
  */
-public class MCESShoot extends MCCharacterState<MCESShoot.ShootStateArgs> {
+public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
 
     /**
      * Class wich represents args needed by shoot state to start.
@@ -43,7 +43,7 @@ public class MCESShoot extends MCCharacterState<MCESShoot.ShootStateArgs> {
      * The constructor.
      * @param parent
      */
-    public MCESShoot(MCCharacter parent) {
+    public MCCSShoot(MCCharacter parent) {
         super(parent);
         this.name = "shoot";
     }
@@ -71,12 +71,12 @@ public class MCESShoot extends MCCharacterState<MCESShoot.ShootStateArgs> {
             int damage = args.attack.getDamageTo(args.target);
             parent.shootThenCall(args.target.getTilePosition(), args.attack, () -> {
                 args.target.getHurt(damage, args.attack.getTargetAnim());
-                changeState("idle", new MCESIdle.IdleStateArgs());
+                changeState("idle", new MCCSIdle.IdleStateArgs());
             });
         } else { // miss shot !
            parent.shootThenCall(result.endPos, args.attack, () -> {
                 System.out.println("MissShot");
-                changeState("idle", new MCESIdle.IdleStateArgs());
+                changeState("idle", new MCCSIdle.IdleStateArgs());
             });
         }
 
