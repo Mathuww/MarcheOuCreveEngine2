@@ -72,12 +72,6 @@ public class MCUIScrollingText extends MCUISimpleText {
 
         //float ascent = -font.getData().ascent * font.getScaleY(); 
         float y = zone.inY() + (zone.inHeight() + dimensions.y) / 2f; // + ascent;
-        if (dimensions.x <= zone.inWidth()) {
-                //System.out.println("not too large");
-                float x = zone.inX() + (zone.inWidth() - dimensions.x) / 2f;
-                drawSpacedText(currentText, x, y);
-                return;
-        }
 
         Viewport hudViewport = MCHUDManager.get().getViewport();
         
@@ -100,15 +94,22 @@ public class MCUIScrollingText extends MCUISimpleText {
         
         currentBatch.flush();
         if (ScissorStack.pushScissors(scissors)) {
-            float x1 = zone.inX() + scrollX;
-            float x2 = x1 + dimensions.x + SCROLL_GAP;
-
-            drawSpacedText(currentText, x1, y);
-            drawSpacedText(currentText, x2, y);
+            if (dimensions.x <= zone.inWidth()) {
+                //System.out.println("not too large");
+                float x = zone.inX() + (zone.inWidth() - dimensions.x) / 2f;
+                drawSpacedText(currentText, x, y);
+            } else {
+                float x1 = zone.inX() + scrollX;
+                float x2 = x1 + dimensions.x + SCROLL_GAP;
+                drawSpacedText(currentText, x1, y);
+                drawSpacedText(currentText, x2, y);
+            }
+            
             currentBatch.flush();
             ScissorStack.popScissors();
         }
-        edgeGradient();
+        if (dimensions.x > zone.inWidth())
+            edgeGradient();
     }
 
     @Override

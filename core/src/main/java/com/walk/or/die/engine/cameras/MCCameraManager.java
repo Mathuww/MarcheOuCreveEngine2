@@ -230,7 +230,6 @@ public class MCCameraManager {
         movedThisFrame = false;
         if (mode == null) throw new UnexistingBehaviorException("camera update : need a behavior to update");
 
-
         float offsetX = 0f, offsetY = 0f;
         if (shaking) {
             if (shakeStateTime < shakeDuration) {

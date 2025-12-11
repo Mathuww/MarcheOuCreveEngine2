@@ -22,6 +22,8 @@ import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
 public class MCUISimpleText {
+    private final float SPACE_FACTOR = 2.5f;
+
     protected Zone zone;
     protected MCAbstractHUD parent;
     protected SpriteBatch currentBatch;
@@ -52,31 +54,33 @@ public class MCUISimpleText {
         font.setColor(color);
         font.getData().setScale(scale);
         float cursor = x;
-        for (int i = 0; i < text.length(); i++) {
-            char c = text.charAt(i);
+        for (char c : text.toCharArray()) {
             GlyphLayout layout = new GlyphLayout(font, String.valueOf(c));
             font.draw(currentBatch, String.valueOf(c), cursor, y);
-            cursor += layout.width + spacing;
             if (c == ' ')
-                cursor += 2f * spacing;
+                cursor += SPACE_FACTOR * spacing;
+            else
+                cursor += layout.width + spacing;  
         }
     }
 
     protected Vector2 textDimensions(String text) {
-        GlyphLayout layout = new GlyphLayout(font, text);
-        float realWidth = layout.width + spacing * (text.length() - 1);
-        return new Vector2(realWidth, layout.height);
+        float realWidth = 0f;
+        for (char c : text.toCharArray()) {
+            GlyphLayout layout = new GlyphLayout(font, String.valueOf(c));
+            if (c == ' ')
+                realWidth += SPACE_FACTOR * spacing;
+            else
+                realWidth += layout.width + spacing;  
+        }
+        GlyphLayout totalLayout = new GlyphLayout(font, text);
+        return new Vector2(realWidth, totalLayout.height);
     }
 
     public void render(SpriteBatch batch) {
         currentBatch = batch;
         float y = zone.inY() + (zone.inHeight() - dimensions.y) / 2f;
         float x = zone.inX() + (zone.inWidth() - dimensions.x) / 2f;
-        if (dimensions.x <= zone.inWidth()) {
-                //System.out.println("not too large");
-                drawSpacedText(currentText, x, y);
-                return;
-        } 
 
         Viewport hudViewport = MCHUDManager.get().getViewport();
         
@@ -108,10 +112,10 @@ public class MCUISimpleText {
     public void setText(String text) {
         if (text.equals(currentText))
             return;
-        currentText = text;
+        currentText = text.trim();
         font.setColor(color);
         font.getData().setScale(scale);
-        dimensions = textDimensions(text);
+        dimensions = textDimensions(currentText);
     }
 
     public void update(float delta) {

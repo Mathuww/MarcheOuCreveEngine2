@@ -25,32 +25,49 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         }
     }
 
+    private Vector2 relativeMove;
     private float speed = 4f;
     private DirectionalCommand lastCmd;
-    private int nbConcurrentCommande;
+    private int nbConcurrentCommand;
 
-    private final float CAM_MOVE_SPEED = 0.05f;
+    private final float CAM_MOVE_SPEED = 0.022f;
 
     private Map<MCIntVector2, Boolean> currentInput;
+
+    private float limitX;
+    private float limitY;
+
 
     public MCEPSMove(MCExplorationPlayer parent) {
         super(parent);
         this.name = "move";
         currentInput = new HashMap<>();
+        limitX = parent.getMap().getWidth() - parent.getSize();
+        limitY = parent.getMap().getHeight() - parent.getSize();
+        relativeMove = new Vector2(0, 0);
     }
 
-    private void updateCommande(MCInputManager.DirectionalCommand cmd, boolean action) {
+    private void updateCommand(MCInputManager.DirectionalCommand cmd, boolean action) {
         if(action) {
             currentInput.put(cmd.getIntVect(), true);
             lastCmd = cmd;
+            relativeMove.set(0,0);
         } else {
             currentInput.put(cmd.getIntVect(), false);
         }
     }
 
-    @Override
-    public void enter(MoveStateArgs args) {
-        parent.playAnimation("walk");
+    private boolean blocked() {
+        if((relativeMove.y == 0) && (parent.getX() == 0 || parent.getX() >= limitX)) {
+            return true;
+        } else if ((relativeMove.x == 0) && (parent.getY() == 0 || parent.getY() >= limitY)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void resetInput() {
         int[][] directions = {
             {0, +1}, {0, -1},
             {+1, 0}, {-1, 0}
@@ -58,7 +75,15 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         for (int[] dir : directions) {
             currentInput.put(new MCIntVector2(dir[0], dir[1]), false);
         }
-        updateCommande(args.firstData, true);
+        relativeMove.x = 0f;
+        relativeMove.y = 0f;
+    }
+
+    @Override
+    public void enter(MoveStateArgs args) {
+        parent.playAnimation("walk");
+        resetInput();
+        updateCommand(args.firstData, true);
         bus.on(this, "InputPressed", this::inputPressed);
         bus.on(this, "InputReleased", this::inputReleased);
     }
@@ -75,8 +100,7 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
      */
     public void inputPressed(Command data) {
         if(data instanceof DirectionalCommand cmd) {
-            updateCommande(cmd, true);
-
+            updateCommand(cmd, true);
         }
     }
 
@@ -86,7 +110,7 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
      */
     public void inputReleased(Command data) {
         if (data instanceof DirectionalCommand cmd) {
-            updateCommande(cmd, false);
+            updateCommand(cmd, false);
 
             //verificate if nothing input was pressed
             for (Boolean value : currentInput.values()) {
@@ -103,23 +127,19 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     public void update(float delta) {
         MCCameraManager camManager = MCCameraManager.get();
 
-        Vector2 relativeMove = new Vector2(0, 0);
-
-        MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
-
-        nbConcurrentCommande = 0;
+        nbConcurrentCommand = 0;
 
         for (Boolean action : currentInput.values()) {
             if(action) {
-                nbConcurrentCommande +=1;
+                nbConcurrentCommand +=1;
             }
         }
             
         for (Map.Entry<MCIntVector2, Boolean> entry : currentInput.entrySet()) {
-            if(entry.getValue() && ((nbConcurrentCommande == 1) || (entry.getKey().equals(lastCmd.getIntVect())))) {
-                MCIntVector2 commande = entry.getKey();
-                relativeMove.x += commande.x;
-                relativeMove.y += commande.y;
+            if(entry.getValue() && ((nbConcurrentCommand == 1) || (entry.getKey().equals(lastCmd.getIntVect())))) {
+                MCIntVector2 command = entry.getKey();
+                relativeMove.x += command.x;
+                relativeMove.y += command.y;
             }
         }
         if (relativeMove.len() > 0) relativeMove.nor();
@@ -127,25 +147,36 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         relativeMove.x = relativeMove.x * CAM_MOVE_SPEED;
         relativeMove.y = relativeMove.y * CAM_MOVE_SPEED;
         
-        float targetX = player.getX() + relativeMove.x;
-        float targetY = player.getY() + relativeMove.y;
+        float posX = parent.getX() + relativeMove.x;
+        float posY = parent.getY() + relativeMove.y;
 
-        Vector2 lowerLimit = camManager.getGlobalLowerLimit();
-        Vector2 upperLimit = camManager.getGlobalUpperLimit();
-
-
-        targetX = MathUtils.clamp(
-            targetX, 
-            lowerLimit.x, 
-            upperLimit.x
-        );
-        targetY = MathUtils.clamp(
-            targetY, 
-            lowerLimit.y, 
-            upperLimit.y
+        parent.setX(
+            MathUtils.clamp(
+                posX, 
+            0f, 
+                limitX
+            )
         );
 
-        player.setX(targetX);
-        player.setY(targetY);
+        parent.setY(
+            MathUtils.clamp(
+                posY, 
+            0f, 
+                limitY
+            )
+        );
+
+        if(blocked()) {
+            changeState("idle", new MCEPSIdle.IdleStateArgs());
+        } else {
+            if (relativeMove.x > 0)
+                parent.playAnimationWithoutReset("walk_right");
+            else if (relativeMove.x < 0)
+                parent.playAnimationWithoutReset("walk_left");
+            else if (relativeMove.y > 0)
+                parent.playAnimationWithoutReset("walk_up");
+            else if (relativeMove.y < 0)
+                parent.playAnimationWithoutReset("walk_down");
+        }
     }
 }

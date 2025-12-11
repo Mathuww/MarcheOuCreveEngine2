@@ -43,6 +43,7 @@ public abstract class MCEntity {
     private MCTerrainMap map;
     private Rectangle hitbox;
     private Map<String, MCAnimation> animations;
+    private String currentAnimName;
     private MCAnimation currentAnim;
     private Sprite sprite;
     private int layer = 1;
@@ -127,8 +128,10 @@ public abstract class MCEntity {
      * @see MCAnimation
      */
     public boolean playAnimation(String animName) {
+        System.out.println("asked to play animation : " + animName);
         MCAnimation newAnim = animations.get(animName);
         if (newAnim != null) {
+            currentAnimName = animName;
             currentAnim = newAnim;
             currentAnim.reset(); // remet statetime à 0 ms
             //System.out.println(id + ": playAnimation " + animName + " success");
@@ -137,6 +140,13 @@ public abstract class MCEntity {
             //System.err.println(id + ": playAnimation " + animName + " not found");
             return false;
         }
+    }
+
+    public boolean playAnimationWithoutReset(String animName) {
+        System.out.println("asking playanimnoreset : " + animName);
+        if (currentAnimName == animName)
+            return true;
+        return playAnimation(animName);
     }
 
     /**

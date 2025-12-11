@@ -23,7 +23,10 @@ public abstract class MCAbstractHUD {
     }
 
     public abstract void update(float delta);
-    public abstract void render(SpriteBatch batch);
+    
+    public void render(SpriteBatch batch) {
+        currentBatch = batch;
+    }
     
     protected void drawWhiteRectangle(Rectangle rect) {
         currentBatch.draw(whiteTexture, rect.x, rect.y, rect.width, rect.height);

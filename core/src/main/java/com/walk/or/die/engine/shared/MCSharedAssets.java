@@ -115,8 +115,8 @@ public class MCSharedAssets {
         }
         BitmapFont font = new BitmapFont(Gdx.files.internal(fontPath + filename + ".fnt"));
         // pour pas smooth la police (garder rendu pixel perfect)
-        //font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        //font.setUseIntegerPositions(true);
+        font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+        font.setUseIntegerPositions(true);
         savedBitmapFonts.put(filename, font);
     }
 
