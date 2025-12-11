@@ -9,8 +9,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.walk.or.die.engine.input.MCInputManager.HudCommand.Type;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
+import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
  * Our singleton which manages inputs.
@@ -109,6 +111,22 @@ public class MCInputManager implements InputProcessor {
         public ReadyCommand() {}    
     }
 
+    public static class HudCommand extends Command {
+        public static enum Type {
+            UP,
+            DOWN,
+            LEFT,
+            RIGHT,
+            VALIDATE
+        }
+
+        public Type type;
+
+        public HudCommand(Type type) {
+            this.type = type;
+        }
+    }
+
     /**
      * Non-handled input.
      */
@@ -179,35 +197,64 @@ public class MCInputManager implements InputProcessor {
     public boolean keyDown(int k) {
         switch (k) {
             case Input.Keys.W:
-            case Input.Keys.UP:
                 bus.emit("InputPressed", new DirectionalCommand(0, +1));
                 break;
 
             case Input.Keys.S:
-            case Input.Keys.DOWN:
                 bus.emit("InputPressed", new DirectionalCommand(0, -1));
                 break;
 
             case Input.Keys.A:
-            case Input.Keys.LEFT:
                 bus.emit("InputPressed", new DirectionalCommand(-1, 0));
                 break;
 
             case Input.Keys.D:
-            case Input.Keys.RIGHT:
                 bus.emit("InputPressed", new DirectionalCommand(+1, 0));
                 break;
 
+            case Input.Keys.UP:
+                if (MCHUDManager.get().isHudShown())
+                    bus.emit("InputPressed", new HudCommand(Type.UP));
+                else
+                    bus.emit("InputPressed", new DirectionalCommand(0, +1));
+                break;
+
+            case Input.Keys.DOWN:
+                if (MCHUDManager.get().isHudShown())
+                    bus.emit("InputPressed", new HudCommand(Type.DOWN));
+                else
+                    bus.emit("InputPressed", new DirectionalCommand(0, -1));
+                break;
+
+            case Input.Keys.LEFT:
+                if (MCHUDManager.get().isHudShown())
+                    bus.emit("InputPressed", new HudCommand(Type.LEFT));
+                else
+                    bus.emit("InputPressed", new DirectionalCommand(-1, 0));
+                break;
+
+            case Input.Keys.RIGHT:
+                if (MCHUDManager.get().isHudShown())
+                    bus.emit("InputPressed", new HudCommand(Type.RIGHT));
+                else
+                    bus.emit("InputPressed", new DirectionalCommand(+1, 0));
+                break;
+
             case Input.Keys.Q:
-                bus.emit("InputPressed", new AimCommand());
+                //bus.emit("InputPressed", new AimCommand());
                 break;
             
             case Input.Keys.SEMICOLON:
-                bus.emit("InputPressed", new ReadyCommand());
+                //bus.emit("InputPressed", new ReadyCommand());
                 break;
 
             case Input.Keys.SPACE:
                 bus.emit("InputPressed", new NextTurnCommand());
+                break;
+
+            case Input.Keys.ENTER:
+                if (MCHUDManager.get().isHudShown())
+                    bus.emit("InputPressed", new HudCommand(Type.VALIDATE));
                 break;
 
             default:

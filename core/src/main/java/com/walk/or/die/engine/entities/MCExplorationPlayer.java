@@ -16,6 +16,7 @@ public class MCExplorationPlayer extends MCEntity {
     private Integer hp;
     private boolean dead = false;
     private Float speed;
+    private Float toleranceHitbox;
     private MCStateMachine<MCExplorationPlayerState, MCEntity> stateManager;
 
     public MCExplorationPlayer(MCGame parent, MCTerrainMap map, String entityGenericName) {
@@ -35,6 +36,7 @@ public class MCExplorationPlayer extends MCEntity {
     public void initFromProperties(MapProperties props) throws Exception {
         hp = MCUtils.getIntProperty(props, "hp", 100);
         speed = MCUtils.getFloatProperty(props, "speed", 2);
+        toleranceHitbox = (MCUtils.getFloatProperty(props, "hitboxTolerancePercentage", 0.05f))/(100*2);
     }
 
     @Override
@@ -71,6 +73,10 @@ public class MCExplorationPlayer extends MCEntity {
         System.out.println("J'ai pris " + damage + "dégats !");
     }
     
+    public Float getToleranceHitbox() {
+        return toleranceHitbox;
+    }
+
     public boolean isDead() {
         return dead;
     }

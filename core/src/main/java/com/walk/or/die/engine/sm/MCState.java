@@ -1,16 +1,9 @@
 package com.walk.or.die.engine.sm;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.walk.or.die.engine.entities.MCEntity;
-import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.input.MCInputManager.ClickTileCommand;
-import com.walk.or.die.engine.input.MCInputManager.Command;
-import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
-import com.walk.or.die.engine.shared.MCEventBus;
-
-import java.util.List;
 import java.util.function.Consumer;
-import java.util.ArrayList;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.walk.or.die.engine.shared.MCEventBus;
 
 public abstract class MCState<T extends MCState.StateArgs> {
     public static class StateArgs {}

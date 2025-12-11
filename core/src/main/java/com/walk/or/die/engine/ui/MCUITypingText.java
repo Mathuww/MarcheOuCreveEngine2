@@ -31,11 +31,16 @@ public class MCUITypingText extends MCUISimpleText {
         stateTime = 0f;
         typedChars = 0;
         typing = true;
+        super.setText("");
     }
 
     public void endTyping() {
         typedChars = fullText.length();
         typing = false;
+    }
+
+    public boolean stillTyping() {
+        return typing;
     }
 
     @Override

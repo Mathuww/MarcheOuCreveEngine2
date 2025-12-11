@@ -2,9 +2,6 @@ package com.walk.or.die.engine.sm.entity.character;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.entities.MCCharacter;
-import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.sm.MCState;
-import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 
 /**

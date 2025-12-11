@@ -128,7 +128,6 @@ public abstract class MCEntity {
      * @see MCAnimation
      */
     public boolean playAnimation(String animName) {
-        System.out.println("asked to play animation : " + animName);
         MCAnimation newAnim = animations.get(animName);
         if (newAnim != null) {
             currentAnimName = animName;
@@ -143,7 +142,7 @@ public abstract class MCEntity {
     }
 
     public boolean playAnimationWithoutReset(String animName) {
-        System.out.println("asking playanimnoreset : " + animName);
+        //System.out.println("asking playanimnoreset : " + animName);
         if (currentAnimName == animName)
             return true;
         return playAnimation(animName);

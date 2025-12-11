@@ -34,6 +34,9 @@ public class MCUISimpleText {
     protected float scale;
     protected float spacing;
 
+    protected float offsetX = 0f;
+    public boolean centered = true;
+
     public MCUISimpleText(
         MCAbstractHUD parent, 
         BitmapFont font, 
@@ -53,7 +56,7 @@ public class MCUISimpleText {
     protected void drawSpacedText(String text, float x, float y) {
         font.setColor(color);
         font.getData().setScale(scale);
-        float cursor = x;
+        float cursor = x + offsetX;
         for (char c : text.toCharArray()) {
             GlyphLayout layout = new GlyphLayout(font, String.valueOf(c));
             font.draw(currentBatch, String.valueOf(c), cursor, y);
@@ -64,7 +67,8 @@ public class MCUISimpleText {
         }
     }
 
-    protected Vector2 textDimensions(String text) {
+    public Vector2 textDimensions(String text) {
+        font.getData().setScale(scale);
         float realWidth = 0f;
         for (char c : text.toCharArray()) {
             GlyphLayout layout = new GlyphLayout(font, String.valueOf(c));
@@ -79,8 +83,12 @@ public class MCUISimpleText {
 
     public void render(SpriteBatch batch) {
         currentBatch = batch;
-        float y = zone.inY() + (zone.inHeight() - dimensions.y) / 2f;
-        float x = zone.inX() + (zone.inWidth() - dimensions.x) / 2f;
+        float y = zone.inY() + (zone.inHeight() + dimensions.y) / 2f;
+        float x;
+        if (centered)
+            x = zone.inX() + (zone.inWidth() - dimensions.x) / 2f;
+        else 
+            x = zone.inX();
 
         Viewport hudViewport = MCHUDManager.get().getViewport();
         
@@ -116,6 +124,10 @@ public class MCUISimpleText {
         font.setColor(color);
         font.getData().setScale(scale);
         dimensions = textDimensions(currentText);
+    }
+
+    public void setOffsetX(float offsetX) {
+        this.offsetX = offsetX;
     }
 
     public void update(float delta) {

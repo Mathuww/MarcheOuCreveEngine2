@@ -3,7 +3,6 @@ package com.walk.or.die.engine.sm.entity.character.states;
 import com.badlogic.gdx.math.MathUtils;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCAlly;
-import com.walk.or.die.engine.entities.MCAnimation;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 

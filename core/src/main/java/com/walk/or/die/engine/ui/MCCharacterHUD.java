@@ -1,5 +1,8 @@
 package com.walk.or.die.engine.ui;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -10,7 +13,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
+import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
@@ -34,7 +40,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     private final float RIGHT_PANEL_PADDING_WIDTH = HUD_RECT_BORDER * 2f;
     private final float RIGHT_PANEL_PADDING_HEIGHT = HUD_RECT_BORDER * 2f;
-    private final float CHOICE_FONT_SCALE = 0.2f;
+    private final float CHOICE_FONT_SCALE = 0.35f;
     private final float CHOICE_FONT_SPACING = 3f;
 
     private final float SCROLL_LERP = 500f;
@@ -48,12 +54,16 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     private Sprite characterSprite = new Sprite();
     private MCUIScrollingText characterNameText;
+    private MCUISimpleText characterHpText;
 
     private MCUITypingText choiceMessageText;
+    private MCUICarousel choiceCarousel;
 
     private float offsetY = SCROLL_Y;
     private float targetOffsetY = SCROLL_Y;
     private boolean scrolling = false;
+
+    private final MCEventBus bus = MCEventBus.get();
 
     public MCCharacterHUD() {
         try {
@@ -77,6 +87,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
         
         layout.zone("infoPanel").pad(LEFT_PANEL_PADDING_WIDTH, LEFT_PANEL_PADDING_HEIGHT);
         layout.splitX("infoPanel", CHARA_SPRITE_RATIO, LEFT_PANEL_GAP, "charaSprite", "charaInfos");
+        layout.splitY("charaInfos", 0.5f, 5f, "charaName", "charaHp");
 
         layout.zone("choicePanel").pad(RIGHT_PANEL_PADDING_WIDTH, RIGHT_PANEL_PADDING_HEIGHT);
         layout.splitY("choicePanel", 0.4f, 5f, "choiceMessage", "choiceCarousel");
@@ -86,7 +97,15 @@ public class MCCharacterHUD extends MCAbstractHUD {
         characterNameText = new MCUIScrollingText(
             this, 
             font, 
-            layout.zone("charaInfos"), 
+            layout.zone("charaName"), 
+            Color.BLACK, 
+            NAME_FONT_SCALE, 
+            NAME_FONT_SPACING
+        );
+        characterHpText = new MCUISimpleText(
+            this, 
+            font, 
+            layout.zone("charaHp"), 
             Color.BLACK, 
             NAME_FONT_SCALE, 
             NAME_FONT_SPACING
@@ -100,6 +119,14 @@ public class MCCharacterHUD extends MCAbstractHUD {
             CHOICE_FONT_SCALE,
             CHOICE_FONT_SPACING
         );
+
+        choiceCarousel = new MCUICarousel(
+            this,
+            font,
+            layout.zone("choiceCarousel")
+        );
+
+        bus.on(this, "InputPressed", this::inputPressed);
     }
 
     public void setHudTarget(MCCharacter character) {
@@ -121,8 +148,27 @@ public class MCCharacterHUD extends MCAbstractHUD {
             characterNameText.setText(currentCharacter.getDisplayName());
             choiceMessageText.setText("What should I do ?");
             choiceMessageText.startTyping();
-            //choiceMessageText.endTyping();
+
+            if (currentCharacter instanceof MCAlly) {
+                Map<String, Runnable> carouselActions = new HashMap<>();
+                carouselActions.put("MOVE", () -> bus.emit("InputPressed", new MCInputManager.ReadyCommand()));
+                carouselActions.put("ATTACK", () -> bus.emit("InputPressed", new MCInputManager.AimCommand()));
+                carouselActions.put("FINISH TURN", () -> bus.emit("InputPressed", new MCInputManager.NextTurnCommand()));
+                carouselActions.put("DIE", () -> currentCharacter.getHurt(currentCharacter.getMaxHp(), "hurt"));
+                choiceCarousel.loadActions(carouselActions);
+                choiceCarousel.appear();
+            }
         }
+    }
+
+    public void showActions() {
+
+    }
+
+    @Override
+    public void inputPressed(MCInputManager.Command cmd) {
+        if (cmd instanceof MCInputManager.HudCommand hudCmd)
+            choiceCarousel.processInput(hudCmd);
     }
 
     @Override
@@ -161,7 +207,11 @@ public class MCCharacterHUD extends MCAbstractHUD {
             characterSprite.setPosition(spriteCenter.x, spriteCenter.y);
             characterNameText.update(delta);
 
+            characterHpText.setText("HP : " + currentCharacter.getHealth() + " / " + currentCharacter.getMaxHp());
+            characterHpText.update(delta);
+            
             choiceMessageText.update(delta);
+            choiceCarousel.update(delta);
         }
     }
 
@@ -182,7 +232,9 @@ public class MCCharacterHUD extends MCAbstractHUD {
         if (currentCharacter != null) {
             characterSprite.draw(currentBatch);
             characterNameText.render(currentBatch);
+            characterHpText.render(currentBatch);
             choiceMessageText.render(currentBatch);
+            choiceCarousel.render(currentBatch);
         }      
     }
 
@@ -190,4 +242,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
         layout.renderDebug();
     }
 
+    public boolean isShown() {
+        return (currentCharacter != null);
+    }
 }

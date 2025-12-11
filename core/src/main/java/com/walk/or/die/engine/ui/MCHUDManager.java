@@ -49,6 +49,10 @@ public class MCHUDManager {
         characterHUD.setHudTarget(character);
     }
 
+    public boolean isHudShown() {
+        return characterHUD.isShown();
+    }
+
     public void update(float delta) {
         hudCamera.update();
         characterHUD.update(delta);
@@ -60,6 +64,6 @@ public class MCHUDManager {
         batch.begin();
         characterHUD.render(batch);
         batch.end();
-        characterHUD.renderDebug();
+        //characterHUD.renderDebug();
     }
 }

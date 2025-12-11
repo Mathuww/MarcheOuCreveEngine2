@@ -3,6 +3,7 @@ package com.walk.or.die.engine.ui;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
@@ -23,7 +24,11 @@ public abstract class MCAbstractHUD {
     }
 
     public abstract void update(float delta);
-    
+
+    public void inputPressed(Command cmd) {
+        // jouer un petit son quand on interagit avec le hud
+    }
+
     public void render(SpriteBatch batch) {
         currentBatch = batch;
     }

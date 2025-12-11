@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "entities_anims/explorationPlayer.tmx",
     "expandedProjectPaths": [
         "maps",
         "entities_anims",
@@ -42,6 +42,9 @@
         "entities_anims/ally.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "entities_anims/animWalk_explorationPlayer.tsx": {
+            "scaleInDock": 1
         },
         "entities_anims/chara1.tsx": {
             "scaleInDock": 1,
@@ -105,8 +108,8 @@
             "scale": 5.2769531249999995,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 64.1468650529277,
-                "y": 63.95736175882745
+                "x": 64.14686505292768,
+                "y": 63.957361758827446
             }
         },
         "entities_anims/explorationPlayer.tmx#chara1": {
@@ -188,9 +191,10 @@
     "map.tileWidth": 32,
     "map.width": 8,
     "openFiles": [
+        "entities_anims/explorationPlayer.tmx"
     ],
     "project": "walkordie.tiled-project",
-    "property.type": "string",
+    "property.type": "float",
     "recentFiles": [
         "entities_anims/explorationPlayer.tmx",
         "entities_anims/explorationPlayer.tsx",

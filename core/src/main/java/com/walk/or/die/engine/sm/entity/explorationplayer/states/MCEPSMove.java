@@ -4,15 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.cameras.MCCameraManager;
-import com.walk.or.die.engine.entities.MCEntityManager;
+import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCExplorationPlayer;
+import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.entity.explorationplayer.MCExplorationPlayerState;
+import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 
 public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs> {
@@ -57,14 +59,45 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         }
     }
 
-    private boolean blocked() {
-        if((relativeMove.y == 0) && (parent.getX() == 0 || parent.getX() >= limitX)) {
+    private boolean limitMapBlocked(float projX, float projY) {
+        if((relativeMove.y == 0) && (projX == 0 || projX  >= limitX)) {
             return true;
-        } else if ((relativeMove.x == 0) && (parent.getY() == 0 || parent.getY() >= limitY)) {
+        } else if ((relativeMove.x == 0) && (projY == 0 || projY  >= limitY)) {
             return true;
         } else {
             return false;
         }
+    }
+
+    private boolean collisionBlocked(float projX, float projY) {
+        //On fonctionne avec 2 rectangle, la hitbox et la projection de la hitbox (on déplace la hitbox uniquement si sa projection overlappe rien)
+        float tolerance = parent.getToleranceHitbox();
+        
+        Rectangle projHitbox = new Rectangle(projX+tolerance, projY+tolerance, parent.getSize()-2*tolerance, parent.getSize()-2*tolerance);
+
+        for (MCEntity e: MCEntityManager.get().getEntities()) {
+            if (!e.equals(parent)) {
+                if (e.getHitbox().overlaps(projHitbox)) {
+                    return true;
+                }
+            }
+        } 
+        /*         
+        for (i = floor(projX+tolerance), i < ceil(parent.getSize()-2*tolerance), i++) {
+            for (j= floor(projY+tolerance), j < ceil(parent.getSize()-2*tolerance), j++>) {
+                if (!MCTerrainMap.isWalkable(new Vector2(i,j))) {
+                    return true;
+                }
+            }
+        }
+            <3
+            moi j'arrete pour ajd !! courage pour les collisions tu vas gérer ;)
+        */
+       return false;
+    }
+
+    private boolean blocked(float projX, float projY) {
+        return limitMapBlocked(projX, projY) || collisionBlocked(projX, projY);
     }
 
     private void resetInput() {
@@ -125,8 +158,6 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
 
     @Override
     public void update(float delta) {
-        MCCameraManager camManager = MCCameraManager.get();
-
         nbConcurrentCommand = 0;
 
         for (Boolean action : currentInput.values()) {
@@ -150,33 +181,36 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         float posX = parent.getX() + relativeMove.x;
         float posY = parent.getY() + relativeMove.y;
 
-        parent.setX(
-            MathUtils.clamp(
-                posX, 
+        posX = MathUtils.clamp(
+            posX, 
             0f, 
-                limitX
-            )
+            limitX
+        );
+        
+        posY = MathUtils.clamp(
+            posY, 
+        0f, 
+            limitY
         );
 
-        parent.setY(
-            MathUtils.clamp(
-                posY, 
-            0f, 
-                limitY
-            )
-        );
-
-        if(blocked()) {
+        if(blocked(posX, posY)) {
             changeState("idle", new MCEPSIdle.IdleStateArgs());
+            return;
         } else {
-            if (relativeMove.x > 0)
+            if (relativeMove.x > 0) {
                 parent.playAnimationWithoutReset("walk_right");
-            else if (relativeMove.x < 0)
+            } else if (relativeMove.x < 0) {
                 parent.playAnimationWithoutReset("walk_left");
-            else if (relativeMove.y > 0)
+            } else if (relativeMove.y > 0) {
                 parent.playAnimationWithoutReset("walk_up");
-            else if (relativeMove.y < 0)
+            } else if (relativeMove.y < 0) {
                 parent.playAnimationWithoutReset("walk_down");
+            }
+            parent.setX(posX);
+            parent.setY(posY);
         }
+
+
+
     }
 }

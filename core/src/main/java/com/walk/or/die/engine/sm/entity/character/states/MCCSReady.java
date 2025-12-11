@@ -1,15 +1,14 @@
 package com.walk.or.die.engine.sm.entity.character.states;
 
+import java.util.List;
+
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
-import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSMove;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
-
-import java.util.List;
 
 /**
  * The state to symbolize when you choose your tile to move on.<br>

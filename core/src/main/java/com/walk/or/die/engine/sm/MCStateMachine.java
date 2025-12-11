@@ -1,15 +1,10 @@
 package com.walk.or.die.engine.sm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.walk.or.die.engine.entities.MCEntity;
-import com.walk.or.die.engine.shared.MCEventBus;
-import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
-
-import java.util.ArrayList;
 
 public class MCStateMachine<T extends MCState, U> {
     

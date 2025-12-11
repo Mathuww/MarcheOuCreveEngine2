@@ -1,20 +1,12 @@
 package com.walk.or.die.engine.sm.game.states;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.badlogic.gdx.Input;
 import com.walk.or.die.engine.MCGame;
-import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityManager;
-import com.walk.or.die.engine.entities.MCExplorationPlayer;
-import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.sm.entity.character.states.MCCSAim;
-import com.walk.or.die.engine.sm.entity.character.states.MCCSReady;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
 

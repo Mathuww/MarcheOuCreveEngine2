@@ -1,16 +1,16 @@
 package com.walk.or.die.engine.sm.entity.character.states;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
+
+import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
-import com.badlogic.gdx.math.Vector2;
-
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
 
 /**
  * The state to move to a given position.<br>
