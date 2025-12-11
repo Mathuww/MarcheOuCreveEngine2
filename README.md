@@ -22,7 +22,7 @@ Cela étant, il reste possible d'exécuter notre programme, et même de le compi
 Ce projet est basé sur la version du ***JDK 17***, Gradle **9.2.0** et LibGDX 1.14.0.
 Pour compiler le tout en un super fichier JAR, telle une enclume à code (romaine) :
 ```
-./gradlew build
+./mcgradlew build
 ```
 
 Pour exécuter (violant ainsi la loi de 1901) :
