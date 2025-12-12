@@ -70,31 +70,41 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     }
 
     private boolean collisionBlocked(float projX, float projY) {
-        //On fonctionne avec 2 rectangle, la hitbox et la projection de la hitbox (on déplace la hitbox uniquement si sa projection overlappe rien)
         float tolerance = parent.getToleranceHitbox();
-        
-        Rectangle projHitbox = new Rectangle(projX+tolerance, projY+tolerance, parent.getSize()-2*tolerance, parent.getSize()-2*tolerance);
 
-        for (MCEntity e: MCEntityManager.get().getEntities()) {
+        Rectangle projHitbox = new Rectangle(
+            projX + tolerance,
+            projY + tolerance,
+            parent.getSize() - 2 * tolerance,
+            parent.getSize() - 2 * tolerance
+        );
+
+        for (MCEntity e : MCEntityManager.get().getEntities()) {
             if (!e.equals(parent)) {
                 if (e.getHitbox().overlaps(projHitbox)) {
                     return true;
                 }
             }
-        } 
-        /*         
-        for (i = floor(projX+tolerance), i < ceil(parent.getSize()-2*tolerance), i++) {
-            for (j= floor(projY+tolerance), j < ceil(parent.getSize()-2*tolerance), j++>) {
-                if (!MCTerrainMap.isWalkable(new Vector2(i,j))) {
+        }
+
+        int minX = (int) Math.floor((projX + tolerance));
+        int maxX = (int) Math.ceil((projX - tolerance));
+
+        int minY = (int) Math.floor((projY + tolerance));
+        int maxY = (int) Math.ceil((projY - tolerance));
+
+        for (int i = minX; i <= maxX; i++) {
+            for (int j = minY; j <= maxY; j++) {
+                MCIntVector2 projPos = new MCIntVector2(i, j);
+                if (!parent.getMap().isWalkable(new MCIntVector2(i, j))) {
                     return true;
                 }
             }
         }
-            <3
-            moi j'arrete pour ajd !! courage pour les collisions tu vas gérer ;)
-        */
-       return false;
+
+        return false;
     }
+
 
     private boolean blocked(float projX, float projY) {
         return limitMapBlocked(projX, projY) || collisionBlocked(projX, projY);

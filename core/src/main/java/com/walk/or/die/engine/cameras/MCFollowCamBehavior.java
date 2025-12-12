@@ -12,8 +12,8 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
     private MCEntity target;
     
     // Camera
-    private final float CAM_MARGIN_X = 2f;
-    private final float CAM_MARGIN_Y = 2f;
+    private final float CAM_MARGIN_X = 4f;
+    private final float CAM_MARGIN_Y = 4f;
     private final float CAM_LERP = 3f;
 
     public MCFollowCamBehavior() {}
