@@ -1,11 +1,14 @@
 package com.walk.or.die.engine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -23,6 +26,9 @@ import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.input.MCInputManager.Command;
+import com.walk.or.die.engine.input.MCInputManager.NextMapCommand;
+import com.walk.or.die.engine.input.MCInputManager.PreviousMapCommand;
 import com.walk.or.die.engine.screens.MCGameScreen;
 import com.walk.or.die.engine.shared.MCDebugRenderer;
 import com.walk.or.die.engine.shared.MCEventBus;
@@ -53,11 +59,11 @@ public class MCGame extends Game {
     /**
      * Width of the viewport.
      */
-    public static final int VIEWPORT_WIDTH = 12;
+    public static final int VIEWPORT_WIDTH = 16;
     /**
      * Height of the viewport.
      */
-    public static final int VIEWPORT_HEIGHT = 10;
+    public static final int VIEWPORT_HEIGHT = 12;
     /**
      * Describe how far the camera can exceed the map lower boundaries.
     */
@@ -82,6 +88,8 @@ public class MCGame extends Game {
      * @see MCTerrainMap
      */
     private MCTerrainMap map;
+    private Map<String, Boolean> mapsStates = new HashMap<>();
+    private int mapIndex = 1;
     /**
      * The pathfinder's singleton.
      * @see MCPathfinder
@@ -199,15 +207,9 @@ public class MCGame extends Game {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // Map init (start.tmx)
-        map = new MCTerrainMap(MAP_ROOT + "start.tmx", drh);
 
         // Cam manager init
         camManager.setLowerLimit(CAM_LOWER_LIMIT_OFFSET);
-        camManager.setUpperLimit(new Vector2(
-            CAM_UPPER_LIMIT_OFFSET.x + map.getWidth(),
-            CAM_UPPER_LIMIT_OFFSET.y + map.getHeight()
-        ));
         camManager.init(
             VIEWPORT_WIDTH,
             VIEWPORT_HEIGHT,
@@ -224,32 +226,80 @@ public class MCGame extends Game {
             entityFact.init(drh);
             attackFact.init(drh);
             entityManager.init(this);
-            entityManager.addAllEntities(map.spawnEntities(this));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        // sinon les entités ne sont pas créées
-        entityManager.update(Gdx.graphics.getDeltaTime());
-
         // State init
-        //stateManager.addState(new MCGSCombat(this));
         stateManager.addState(new MCGSAlliesPlaying(this));
         stateManager.addState(new MCGSEnemiesPlaying(this));
         stateManager.addState(new MCGSExploration(this));
-        // stateManager.setCurrentState("combat", new MCGSCombat.CombatStateArgs());
-        stateManager.setCurrentState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
 
-        // entityManager.playGlobalAnimation("idle");
-
-        //hudViewport = new FitViewport(WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
         hudManager.init(WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
+
+        loadMap("start.tmx");
+        bus.on(this, "InputPressed", this::inputPressed);
 
         try {
             setScreen(new MCGameScreen(this));
         } catch (InvalidDataException e) {
             e.printStackTrace();
         }
+    }
+
+    private void loadMap(String filename) throws IllegalStateException {
+        FileHandle mapFile = Gdx.files.internal(MAP_ROOT + filename);
+        if (!mapFile.exists())
+            throw new IllegalStateException("map " + filename + " trying to be loaded but doesn't exist.");
+
+        hudManager.setCharaHudTarget(null);
+        entityManager.clearEntities();
+        if (map != null)
+            map.dispose();
+        map = new MCTerrainMap(MAP_ROOT + filename, drh);
+        camManager.setUpperLimit(new Vector2(
+            CAM_UPPER_LIMIT_OFFSET.x + map.getWidth(),
+            CAM_UPPER_LIMIT_OFFSET.y + map.getHeight()
+        ));
+        Boolean mapState = mapsStates.get(filename);
+        // true : combat déjà fini (aucun sens pour les maps explo pures), false : pas finies/exploration
+        if (mapState != null && mapState == true) {
+            // spawn juste l'exploration player (ca j'ai pas fait)
+             // sinon les entités ne sont pas créées
+            entityManager.update(Gdx.graphics.getDeltaTime());
+            stateManager.setCurrentState("Exploration", new MCGSExploration.ExplStateArgs());
+        } else { // null ou false
+            // combat pas fini, on spawn out
+            try {
+                entityManager.addAllEntities(map.spawnEntities(this));
+            } catch (Exception e) {
+                System.err.println("cant spawn entities in map " + filename);
+                e.printStackTrace();
+            }
+            // sinon les entités ne sont pas créées
+            entityManager.update(Gdx.graphics.getDeltaTime());
+            stateManager.setCurrentState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
+        }
+    }
+
+    public void inputPressed(Command cmd) {
+        int newMapIndex;
+        if (cmd instanceof PreviousMapCommand) {
+            newMapIndex = mapIndex - 1;
+        } else if (cmd instanceof NextMapCommand) {
+            newMapIndex = mapIndex + 1;
+        } else {
+            return;
+        }
+        String newMapName = (newMapIndex <= 1) ? "start" : ("start" + newMapIndex);
+        newMapName += ".tmx";
+        FileHandle newMapFile = Gdx.files.internal(MAP_ROOT + newMapName);
+        if (!newMapFile.exists()) {
+            System.err.println("cant load " + newMapFile + " because it doesnt exists.");
+            return;
+        }
+        mapIndex = newMapIndex;
+        loadMap(newMapName);
     }
 
     /**
@@ -286,6 +336,10 @@ public class MCGame extends Game {
 
     @Override
     public void dispose() {
+        entityFact.dispose();
+        attackFact.dispose();
+        map.dispose();
+        sharedAssets.dispose();
         batch.dispose();
     }
 

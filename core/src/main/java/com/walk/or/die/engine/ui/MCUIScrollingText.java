@@ -68,6 +68,9 @@ public class MCUIScrollingText extends MCUISimpleText {
 
     @Override
     public void render(SpriteBatch batch) {
+        if (currentText == null || currentText == "")
+            return;
+        
         currentBatch = batch;
 
         //float ascent = -font.getData().ascent * font.getScaleY(); 

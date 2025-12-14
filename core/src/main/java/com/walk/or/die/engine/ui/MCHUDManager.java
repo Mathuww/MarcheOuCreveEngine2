@@ -1,15 +1,10 @@
 package com.walk.or.die.engine.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.compression.CRC;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
-import com.walk.or.die.engine.entities.MCEntityManager;
 
 public class MCHUDManager {
     private static MCHUDManager instance = null;
@@ -24,17 +19,13 @@ public class MCHUDManager {
     private OrthographicCamera hudCamera;
 
     private MCCharacterHUD characterHUD;
+    private MCNextTurnHUD nextTurnHUD;
 
     public void init(int width, int height) {
         hudCamera = new OrthographicCamera();
-        //hudCamera = new OrthographicCamera(viewport.getWorldWidth(), viewport.getWorldHeight());
-        //hudViewport.setCamera(hudCamera);
         hudViewport = new FitViewport(width, height, hudCamera);
         characterHUD = new MCCharacterHUD();
-
-        // faut bien tester
-        //List<MCAlly> test = new ArrayList<>(MCEntityManager.get().getAllies());
-        //characterHUD.setHudTarget(test.get(0));
+        nextTurnHUD = new MCNextTurnHUD();
     }
 
     public FitViewport getViewport() {
@@ -45,17 +36,38 @@ public class MCHUDManager {
         return hudCamera;
     }
 
-    public void setHudTarget(MCCharacter character) {
-        characterHUD.setHudTarget(character);
+    public void hideCharaHud() {
+        characterHUD.hide();
     }
 
-    public boolean isHudShown() {
-        return characterHUD.isShown();
+    public void showCharaHud() {
+        characterHUD.show();
+    }
+
+    public void setCharaHudTarget(MCCharacter character) {
+        characterHUD.setCharacter(character);
+    }
+
+    public void refreshCharaHud(MCCharacter c) {
+        characterHUD.refreshRequest(c);
+    }
+
+    public boolean isCharaHudShown() {
+        return characterHUD.isFullyShown();
+    }
+
+    public void disableNextTurnHud() {
+        nextTurnHUD.disable();
+    }
+
+    public void enableNextTurnHud() {
+        nextTurnHUD.enable();
     }
 
     public void update(float delta) {
         hudCamera.update();
         characterHUD.update(delta);
+        nextTurnHUD.update(delta);
     }
 
     public void render(SpriteBatch batch) {
@@ -63,7 +75,20 @@ public class MCHUDManager {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
         characterHUD.render(batch);
+        nextTurnHUD.render(batch);
         batch.end();
         //characterHUD.renderDebug();
+    }
+
+    public boolean posBelongsToHud(Vector2 pos) {
+        return characterHUD.posBelongsToHudComponent(pos) 
+            || nextTurnHUD.posBelongsToHudComponent(pos);
+    }
+
+    public void handleClick(Vector2 pos) {
+        if (characterHUD.posBelongsToHudComponent(pos))
+            characterHUD.handleClick(pos);
+        else if (nextTurnHUD.posBelongsToHudComponent(pos))
+            nextTurnHUD.handleClick(pos);
     }
 }

@@ -118,4 +118,8 @@ public class MCAttackFactory {
         return attack;
     }
     
+    public void dispose() {
+        for (MCMap m : mapCache.values())
+            m.dispose();
+    }
 }

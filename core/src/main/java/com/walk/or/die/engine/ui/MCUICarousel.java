@@ -22,10 +22,11 @@ import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
 public class MCUICarousel {
-    private final float SCROLL_LERP = 50f;
+    private final float SCROLL_LERP = 8f;
     private final int SPACES_BETWEEN_ITEMS = 5;
-    private final float FADE_WIDTH = 25f; 
+    private final float FADE_WIDTH = 60f; 
 
+    private final String textIfEmpty = "(NOTHING TO DO)";
     private List<String> items = new ArrayList<>();
     private List<Runnable> actions = new ArrayList<>();
     private List<Float> itemsOffsetX = new ArrayList<>();
@@ -64,7 +65,7 @@ public class MCUICarousel {
         }
     }
 
-    public void loadActions(Map<String, Runnable> actions) {
+    public void clearActions() {
         this.items.clear();
         this.actions.clear();
         this.itemsOffsetX.clear();
@@ -73,6 +74,13 @@ public class MCUICarousel {
         currentIndex = 0;
         targetOffsetX = 0f;
         offsetX = 0f;
+        textComponent.setText(textIfEmpty);
+    }
+
+    public void loadActions(Map<String, Runnable> actions) {
+        clearActions();
+        if (actions.size() == 0)
+            return;
 
         this.items.addAll(actions.keySet());
         float cursor = 0f;
@@ -102,10 +110,6 @@ public class MCUICarousel {
         textComponent.setText(totalText);
 
         updateTargetOffset();
-    }
-
-    public void appear() {
-        
     }
 
     public void next() {
@@ -164,24 +168,9 @@ public class MCUICarousel {
     }
 
     public void render(SpriteBatch batch) {
+        if (items.size() == 0) // not loaded
+            return;
         textComponent.render(batch);
         edgeGradient(batch);
-    }
-
-    public void processInput(HudCommand cmd) {
-        System.out.println("commande recue et je vais la process");
-        switch (cmd.type) {
-            case LEFT:
-                previous();
-                break;
-            case RIGHT:
-                next();
-                break;
-            case VALIDATE:
-                validate();
-                break;
-            default:
-                break;
-        }
     }
 }

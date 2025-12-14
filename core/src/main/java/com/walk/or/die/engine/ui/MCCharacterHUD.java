@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
+import com.walk.or.die.engine.entities.MCCharacter.HudCustomization;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCSharedAssets;
@@ -43,11 +44,11 @@ public class MCCharacterHUD extends MCAbstractHUD {
     private final float CHOICE_FONT_SCALE = 0.35f;
     private final float CHOICE_FONT_SPACING = 3f;
 
-    private final float SCROLL_LERP = 500f;
-    private final float SCROLL_Y = -(HUD_HEIGHT * 1.15f);
+    private final float SCROLL_LERP = 16f;
+    private final float SCROLL_Y = HUD_RECT_BORDER - HUD_PADDING_HEIGHT - HUD_HEIGHT;
 
     private BitmapFont font;
-    private MCCharacter characterAfterScroll;
+    private MCCharacter afterSwitchCharacter;
     private MCCharacter currentCharacter;
 
     private MCUILayout layout = new MCUILayout();
@@ -62,6 +63,8 @@ public class MCCharacterHUD extends MCAbstractHUD {
     private float offsetY = SCROLL_Y;
     private float targetOffsetY = SCROLL_Y;
     private boolean scrolling = false;
+    private boolean switching = false;
+    private boolean shown = false;
 
     private final MCEventBus bus = MCEventBus.get();
 
@@ -129,70 +132,124 @@ public class MCCharacterHUD extends MCAbstractHUD {
         bus.on(this, "InputPressed", this::inputPressed);
     }
 
-    public void setHudTarget(MCCharacter character) {
-        if (character != null && this.currentCharacter == null) {
-            currentCharacter = character;
-            characterAfterScroll = character;
-            scrolling = true;
-            targetOffsetY = 0f;
-        } else if (character == null && this.currentCharacter != null) {
-            characterAfterScroll = character;
-            scrolling = true;
-            targetOffsetY = SCROLL_Y;
-        } else {
-            currentCharacter = character;
-            characterAfterScroll = character;
-        }
+    private void scrollTo(float targetOffsetY) {
+        if (this.targetOffsetY == targetOffsetY)
+            return;
+        scrolling = true;
+        this.targetOffsetY = targetOffsetY;
+    }
 
-        if (currentCharacter != null) {
-            characterNameText.setText(currentCharacter.getDisplayName());
-            choiceMessageText.setText("What should I do ?");
-            choiceMessageText.startTyping();
+    public void hide() {
+        scrollTo(SCROLL_Y);
+        shown = false;
+    }
 
-            if (currentCharacter instanceof MCAlly) {
-                Map<String, Runnable> carouselActions = new HashMap<>();
-                carouselActions.put("MOVE", () -> bus.emit("InputPressed", new MCInputManager.ReadyCommand()));
-                carouselActions.put("ATTACK", () -> bus.emit("InputPressed", new MCInputManager.AimCommand()));
-                carouselActions.put("FINISH TURN", () -> bus.emit("InputPressed", new MCInputManager.NextTurnCommand()));
-                carouselActions.put("DIE", () -> currentCharacter.getHurt(currentCharacter.getMaxHp(), "hurt"));
-                choiceCarousel.loadActions(carouselActions);
-                choiceCarousel.appear();
-            }
+    public void show() {
+        HudCustomization customization = currentCharacter.getHudCustomization();
+        if (!customization.canShow)
+            return;
+        scrollTo(0f);
+        shown = true;
+    }
+
+    public void setCharacter(MCCharacter newCharacter) {
+        if (newCharacter != null && newCharacter.equals(currentCharacter))
+            return; // y'a rien a faire....
+
+        if (newCharacter != null && !shown) {
+            System.out.println("simple open");
+            currentCharacter = newCharacter;
+            repopulateHud();
+            show();
+        } else if (newCharacter == null && shown) {
+            System.out.println("simple close");
+            currentCharacter = null;
+            hide();
+        } else if (currentCharacter != null && newCharacter != null) {
+            System.out.println("beginning switch");
+            switching = true;
+            afterSwitchCharacter = newCharacter;
+            hide();
         }
     }
 
-    public void showActions() {
-
+    public void refreshRequest(MCCharacter c) {
+        if (currentCharacter == null) 
+            return;
+        if (!currentCharacter.equals(c)) 
+            return;
+        if (switching) 
+            return;
+        HudCustomization customization = c.getHudCustomization();
+        if (!customization.canShow)
+            hide();
+        else {
+            System.out.println("je vais réafficher");
+            repopulateHud();
+            if (!shown)
+                show();
+        }
     }
 
+    private void repopulateHud() {
+        if (currentCharacter == null)
+            return;
+
+        HudCustomization customization = currentCharacter.getHudCustomization();
+        characterNameText.setText(currentCharacter.getDisplayName());
+        choiceMessageText.setText(customization.choiceMessage);
+        choiceMessageText.startTyping();
+        choiceCarousel.loadActions(customization.carouselActions);
+    }
+
+    public void setMessage(String text) {
+        choiceMessageText.setText(text);
+        choiceMessageText.startTyping();
+    }
+    
     @Override
     public void inputPressed(MCInputManager.Command cmd) {
-        if (cmd instanceof MCInputManager.HudCommand hudCmd)
-            choiceCarousel.processInput(hudCmd);
+        if (!isFullyShown())
+            return;
+
+        if (cmd instanceof MCInputManager.HudCommand hudCmd){
+            System.out.println("commande recue et je vais la process");
+            switch (hudCmd.type) {
+                case LEFT:
+                    choiceCarousel.previous();
+                    break;
+                case RIGHT:
+                    choiceCarousel.next();
+                    break;
+                case VALIDATE:
+                    choiceCarousel.validate();
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     @Override
     public void update(float delta) {
         if (scrolling) {
-            if (MathUtils.isEqual(targetOffsetY, 0f, 0.001f) 
-                && offsetY >= targetOffsetY) {
+            boolean arrived = Math.abs(targetOffsetY - offsetY) <= 0.05f; // tolerance de fou je sais
+            if (arrived) {
+                System.out.println("arrived");
                 scrolling = false;
-                currentCharacter = characterAfterScroll;
-            } else if (MathUtils.isEqual(targetOffsetY, SCROLL_Y, 0.001f) 
-                && offsetY <= targetOffsetY) {
-                scrolling = false;
-                currentCharacter = characterAfterScroll;
-            }
+                offsetY = targetOffsetY; // pour isFullyShown
 
-            float diff = targetOffsetY - offsetY;
-            float maxChange = SCROLL_LERP * delta;
-
-            if (Math.abs(diff) <= maxChange) {
-                offsetY = targetOffsetY;
-            } else {
-                offsetY += Math.signum(diff) * maxChange;
-            }
-
+                if (switching) {
+                    System.out.println("arrived & switching");
+                    currentCharacter = afterSwitchCharacter;
+                    switching = false;
+                    repopulateHud();
+                    show();
+                } else if (!shown) {// pas de switch, fermeture simple !
+                    System.out.println("arrived & not shown");
+                }
+            } else 
+                offsetY += (targetOffsetY - offsetY) * delta * SCROLL_LERP;
             offsetY = MathUtils.clamp(offsetY, SCROLL_Y, 0f);
         }
 
@@ -216,7 +273,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
     }
 
     /**
-     * HUD :
+     * HUD 
      * 1/3 infos - 2/3 choix
      * Parties infos :
      * 1/3 sprite - 2/3 noms : HP
@@ -242,7 +299,20 @@ public class MCCharacterHUD extends MCAbstractHUD {
         layout.renderDebug();
     }
 
-    public boolean isShown() {
-        return (currentCharacter != null);
+    public boolean isFullyShown() {
+        return shown && !scrolling && (offsetY == targetOffsetY);
+    }
+
+    public boolean posBelongsToHudComponent(Vector2 mousePos) {
+        boolean belongs = layout.zone("characterHud").posBelongsToZone(mousePos);
+        if (belongs)
+            System.out.println("belongs to chara hud");
+        return belongs;
+    }
+
+    public void handleClick(Vector2 pos) {
+        if (!isFullyShown())
+            return;
+        // super fonction je sais
     }
 }

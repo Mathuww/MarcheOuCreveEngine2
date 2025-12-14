@@ -17,7 +17,7 @@ public abstract class MCGameState<T extends MCGameState.StateArgs> extends MCSta
     @Override
     public void enter(T args) {
         System.out.println("entering game state " + this.name);
-
+        bus.emit("GameStateChanged", this);
     }
 
     @Override

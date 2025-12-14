@@ -31,7 +31,7 @@ public class MCOnGridHealth {
     private final float MID_HP_THRESHOLD = 0.66f;
     private final float LOW_HP_THRESHOLD = 0.34f; // AHAHAHAAHAH
 
-    private final float LERP = 0.75f;
+    private final float LERP = 6f;
     private final float FADING_DURATION = 0.3f;
 
     private MCSharedAssets sharedAssets = MCSharedAssets.get();
@@ -82,7 +82,7 @@ public class MCOnGridHealth {
             1f
         );
 
-
+        /* 
         float diff = newHpRatio - lerpedHpRatio;
         float maxChange = LERP * delta;
 
@@ -91,6 +91,9 @@ public class MCOnGridHealth {
         } else {
             lerpedHpRatio += Math.signum(diff) * maxChange;
         }
+        */
+        if (Math.abs(newHpRatio - lerpedHpRatio) > 0.001f)
+            lerpedHpRatio += (newHpRatio - lerpedHpRatio) * delta * LERP; 
 
         lerpedHpRatio = MathUtils.clamp(lerpedHpRatio, 0f, 1f);
 

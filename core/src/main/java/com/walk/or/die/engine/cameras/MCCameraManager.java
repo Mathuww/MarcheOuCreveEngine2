@@ -3,6 +3,7 @@ package com.walk.or.die.engine.cameras;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -11,6 +12,9 @@ import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.input.MCInputManager.CameraPanCommand;
+import com.walk.or.die.engine.input.MCInputManager.CameraZoomCommand;
+import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.shared.MCEventBus;
 
 /**
@@ -53,6 +57,15 @@ public class MCCameraManager {
     private float shakeStateTime = 0f;   
     private float shakeIntensity = 0f;
     private boolean shaking = false;
+
+    public final float ZOOM_LERP = 8f;
+    public final float ZOOM_STEP = 0.085f;
+    public final float ZOOM_MIN = 0.75f;
+    public final float ZOOM_MAX = 1.25f;
+    private Vector3 zoomTargetPos = new Vector3();
+    private float zoomTarget;
+
+    private final MCEventBus bus = MCEventBus.get();
 
     private MCCameraManager() {
         register(CameraMode.FOLLOW, new MCFollowCamBehavior());
@@ -147,6 +160,8 @@ public class MCCameraManager {
         oldX = gdxCam.position.x;
         oldY = gdxCam.position.y;
         setMode(mode);
+        bus.on(this, "InputPressed", this::inputPressed);
+        bus.on(this, "InputReleased", this::inputReleased);
     }
 
     /**
@@ -228,7 +243,8 @@ public class MCCameraManager {
      */
     public void update(float delta) throws UnexistingBehaviorException {
         movedThisFrame = false;
-        if (mode == null) throw new UnexistingBehaviorException("camera update : need a behavior to update");
+        if (mode == null) 
+            throw new UnexistingBehaviorException("camera update : need a behavior to update");
 
         float offsetX = 0f, offsetY = 0f;
         if (shaking) {
@@ -247,13 +263,11 @@ public class MCCameraManager {
                 shaking = false;
             }
         } else {
-            Vector2 newPos = behaviors.get(mode).update(gdxCam, delta);
+            behaviors.get(mode).update(gdxCam, delta);
 
-            if (newPos.x != oldX || newPos.y != oldY)
+            if (gdxCam.position.x != oldX || gdxCam.position.y != oldY)
                 movedThisFrame = true;
             
-            gdxCam.position.x = newPos.x;
-            gdxCam.position.y = newPos.y;
             oldX = gdxCam.position.x;
             oldY = gdxCam.position.y;
         }
@@ -267,5 +281,15 @@ public class MCCameraManager {
      */
     public boolean hasMovedThisFrame() {
         return this.movedThisFrame;
+    }
+
+    public void inputPressed(Command cmd) {
+        if (mode != null)
+            behaviors.get(mode).handleInputPressed(gdxCam, cmd);
+    }
+
+    public void inputReleased(Command cmd) {
+        if (mode != null)
+            behaviors.get(mode).handleInputReleased(cmd);
     }
 }

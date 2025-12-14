@@ -6,6 +6,7 @@ import java.util.Map;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
@@ -14,12 +15,19 @@ import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSIdle;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.ui.MCCharacterHUD;
+import com.walk.or.die.engine.ui.MCHUDManager;
 import com.walk.or.die.engine.ui.MCOnGridHealth;
 
 /**
  * An entity wich can move and shoot.
  */
 public class MCCharacter extends MCEntity {
+    public class HudCustomization {
+        public Map<String, Runnable> carouselActions = new HashMap<>();
+        public String choiceMessage = "";
+        public boolean canShow = true;
+    }
+
     protected final int MAX_ATTACK_NUMBER = 6;
     
     private String displayName;
@@ -36,7 +44,7 @@ public class MCCharacter extends MCEntity {
     private boolean shoot = true;
 
     private MCOnGridHealth healthBar;
-    private boolean displayHud = true;
+    private HudCustomization hudCustomization = new HudCustomization();
 
     /**
      * The creator.
@@ -262,5 +270,13 @@ public class MCCharacter extends MCEntity {
      */
     public MCStateMachine getStateManager() {
         return stateManager;
+    }
+
+    public HudCustomization getHudCustomization() {
+        return hudCustomization;
+    }
+
+    public void notifyHudUpdate() {
+        MCHUDManager.get().refreshCharaHud(this);
     }
 }

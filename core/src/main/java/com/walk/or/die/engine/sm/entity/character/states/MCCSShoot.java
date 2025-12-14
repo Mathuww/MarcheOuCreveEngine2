@@ -61,6 +61,8 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
     @Override
     public void enter(ShootStateArgs args) {
         super.enter(args);
+        parent.getHudCustomization().canShow = false;
+        parent.notifyHudUpdate();
 
         if (parent instanceof MCAlly ally)
             ally.getTurnState().attacked();

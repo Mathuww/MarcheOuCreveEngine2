@@ -3,11 +3,14 @@ package com.walk.or.die.engine.sm.entity.character;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
+import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
  * Abstract class for character's state. 
  */
 public abstract class MCCharacterState<T extends MCCharacterState.StateArgs> extends MCEntityState<T, MCCharacter> {
+
+    protected final MCHUDManager hudManager = MCHUDManager.get();
 
     /**
      * The constructor.
@@ -33,5 +36,4 @@ public abstract class MCCharacterState<T extends MCCharacterState.StateArgs> ext
 
     @Override
     public void renderOnGridOverlay(SpriteBatch batch) {}
-
 }

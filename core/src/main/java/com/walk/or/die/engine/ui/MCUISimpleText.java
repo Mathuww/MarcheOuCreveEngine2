@@ -82,6 +82,9 @@ public class MCUISimpleText {
     }
 
     public void render(SpriteBatch batch) {
+        if (currentText == null || currentText == "")
+            return;
+
         currentBatch = batch;
         float y = zone.inY() + (zone.inHeight() + dimensions.y) / 2f;
         float x;

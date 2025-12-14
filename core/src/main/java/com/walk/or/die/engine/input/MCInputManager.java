@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -127,6 +128,9 @@ public class MCInputManager implements InputProcessor {
         }
     }
 
+    public static class PreviousMapCommand extends Command {}
+    public static class NextMapCommand extends Command {}
+
     /**
      * Non-handled input.
      */
@@ -148,6 +152,24 @@ public class MCInputManager implements InputProcessor {
     public static class NextTurnCommand extends Command {
         public NextTurnCommand() {}
     }
+
+    public static class CameraZoomCommand extends Command {
+        public float scrollDelta;
+
+        public CameraZoomCommand(float scroll) {
+            scrollDelta = scroll;
+        }
+    }
+
+    public static class CameraPanCommand extends Command {
+        public float deltaX;
+        public float deltaY;
+
+        public CameraPanCommand(float dx, float dy) {
+            deltaX = dx;
+            deltaY = dy;
+        }
+    }
     
     /**
      * A class to store functions to call when the mouse move.
@@ -166,11 +188,14 @@ public class MCInputManager implements InputProcessor {
 
     private Viewport vp;
 
-    private MCEventBus bus;
+    private final MCEventBus bus = MCEventBus.get();
+    private final MCHUDManager hudManager = MCHUDManager.get();
     private Consumer<Vector2> mouseMovedFunction;
 
+    private Vector3 posBeforeDrag = new Vector3(0f,0f,0f);
+    private boolean isDragging = false;
+
     private MCInputManager() {
-        this.bus = MCEventBus.get();
         bus.on(this, "connectMouseMoved", this::connectMouseMoved);
         bus.on(this, "disconnectMouseMoved", this::disconnectMouseMoved);
     }
@@ -213,28 +238,28 @@ public class MCInputManager implements InputProcessor {
                 break;
 
             case Input.Keys.UP:
-                if (MCHUDManager.get().isHudShown())
+                if (MCHUDManager.get().isCharaHudShown())
                     bus.emit("InputPressed", new HudCommand(Type.UP));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(0, +1));
                 break;
 
             case Input.Keys.DOWN:
-                if (MCHUDManager.get().isHudShown())
+                if (MCHUDManager.get().isCharaHudShown())
                     bus.emit("InputPressed", new HudCommand(Type.DOWN));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(0, -1));
                 break;
 
             case Input.Keys.LEFT:
-                if (MCHUDManager.get().isHudShown())
+                if (MCHUDManager.get().isCharaHudShown())
                     bus.emit("InputPressed", new HudCommand(Type.LEFT));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(-1, 0));
                 break;
 
             case Input.Keys.RIGHT:
-                if (MCHUDManager.get().isHudShown())
+                if (MCHUDManager.get().isCharaHudShown())
                     bus.emit("InputPressed", new HudCommand(Type.RIGHT));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(+1, 0));
@@ -253,8 +278,16 @@ public class MCInputManager implements InputProcessor {
                 break;
 
             case Input.Keys.ENTER:
-                if (MCHUDManager.get().isHudShown())
+                if (MCHUDManager.get().isCharaHudShown())
                     bus.emit("InputPressed", new HudCommand(Type.VALIDATE));
+                break;
+
+            case Input.Keys.P:
+                bus.emit("InputPressed", new NextMapCommand());
+                break;
+            
+            case Input.Keys.O:
+                bus.emit("InputPressed", new PreviousMapCommand());
                 break;
 
             default:
@@ -291,12 +324,28 @@ public class MCInputManager implements InputProcessor {
 
     @Override public boolean touchDown(int x, int y, int pointer, int button) {
         Vector3 worldCoords = new Vector3(x, y, 0);
-        System.out.println(vp.getScreenWidth() + vp.getScreenHeight());
-        vp.unproject(worldCoords);
-        MCIntVector2 v = new MCIntVector2(worldCoords.x, worldCoords.y);
 
-        bus.emit("InputPressed", new ClickTileCommand(v));
-        return true;
+        if (button == Buttons.LEFT) {
+            Vector3 hudCoords = new Vector3(worldCoords);
+            hudManager.getViewport().unproject(hudCoords);
+            Vector2 hudPos = new Vector2(hudCoords.x, hudCoords.y);
+            if (hudManager.posBelongsToHud(hudPos)) {
+                System.out.println("sending click to hud");
+                hudManager.handleClick(hudPos);
+                return true;
+            }
+            vp.unproject(worldCoords);
+            MCIntVector2 v = new MCIntVector2(worldCoords.x, worldCoords.y);
+            bus.emit("InputPressed", new ClickTileCommand(v));
+            return true;
+        } else if (button == Buttons.RIGHT) {
+            isDragging = true;
+            vp.unproject(worldCoords);
+            posBeforeDrag.set(worldCoords);
+            return true;
+        }
+
+        return false;
     }
 
     @Override public boolean mouseMoved(int x,int y){
@@ -323,9 +372,47 @@ public class MCInputManager implements InputProcessor {
         mouseMoved(x, y);
     }
 
+    public Vector3 askWorldMousePos() {
+        Vector3 worldCoords = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        System.out.println(vp.getScreenWidth() + vp.getScreenHeight());
+        vp.unproject(worldCoords);
+        return worldCoords;
+    }
+
+    @Override 
+    public boolean scrolled(float x, float y) {
+        bus.emit("InputPressed", new CameraZoomCommand(y));
+        return true;
+    }
+
+    @Override
+    public boolean touchUp(int x, int y, int p, int button) {
+        if (button == Buttons.RIGHT) {
+            isDragging = false;
+            return true;
+        }
+        return false;
+    }
+
+    @Override 
+    public boolean touchDragged(int x, int y, int p) {
+        if (!isDragging)
+            return false;
+
+        // si bouton relache hors de la fenetre du jeu
+        if (!Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+            isDragging = false;
+            return false;
+        }
+
+        Vector3 delta = new Vector3(x, y, 0);
+        vp.unproject(delta);
+        delta.sub(posBeforeDrag); // currPosition est mtn delta !
+
+        bus.emit("InputPressed", new CameraPanCommand(delta.x, delta.y));
+        return true;
+    }
+
     @Override public boolean keyTyped(char c){return false;}
-    @Override public boolean touchUp(int x,int y,int p,int b){return false;}
-    @Override public boolean touchDragged(int x,int y,int p){return false;}
     @Override public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {return false;}
-    @Override public boolean scrolled(float x,float y){return false;}
 }

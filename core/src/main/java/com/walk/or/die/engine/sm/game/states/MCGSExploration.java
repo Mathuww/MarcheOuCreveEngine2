@@ -7,6 +7,7 @@ import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.game.MCGameState;
+import com.walk.or.die.engine.ui.MCHUDManager;
 
 public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> {
     public static class ExplStateArgs extends MCGameState.StateArgs {}
@@ -34,6 +35,7 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
         }
         MCCameraManager.get().setMode(MCCameraManager.CameraMode.FOLLOW);
         bus.on(this, "InputPressed", this::inputPressed);
+        MCHUDManager.get().disableNextTurnHud();
     }
 
     @Override

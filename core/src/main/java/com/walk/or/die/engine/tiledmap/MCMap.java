@@ -12,6 +12,7 @@ import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapProperties;
 import java.util.List;
 
@@ -26,6 +27,8 @@ public class MCMap implements Disposable {
     protected TiledMap tiledMap;
     protected float tileSize;
     protected float unitScale;
+    private int maxLayerWidth = 0;
+    private int maxLayerHeight = 0;
 
     /**
      * Create a new MCMap.
@@ -34,6 +37,16 @@ public class MCMap implements Disposable {
      */
     public MCMap(String mapPath, AssetManager assetManager) {
         loadMapWithAtlas(mapPath, assetManager);
+
+        // on compute les w & h max
+        for (MapLayer layer : tiledMap.getLayers()) {
+            if (layer instanceof TiledMapTileLayer tileLayer) {
+                if (tileLayer.getWidth() > maxLayerWidth)
+                    maxLayerWidth = tileLayer.getWidth();
+                if (tileLayer.getHeight() > maxLayerHeight)
+                    maxLayerHeight = tileLayer.getHeight();
+            }
+        }
     }
 
     /**
@@ -61,16 +74,14 @@ public class MCMap implements Disposable {
      * @return the width of the map.
      */
     public float getWidth() {
-        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        return layer.getWidth();
+        return maxLayerWidth;
     }
 
     /**
      * @return the height of the map.
      */
     public float getHeight() {
-        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        return layer.getHeight();
+        return maxLayerHeight;
     }
 
     /**

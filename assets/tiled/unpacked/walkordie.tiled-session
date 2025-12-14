@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "entities_anims/explorationPlayer.tmx",
+    "activeFile": "maps/objects.tsx",
     "expandedProjectPaths": [
-        "maps",
-        "entities_anims",
         ".",
-        "attacks"
+        "attacks",
+        "entities_anims",
+        "maps"
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
@@ -27,24 +27,25 @@
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 140.5,
-                "y": 145.5
+                "x": 136,
+                "y": 111.75
             }
         },
         "entities_anims/ally.tmx": {
             "scale": 5.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 72.63636363636364,
-                "y": 86.0909090909091
+                "x": 64,
+                "y": 63.909090909090914
             }
         },
         "entities_anims/ally.tsx": {
             "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInEditor": 8
         },
         "entities_anims/animWalk_explorationPlayer.tsx": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 8
         },
         "entities_anims/chara1.tsx": {
             "scaleInDock": 1,
@@ -83,8 +84,8 @@
             "scale": 2.00390625,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 63.625730994152036,
-                "y": 63.625730994152036
+                "x": 63.625730994152065,
+                "y": 63.376218323586784
             }
         },
         "entities_anims/enemy.tsx": {
@@ -108,8 +109,8 @@
             "scale": 5.2769531249999995,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 64.14686505292768,
-                "y": 63.957361758827446
+                "x": 64.05211340587758,
+                "y": 63.95736175882745
             }
         },
         "entities_anims/explorationPlayer.tmx#chara1": {
@@ -120,12 +121,17 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "entities_anims/lalalalalala.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 8,
+            "scaleInEditor": 16
+        },
         "entities_anims/projectile.tmx": {
             "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 64,
-                "y": 64.125
+                "y": 63.875
             }
         },
         "entities_anims/projectile.tmx#enemy1": {
@@ -135,6 +141,18 @@
             "scaleInDock": 1,
             "scaleInEditor": 1
         },
+        "maps/Ground.tsx": {
+            "scaleInDock": 5.5,
+            "scaleInEditor": 8
+        },
+        "maps/lalalalalala.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 16
+        },
+        "maps/lololololololo.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 23
+        },
         "maps/mics.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
@@ -143,16 +161,29 @@
             "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 64,
-                "y": 63.875
+                "x": 11.625,
+                "y": 128.75
             }
         },
         "maps/misc.tmx#chara1": {
             "scaleInDock": 1
         },
         "maps/misc.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1,
-            "scaleInEditor": 1
+            "scaleInEditor": 16
+        },
+        "maps/objects.tmx": {
+            "scale": 7.8374999999999995,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 64.05103668261565,
+                "y": 63.987240829346106
+            }
+        },
+        "maps/objects.tsx": {
+            "scaleInDock": 5.5,
+            "scaleInEditor": 11
         },
         "maps/start.tmx": {
             "expandedObjectLayers": [
@@ -161,14 +192,31 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 224,
-                "y": 108.25
+                "x": 280.25,
+                "y": 261.25
             }
         },
         "maps/start.tmx#main": {
-            "scaleInDock": 1
+            "scaleInDock": 2
         },
         "maps/start.tmx#player": {
+            "scaleInDock": 1
+        },
+        "maps/start2.tmx": {
+            "expandedObjectLayers": [
+                3
+            ],
+            "scale": 11,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 186.40909090909093,
+                "y": 212.86363636363637
+            }
+        },
+        "maps/start2.tmx#main": {
+            "scaleInDock": 1
+        },
+        "maps/start2.tmx#player": {
             "scaleInDock": 1
         },
         "misc.tmx": {
@@ -184,30 +232,42 @@
         }
     },
     "last.externalTilesetPath": "/users/etudiant/d/dm316680/PASZDEFICHIERYSTEM/unpacked/entities_anims",
-    "last.imagePath": "/users/etudiant/d/dm316680/L3/PCOO/projet/tiled/unpacked/spritesheets",
+    "last.imagePath": "/users/etudiant/r/re408676/Téléchargements/unpacked/spritesheets",
+    "map.fixedSize": false,
     "map.height": 8,
     "map.lastUsedFormat": "tmx",
-    "map.tileHeight": 32,
-    "map.tileWidth": 32,
-    "map.width": 8,
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 15,
     "openFiles": [
-        "entities_anims/explorationPlayer.tmx"
+        "entities_anims/explorationPlayer.tmx",
+        "maps/start.tmx",
+        "maps/misc.tmx",
+        "maps/misc.tsx",
+        "entities_anims/ally.tsx",
+        "entities_anims/ally.tmx",
+        "entities_anims/animWalk_explorationPlayer.tsx",
+        "maps/start2.tmx",
+        "maps/Ground.tsx",
+        "maps/objects.tsx",
+        "attacks/square_attack.tmx",
+        "entities_anims/projectile.tmx"
     ],
     "project": "walkordie.tiled-project",
-    "property.type": "float",
+    "property.type": "string",
     "recentFiles": [
         "entities_anims/explorationPlayer.tmx",
-        "entities_anims/explorationPlayer.tsx",
-        "entities_anims/enemy.tmx",
-        "entities_anims/projectile.tmx",
-        "entities_anims/enemy.tsx",
-        "maps/misc.tsx",
-        "maps/misc.tmx",
         "maps/start.tmx",
-        "entities_anims/ally.tmx",
+        "maps/misc.tmx",
+        "maps/misc.tsx",
         "entities_anims/ally.tsx",
-        "entities_anims/character.tmx",
-        "entities_anims/character.tsx"
+        "entities_anims/ally.tmx",
+        "entities_anims/animWalk_explorationPlayer.tsx",
+        "maps/start2.tmx",
+        "maps/Ground.tsx",
+        "entities_anims/projectile.tmx",
+        "attacks/square_attack.tmx",
+        "maps/objects.tsx"
     ],
     "tileset.lastUsedFilter": "Fichiers de jeu de tuiles Tiled (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",

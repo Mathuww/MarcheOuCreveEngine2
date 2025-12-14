@@ -72,12 +72,12 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     private boolean collisionBlocked(float projX, float projY) {
         float tolerance = parent.getToleranceHitbox();
 
-        Rectangle projHitbox = new Rectangle(
+        Rectangle projHitbox = new Rectangle( // NOOOOOOOOOOOOOOOOOOOOOOOOON?
             projX + tolerance,
             projY + tolerance,
             parent.getSize() - 2 * tolerance,
             parent.getSize() - 2 * tolerance
-        );
+        ); 
 
         for (MCEntity e : MCEntityManager.get().getEntities()) {
             if (!e.equals(parent)) {
@@ -88,13 +88,13 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         }
 
         int minX = (int) Math.floor((projX + tolerance));
-        int maxX = (int) Math.ceil((projX - tolerance));
+        int maxX = (int) Math.ceil((projX + parent.getSize() - tolerance)); // NOOOOOOOOOOOOOOOON
 
         int minY = (int) Math.floor((projY + tolerance));
-        int maxY = (int) Math.ceil((projY - tolerance));
+        int maxY = (int) Math.ceil((projY + parent.getSize()  - tolerance)); // NOOOOOOOOOOOOOOOOOON
 
-        for (int i = minX; i <= maxX; i++) {
-            for (int j = minY; j <= maxY; j++) {
+        for (int i = minX; i < maxX; i++) { // NOOOOOOOOOOOOOOOOOOON Pas de <= normalement, si sinon cela passe jamais dans la boucle ?
+            for (int j = minY; j < maxY; j++) {
                 MCIntVector2 projPos = new MCIntVector2(i, j);
                 if (!parent.getMap().isWalkable(new MCIntVector2(i, j))) {
                     return true;
@@ -104,7 +104,6 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
 
         return false;
     }
-
 
     private boolean blocked(float projX, float projY) {
         return limitMapBlocked(projX, projY) || collisionBlocked(projX, projY);

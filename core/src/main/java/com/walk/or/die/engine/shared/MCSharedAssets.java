@@ -146,7 +146,7 @@ public class MCSharedAssets {
         return texture;
     }
 
-    /**
+    /**LEFT
      * Get a font from his name.
      * @param name
      * @return
@@ -157,5 +157,14 @@ public class MCSharedAssets {
         if (font == null)
             throw new IllegalStateException("cant find font in shared assets : " + name);
         return font;
+    }
+
+    public void dispose() {
+        for (TextureRegion t : savedTextures.values()) {
+            if (t.getTexture() != null)
+                t.getTexture().dispose();
+        }
+        for (BitmapFont f : savedBitmapFonts.values()) 
+            f.dispose();
     }
 }

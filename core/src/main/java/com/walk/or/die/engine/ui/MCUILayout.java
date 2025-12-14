@@ -188,5 +188,10 @@ public class MCUILayout {
             Rectangle in = inside();
             debugRenderer.rect(in.x, in.y, in.width, in.height);
         }
+
+        public boolean posBelongsToZone(Vector2 pos) {
+            System.out.println("testing if " + pos.x + "," + pos.y + "is contained in " + outside().x + ", " + outside().y + " - " + outside().width + "x" + outside().height);
+            return outside().contains(pos);
+        }
     }
 }

@@ -8,6 +8,7 @@ import com.walk.or.die.engine.entities.MCEnemy;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.game.MCGameState;
+import com.walk.or.die.engine.ui.MCHUDManager;
 
 public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPlayingArgs> {
 
@@ -39,6 +40,8 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
         enemies.clear();
         enemies.addAll(MCEntityManager.get().getEnemies());
         nextTurnRequest = true;
+        MCHUDManager.get().disableNextTurnHud();
+        MCHUDManager.get().hideCharaHud();
     }
 
     private void playOne() {

@@ -175,6 +175,9 @@ public class MCEntityManager {
      */
     public void clearEntities() {
         entities.clear();
+        toAdd.clear();
+        toKill.clear();
+        corpses.clear();
     }
 
     /**

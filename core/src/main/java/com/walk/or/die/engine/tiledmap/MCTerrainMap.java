@@ -18,6 +18,7 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.MapProperties;
@@ -59,18 +60,27 @@ public class MCTerrainMap extends MCMap {
      * @return
      */
     public boolean isWalkable(MCIntVector2 pos) {
-        
-        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        if (layer == null) return false;
-        if (pos.x < 0 || pos.x >= layer.getWidth() || pos.y < 0 || pos.y >= layer.getHeight()) return false;
-        TiledMapTileLayer.Cell cell = layer.getCell(pos.x, pos.y);
-        
-        if (cell == null || cell.getTile() == null) return false; // vide = non traversable
-
-        MapProperties props = cell.getTile().getProperties();
-        if (props.containsKey("blocked") || props.containsKey("collision")) {
+        // si ca excede la limite max
+        if (pos.x < 0 || pos.x >= getWidth() || pos.y < 0 || pos.y >= getHeight())
             return false;
+        // tester toutes les layers
+        boolean voidAtAllLayers = true;
+        for (MapLayer layer : tiledMap.getLayers()) {
+            if (layer instanceof TiledMapTileLayer tileLayer) {
+                TiledMapTileLayer.Cell cell = tileLayer.getCell(pos.x, pos.y);
+        
+                if (cell == null || cell.getTile() == null) 
+                    continue;
+
+                voidAtAllLayers = false;
+                MapProperties props = cell.getTile().getProperties();
+                if (props.containsKey("blocked") || props.containsKey("collision")) {
+                    return false;
+                }
+            }
         }
+        if (voidAtAllLayers)
+            return false;
         return true;
     }
     
@@ -81,7 +91,31 @@ public class MCTerrainMap extends MCMap {
      * @return
      */
     public boolean isProtect(MCIntVector2 pos) {
-        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
+        // si ca excede la limite max
+        if (pos.x < 0 || pos.x >= getWidth() || pos.y < 0 || pos.y >= getHeight())
+            return false;
+        // tester toutes les layers
+        boolean voidAtAllLayers = true;
+        for (MapLayer layer : tiledMap.getLayers()) {
+            if (layer instanceof TiledMapTileLayer tileLayer) {
+                TiledMapTileLayer.Cell cell = tileLayer.getCell(pos.x, pos.y);
+        
+                if (cell == null || cell.getTile() == null) 
+                    continue;
+
+                voidAtAllLayers = false;
+                MapProperties props = cell.getTile().getProperties();
+                if (props.containsKey("blocked") || props.containsKey("collision")) {
+                    return true;
+                }
+            }
+        }
+        if (voidAtAllLayers)
+            return false;
+        return false;
+    }
+    /*
+    TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
         if (layer == null) return false;
         if (pos.x < 0 || pos.x >= layer.getWidth() || pos.y < 0 || pos.y >= layer.getHeight()) return false;
         TiledMapTileLayer.Cell cell = layer.getCell(pos.x, pos.y);
@@ -93,7 +127,7 @@ public class MCTerrainMap extends MCMap {
             return true;
         }
         return false;
-    }
+     */
 
     /**
      * Create all the entities on the map

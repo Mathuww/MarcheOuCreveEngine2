@@ -3,6 +3,7 @@ package com.walk.or.die.engine.ui;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
@@ -68,4 +69,7 @@ public abstract class MCAbstractHUD {
         drawCorner(rect.x + rect.width - borderSize, rect.y, borderSize);
         drawCorner(rect.x + rect.width - borderSize, rect.y + rect.height - borderSize, borderSize);
     }
+
+    public abstract boolean posBelongsToHudComponent(Vector2 pos);
+    public abstract void handleClick(Vector2 pos);
 }

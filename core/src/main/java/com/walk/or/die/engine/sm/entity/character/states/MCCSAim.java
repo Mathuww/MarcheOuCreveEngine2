@@ -59,6 +59,8 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
     @Override
     public void enter(AimStateArgs args) {
         super.enter(args);
+        parent.getHudCustomization().canShow = false;
+        parent.notifyHudUpdate();
         parent.playAnimation("aim");
         this.bus.emit("connectMouseMoved", new MCInputManager.MouseListener(this::mouseMoved));
         this.attack = args.attack;
@@ -106,7 +108,7 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
             }
             cancel();
         }
-        else if (!(data instanceof MCInputManager.DirectionalCommand bipboup)) {
+        else if (!(data instanceof MCInputManager.DirectionalCommand bipboup)  && !(data instanceof MCInputManager.CameraPanCommand)) {
             cancel();
         }
     }

@@ -159,4 +159,9 @@ public class MCEntityFactory {
         entity.onSpawn();
         return entity;
     }
+
+    public void dispose() {
+        for (MCMap m : mapCache.values())
+            m.dispose();
+    }
 }
