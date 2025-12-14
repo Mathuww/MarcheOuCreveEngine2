@@ -30,7 +30,6 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
     public void enter(AlliesPlayingArgs args) {
         System.out.println("entering allies playing");
         bus.on(this, "InputPressed", this::inputPressed);
-        super.enter(args);
 
         for (MCAlly a : MCEntityManager.get().getAllies()) {
             //System.out.println("adding to allies turn states " + a.getId());
@@ -38,6 +37,7 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
         }
 
         MCHUDManager.get().enableNextTurnHud();
+        super.enter(args);
     }
 
     @Override
