@@ -26,9 +26,10 @@ public class MCUICarousel {
     private final int SPACES_BETWEEN_ITEMS = 5;
     private final float FADE_WIDTH = 60f; 
 
-    private final String textIfEmpty = "(NOTHING TO DO)";
+    private String textIfEmpty = "(NOTHING TO DO)";
     private List<String> items = new ArrayList<>();
-    private List<Runnable> actions = new ArrayList<>();
+    private List<Runnable> focusActions = new ArrayList<>();
+    private List<Runnable> validateActions = new ArrayList<>();
     private List<Float> itemsOffsetX = new ArrayList<>();
     private List<Float> itemsWidth = new ArrayList<>();
     private float totalWidth = 0f;
@@ -67,7 +68,8 @@ public class MCUICarousel {
 
     public void clearActions() {
         this.items.clear();
-        this.actions.clear();
+        this.validateActions.clear();
+        this.focusActions.clear();
         this.itemsOffsetX.clear();
         this.itemsWidth.clear();
 
@@ -77,18 +79,27 @@ public class MCUICarousel {
         textComponent.setText(textIfEmpty);
     }
 
-    public void loadActions(Map<String, Runnable> actions) {
+    public void setEmptyText(String t) {
+        textIfEmpty = t;
+    }
+
+    public void loadActions(Map<String, Runnable> validateActions, Map<String, Runnable> focusActions) {
         clearActions();
-        if (actions.size() == 0)
+        if (validateActions.size() == 0)
             return;
 
-        this.items.addAll(actions.keySet());
+        this.items.addAll(validateActions.keySet());
         float cursor = 0f;
         String totalText = "";
 
         for (int i = 0; i < items.size(); i++) {
             String item = items.get(i);
-            this.actions.add(actions.get(item));
+            this.validateActions.add(validateActions.get(item));
+            // c'est pas grave si on add null. 
+            // ca veut juste dire que cette action fait rien quand 
+            // la met au milieu du carousel.
+            this.focusActions.add(focusActions.get(item));
+
             itemsOffsetX.add(cursor);
 
             float visualItemWidth = textComponent.textDimensions(item).x;
@@ -109,28 +120,49 @@ public class MCUICarousel {
         System.out.println("all carousel text is " + totalText);
         textComponent.setText(totalText);
 
+        if (this.focusActions.get(currentIndex) != null) {
+            System.out.println("running first action");
+            this.focusActions.get(currentIndex).run();
+        }
+
         updateTargetOffset();
     }
 
     public void next() {
+        if (items.isEmpty())
+            return;
         currentIndex++;
         if (currentIndex >= items.size())
             currentIndex = 0;
+        else if (focusActions.get(currentIndex) != null)
+            focusActions.get(currentIndex).run();
         updateTargetOffset();
     }
 
     public void previous() {
+        if (items.isEmpty())
+            return;
         currentIndex--;
         if (currentIndex < 0)
             currentIndex = items.size() - 1;
+        else if (focusActions.get(currentIndex) != null)
+            focusActions.get(currentIndex).run();
         updateTargetOffset();
     }
 
     public void validate() {
-        actions.get(currentIndex).run();
+        if (items.isEmpty())
+            return;
+        validateActions.get(currentIndex).run();
     }
 
     public void updateTargetOffset() {
+        if (items.isEmpty()) {
+            targetOffsetX = 0f;
+            textComponent.centered = true;
+            return;
+        } else
+            textComponent.centered = false;
         float itemStart = itemsOffsetX.get(currentIndex);
         float itemWidth = itemsWidth.get(currentIndex);
         float itemCenter = itemStart + itemWidth / 2f;
@@ -168,8 +200,6 @@ public class MCUICarousel {
     }
 
     public void render(SpriteBatch batch) {
-        if (items.size() == 0) // not loaded
-            return;
         textComponent.render(batch);
         edgeGradient(batch);
     }

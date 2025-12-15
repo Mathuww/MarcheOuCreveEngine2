@@ -252,7 +252,7 @@ public class MCGame extends Game {
         if (!mapFile.exists())
             throw new IllegalStateException("map " + filename + " trying to be loaded but doesn't exist.");
 
-        hudManager.setCharaHudTarget(null);
+        hudManager.getCharacterHud().hide();
         entityManager.clearEntities();
         if (map != null)
             map.dispose();

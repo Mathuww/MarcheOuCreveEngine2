@@ -40,8 +40,8 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
         enemies.clear();
         enemies.addAll(MCEntityManager.get().getEnemies());
         nextTurnRequest = true;
-        MCHUDManager.get().disableNextTurnHud();
-        MCHUDManager.get().hideCharaHud();
+        MCHUDManager.get().getSimpleHud().disable();
+        MCHUDManager.get().getCharacterHud().hide();
     }
 
     private void playOne() {

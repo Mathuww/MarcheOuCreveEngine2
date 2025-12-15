@@ -25,9 +25,11 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
     @Override
     public void enter(ExplStateArgs args) {
         super.enter(args);
+        MCHUDManager hudManager = MCHUDManager.get();
         try {
             MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
             MCCameraManager.get().setFollowTarget(player);
+            // hudManager.setCharaHudTarget(player);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("no player in this map");
@@ -35,7 +37,10 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
         }
         MCCameraManager.get().setMode(MCCameraManager.CameraMode.FOLLOW);
         bus.on(this, "InputPressed", this::inputPressed);
-        MCHUDManager.get().disableNextTurnHud();
+        hudManager.getSimpleHud().setText("INVENTORY");
+        hudManager.getSimpleHud().setAction(() -> System.out.println("Inventory shown"));
+        hudManager.getSimpleHud().enable();
+        hudManager.getCharacterHud().hide();
     }
 
     @Override

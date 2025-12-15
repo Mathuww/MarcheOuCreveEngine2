@@ -190,7 +190,7 @@ public class MCUILayout {
         }
 
         public boolean posBelongsToZone(Vector2 pos) {
-            System.out.println("testing if " + pos.x + "," + pos.y + "is contained in " + outside().x + ", " + outside().y + " - " + outside().width + "x" + outside().height);
+            //System.out.println("testing if " + pos.x + "," + pos.y + "is contained in " + outside().x + ", " + outside().y + " - " + outside().width + "x" + outside().height);
             return outside().contains(pos);
         }
     }

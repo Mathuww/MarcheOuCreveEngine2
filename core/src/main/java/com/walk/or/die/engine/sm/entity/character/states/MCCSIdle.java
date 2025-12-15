@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.walk.or.die.engine.entities.MCAlly;
+import com.walk.or.die.engine.entities.MCAttack;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.entities.MCCharacter.HudCustomization;
@@ -24,6 +25,8 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
      */
     public static class IdleStateArgs extends MCCharacterState.StateArgs {}
 
+    private MCAttack displayedAttack;
+
     /**
      * The constructor.
      * @param parent
@@ -42,7 +45,7 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     public void enter(IdleStateArgs args) {
         setupHudCustomization();
         parent.keep = false;
-        parent.playAnimation("idle");
+        parent.playAnimationWithoutReset("idle");
         bus.on(this, "GameStateChanged", this::gameStateChanged);
         super.enter(args);
     }
@@ -68,31 +71,26 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
             changeState("ready", new MCCSReady.ReadyStateArgs());
     }
 
-    public void goToAim() {
-        if (!parent.focus)
-            return; // sécurité
-        if (MCEntityManager.get().isAnyoneBusy())
-            return;
-        if (parent instanceof MCAlly ally 
-            && ally.getTurnState().canAttack())
-            changeState("aim", new MCCSAim.AimStateArgs(parent.getAttack()));
-    }
-
     private void setupHudCustomization() {
         if (parent instanceof MCAlly ally) {
             HudCustomization customization = ally.getHudCustomization();
 
-            Map<String, Runnable> carouselActions = new HashMap<>();
+            Map<String, Runnable> validateActions = new HashMap<>();
             if (ally.getTurnState().canMove())
-                carouselActions.put("MOVE", () -> goToReady());
+                validateActions.put("MOVE", () -> goToReady());
             if (ally.getTurnState().canAttack())
-                carouselActions.put("ATTACK", () -> goToAim());
-            customization.carouselActions = carouselActions;
+                validateActions.put("ATTACK", () -> changeState("attackChoice", new MCCSAttackChoice.AtkChoiceStateArgs()));
+            customization.carouselValidateActions = validateActions;
 
-            customization.choiceMessage = "What should I do ?";
+            Map<String, Runnable> focusActions = new HashMap<>();
+            focusActions.put("MOVE", () -> System.out.println("Move focused"));
+            focusActions.put("ATTACK", () -> System.out.println("Attack focused"));
+            customization.carouselFocusActions = focusActions;
+
+            customization.choiceMessage = "What should I do ? Help meeee";
             customization.canShow = true;
 
-            ally.notifyHudUpdate();
+            ally.notifyHudUpdate(true);
         } 
     }
 

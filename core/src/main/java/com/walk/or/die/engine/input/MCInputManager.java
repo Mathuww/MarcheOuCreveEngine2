@@ -238,28 +238,28 @@ public class MCInputManager implements InputProcessor {
                 break;
 
             case Input.Keys.UP:
-                if (MCHUDManager.get().isCharaHudShown())
+                if (hudManager.getCharacterHud().isFullyShown())
                     bus.emit("InputPressed", new HudCommand(Type.UP));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(0, +1));
                 break;
 
             case Input.Keys.DOWN:
-                if (MCHUDManager.get().isCharaHudShown())
+                if (hudManager.getCharacterHud().isFullyShown())
                     bus.emit("InputPressed", new HudCommand(Type.DOWN));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(0, -1));
                 break;
 
             case Input.Keys.LEFT:
-                if (MCHUDManager.get().isCharaHudShown())
+                if (hudManager.getCharacterHud().isFullyShown())
                     bus.emit("InputPressed", new HudCommand(Type.LEFT));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(-1, 0));
                 break;
 
             case Input.Keys.RIGHT:
-                if (MCHUDManager.get().isCharaHudShown())
+                if (hudManager.getCharacterHud().isFullyShown())
                     bus.emit("InputPressed", new HudCommand(Type.RIGHT));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(+1, 0));
@@ -278,7 +278,7 @@ public class MCInputManager implements InputProcessor {
                 break;
 
             case Input.Keys.ENTER:
-                if (MCHUDManager.get().isCharaHudShown())
+                if (hudManager.getCharacterHud().isFullyShown())
                     bus.emit("InputPressed", new HudCommand(Type.VALIDATE));
                 break;
 
@@ -348,19 +348,31 @@ public class MCInputManager implements InputProcessor {
         return false;
     }
 
-    @Override public boolean mouseMoved(int x,int y){
-        if (mouseMovedFunction != null) {
-            Vector3 worldCoords = new Vector3(x, y, 0);
-            vp.unproject(worldCoords);
-            Vector2 v = new Vector2(
-                MathUtils.floor(worldCoords.x), 
-                MathUtils.floor(worldCoords.y)
-            );
+    @Override public boolean mouseMoved(int x, int y) {
+        boolean treated = false;
+        Vector3 worldPos = new Vector3(x, y, 0);
+        vp.unproject(worldPos);
+        Vector2 worldCoords = new Vector2(
+            MathUtils.floor(worldPos.x), 
+            MathUtils.floor(worldPos.y)
+        );
 
-            mouseMovedFunction.accept(v);
-            return true;
+        if (mouseMovedFunction != null) {
+            mouseMovedFunction.accept(worldCoords);
+            treated = true;
+        } 
+
+        Vector3 hudPos = new Vector3(x, y, 0f);
+        hudManager.getViewport().unproject(hudPos);
+        Vector2 hudCoords = new Vector2(hudPos.x, hudPos.y);
+
+        if (hudManager.posBelongsToHud(hudCoords)) {
+            hudManager.handleHover(hudCoords);
+            treated = true;
         }
-        return false;
+        else
+            hudManager.handleHoverGone();
+        return treated;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.cameras;
 
+import java.text.NumberFormat.Style;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import com.walk.or.die.engine.input.MCInputManager.CameraPanCommand;
 import com.walk.or.die.engine.input.MCInputManager.CameraZoomCommand;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.OpenSimplex2S;
 
 /**
  * The singleton class which manages the camera.
@@ -41,7 +43,7 @@ public class MCCameraManager {
     }
 
     private OrthographicCamera gdxCam;
-    float oldX, oldY;
+    private float oldX, oldY;
 
     private Map<CameraMode, MCCameraBehavior> behaviors = new HashMap<>();
     private CameraMode mode;
@@ -53,12 +55,14 @@ public class MCCameraManager {
 
     private MCEntity target;
 
-    private float shakeDuration = 0f;  
-    private float shakeStateTime = 0f;   
-    private float shakeIntensity = 0f;
-    private boolean shaking = false;
+    private float trauma = 0f; // camera shake trauma !
+    private float stateTime = 0f;
+    private final float TRAUMA_DECAY = 0.5f; // trauma units/s
+    private final float SHAKE_MAX_ANGLE = 30f; // deg (libgdx fonctionne en deg pour .rotate())
+    private final float SHAKE_MAX_OFFSET = 3f;
+    private final float SHAKE_NOISE_SPEED = 30f;
 
-    public final float ZOOM_LERP = 8f;
+    public final float ZOOM_LERP = 5f;
     public final float ZOOM_STEP = 0.085f;
     public final float ZOOM_MIN = 0.75f;
     public final float ZOOM_MAX = 1.25f;
@@ -229,11 +233,9 @@ public class MCCameraManager {
      * @param intensity
      * @param duration
      */
-    public void shake(float intensity, float duration) {
-        shaking = true;
-        this.shakeIntensity = intensity;
-        this.shakeDuration = duration;
-        this.shakeStateTime = 0f;
+    public void addTrauma(float traumaAddition) {
+        System.out.println("adding " + traumaAddition + " trauma");
+        trauma = MathUtils.clamp(trauma + traumaAddition, 0f, 1f);
     }
 
     /**
@@ -246,22 +248,30 @@ public class MCCameraManager {
         if (mode == null) 
             throw new UnexistingBehaviorException("camera update : need a behavior to update");
 
-        float offsetX = 0f, offsetY = 0f;
-        if (shaking) {
-            if (shakeStateTime < shakeDuration) {
-                shakeStateTime += delta;
-                
-                float currentPower = shakeIntensity * ((shakeDuration - shakeStateTime) / shakeDuration);
-            
-                offsetX = MathUtils.randomTriangular(-1f, 1f, 0f) * currentPower;
-                offsetY = MathUtils.randomTriangular(-1f, 1f, 0f) * currentPower;
+        stateTime += delta;
 
-                gdxCam.translate(offsetX, offsetY);
-            } else {
-                gdxCam.position.x = oldX;
-                gdxCam.position.y = oldY;
-                shaking = false;
-            }
+        if (Math.abs(trauma - 0f) > 0.01f) {
+            System.out.println("trauma is now " + trauma);
+            // restaurer l'état "stable" de la caméra (0 translation, 0 rotation)
+            gdxCam.position.x = oldX;
+            gdxCam.position.y = oldY;
+            gdxCam.up.set(0, 1, 0); // rotation 0 (on peut pas direct setRotation(0f))
+            gdxCam.direction.set(0, 0, -1);
+            
+            float shake = trauma * trauma; // trauma² (+ réaliste, + kiffant)
+            float t = stateTime * SHAKE_NOISE_SPEED;
+
+            float angleNoise = OpenSimplex2S.noise2_ImproveX(0f, t, 0f);
+            float noiseX = OpenSimplex2S.noise2_ImproveX(100f, t, 0f);
+            float noiseY = OpenSimplex2S.noise2_ImproveX(200f, t, 0f);
+        
+            gdxCam.rotate(angleNoise * shake * SHAKE_MAX_ANGLE);
+            gdxCam.position.x += noiseX * shake * SHAKE_MAX_OFFSET;
+            gdxCam.position.y += noiseY * shake * SHAKE_MAX_OFFSET;
+
+            trauma -= delta * TRAUMA_DECAY;
+            if (Math.abs(trauma - 0f) < 0.01f)
+                trauma = 0f; // snap pour etre sur qu'on retombe à ZERO trauma
         } else {
             behaviors.get(mode).update(gdxCam, delta);
 

@@ -1,11 +1,15 @@
 package com.walk.or.die.engine.entities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
@@ -23,12 +27,23 @@ import com.walk.or.die.engine.ui.MCOnGridHealth;
  */
 public class MCCharacter extends MCEntity {
     public class HudCustomization {
-        public Map<String, Runnable> carouselActions = new HashMap<>();
+        public Map<String, Runnable> carouselValidateActions = new HashMap<>();
+        public Map<String, Runnable> carouselFocusActions = new HashMap<>();
+        public String carouselEmptyMsg = "(Nothing to see here)";
         public String choiceMessage = "";
         public boolean canShow = true;
+
+        public void reset() {
+            carouselValidateActions = new HashMap<>();
+            carouselFocusActions = new HashMap<>();
+            carouselEmptyMsg = "(Nothing to see here)";
+            choiceMessage = "";
+            canShow = true;
+        }
     }
 
     protected final int MAX_ATTACK_NUMBER = 6;
+    protected final int MAX_HURT_ANIM_NUMBER = 6;
     
     private String displayName;
 
@@ -45,6 +60,8 @@ public class MCCharacter extends MCEntity {
 
     private MCOnGridHealth healthBar;
     private HudCustomization hudCustomization = new HudCustomization();
+
+    private Random rng = new Random("laleatoire nexiste pas cest un mensonge".hashCode());
 
     /**
      * The creator.
@@ -87,7 +104,7 @@ public class MCCharacter extends MCEntity {
             }
             MCAttack attack = attackFact.build(this, attackName);
             //System.out.println(attackName + attack.toString());
-            addAttack(attackName, attack);
+            addAttack(attack.getName(), attack);
         }
 
         baseAttack = props.get("baseAttack", String.class);
@@ -156,6 +173,10 @@ public class MCCharacter extends MCEntity {
         return moveDisplay;
     }
 
+    public Map<String, MCAttack> getAttacks() {
+        return attacks;
+    }
+
     /**
      * Get the current attack
      * @return
@@ -211,13 +232,32 @@ public class MCCharacter extends MCEntity {
      * @param damage
      * @param targetAnim
      */
-    public void getHurt(int damage, String targetAnim) {
+    public void getHurt(int damage) {
         if (dead)
             return;
         if (damage < 0f) 
             throw new IllegalArgumentException("cant get hurt with negative damage");
         hp = Math.max(0, hp - damage);
-        stateManager.setCurrentState("hurt", new MCCSHurt.HurtStateArgs(damage, targetAnim));
+
+        // Anim aléatoire parmi hurt, hurt2, hurt3 ...
+        List<String> existingHurtAnims = new ArrayList<>();
+        for (int i = 1; i < MAX_HURT_ANIM_NUMBER; i++) {
+            String hurtAnimToSearch = (i == 1) ? "hurt" : ("hurt" + i);
+            System.out.println("searching for hurt anim " + hurtAnimToSearch);
+            if (getAnimation(hurtAnimToSearch) != null) {
+                System.out.println("anim " + hurtAnimToSearch + " exists");
+                existingHurtAnims.add(hurtAnimToSearch);
+            }
+        }
+        String animToPlay;
+        if (existingHurtAnims.size() == 0) {
+            System.err.println(getId() + " doesnt have any HURT animations to play");
+            animToPlay = "hurt";
+        } else {
+            int animIndexToPlay = rng.nextInt(existingHurtAnims.size());
+            animToPlay = existingHurtAnims.get(animIndexToPlay);
+        }
+        stateManager.setCurrentState("hurt", new MCCSHurt.HurtStateArgs(damage, animToPlay));
         System.out.println("J'ai pris " + damage + "dégats !");
     }
     
@@ -276,7 +316,11 @@ public class MCCharacter extends MCEntity {
         return hudCustomization;
     }
 
-    public void notifyHudUpdate() {
-        MCHUDManager.get().refreshCharaHud(this);
+    public void notifyHudUpdate(boolean reloadCarousel) {
+        MCHUDManager.get().getCharacterHud().refreshRequest(this, reloadCarousel);
+    }
+
+    public void onHudVisibilityLost() {
+        stateManager.getCurrentState().onHudVisibilityLost();
     }
 }

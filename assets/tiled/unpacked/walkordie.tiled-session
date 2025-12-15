@@ -23,20 +23,28 @@
             "scaleInDock": 1,
             "scaleInEditor": 4
         },
+        "attacks/close_attack.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 40,
+                "y": 119.5
+            }
+        },
         "attacks/square_attack.tmx": {
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 136,
+                "x": 80,
                 "y": 111.75
             }
         },
         "entities_anims/ally.tmx": {
-            "scale": 5.5,
+            "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 64,
-                "y": 63.909090909090914
+                "x": 53.333333333333336,
+                "y": 81.5
             }
         },
         "entities_anims/ally.tsx": {
@@ -84,8 +92,8 @@
             "scale": 2.00390625,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 63.625730994152065,
-                "y": 63.376218323586784
+                "x": 63.875243664717345,
+                "y": 63.62573099415205
             }
         },
         "entities_anims/enemy.tsx": {
@@ -110,7 +118,7 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 64.05211340587758,
-                "y": 63.95736175882745
+                "y": 63.95736175882746
             }
         },
         "entities_anims/explorationPlayer.tmx#chara1": {
@@ -131,7 +139,7 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 64,
-                "y": 63.875
+                "y": 64.125
             }
         },
         "entities_anims/projectile.tmx#enemy1": {
@@ -161,8 +169,8 @@
             "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 11.625,
-                "y": 128.75
+                "x": 64,
+                "y": 64.125
             }
         },
         "maps/misc.tmx#chara1": {
@@ -192,8 +200,8 @@
             "scale": 2,
             "selectedLayer": 1,
             "viewCenter": {
-                "x": 280.25,
-                "y": 261.25
+                "x": 130.5,
+                "y": 21.25
             }
         },
         "maps/start.tmx#main": {
@@ -209,8 +217,8 @@
             "scale": 11,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 186.40909090909093,
-                "y": 212.86363636363637
+                "x": 176,
+                "y": 159.95454545454544
             }
         },
         "maps/start2.tmx#main": {
@@ -233,12 +241,12 @@
     },
     "last.externalTilesetPath": "/users/etudiant/d/dm316680/PASZDEFICHIERYSTEM/unpacked/entities_anims",
     "last.imagePath": "/users/etudiant/r/re408676/Téléchargements/unpacked/spritesheets",
-    "map.fixedSize": false,
-    "map.height": 8,
+    "map.fixedSize": true,
+    "map.height": 16,
     "map.lastUsedFormat": "tmx",
     "map.tileHeight": 16,
     "map.tileWidth": 16,
-    "map.width": 15,
+    "map.width": 16,
     "openFiles": [
         "entities_anims/explorationPlayer.tmx",
         "maps/start.tmx",

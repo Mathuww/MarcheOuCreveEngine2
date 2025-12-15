@@ -25,6 +25,7 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
  * A class that represents an attack.
  */
 public class MCAttack {
+    private String attackName;
     private final MCEntity parent;
     private int power; // A multiplier...
     private Map<MCIntVector2, Float> damagePattern;
@@ -36,7 +37,6 @@ public class MCAttack {
     private final Color TRAJ_COLOR = new Color(1f, 0f, 0f, 0.6f);
 
     private String senderAnim;
-    private String targetAnim;
 
     /**
      * The creator.
@@ -45,8 +45,9 @@ public class MCAttack {
      * @param pattern
      * @throws Exception
      */
-    public MCAttack(MCEntity parent, int power, Map<MCIntVector2, Float> pattern) throws Exception {
+    public MCAttack(MCEntity parent, String name, int power, Map<MCIntVector2, Float> pattern) throws Exception {
         this.parent = parent;
+        this.attackName = name;
         this.power = power;
         this.damagePattern = pattern;
         validTileTexture = MCSharedAssets.get().getSavedTexture("validAttackTile");
@@ -58,7 +59,6 @@ public class MCAttack {
      */
     public void initFromProperties(MapProperties props) {
         this.senderAnim = props.get("senderAnim", String.class);
-        this.targetAnim = props.get("targetAnim", String.class);
         this.projectileName = props.get("projectileName", String.class);
     }
 
@@ -173,14 +173,6 @@ public class MCAttack {
     }
 
     /**
-     * Get the name of the anim to play on the target.
-     * @return
-     */
-    public String getTargetAnim() {
-        return targetAnim;
-    }
-
-    /**
      * Create the right projectile.
      * @return
      * @throws Exception
@@ -189,4 +181,12 @@ public class MCAttack {
         return MCEntityManager.get().buildProjectile(projectileName);
     }
 
+    public String getSummary() {
+        String summary = "Power : " + power;
+        return summary;
+    }
+
+    public String getName() {
+        return attackName;
+    }
 }

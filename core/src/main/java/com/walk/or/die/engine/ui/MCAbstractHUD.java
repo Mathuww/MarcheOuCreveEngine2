@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.ui;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
@@ -13,11 +14,13 @@ public abstract class MCAbstractHUD {
     protected final MCSharedAssets sharedAssets = MCSharedAssets.get();
     protected TextureRegion blackTexture;
     protected TextureRegion whiteTexture;
+    protected TextureRegion greyTexture;
 
     public MCAbstractHUD() {
         try {
             blackTexture = sharedAssets.getSavedTexture("black");
             whiteTexture = sharedAssets.getSavedTexture("white");
+            greyTexture = sharedAssets.getSavedTexture("grey");
         } catch (Exception e) {
             System.err.println("cant load character hud assets");
             e.printStackTrace();
@@ -34,8 +37,8 @@ public abstract class MCAbstractHUD {
         currentBatch = batch;
     }
     
-    protected void drawWhiteRectangle(Rectangle rect) {
-        currentBatch.draw(whiteTexture, rect.x, rect.y, rect.width, rect.height);
+    protected void drawFilledRectangle(Rectangle rect, TextureRegion innerTexture) {
+        currentBatch.draw(innerTexture, rect.x, rect.y, rect.width, rect.height);
     }
 
     private void drawCorner(float x, float y, float cornerSize) {
@@ -47,8 +50,12 @@ public abstract class MCAbstractHUD {
     }
 
     protected void drawCornerlessRectangle(Zone zone, float borderSize) {
+        drawCornerlessRectangle(zone, borderSize, whiteTexture);
+    }
+
+    protected void drawCornerlessRectangle(Zone zone, float borderSize, TextureRegion innerTexture) {
         Rectangle rect = zone.outside();
-        drawWhiteRectangle(rect);
+        drawFilledRectangle(rect, innerTexture);
 
         float tiersBorder = borderSize / 3f;
         // bord inférieur
@@ -71,5 +78,7 @@ public abstract class MCAbstractHUD {
     }
 
     public abstract boolean posBelongsToHudComponent(Vector2 pos);
+    public abstract void handleHover(Vector2 pos);
+    public abstract void handleHoverGone();
     public abstract void handleClick(Vector2 pos);
 }

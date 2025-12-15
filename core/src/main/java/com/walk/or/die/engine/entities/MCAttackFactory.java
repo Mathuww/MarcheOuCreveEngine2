@@ -111,7 +111,14 @@ public class MCAttackFactory {
             }
         }
 
-        MCAttack attack = new MCAttack(parent, power, damagePattern);
+        String realName = attackProperties.get("displayName", String.class);
+        if (realName == null) {
+            System.err.println("cant find display name of attack " + attackName);
+            realName = attackName;
+        }
+        System.out.println("real name will be " + realName);
+
+        MCAttack attack = new MCAttack(parent, realName, power, damagePattern);
         attack.initFromProperties(attackProperties);
         //System.out.println(attack.toString());
 

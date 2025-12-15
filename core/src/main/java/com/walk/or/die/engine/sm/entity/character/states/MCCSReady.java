@@ -50,7 +50,7 @@ public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
     public void enter(ReadyStateArgs args) {
         super.enter(args);
         parent.getHudCustomization().canShow = false;
-        parent.notifyHudUpdate();
+        parent.notifyHudUpdate(true);
         parent.playAnimation("ready");
         this.bus.emit("connectMouseMoved", new MCInputManager.MouseListener(this::mouseMoved));
         parent.getMoveDisplay().computeValidTilesDisplay();
@@ -85,7 +85,10 @@ public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
                 return;
             }
             cancel();
-        } else if (!(data instanceof MCInputManager.DirectionalCommand) && !(data instanceof MCInputManager.CameraPanCommand)) {
+        } else if (!(data instanceof MCInputManager.DirectionalCommand) 
+            && !(data instanceof MCInputManager.CameraPanCommand)
+            && !(data instanceof MCInputManager.CameraZoomCommand)
+        ) {
             cancel();
         }
     }

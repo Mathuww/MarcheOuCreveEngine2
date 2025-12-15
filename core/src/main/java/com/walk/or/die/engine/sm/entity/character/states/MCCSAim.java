@@ -60,7 +60,7 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
     public void enter(AimStateArgs args) {
         super.enter(args);
         parent.getHudCustomization().canShow = false;
-        parent.notifyHudUpdate();
+        parent.notifyHudUpdate(true);
         parent.playAnimation("aim");
         this.bus.emit("connectMouseMoved", new MCInputManager.MouseListener(this::mouseMoved));
         this.attack = args.attack;
@@ -78,7 +78,7 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
     }
 
     private void cancel() {
-        changeState("idle", new MCCSIdle.IdleStateArgs());
+        changeState("attackChoice", new MCCSAttackChoice.AtkChoiceStateArgs());
     }
     
     @Override
@@ -86,7 +86,7 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
             MCEntity e = MCEntityManager.get().getEntityFromTile(1, tileCmd.getIntVect());
-            if (e != null && e instanceof MCCharacter c) { // plus tard : remplacer par MCEnemy !!!!
+            if (e != null && e instanceof MCCharacter c) { // plus tard : remplacer par MCEnemy !!!! Mouais
                 // a améliorer plus trad !!!
                 if (e instanceof MCAlly) {
                     cancel();
@@ -108,7 +108,10 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
             }
             cancel();
         }
-        else if (!(data instanceof MCInputManager.DirectionalCommand bipboup)  && !(data instanceof MCInputManager.CameraPanCommand)) {
+        else if (!(data instanceof MCInputManager.DirectionalCommand) 
+            && !(data instanceof MCInputManager.CameraPanCommand)
+            && !(data instanceof MCInputManager.CameraZoomCommand)
+        ) {
             cancel();
         }
     }

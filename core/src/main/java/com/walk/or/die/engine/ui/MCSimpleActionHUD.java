@@ -21,7 +21,7 @@ import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
-public class MCNextTurnHUD extends MCAbstractHUD {
+public class MCSimpleActionHUD extends MCAbstractHUD {
     private final String FONT_FAMILY = "ariBlackAlpha";
 
     private final float HUD_HEIGHT = MCGame.WINDOW_DEFAULT_HEIGHT * 0.115f;
@@ -50,9 +50,13 @@ public class MCNextTurnHUD extends MCAbstractHUD {
     private boolean scrolling = false;
     private boolean shown = false;
 
+    private boolean hovered = false;
+
+    private Runnable callback;
+
     private final MCEventBus bus = MCEventBus.get();
 
-    public MCNextTurnHUD() {
+    public MCSimpleActionHUD() {
         try {
             font = sharedAssets.getSavedFont(FONT_FAMILY);
         } catch (Exception e) {
@@ -85,6 +89,10 @@ public class MCNextTurnHUD extends MCAbstractHUD {
         text.setText("END TURN");
 
         enable(); // pour tester
+    }
+
+    public void setText(String newText) {
+        text.setText(newText);
     }
 
     private void scrollTo(float targetOffsetY) {
@@ -124,7 +132,9 @@ public class MCNextTurnHUD extends MCAbstractHUD {
     public void render(SpriteBatch batch) {
         super.render(batch);
 
-        drawCornerlessRectangle(layout.zone("nextTurnPanel"), HUD_RECT_BORDER);
+        TextureRegion innerPanelTexture = hovered ? greyTexture : whiteTexture;
+        drawCornerlessRectangle(layout.zone("nextTurnPanel"), HUD_RECT_BORDER, innerPanelTexture);
+
         text.render(batch);
     }
 
@@ -138,14 +148,24 @@ public class MCNextTurnHUD extends MCAbstractHUD {
 
     public boolean posBelongsToHudComponent(Vector2 mousePos) {
         boolean belongs = layout.zone("nextTurnPanel").posBelongsToZone(mousePos);
-        if (belongs)
-            System.out.println("belongs to next tutn hud");
         return belongs;
     }
     
+    public void handleHover(Vector2 hoverPos) {
+        hovered = true;
+    }
+
+    public void handleHoverGone() {
+        hovered = false;
+    }
+
     public void handleClick(Vector2 clickPos) {
-        if (!isFullyShown())
+        if (!isFullyShown() || callback == null)
             return;
-        bus.emit("InputPressed", new MCInputManager.NextTurnCommand());
+        callback.run();
+    }
+
+    public void setAction(Runnable callback) {
+        this.callback = callback;
     }
 }

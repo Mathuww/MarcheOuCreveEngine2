@@ -3,6 +3,7 @@ package com.walk.or.die.engine.entities;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSAim;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSAttackChoice;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSClickMove;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSDead;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
@@ -54,6 +55,7 @@ public class MCAlly extends MCCharacter {
         MCStateMachine stateManager = getStateManager();
         stateManager.addState(new MCCSClickMove(this));
         stateManager.addState(new MCCSIdle(this));
+        stateManager.addState(new MCCSAttackChoice(this));
         stateManager.addState(new MCCSAim(this));
         stateManager.addState(new MCCSShoot(this));
         stateManager.addState(new MCCSReady(this));

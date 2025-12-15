@@ -51,9 +51,8 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
         blinkingTime = 0f;
         parent.playAnimation(args.targetAnim);
         if (parent instanceof MCAlly) {
-            MCCameraManager.get().shake(
-                MathUtils.clamp(((float)args.damage / (float)parent.getMaxHp()), 0f, 0.6f), 
-                0.25f
+            MCCameraManager.get().addTrauma(
+                MathUtils.clamp(((float)args.damage / (float)parent.getMaxHp()), 0f, 0.6f)
             );
         }
     }  

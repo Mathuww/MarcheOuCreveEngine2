@@ -36,4 +36,6 @@ public abstract class MCCharacterState<T extends MCCharacterState.StateArgs> ext
 
     @Override
     public void renderOnGridOverlay(SpriteBatch batch) {}
+
+    public void onHudVisibilityLost() {}
 }

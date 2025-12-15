@@ -96,7 +96,7 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
         goal = args.target;
         movements.clear();
         movements.addAll(args.path);
-        parent.playAnimation("walk");
+        playAnimationOr("run", "walk");
         super.enter(args);
     }
 
@@ -135,14 +135,18 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
             // tile by tile sans diag donc on peut tester comme ca
             // (ca crash pas le jeu si l'anim existe pas juste il se passe rien)
             if (deplacement.x > 0)
-                parent.playAnimation("walk_right");
+                playAnimationOr("run_right", "walk_right");
             else if (deplacement.x < 0)
-                parent.playAnimation("walk_left");
+                playAnimationOr("run_left", "walk_left");
             else if (deplacement.y > 0)
-                parent.playAnimation("walk_up");
+                playAnimationOr("run_up", "walk_up");
             else if (deplacement.y < 0)
-                parent.playAnimation("walk_down");
+                playAnimationOr("run_down", "walk_down");
         }
     }
     
+    private void playAnimationOr(String anim1, String anim2) {
+        if (!parent.playAnimationWithoutReset(anim1))
+            parent.playAnimationWithoutReset(anim2);
+    }
 }

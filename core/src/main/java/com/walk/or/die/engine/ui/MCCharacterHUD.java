@@ -140,8 +140,9 @@ public class MCCharacterHUD extends MCAbstractHUD {
     }
 
     public void hide() {
+        if (currentCharacter != null)
+            currentCharacter.onHudVisibilityLost();
         scrollTo(SCROLL_Y);
-        shown = false;
     }
 
     public void show() {
@@ -149,31 +150,34 @@ public class MCCharacterHUD extends MCAbstractHUD {
         if (!customization.canShow)
             return;
         scrollTo(0f);
-        shown = true;
     }
 
     public void setCharacter(MCCharacter newCharacter) {
-        if (newCharacter != null && newCharacter.equals(currentCharacter))
-            return; // y'a rien a faire....
-
-        if (newCharacter != null && !shown) {
-            System.out.println("simple open");
-            currentCharacter = newCharacter;
-            repopulateHud();
-            show();
-        } else if (newCharacter == null && shown) {
+        if (newCharacter == null) {
             System.out.println("simple close");
-            currentCharacter = null;
             hide();
-        } else if (currentCharacter != null && newCharacter != null) {
+            return;
+        }
+
+        if (newCharacter != null && newCharacter.equals(currentCharacter)) {
+            show();
+            return;
+        }
+
+        if (shown) {
             System.out.println("beginning switch");
             switching = true;
             afterSwitchCharacter = newCharacter;
             hide();
-        }
+        } else {
+            System.out.println("simple open");
+            currentCharacter = newCharacter;
+            repopulateHud(true);
+            show();
+        } 
     }
 
-    public void refreshRequest(MCCharacter c) {
+    public void refreshRequest(MCCharacter c, boolean reloadCarousel) {
         if (currentCharacter == null) 
             return;
         if (!currentCharacter.equals(c)) 
@@ -185,13 +189,13 @@ public class MCCharacterHUD extends MCAbstractHUD {
             hide();
         else {
             System.out.println("je vais réafficher");
-            repopulateHud();
+            repopulateHud(reloadCarousel);
             if (!shown)
                 show();
         }
     }
 
-    private void repopulateHud() {
+    private void repopulateHud(boolean reloadCarousel) {
         if (currentCharacter == null)
             return;
 
@@ -199,7 +203,13 @@ public class MCCharacterHUD extends MCAbstractHUD {
         characterNameText.setText(currentCharacter.getDisplayName());
         choiceMessageText.setText(customization.choiceMessage);
         choiceMessageText.startTyping();
-        choiceCarousel.loadActions(customization.carouselActions);
+        if (reloadCarousel) {
+            choiceCarousel.loadActions(
+                customization.carouselValidateActions,
+                customization.carouselFocusActions
+            );
+            choiceCarousel.setEmptyText(customization.carouselEmptyMsg);
+        }
     }
 
     public void setMessage(String text) {
@@ -243,11 +253,10 @@ public class MCCharacterHUD extends MCAbstractHUD {
                     System.out.println("arrived & switching");
                     currentCharacter = afterSwitchCharacter;
                     switching = false;
-                    repopulateHud();
+                    repopulateHud(true);
                     show();
-                } else if (!shown) {// pas de switch, fermeture simple !
-                    System.out.println("arrived & not shown");
-                }
+                } else
+                    shown = (offsetY == 0f);
             } else 
                 offsetY += (targetOffsetY - offsetY) * delta * SCROLL_LERP;
             offsetY = MathUtils.clamp(offsetY, SCROLL_Y, 0f);
@@ -305,10 +314,11 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     public boolean posBelongsToHudComponent(Vector2 mousePos) {
         boolean belongs = layout.zone("characterHud").posBelongsToZone(mousePos);
-        if (belongs)
-            System.out.println("belongs to chara hud");
         return belongs;
     }
+
+    public void handleHover(Vector2 pos) {}
+    public void handleHoverGone() {}
 
     public void handleClick(Vector2 pos) {
         if (!isFullyShown())

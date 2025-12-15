@@ -14,6 +14,7 @@ import java.util.PriorityQueue;
 //import javax.xml.parsers.ParserConfigurationException;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Collections;
 
 /**
@@ -167,6 +168,37 @@ public class MCPathfinder {
         }
 
         return result;
+    }
+
+    public void cutTrajectoryOnHit(List<MCIntVector2> list) {
+        Iterator<MCIntVector2> it = list.iterator();
+        MCIntVector2 vec;
+        boolean cut = false;
+
+        it.next();
+        while (it.hasNext()) {
+            vec = it.next();
+            if (cut) {
+                it.remove();
+            } else if (!isWalkable(vec)) {
+                cut = true;
+            }
+        }
+    }
+
+    public List<MCIntVector2> getBestTrajectory(MCIntVector2 v1, MCIntVector2 v2) {
+        // bah ptn super fonction
+        // on va remplacer tous les new arraylist() par des getBestTrajectory(new Vector2(0,0))
+        // Att att ça va être utile je jure
+        List<MCIntVector2> try1 = getTrajectory(v1, v2);
+        cutTrajectoryOnHit(try1);
+        if (try1.get(try1.size()-1).equals(v2)) return try1;
+
+        List<MCIntVector2> try2 = getTrajectory(v1, v2); // Il faut modifier v1
+        cutTrajectoryOnHit(try2);
+        if (try2.get(try2.size()-1).equals(v2)) return try2;
+        
+        return try1;
     }
 
     /**

@@ -19,13 +19,13 @@ public class MCHUDManager {
     private OrthographicCamera hudCamera;
 
     private MCCharacterHUD characterHUD;
-    private MCNextTurnHUD nextTurnHUD;
+    private MCSimpleActionHUD simpleActionHUD;
 
     public void init(int width, int height) {
         hudCamera = new OrthographicCamera();
         hudViewport = new FitViewport(width, height, hudCamera);
         characterHUD = new MCCharacterHUD();
-        nextTurnHUD = new MCNextTurnHUD();
+        simpleActionHUD = new MCSimpleActionHUD();
     }
 
     public FitViewport getViewport() {
@@ -36,38 +36,18 @@ public class MCHUDManager {
         return hudCamera;
     }
 
-    public void hideCharaHud() {
-        characterHUD.hide();
+    public MCCharacterHUD getCharacterHud() {
+        return characterHUD;
     }
 
-    public void showCharaHud() {
-        characterHUD.show();
-    }
-
-    public void setCharaHudTarget(MCCharacter character) {
-        characterHUD.setCharacter(character);
-    }
-
-    public void refreshCharaHud(MCCharacter c) {
-        characterHUD.refreshRequest(c);
-    }
-
-    public boolean isCharaHudShown() {
-        return characterHUD.isFullyShown();
-    }
-
-    public void disableNextTurnHud() {
-        nextTurnHUD.disable();
-    }
-
-    public void enableNextTurnHud() {
-        nextTurnHUD.enable();
+    public MCSimpleActionHUD getSimpleHud() {
+        return simpleActionHUD;
     }
 
     public void update(float delta) {
         hudCamera.update();
         characterHUD.update(delta);
-        nextTurnHUD.update(delta);
+        simpleActionHUD.update(delta);
     }
 
     public void render(SpriteBatch batch) {
@@ -75,20 +55,32 @@ public class MCHUDManager {
         batch.setProjectionMatrix(hudCamera.combined);
         batch.begin();
         characterHUD.render(batch);
-        nextTurnHUD.render(batch);
+        simpleActionHUD.render(batch);
         batch.end();
         //characterHUD.renderDebug();
     }
 
     public boolean posBelongsToHud(Vector2 pos) {
         return characterHUD.posBelongsToHudComponent(pos) 
-            || nextTurnHUD.posBelongsToHudComponent(pos);
+            || simpleActionHUD.posBelongsToHudComponent(pos);
+    }
+
+    public void handleHover(Vector2 pos) {
+        if (characterHUD.posBelongsToHudComponent(pos))
+            characterHUD.handleHover(pos);
+        else if (simpleActionHUD.posBelongsToHudComponent(pos))
+            simpleActionHUD.handleHover(pos);
+    }
+
+    public void handleHoverGone() {
+        characterHUD.handleHoverGone();
+        simpleActionHUD.handleHoverGone();
     }
 
     public void handleClick(Vector2 pos) {
         if (characterHUD.posBelongsToHudComponent(pos))
             characterHUD.handleClick(pos);
-        else if (nextTurnHUD.posBelongsToHudComponent(pos))
-            nextTurnHUD.handleClick(pos);
+        else if (simpleActionHUD.posBelongsToHudComponent(pos))
+            simpleActionHUD.handleClick(pos);
     }
 }

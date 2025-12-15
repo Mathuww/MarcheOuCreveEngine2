@@ -59,6 +59,7 @@ public class MCSharedAssets {
         addOnePixelTexture("fallback", Color.MAGENTA);
         addOnePixelTexture("black", Color.BLACK);
         addOnePixelTexture("white", Color.WHITE);
+        addOnePixelTexture("grey", new Color(0xefefefff));
         addOnePixelTexture("yellow", Color.YELLOW);
         addOnePixelTexture("green", Color.GREEN);
         addOnePixelTexture("red", Color.RED);

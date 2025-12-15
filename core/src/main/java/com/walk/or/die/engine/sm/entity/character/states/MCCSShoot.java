@@ -62,7 +62,7 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
     public void enter(ShootStateArgs args) {
         super.enter(args);
         parent.getHudCustomization().canShow = false;
-        parent.notifyHudUpdate();
+        parent.notifyHudUpdate(true);
 
         if (parent instanceof MCAlly ally)
             ally.getTurnState().attacked();
@@ -72,7 +72,7 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
         if (result.success) {
             int damage = args.attack.getDamageTo(args.target);
             parent.shootThenCall(args.target.getTilePosition(), args.attack, () -> {
-                args.target.getHurt(damage, args.attack.getTargetAnim());
+                args.target.getHurt(damage);
                 changeState("idle", new MCCSIdle.IdleStateArgs());
             });
         } else { // miss shot !
