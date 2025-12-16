@@ -2,6 +2,8 @@ package com.walk.or.die.engine.sm.game.states;
 
 import com.badlogic.gdx.Input;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.cameras.MCCameraManager;
+import com.walk.or.die.engine.cameras.MCCameraManager.CameraMode;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
@@ -37,11 +39,13 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
         }
 
         MCHUDManager hudManager = MCHUDManager.get();
+        hudManager.getCharacterHud().setRightPanelDisplay(true);
         hudManager.getSimpleHud().setText("END TURN");
         hudManager.getSimpleHud().setAction(
             () -> bus.emit("InputPressed", new MCInputManager.NextTurnCommand())
         );
         hudManager.getSimpleHud().enable();
+        MCCameraManager.get().setMode(CameraMode.ARROWS);
         super.enter(args);
     }
 

@@ -324,11 +324,11 @@ public class MCInputManager implements InputProcessor {
 
     @Override public boolean touchDown(int x, int y, int pointer, int button) {
         Vector3 worldCoords = new Vector3(x, y, 0);
+        Vector3 hudCoords = new Vector3(worldCoords);
+        hudManager.getViewport().unproject(hudCoords);
+        Vector2 hudPos = new Vector2(hudCoords.x, hudCoords.y);
 
         if (button == Buttons.LEFT) {
-            Vector3 hudCoords = new Vector3(worldCoords);
-            hudManager.getViewport().unproject(hudCoords);
-            Vector2 hudPos = new Vector2(hudCoords.x, hudCoords.y);
             if (hudManager.posBelongsToHud(hudPos)) {
                 System.out.println("sending click to hud");
                 hudManager.handleClick(hudPos);
@@ -339,6 +339,8 @@ public class MCInputManager implements InputProcessor {
             bus.emit("InputPressed", new ClickTileCommand(v));
             return true;
         } else if (button == Buttons.RIGHT) {
+            if (hudManager.posBelongsToHud(hudPos))
+                return false;
             isDragging = true;
             vp.unproject(worldCoords);
             posBeforeDrag.set(worldCoords);
@@ -393,6 +395,15 @@ public class MCInputManager implements InputProcessor {
 
     @Override 
     public boolean scrolled(float x, float y) {
+        Vector3 hudPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0f);
+        hudManager.getViewport().unproject(hudPos);
+        Vector2 hudCoords = new Vector2(hudPos.x, hudPos.y);
+
+        if (hudManager.posBelongsToHud(hudCoords)) {
+            hudManager.handleScroll(hudCoords, y);
+            return true;
+        }
+
         bus.emit("InputPressed", new CameraZoomCommand(y));
         return true;
     }
@@ -416,6 +427,10 @@ public class MCInputManager implements InputProcessor {
             isDragging = false;
             return false;
         }
+        
+        Vector3 hudPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0f);
+        hudManager.getViewport().unproject(hudPos);
+        Vector2 hudCoords = new Vector2(hudPos.x, hudPos.y);
 
         Vector3 delta = new Vector3(x, y, 0);
         vp.unproject(delta);

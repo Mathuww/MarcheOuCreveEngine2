@@ -72,9 +72,9 @@ public class MCAI {
      * @return
      */
     private float scoreVictim(MCIntVector2 pos, MCAlly ally, float degats) {
-        float score = 0f;
-        if (ally.getHealth() <= degats) score += 10f;
-        if (pathfinder.isCorrectTrajectory(pathfinder.getValidTrajectory(ally.getTilePosition(), pos)).success) score += 2f;
+
+        float score = pathfinder.isCorrectTrajectory(pathfinder.getBestTrajectory(pos, ally.getTilePosition()), ally.getTilePosition());
+        if (score > 0f && ally.getHealth() <= degats) score += 10f;
         //score += pos.dst2(ally.getTilePosition())*0.2f;
 
         return score;
@@ -88,8 +88,8 @@ public class MCAI {
     private Set<MCAlly> getShootableAllies(MCIntVector2 pos) {
         Set<MCAlly> allies = new HashSet<>();
         for (MCAlly ally: MCEntityManager.get().getAllies()) {
-            List<MCIntVector2> traj = pathfinder.getValidTrajectory(pos, ally.getTilePosition());
-            if (pathfinder.isCorrectTrajectory(traj).success && parent.getAttack().isValidTile(ally.getTilePosition())) {
+            List<MCIntVector2> traj = pathfinder.getBestTrajectory(pos, ally.getTilePosition());
+            if (pathfinder.isCorrectTrajectory(traj, ally.getTilePosition()) != 0f && parent.getAttack().isValidTile(ally.getTilePosition())) {
                 //System.out.println(ally);
                 allies.add(ally);
             }
@@ -122,7 +122,7 @@ public class MCAI {
     }
 
     /**
-     * Note if a spot is protected.
+     * Note if a spot is protected. The higher the score, the less safe the shelter is.
      * @param pos
      * @return
      */
@@ -132,12 +132,10 @@ public class MCAI {
         float result = 0f;
         if (MCEntityManager.get().getEntityFromTile(1, pos) instanceof MCCharacter) return 100f;
         for (MCAlly ally: list) {
-            List<MCIntVector2> traj = pathfinder.getValidTrajectory(
+            List<MCIntVector2> traj = pathfinder.getBestTrajectory(
                 ally.getTilePosition(),
                 pos);
-            if (pathfinder.isCorrectTrajectory(traj).success) {
-                result += 1f;
-            }
+            result += pathfinder.isCorrectTrajectory(traj, pos);
             
         }
         //System.out.println("score safe " + result + " pour la pos " + pos);
@@ -154,7 +152,7 @@ public class MCAI {
     }
 
     /**
-     * Note if a spot is good for shooting.
+     * Note if a spot is good for shooting. The higher the score, the better the shelter is.
      * @param pos
      * @return
      */
@@ -163,13 +161,12 @@ public class MCAI {
 
         float result = 0f;
         for (MCAlly ally: list) {
-            List<MCIntVector2> traj = pathfinder.getValidTrajectory(
+            List<MCIntVector2> traj = pathfinder.getBestTrajectory(
                 pos,
                 ally.getTilePosition()
             );
-            if (pathfinder.isCorrectTrajectory(traj).success) {
-                result += 1f;
-            }
+            
+            result += pathfinder.isCorrectTrajectory(traj, ally.getTilePosition());
         }
         /*
         get all character

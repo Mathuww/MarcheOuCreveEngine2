@@ -87,7 +87,7 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
             focusActions.put("ATTACK", () -> System.out.println("Attack focused"));
             customization.carouselFocusActions = focusActions;
 
-            customization.choiceMessage = "What should I do ? Help meeee";
+            customization.choiceMessage = "What should I do ?";
             customization.canShow = true;
 
             ally.notifyHudUpdate(true);

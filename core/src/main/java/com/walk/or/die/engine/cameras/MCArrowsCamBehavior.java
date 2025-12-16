@@ -21,6 +21,11 @@ import com.walk.or.die.engine.shared.MCIntVector2;
  */
 public class MCArrowsCamBehavior extends MCCameraBehavior {
     private final float CAM_MOVE_SPEED = 0.05f;
+    // pour translation vers point avant enemies playing
+    private final float CAM_LERP = 3f;
+    private float targetX = 0f, targetY = 0f;
+    private boolean translating = false;
+
     private MCEntity target;
     private Float targetZoom;
 
@@ -54,6 +59,9 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
      */
     @Override
     public void handleInputPressed(OrthographicCamera gdxCam, Command data) {
+        if (translating)
+            return;
+
         MCCameraManager camManager = MCCameraManager.get();
         if(data instanceof DirectionalCommand cmd) {
             currentInput.put(cmd.getIntVect(), true);
@@ -93,8 +101,30 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
     }
 
     @Override
+    public void interpolateTo(Vector2 pos) {
+        targetX = pos.x;
+        targetY = pos.y;
+        translating = true;
+    }
+
+    @Override
     public void update(OrthographicCamera gdxCam, float delta) {
         MCCameraManager camManager = MCCameraManager.get();
+
+        if (translating) {
+            if (Math.abs(targetX - gdxCam.position.x) > 0.01f
+                || Math.abs(targetX - gdxCam.position.x) > 0.001) {
+                gdxCam.position.x += (targetX - gdxCam.position.x) * delta * CAM_LERP;
+                gdxCam.position.y += (targetY - gdxCam.position.y) * delta * CAM_LERP;
+            } else {
+                gdxCam.position.x = targetX;
+                gdxCam.position.y = targetY;
+                translating = false;
+            }
+
+            gdxCam.update();
+            return;
+        }
 
         float camHalfWidth = gdxCam.viewportWidth / 2;
         float camHalfHeight = gdxCam.viewportHeight / 2;

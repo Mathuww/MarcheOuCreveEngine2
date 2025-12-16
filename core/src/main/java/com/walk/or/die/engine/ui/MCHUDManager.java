@@ -20,12 +20,14 @@ public class MCHUDManager {
 
     private MCCharacterHUD characterHUD;
     private MCSimpleActionHUD simpleActionHUD;
+    private MCTerrainFocusHUD focusHUD;
 
     public void init(int width, int height) {
         hudCamera = new OrthographicCamera();
         hudViewport = new FitViewport(width, height, hudCamera);
         characterHUD = new MCCharacterHUD();
         simpleActionHUD = new MCSimpleActionHUD();
+        focusHUD = new MCTerrainFocusHUD();
     }
 
     public FitViewport getViewport() {
@@ -44,10 +46,15 @@ public class MCHUDManager {
         return simpleActionHUD;
     }
 
+    public MCTerrainFocusHUD getFocusHud() {
+        return focusHUD;
+    }
+
     public void update(float delta) {
         hudCamera.update();
         characterHUD.update(delta);
         simpleActionHUD.update(delta);
+        focusHUD.update(delta);
     }
 
     public void render(SpriteBatch batch) {
@@ -82,5 +89,9 @@ public class MCHUDManager {
             characterHUD.handleClick(pos);
         else if (simpleActionHUD.posBelongsToHudComponent(pos))
             simpleActionHUD.handleClick(pos);
+    }
+
+    public void handleScroll(Vector2 pos, float dy) {
+        characterHUD.handleScroll(pos, dy);
     }
 }

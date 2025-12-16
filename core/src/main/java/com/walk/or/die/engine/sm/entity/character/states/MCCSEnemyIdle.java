@@ -44,6 +44,7 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     @Override
     public void enter(MCCSIdle.IdleStateArgs args) {
         parent.keep = false;
+        parent.onHudVisibilityLost();
         setupHudCustomization();
         parent.playAnimation("idle");
         super.enter(args);
@@ -81,7 +82,7 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     }
 
     @Override
-    public boolean isBlocking(){
+    public boolean isBlocking() {
         return false;
     }
 

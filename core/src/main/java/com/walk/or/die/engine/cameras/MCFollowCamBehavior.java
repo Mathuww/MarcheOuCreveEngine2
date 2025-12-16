@@ -8,6 +8,7 @@ import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.CameraZoomCommand;
 import com.walk.or.die.engine.input.MCInputManager.Command;
+import com.walk.or.die.engine.shared.MCIntVector2;
 
 /**
  * Behavior class which causes the camera to follow a target.

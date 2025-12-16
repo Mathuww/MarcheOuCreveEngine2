@@ -10,6 +10,7 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.exceptions.TooManyExceptionsException;
 import com.walk.or.die.engine.shared.MCIntVector2;
+import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
  * A singleton who manages all the entity in the game.
@@ -257,5 +258,6 @@ public class MCEntityManager {
             if (e instanceof MCCharacter c)
                 c.renderOnGridOverlay(batch);
         }
+        MCHUDManager.get().getFocusHud().render(batch);
     }
 }

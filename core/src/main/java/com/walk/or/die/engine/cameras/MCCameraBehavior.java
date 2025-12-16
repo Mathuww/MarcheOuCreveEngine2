@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.MCIntVector2;
 
 /**
  * The abstract behavior class.
@@ -30,4 +31,6 @@ public abstract class MCCameraBehavior {
 
     public abstract void handleInputPressed(OrthographicCamera gdxCam, Command cmd);
     public abstract void handleInputReleased(Command cmd);
+
+    public void interpolateTo(Vector2 pos) {}
 }

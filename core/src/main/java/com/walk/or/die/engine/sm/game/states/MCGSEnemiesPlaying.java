@@ -3,9 +3,18 @@ package com.walk.or.die.engine.sm.game.states;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.cameras.MCCameraManager;
+import com.walk.or.die.engine.cameras.MCCameraManager.CameraMode;
+import com.walk.or.die.engine.entities.MCAlly;
+import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEnemy;
+import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityManager;
+import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.input.MCInputManager.ClickTileCommand;
+import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
@@ -13,7 +22,13 @@ import com.walk.or.die.engine.ui.MCHUDManager;
 public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPlayingArgs> {
 
     private boolean nextTurnRequest = false;
+    private boolean firstPlay = false;
+    private float intermediateTime = 0f;
+    private final float MIN_TIME_BETWEEN_PLAYS = 2.5f;
     private Queue<MCEnemy> enemies = new ArrayDeque<>();
+
+    private MCCharacter hudFocusBefore;
+    private Vector2 cameraPosBefore = new Vector2();
 
     public static class EnemiesPlayingArgs extends MCState.StateArgs {
 
@@ -28,7 +43,11 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
     @Override
     public void update(float delta) {
         //System.out.println("On respire le bon air de la nature");
-        if (nextTurnRequest && !MCEntityManager.get().isAnyoneBusy()) {
+        intermediateTime += delta;
+        if (nextTurnRequest && !MCEntityManager.get().isAnyoneBusy() 
+            && (intermediateTime >= MIN_TIME_BETWEEN_PLAYS || firstPlay)) {
+            intermediateTime = 0f;
+            if (firstPlay) firstPlay = false;
             nextTurnRequest = false;
             playOne();
         }
@@ -40,8 +59,15 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
         enemies.clear();
         enemies.addAll(MCEntityManager.get().getEnemies());
         nextTurnRequest = true;
-        MCHUDManager.get().getSimpleHud().disable();
-        MCHUDManager.get().getCharacterHud().hide();
+        firstPlay = true;
+        MCHUDManager hudManager = MCHUDManager.get();
+        hudFocusBefore = hudManager.getCharacterHud().getCharacter();
+        hudManager.getSimpleHud().disable();
+        hudManager.getCharacterHud().hide();
+        hudManager.getCharacterHud().setRightPanelDisplay(false);
+
+        cameraPosBefore = MCCameraManager.get().getPosition();
+        MCCameraManager.get().setMode(CameraMode.FOLLOW);
     }
 
     private void playOne() {
@@ -54,19 +80,25 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
             return;
         }
         MCEnemy enemy = enemies.poll();
-        if (enemy != null && !enemy.isDead())
+        if (enemy != null && !enemy.isDead()) {
+            MCCameraManager.get().setFollowTarget(enemy);
+            MCHUDManager.get().getCharacterHud().setCharacter(enemy);
             enemy.playDecision(() -> {
                 nextTurnRequest = true;
             });
-        else 
+        } else 
             nextTurnRequest = true;
     }
 
     @Override
     public void exit() {
         nextTurnRequest = false;
+        if (hudFocusBefore != null) {
+            MCHUDManager.get().getCharacterHud().setCharacter(hudFocusBefore);
+            MCHUDManager.get().getCharacterHud().refreshRequest(hudFocusBefore, true);
+        }
+        MCHUDManager.get().getCharacterHud().hide();
+        MCCameraManager.get().interpolateTo(cameraPosBefore);
         super.exit();
     }
-
-    
 }

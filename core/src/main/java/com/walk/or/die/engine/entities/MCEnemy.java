@@ -72,7 +72,7 @@ public class MCEnemy extends MCCharacter{
         MCAlly victim = ai.getBestShootableAlly(getTilePosition(), 4);
         //System.out.println("shoot decision");
         if (victim != null) {
-            List<MCIntVector2> traj = MCPathfinder.get().getValidTrajectory(getTilePosition(), victim.getTilePosition());
+            List<MCIntVector2> traj = MCPathfinder.get().getBestTrajectory(getTilePosition(), victim.getTilePosition());
             state.shoot(victim, traj);
         }
         else 

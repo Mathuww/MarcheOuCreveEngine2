@@ -95,13 +95,13 @@ public class MCUILayout {
 
     public static class Zone {
         private Zone parent;
-        private Rectangle rect;
+        private Rectangle logicRect;
         private float padX = 0f, padY = 0f;
         private float offsetX = 0f, offsetY = 0f;
 
         public Zone(Zone parent, Rectangle rect) {
             this.parent = parent;
-            this.rect = rect;
+            this.logicRect = rect;
         }
 
         public void pad(float padX, float padY) {
@@ -133,10 +133,10 @@ public class MCUILayout {
         }
 
         // "real" dimensions (no padding, no offset - useful to calculate splits)
-        public float logicX() { return rect.x; }
-        public float logicY() { return rect.y; }
-        public float logicWidth() { return rect.width; }
-        public float logicHeight() { return rect.height; }
+        public float logicX() { return logicRect.x; }
+        public float logicY() { return logicRect.y; }
+        public float logicWidth() { return logicRect.width; }
+        public float logicHeight() { return logicRect.height; }
 
         private float totalOffsetX() {
             return offsetX + (parent != null ? parent.totalOffsetX() : 0f);
@@ -149,10 +149,10 @@ public class MCUILayout {
         // rectangle w/ cumulative offsets
         public Rectangle outside() {
             return new Rectangle(
-                rect.x + totalOffsetX(),
-                rect.y + totalOffsetY(),
-                rect.width,
-                rect.height
+                logicRect.x + totalOffsetX(),
+                logicRect.y + totalOffsetY(),
+                logicRect.width,
+                logicRect.height
             );
         }
 

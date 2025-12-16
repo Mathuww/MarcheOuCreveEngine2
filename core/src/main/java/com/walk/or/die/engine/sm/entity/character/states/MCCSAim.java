@@ -94,10 +94,10 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
                 }
 
                 MCPathfinder pathfinder = MCPathfinder.get();
-                List<MCIntVector2> traj = pathfinder.getValidTrajectory(
+                List<MCIntVector2> traj = pathfinder.getBestTrajectory( // A remetter getValidTrajectory si ça marche pas...
                     parent.getTilePosition(),
                     tile);
-                if (traj.size() <= 0) { // y tires sur soi meme !!!! il est fou ou quoi ????
+                if (traj.size() < 2) { // y tires sur soi meme !!!! il est fou ou quoi ????
                     cancel();
                     return;
                 }
@@ -126,7 +126,7 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
                 return;
             }
 
-            List<MCIntVector2> traj = MCPathfinder.get().getTrajectory(parent.getTilePosition(), tile);
+            List<MCIntVector2> traj = MCPathfinder.get().getBestTrajectory(parent.getTilePosition(), tile); // A remetter getTrajectory si ça marche pas...
             if (traj.size() < 2) {
                 attack.clearTrajectory();
                 return;

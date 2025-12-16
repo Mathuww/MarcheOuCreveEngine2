@@ -24,9 +24,9 @@ import com.walk.or.die.engine.ui.MCUILayout.Zone;
 public class MCSimpleActionHUD extends MCAbstractHUD {
     private final String FONT_FAMILY = "ariBlackAlpha";
 
-    private final float HUD_HEIGHT = MCGame.WINDOW_DEFAULT_HEIGHT * 0.115f;
+    private final float HUD_HEIGHT = MCGame.WINDOW_DEFAULT_HEIGHT * 0.095f;
     private final float HUD_TOP_MARGIN = MCGame.WINDOW_DEFAULT_HEIGHT * 0.05f;
-    private final float HUD_RECT_BORDER = MCGame.WINDOW_DEFAULT_HEIGHT * 0.015f;
+    private final float HUD_RECT_BORDER = MCGame.WINDOW_DEFAULT_HEIGHT * 0.0125f;
     private final float HUD_PADDING_HEIGHT  = MCGame.WINDOW_DEFAULT_HEIGHT * 0.025f;
     private final float HUD_PADDING_WIDTH  = MCGame.WINDOW_DEFAULT_HEIGHT * 0.05f;
 

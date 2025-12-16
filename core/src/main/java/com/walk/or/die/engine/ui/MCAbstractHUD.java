@@ -37,23 +37,37 @@ public abstract class MCAbstractHUD {
         currentBatch = batch;
     }
     
-    protected void drawFilledRectangle(Rectangle rect, TextureRegion innerTexture) {
+    public void drawFilledRectangle(Rectangle rect, TextureRegion innerTexture) {
         currentBatch.draw(innerTexture, rect.x, rect.y, rect.width, rect.height);
     }
 
-    private void drawCorner(float x, float y, float cornerSize) {
+    protected void drawCorner(float x, float y, float cornerSize) {
         float tiersCorner = cornerSize / 3f;
         currentBatch.draw(blackTexture, x + tiersCorner, y, tiersCorner, tiersCorner);
         currentBatch.draw(blackTexture, x, y + tiersCorner, tiersCorner, tiersCorner);
         currentBatch.draw(blackTexture, x + tiersCorner * 2f, y + tiersCorner, tiersCorner, tiersCorner);
         currentBatch.draw(blackTexture, x + tiersCorner, y + tiersCorner * 2f, tiersCorner, tiersCorner);
+    }    
+
+    public void fillWhiteFourCorners(Rectangle rect, float borderSize) {
+        currentBatch.draw(whiteTexture, rect.x, rect.y, borderSize, borderSize);
+        currentBatch.draw(whiteTexture, rect.x, rect.y + rect.height - borderSize, borderSize, borderSize);
+        currentBatch.draw(whiteTexture, rect.x + rect.width - borderSize, rect.y, borderSize, borderSize);
+        currentBatch.draw(whiteTexture, rect.x + rect.width - borderSize, rect.y + rect.height - borderSize, borderSize, borderSize);
     }
 
-    protected void drawCornerlessRectangle(Zone zone, float borderSize) {
+    public void drawFourCorners(Rectangle rect, float borderSize) {
+        drawCorner(rect.x, rect.y, borderSize);
+        drawCorner(rect.x, rect.y + rect.height - borderSize, borderSize);
+        drawCorner(rect.x + rect.width - borderSize, rect.y, borderSize);
+        drawCorner(rect.x + rect.width - borderSize, rect.y + rect.height - borderSize, borderSize);
+    }
+
+    public void drawCornerlessRectangle(Zone zone, float borderSize) {
         drawCornerlessRectangle(zone, borderSize, whiteTexture);
     }
 
-    protected void drawCornerlessRectangle(Zone zone, float borderSize, TextureRegion innerTexture) {
+    public void drawCornerlessRectangle(Zone zone, float borderSize, TextureRegion innerTexture) {
         Rectangle rect = zone.outside();
         drawFilledRectangle(rect, innerTexture);
 
@@ -71,12 +85,10 @@ public abstract class MCAbstractHUD {
         currentBatch.draw(blackTexture, rect.x + rect.width - borderSize, rect.y + borderSize, tiersBorder, rect.height - borderSize * 2f);
         currentBatch.draw(blackTexture, rect.x + rect.width - tiersBorder, rect.y + borderSize, tiersBorder, rect.height - borderSize * 2f);
 
-        drawCorner(rect.x, rect.y, borderSize);
-        drawCorner(rect.x, rect.y + rect.height - borderSize, borderSize);
-        drawCorner(rect.x + rect.width - borderSize, rect.y, borderSize);
-        drawCorner(rect.x + rect.width - borderSize, rect.y + rect.height - borderSize, borderSize);
+        drawFourCorners(rect, borderSize);
     }
 
+    public abstract boolean isFullyShown();
     public abstract boolean posBelongsToHudComponent(Vector2 pos);
     public abstract void handleHover(Vector2 pos);
     public abstract void handleHoverGone();

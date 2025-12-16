@@ -17,6 +17,7 @@ import com.walk.or.die.engine.input.MCInputManager.CameraPanCommand;
 import com.walk.or.die.engine.input.MCInputManager.CameraZoomCommand;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.OpenSimplex2S;
 
 /**
@@ -125,6 +126,11 @@ public class MCCameraManager {
         gdxCam.position.y = pos.y;
     }
 
+    public void interpolateTo(Vector2 pos) {
+        if (mode != null)
+            behaviors.get(mode).interpolateTo(pos);
+    }
+
     /**
      * Add a behavior and the associated mode in the manager.
      * @param mode
@@ -221,10 +227,10 @@ public class MCCameraManager {
      * @param target
      * @throws MissingDataException
      */
-    public void setFollowTarget(MCEntity target) throws MissingDataException{
-        if (target == null) {
+    public void setFollowTarget(MCEntity target) {
+        /* if (target == null) {
             throw new MissingDataException("Missing Entity");
-        }
+        } */
         this.target = target;
     }
 

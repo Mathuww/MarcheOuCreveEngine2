@@ -7,9 +7,11 @@ import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
 
 import java.util.List;
+import java.util.ArrayDeque;
 //import java.beans.VetoableChangeSupport;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 //import javax.xml.parsers.ParserConfigurationException;
 
@@ -140,7 +142,7 @@ public class MCPathfinder {
      * @param v2
      * @return
      */
-    public List<MCIntVector2> getTrajectory(MCIntVector2 v1, MCIntVector2 v2) {
+    private List<MCIntVector2> getTrajectory(MCIntVector2 v1, MCIntVector2 v2) {
 
         List<MCIntVector2> result = new ArrayList<>();
 
@@ -170,6 +172,10 @@ public class MCPathfinder {
         return result;
     }
 
+    /**
+     * Cut the given list when it hit something.
+     * @param list
+     */
     public void cutTrajectoryOnHit(List<MCIntVector2> list) {
         Iterator<MCIntVector2> it = list.iterator();
         MCIntVector2 vec;
@@ -186,18 +192,39 @@ public class MCPathfinder {
         }
     }
 
+    /**
+     * Get the best trajectory to shoot on a target.
+     * @param v1
+     * @param v2
+     * @return
+     */
     public List<MCIntVector2> getBestTrajectory(MCIntVector2 v1, MCIntVector2 v2) {
-        // bah ptn super fonction
-        // on va remplacer tous les new arraylist() par des getBestTrajectory(new Vector2(0,0))
-        // Att att ça va être utile je jure
+        // Mon implémentation ne distinguera pas un personnage d'un bloc/obstacle, ce que je trouve problématique
         List<MCIntVector2> try1 = getTrajectory(v1, v2);
         cutTrajectoryOnHit(try1);
         if (try1.get(try1.size()-1).equals(v2)) return try1;
 
-        List<MCIntVector2> try2 = getTrajectory(v1, v2); // Il faut modifier v1
-        cutTrajectoryOnHit(try2);
-        if (try2.get(try2.size()-1).equals(v2)) return try2;
+        int moveX = Math.abs(v2.x - v1.x);
+        int moveY = Math.abs(v2.y - v1.y);
+
+        Queue<MCIntVector2> queuePos = new ArrayDeque<>();
+        if (moveY >= moveX) { // Nord/Sud donc déplacement horizontaux
+            queuePos.add(new MCIntVector2(v1.x + 1, v1.y));
+            queuePos.add(new MCIntVector2(v1.x - 1, v1.y));
+        }
+        if (moveX >= moveY) { // Ouest/Est donc déplacements verticaux
+            queuePos.add(new MCIntVector2(v1.x, v1.y + 1));
+            queuePos.add(new MCIntVector2(v1.x, v1.y - 1));
+        }
+
+        List<MCIntVector2> try2;
+        while (!queuePos.isEmpty()) { // En gros on teste si ça marche, sinon on revient sur la solution de base
+            try2 = getTrajectory(queuePos.poll(), v2);
+            cutTrajectoryOnHit(try2);
+            if (try2.get(try2.size()-1).equals(v2)) return try2;
+        }
         
+        // L'implémentation est simpliste, on devrait ptet garder la traj la plus longue mais bon, faut bien commencer qqpart
         return try1;
     }
 
@@ -206,6 +233,7 @@ public class MCPathfinder {
      * @param start
      * @param end
      * @return
+     * @deprecated in theory
      */
     public List<MCIntVector2> getValidTrajectory(MCIntVector2 start, MCIntVector2 end) {
         List<MCIntVector2> list = getTrajectory(start, end);
@@ -215,21 +243,41 @@ public class MCPathfinder {
     }
 
     /**
-     * Test if the given trajectory can be achieved.
+     * Test if the given trajectory can be achieved (by checking between the first and the last point).
      * @param trajectory
      * @return the results of the Test
      * @see Simulation
      */
-    public Simulation isCorrectTrajectory(List<MCIntVector2> trajectory) {
+    public Simulation simulateTrajectory(List<MCIntVector2> trajectory, MCIntVector2 end) {
         //System.out.println(trajectory);
-        for (MCIntVector2 pos : trajectory) {
-            if (!game.isWalkable(pos)) 
-                return new Simulation (false, pos);
+        Iterator<MCIntVector2> it = trajectory.iterator();
+        MCIntVector2 pos = it.next();
+        while (it.hasNext()) {
+            pos = it.next();
+            if (!isWalkable(pos) && it.hasNext()) return new Simulation (false, pos);
+            if (pos.equals(end)) return new Simulation(true, new MCIntVector2(-1, -1));
         }
         //System.out.println("hop ça marche (pas)");
-        return new Simulation(true, new MCIntVector2(-1, -1));
+        return new Simulation(false, pos);
     }
 
+    /**
+     * Get the probability of succes of a trajectory.
+     * @param trajectory
+     * @return
+     */
+    public float isCorrectTrajectory(List<MCIntVector2> trajectory, MCIntVector2 end) {
+        Iterator<MCIntVector2> it = trajectory.iterator();
+        MCIntVector2 pos = it.next();
+        while (it.hasNext()) {
+            pos = it.next();
+            if (pos.equals(end)) return 1f;
+            if (!isWalkable(pos) && it.hasNext()) return 0f;
+        }
+
+        return 0f;
+    }
+    
     /**
      * Clean the given path, by leaving only the intersection's positions.
      * @param path

@@ -14,7 +14,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.HudCommand;
 import com.walk.or.die.engine.shared.MCEventBus;
@@ -25,6 +27,8 @@ public class MCUICarousel {
     private final float SCROLL_LERP = 8f;
     private final int SPACES_BETWEEN_ITEMS = 5;
     private final float FADE_WIDTH = 60f; 
+    private final float CORNER_SIZE = MCGame.WINDOW_DEFAULT_HEIGHT * 0.015f;
+    private final float CORNER_PADDING = CORNER_SIZE * 3f;
 
     private String textIfEmpty = "(NOTHING TO DO)";
     private List<String> items = new ArrayList<>();
@@ -34,6 +38,8 @@ public class MCUICarousel {
     private List<Float> itemsWidth = new ArrayList<>();
     private float totalWidth = 0f;
     private int currentIndex = 0;
+    private Rectangle focusedItemRect;
+    private boolean focusedItemHovered = false;
 
     private float offsetX = 0f;
     private float targetOffsetX = 0f;
@@ -43,7 +49,12 @@ public class MCUICarousel {
     private String totalText;
     private MCUISimpleText textComponent;
 
+    private float blinkingTime = 0f;
+    private final float BLINKING_INTERVAL = 0.95f;
+    private boolean displayHighlight = true;
+
     private TextureRegion gradientTexture;
+    private TextureRegion greyTexture;
 
     public MCUICarousel(MCAbstractHUD parent, BitmapFont font, Zone zone) {
         this.parent = parent;
@@ -58,9 +69,11 @@ public class MCUICarousel {
         );
         this.textComponent.centered = false; // sinon on double centre mdr
 
-        
+        focusedItemRect = new Rectangle(zone.outside());
+
         try {
             gradientTexture = MCSharedAssets.get().getSavedTexture("whiteFade");
+            greyTexture = MCSharedAssets.get().getSavedTexture("grey");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,8 +98,10 @@ public class MCUICarousel {
 
     public void loadActions(Map<String, Runnable> validateActions, Map<String, Runnable> focusActions) {
         clearActions();
-        if (validateActions.size() == 0)
+        if (validateActions.size() == 0) {
+            updateGeometry();
             return;
+        }
 
         this.items.addAll(validateActions.keySet());
         float cursor = 0f;
@@ -125,7 +140,7 @@ public class MCUICarousel {
             this.focusActions.get(currentIndex).run();
         }
 
-        updateTargetOffset();
+        updateGeometry();
     }
 
     public void next() {
@@ -136,7 +151,7 @@ public class MCUICarousel {
             currentIndex = 0;
         else if (focusActions.get(currentIndex) != null)
             focusActions.get(currentIndex).run();
-        updateTargetOffset();
+        updateGeometry();
     }
 
     public void previous() {
@@ -147,16 +162,17 @@ public class MCUICarousel {
             currentIndex = items.size() - 1;
         else if (focusActions.get(currentIndex) != null)
             focusActions.get(currentIndex).run();
-        updateTargetOffset();
+        updateGeometry();
     }
 
     public void validate() {
         if (items.isEmpty())
             return;
-        validateActions.get(currentIndex).run();
+        if (validateActions.get(currentIndex) != null)
+            validateActions.get(currentIndex).run();
     }
 
-    public void updateTargetOffset() {
+    public void updateGeometry() {
         if (items.isEmpty()) {
             targetOffsetX = 0f;
             textComponent.centered = true;
@@ -169,10 +185,23 @@ public class MCUICarousel {
 
         float zoneCenter = zone.inWidth() / 2f;
         targetOffsetX = zoneCenter - itemCenter;
+
+        focusedItemRect.width = itemWidth + 2f * CORNER_PADDING;
+        focusedItemRect.x = zone.outside().x + (zone.outside().width - focusedItemRect.width) / 2f;
+        // y et height bougent pas, on reste centrés verticalement
     }
 
     public void update(float delta) {
-        offsetX += (targetOffsetX - offsetX) * SCROLL_LERP * delta;
+        blinkingTime += delta;
+        if (blinkingTime >= BLINKING_INTERVAL) {
+            blinkingTime = 0f;
+            displayHighlight = !displayHighlight;
+        }
+
+        if (Math.abs(targetOffsetX - offsetX) > 0.05f)
+            offsetX += (targetOffsetX - offsetX) * SCROLL_LERP * delta;
+        else
+            offsetX = targetOffsetX; // pour pas rater la cible pendant le lerp, comme d'hab
         //System.out.println("je suis le carousel et mon target offset x est : " + targetOffsetX);
         textComponent.setOffsetX(offsetX);
     }
@@ -200,7 +229,53 @@ public class MCUICarousel {
     }
 
     public void render(SpriteBatch batch) {
+        if (offsetX == targetOffsetX && !items.isEmpty() && parent.isFullyShown()) {
+            if (focusedItemHovered)
+                parent.drawFilledRectangle(focusedItemRect, greyTexture);
+            if (displayHighlight)
+                parent.drawFourCorners(focusedItemRect, CORNER_SIZE);
+        }
         textComponent.render(batch);
         edgeGradient(batch);
+    }
+
+    public boolean posBelongsToHudComponent(Vector2 pos) {
+        return zone.posBelongsToZone(pos);
+    }
+
+    public void handleHover(Vector2 pos) {
+        if (focusedItemRect.contains(pos))
+            focusedItemHovered = true;
+        else
+            focusedItemHovered = false;
+    }
+
+    public void handleHoverGone() {
+        focusedItemHovered = false;
+    }
+
+    public void handleClick(Vector2 pos) {
+        if (targetOffsetX != offsetX)
+            return;
+        if (focusedItemRect.contains(pos))
+            validate();
+        else {
+            float zoneCenterX = zone.inX() + zone.inWidth() / 2f;
+            // j'avoue je m'embete pas trop,
+            // mais en vrai je vois pas le besoin de faire plus compliqué.
+            if (pos.x >= zoneCenterX)
+                next();
+            else
+                previous();
+        }
+    }
+
+    public void handleScroll(float dy) {
+        if (targetOffsetX != offsetX)
+            return;
+        if (dy > 0)
+            next();
+        else if (dy < 0)
+            previous();
     }
 }

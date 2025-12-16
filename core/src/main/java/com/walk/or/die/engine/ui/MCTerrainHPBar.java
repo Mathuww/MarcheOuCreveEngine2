@@ -21,7 +21,7 @@ a déjà été faite. (dans MCCharacter.renderOnGridOverlay)
 du coup ici on se concentre juste sur le fait d'adapter l'affichage aux limites de la caméra (X et Y)
 */
 
-public class MCOnGridHealth {
+public class MCTerrainHPBar extends MCAbstractHUD {
     private final float CONTOUR_SIZE = 0.055f; // tile
     private final float BAR_HEIGHT = 0.08f; // tile
     private final float BAR_WIDTH = 0.85f; // tile
@@ -58,7 +58,7 @@ public class MCOnGridHealth {
     private boolean fading = false;
     private boolean display = true;
 
-    public MCOnGridHealth(MCCharacter parent) {
+    public MCTerrainHPBar(MCCharacter parent) {
         this.parent = parent;
 
         try {
@@ -82,16 +82,6 @@ public class MCOnGridHealth {
             1f
         );
 
-        /* 
-        float diff = newHpRatio - lerpedHpRatio;
-        float maxChange = LERP * delta;
-
-        if (Math.abs(diff) <= maxChange) {
-            lerpedHpRatio = newHpRatio;
-        } else {
-            lerpedHpRatio += Math.signum(diff) * maxChange;
-        }
-        */
         if (Math.abs(newHpRatio - lerpedHpRatio) > 0.001f)
             lerpedHpRatio += (newHpRatio - lerpedHpRatio) * delta * LERP; 
         else
@@ -159,4 +149,10 @@ public class MCOnGridHealth {
 
         batch.setColor(1f, 1f, 1f, 1f);
     }
+
+    public boolean isFullyShown() { return display && !fading; }
+    public boolean posBelongsToHudComponent(Vector2 pos) { return false; }
+    public void handleHover(Vector2 pos) {}
+    public void handleHoverGone() {}
+    public void handleClick(Vector2 pos) {}
 }

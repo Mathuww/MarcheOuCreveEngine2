@@ -8,6 +8,7 @@ import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
+import com.badlogic.gdx.math.MathUtils;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCEventBus;
@@ -20,7 +21,7 @@ import com.walk.or.die.engine.sm.entity.character.states.MCCSIdle;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.ui.MCCharacterHUD;
 import com.walk.or.die.engine.ui.MCHUDManager;
-import com.walk.or.die.engine.ui.MCOnGridHealth;
+import com.walk.or.die.engine.ui.MCTerrainHPBar;
 
 /**
  * An entity wich can move and shoot.
@@ -58,7 +59,7 @@ public class MCCharacter extends MCEntity {
     private MCMoveDisplay moveDisplay;
     private boolean shoot = true;
 
-    private MCOnGridHealth healthBar;
+    private MCTerrainHPBar healthBar;
     private HudCustomization hudCustomization = new HudCustomization();
 
     private Random rng = new Random("laleatoire nexiste pas cest un mensonge".hashCode());
@@ -84,7 +85,7 @@ public class MCCharacter extends MCEntity {
     @Override
     public void onSpawn() {
         stateManager.setCurrentState("idle", new MCCSIdle.IdleStateArgs());
-        healthBar = new MCOnGridHealth(this);
+        healthBar = new MCTerrainHPBar(this);
     }
 
     @Override
@@ -184,10 +185,15 @@ public class MCCharacter extends MCEntity {
      * @see MCAttack
      */
     public MCAttack getAttack() {
+        // FIX TEMPORAIRE !! c'est juste pour faire essayer le jeu à camylle
+        return attacks.get("BOW");
+        // faudra que les ennemis puissent décider QUELLE attaque utiliser parmi les leurs
+        // pas juste une seule attaque aussi !
+        /* 
         MCAttack attack = attacks.get(baseAttack);
         if (attack == null)
             throw new IllegalStateException("trying to shoot without a base attack !");
-        return attack;
+        return attack; */
     }
     
     /**
@@ -227,6 +233,10 @@ public class MCCharacter extends MCEntity {
         return hp;
     }
 
+    public void setHealth(int hp) {
+        this.hp = MathUtils.clamp(hp, 0, maxHp);
+    }
+
     /**
      * Hurt behavior.
      * @param damage
@@ -237,7 +247,6 @@ public class MCCharacter extends MCEntity {
             return;
         if (damage < 0f) 
             throw new IllegalArgumentException("cant get hurt with negative damage");
-        hp = Math.max(0, hp - damage);
 
         // Anim aléatoire parmi hurt, hurt2, hurt3 ...
         List<String> existingHurtAnims = new ArrayList<>();

@@ -1,0 +1,108 @@
+package com.walk.or.die.engine.ui;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.walk.or.die.engine.entities.MCCharacter;
+import com.walk.or.die.engine.shared.MCSharedAssets;
+import com.walk.or.die.engine.ui.MCUILayout.Zone;
+
+public class MCHUDHPBar {
+    private final float CONTOUR_SIZE = 5f; // tile
+
+    private final float MID_HP_THRESHOLD = 0.66f;
+    private final float LOW_HP_THRESHOLD = 0.34f; // AHAHAHAAHAH
+
+    private final float LERP = 4f;
+    private final float FADING_DURATION = 0.3f;
+
+    private MCSharedAssets sharedAssets = MCSharedAssets.get();
+
+    private TextureRegion fillTextureHighHP;
+    private TextureRegion fillTextureMidHP;
+    private TextureRegion fillTextureLowHP;
+    private TextureRegion currentFillTexture;
+
+    private MCAbstractHUD parent;
+    private MCCharacter target;
+    private Zone zone;
+
+    private float lerpedHpRatio = 1f;
+
+    public MCHUDHPBar(MCAbstractHUD parent, Zone zone) {
+        this.parent = parent;
+        this.zone = zone;
+
+        try {
+            fillTextureHighHP = sharedAssets.getSavedTexture("green");
+            fillTextureMidHP = sharedAssets.getSavedTexture("yellow");
+            fillTextureLowHP = sharedAssets.getSavedTexture("red");
+        } catch (Exception e) {
+            System.err.println("cant init health bar ui");
+            e.printStackTrace();
+        }
+    }
+
+    public void setTarget(MCCharacter target) {
+        this.target = target;
+        float newHpRatio = MathUtils.clamp(
+            (float) target.getHealth() / (float) target.getMaxHp(), 
+            0f, 
+            1f
+        );
+        lerpedHpRatio = newHpRatio;
+    }
+
+    public void update(float delta) {
+        if (target == null)
+            return;
+
+        float newHpRatio = MathUtils.clamp(
+            (float) target.getHealth() / (float) target.getMaxHp(), 
+            0f, 
+            1f
+        );
+
+        if (Math.abs(newHpRatio - lerpedHpRatio) > 0.001f)
+            lerpedHpRatio += (newHpRatio - lerpedHpRatio) * delta * LERP; 
+        else
+            lerpedHpRatio = newHpRatio; // snap
+
+        lerpedHpRatio = MathUtils.clamp(lerpedHpRatio, 0f, 1f);
+        // j'ai mis ca parce que c'est de la logique pas du rendu
+        if (lerpedHpRatio < MID_HP_THRESHOLD && lerpedHpRatio > LOW_HP_THRESHOLD)
+            currentFillTexture = fillTextureMidHP;
+        else if (lerpedHpRatio < LOW_HP_THRESHOLD)
+            currentFillTexture = fillTextureLowHP;
+        else 
+            currentFillTexture = fillTextureHighHP;
+    }
+
+    public int getCurrentLerpedHp() {
+        float hpRatio = MathUtils.clamp(lerpedHpRatio * target.getMaxHp(), 0f, target.getMaxHp());
+        return MathUtils.floor(hpRatio);
+    }
+
+    public void render(SpriteBatch batch) {
+        if (target == null)
+            return;
+
+        Rectangle inside = zone.inside();
+    
+        // 1 : le fond (contourTexture)
+        parent.drawCornerlessRectangle(zone, CONTOUR_SIZE);
+
+        // 3 : les points de vie (fillTexture)
+        batch.draw(
+            currentFillTexture, 
+            inside.x + CONTOUR_SIZE,       
+            inside.y + CONTOUR_SIZE,      
+            (inside.width - 2f * CONTOUR_SIZE) * lerpedHpRatio,
+            inside.height - 2f * CONTOUR_SIZE
+        );
+        
+
+        batch.setColor(1f, 1f, 1f, 1f);
+    }
+}

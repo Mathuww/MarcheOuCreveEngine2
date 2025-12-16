@@ -97,6 +97,8 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
         movements.clear();
         movements.addAll(args.path);
         playAnimationOr("run", "walk");
+        parent.getHudCustomization().canShow = true;
+        parent.notifyHudUpdate(true);
         super.enter(args);
     }
 

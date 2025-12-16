@@ -27,7 +27,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
     private final float HUD_HEIGHT = MCGame.WINDOW_DEFAULT_HEIGHT * 0.25f;
     private final float HUD_BOTTOM_MARGIN = MCGame.WINDOW_DEFAULT_HEIGHT * 0.05f;
     private final float HUD_PADDING_HEIGHT  = MCGame.WINDOW_DEFAULT_HEIGHT * 0.025f;
-    private final float HUD_RECT_BORDER = MCGame.WINDOW_DEFAULT_HEIGHT * 0.015f;
+    private final float HUD_RECT_BORDER = MCGame.WINDOW_DEFAULT_HEIGHT * 0.0125f;
     private final float HUD_INTERPANEL_GAP = MCGame.WINDOW_DEFAULT_WIDTH * 0.05f;
 
     private final float HUD_LEFT_PANEL_RATIO = 0.35f;
@@ -55,6 +55,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     private Sprite characterSprite = new Sprite();
     private MCUIScrollingText characterNameText;
+    private MCHUDHPBar characterHpBar;
     private MCUISimpleText characterHpText;
 
     private MCUITypingText choiceMessageText;
@@ -65,6 +66,8 @@ public class MCCharacterHUD extends MCAbstractHUD {
     private boolean scrolling = false;
     private boolean switching = false;
     private boolean shown = false;
+    private boolean renderRightPanel = true;
+    private boolean renderRPafterScroll = true;
 
     private final MCEventBus bus = MCEventBus.get();
 
@@ -92,6 +95,8 @@ public class MCCharacterHUD extends MCAbstractHUD {
         layout.splitX("infoPanel", CHARA_SPRITE_RATIO, LEFT_PANEL_GAP, "charaSprite", "charaInfos");
         layout.splitY("charaInfos", 0.5f, 5f, "charaName", "charaHp");
 
+        layout.splitY("charaHp", 0.5f, 5f, "hpBar", "hpText");
+
         layout.zone("choicePanel").pad(RIGHT_PANEL_PADDING_WIDTH, RIGHT_PANEL_PADDING_HEIGHT);
         layout.splitY("choicePanel", 0.4f, 5f, "choiceMessage", "choiceCarousel");
 
@@ -105,12 +110,13 @@ public class MCCharacterHUD extends MCAbstractHUD {
             NAME_FONT_SCALE, 
             NAME_FONT_SPACING
         );
+        characterHpBar = new MCHUDHPBar(this, layout.zone("hpBar"));
         characterHpText = new MCUISimpleText(
             this, 
             font, 
-            layout.zone("charaHp"), 
+            layout.zone("hpText"), 
             Color.BLACK, 
-            NAME_FONT_SCALE, 
+            NAME_FONT_SCALE / 1.5f, 
             NAME_FONT_SPACING
         );
 
@@ -142,6 +148,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
     public void hide() {
         if (currentCharacter != null)
             currentCharacter.onHudVisibilityLost();
+        MCHUDManager.get().getFocusHud().setTarget(null);
         scrollTo(SCROLL_Y);
     }
 
@@ -149,7 +156,21 @@ public class MCCharacterHUD extends MCAbstractHUD {
         HudCustomization customization = currentCharacter.getHudCustomization();
         if (!customization.canShow)
             return;
+        MCHUDManager.get().getFocusHud().setTarget(currentCharacter);
         scrollTo(0f);
+    }
+
+    public void setRightPanelDisplay(boolean display) {
+        if (display && (shown || scrolling)) 
+            renderRPafterScroll = display;
+        else {
+            renderRightPanel = display;
+            renderRPafterScroll = display;
+        }
+    }
+
+    public MCCharacter getCharacter() {
+        return currentCharacter;
     }
 
     public void setCharacter(MCCharacter newCharacter) {
@@ -201,9 +222,11 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
         HudCustomization customization = currentCharacter.getHudCustomization();
         characterNameText.setText(currentCharacter.getDisplayName());
+        characterHpBar.setTarget(currentCharacter);
         choiceMessageText.setText(customization.choiceMessage);
         choiceMessageText.startTyping();
-        if (reloadCarousel) {
+        //choiceCarousel.clearActions();
+        if (reloadCarousel && renderRightPanel) {
             choiceCarousel.loadActions(
                 customization.carouselValidateActions,
                 customization.carouselFocusActions
@@ -243,7 +266,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
     @Override
     public void update(float delta) {
         if (scrolling) {
-            boolean arrived = Math.abs(targetOffsetY - offsetY) <= 0.05f; // tolerance de fou je sais
+            boolean arrived = Math.abs(targetOffsetY - offsetY) <= 5f; // tolerance de fou je sais
             if (arrived) {
                 System.out.println("arrived");
                 scrolling = false;
@@ -257,6 +280,8 @@ public class MCCharacterHUD extends MCAbstractHUD {
                     show();
                 } else
                     shown = (offsetY == 0f);
+
+                renderRightPanel = renderRPafterScroll;
             } else 
                 offsetY += (targetOffsetY - offsetY) * delta * SCROLL_LERP;
             offsetY = MathUtils.clamp(offsetY, SCROLL_Y, 0f);
@@ -273,7 +298,8 @@ public class MCCharacterHUD extends MCAbstractHUD {
             characterSprite.setPosition(spriteCenter.x, spriteCenter.y);
             characterNameText.update(delta);
 
-            characterHpText.setText("HP : " + currentCharacter.getHealth() + " / " + currentCharacter.getMaxHp());
+            characterHpBar.update(delta);
+            characterHpText.setText("HP : " + characterHpBar.getCurrentLerpedHp() + " / " + currentCharacter.getMaxHp());
             characterHpText.update(delta);
             
             choiceMessageText.update(delta);
@@ -292,15 +318,20 @@ public class MCCharacterHUD extends MCAbstractHUD {
         super.render(batch);
 
         drawCornerlessRectangle(layout.zone("infoPanel"), HUD_RECT_BORDER);
-        drawCornerlessRectangle(layout.zone("choicePanel"), HUD_RECT_BORDER);
+        if (renderRightPanel)
+            drawCornerlessRectangle(layout.zone("choicePanel"), HUD_RECT_BORDER);
 
         // partie droite : infos (pour l'instant que l'ID mdr)
         if (currentCharacter != null) {
             characterSprite.draw(currentBatch);
             characterNameText.render(currentBatch);
+            characterHpBar.render(currentBatch);
             characterHpText.render(currentBatch);
-            choiceMessageText.render(currentBatch);
-            choiceCarousel.render(currentBatch);
+    
+            if (renderRightPanel) {
+                choiceMessageText.render(currentBatch);
+                choiceCarousel.render(currentBatch);
+            }
         }      
     }
 
@@ -313,16 +344,34 @@ public class MCCharacterHUD extends MCAbstractHUD {
     }
 
     public boolean posBelongsToHudComponent(Vector2 mousePos) {
-        boolean belongs = layout.zone("characterHud").posBelongsToZone(mousePos);
-        return belongs;
+        if (renderRightPanel)
+            return layout.zone("characterHud").posBelongsToZone(mousePos);
+        else
+            return layout.zone("infoPanel").posBelongsToZone(mousePos);
     }
 
-    public void handleHover(Vector2 pos) {}
-    public void handleHoverGone() {}
+    public void handleHover(Vector2 pos) {
+        if (renderRightPanel && choiceCarousel.posBelongsToHudComponent(pos) && isFullyShown())
+            choiceCarousel.handleHover(pos);
+        else 
+            choiceCarousel.handleHoverGone();
+    }
+
+    public void handleHoverGone() {
+        choiceCarousel.handleHoverGone();
+    }
 
     public void handleClick(Vector2 pos) {
         if (!isFullyShown())
             return;
-        // super fonction je sais
+        if (renderRightPanel && choiceCarousel.posBelongsToHudComponent(pos))
+            choiceCarousel.handleClick(pos);
+    }
+
+    public void handleScroll(Vector2 pos, float dy) {
+        if (!isFullyShown())
+            return;
+        if (renderRightPanel && choiceCarousel.posBelongsToHudComponent(pos))
+            choiceCarousel.handleScroll(dy);
     }
 }
