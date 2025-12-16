@@ -27,14 +27,17 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 public class MCAttack {
     private String attackName;
     private final MCEntity parent;
+    private final MCSharedAssets sharedAssets = MCSharedAssets.get();
     private int power; // A multiplier...
     private Map<MCIntVector2, Float> damagePattern;
     private Array<Sprite> displaySprites = new Array<>();
+    private Array<Sprite> trajectorySprites = new Array<>();
     private TextureRegion validTileTexture;
+    private TextureRegion trajTexture;
     private String projectileName = "projectile";
     public boolean display = false;
     private final Color VALID_COLOR = new Color(1f, 1f, 1f, 0.5f);
-    private final Color TRAJ_COLOR = new Color(1f, 0f, 0f, 0.6f);
+    private final Color TRAJ_COLOR = new Color(1f, 0f, 0f, 0.3f);
 
     private String senderAnim;
 
@@ -50,7 +53,8 @@ public class MCAttack {
         this.attackName = name;
         this.power = power;
         this.damagePattern = pattern;
-        validTileTexture = MCSharedAssets.get().getSavedTexture("validAttackTile");
+        validTileTexture = sharedAssets.getSavedTexture("validAttackTile");
+        trajTexture = sharedAssets.getSavedTexture("white");
     }
 
     /**
@@ -103,14 +107,13 @@ public class MCAttack {
         displaySprites.clear();
         MCIntVector2 parentTile = parent.getTilePosition();
         for (MCIntVector2 relativeTile : damagePattern.keySet()) {
+            MCIntVector2 absoluteTile = new MCIntVector2(relativeTile.x, relativeTile.y).addTo(parentTile);
             Float damage = damagePattern.get(relativeTile);
             if (damage != null && damage > 0f) {
-                MCIntVector2 absoluteTile = new MCIntVector2(relativeTile.x, relativeTile.y).addTo(parentTile);
                 if (parent.getMap().isWalkable(absoluteTile)) {
                     MCEntity e = MCEntityManager.get().getEntityFromTile(1, absoluteTile);
                     if (e != null && e instanceof MCAlly) // can't shoot an ally !
                         continue;
-                    //System.out.println("adding attack display sprite at  : " + absTileX + ", " + absTileY);
                     Sprite spr = new Sprite(validTileTexture);
                     spr.setPosition(absoluteTile.x, absoluteTile.y);
                     spr.setSize(1f, 1f);
@@ -125,8 +128,7 @@ public class MCAttack {
      * Clear the shown trajectories.
      */
     public void clearTrajectory() {
-        for (Sprite spr : displaySprites)
-            spr.setColor(VALID_COLOR);
+        trajectorySprites.clear();
     }
 
     /**
@@ -134,23 +136,16 @@ public class MCAttack {
      * @param traj
      */
     public void showTrajectory(List<MCIntVector2> traj) {
-        for (Sprite spr : displaySprites)
-            spr.setColor(VALID_COLOR);
-        //System.out.println("New trajectory");
-        for (Sprite spr : displaySprites) {
-            boolean isInTrajectory = false;
-
-            for (MCIntVector2 pos : traj) {
-                if (new MCIntVector2(spr.getX(), spr.getY()).equals(pos)) {
-                    isInTrajectory = true;
-                    break;
-                }
-            }
-
-            if (isInTrajectory) {
-                // System.out.println("(" + spr.posX + "," + spr.posY + ")");
-                spr.setColor(TRAJ_COLOR);
-            }
+        trajectorySprites.clear();
+        for (int i = 0; i < traj.size(); i++) {
+            if (i == 0)
+                continue;
+            MCIntVector2 pos = traj.get(i);
+            Sprite spr = new Sprite(trajTexture);
+            spr.setPosition(pos.x, pos.y);
+            spr.setSize(1f, 1f);
+            spr.setColor(TRAJ_COLOR);
+            trajectorySprites.add(spr);
         }
     }
 
@@ -161,6 +156,8 @@ public class MCAttack {
     public void render(SpriteBatch batch) {
         if (!display) return;
         for (Sprite spr : displaySprites)
+            spr.draw(batch);
+        for (Sprite spr : trajectorySprites)
             spr.draw(batch);
     }
 

@@ -1,4 +1,4 @@
-package com.capacities;
+package com.walk.or.die.engine.capacities;
 
 import com.walk.or.die.engine.entities.MCAttack;
 import com.walk.or.die.engine.entities.MCCharacter;

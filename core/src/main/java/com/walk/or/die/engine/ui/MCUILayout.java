@@ -104,6 +104,11 @@ public class MCUILayout {
             this.logicRect = rect;
         }
 
+        public void moveTo(float x, float y) {
+            logicRect.x = x;
+            logicRect.y = y;
+        }
+
         public void pad(float padX, float padY) {
             this.padX = padX;
             this.padY = padY;

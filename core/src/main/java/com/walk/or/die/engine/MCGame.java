@@ -269,7 +269,7 @@ public class MCGame extends Game {
             entityManager.update(Gdx.graphics.getDeltaTime());
             stateManager.setCurrentState("Exploration", new MCGSExploration.ExplStateArgs());
         } else { // null ou false
-            // combat pas fini, on spawn out
+            // combat pas fini, on spawn tout
             try {
                 entityManager.addAllEntities(map.spawnEntities(this));
             } catch (Exception e) {
@@ -319,7 +319,7 @@ public class MCGame extends Game {
 
         // si la camera bouge, la tile visée a bougé!
         if (camManager.hasMovedThisFrame())
-            MCInputManager.get().triggerMouseUpdate();
+            inputHandler.triggerMouseUpdate();
 
         stateManager.update(delta);
         entityManager.update(delta);
@@ -329,7 +329,10 @@ public class MCGame extends Game {
 
     @Override
     public void render() {
-        float delta = Gdx.graphics.getDeltaTime();
+        // on va pas render à < 10 FPS non plus
+        // (jai essayé de mettre à delta à 0.25 c'était pas beau à voir)
+        // la caméra était partie rejoindre la Lune ou on a jamais mis les pieds.
+        float delta = Math.min(Gdx.graphics.getDeltaTime(), 0.1f);
         logic(delta);
         super.render();
     }

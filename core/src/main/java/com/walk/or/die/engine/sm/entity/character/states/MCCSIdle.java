@@ -12,6 +12,7 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.sm.game.states.MCGSAlliesPlaying;
+import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
 
 /**
  * The idle state for ally.<br>
@@ -71,21 +72,35 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
             changeState("ready", new MCCSReady.ReadyStateArgs());
     }
 
+    public void goToAim() {
+        if (!parent.focus)
+            return;
+        if (MCEntityManager.get().isAnyoneBusy())
+            return;
+        if (parent instanceof MCAlly ally 
+            && ally.getTurnState().canAttack())
+            changeState("aim", new MCCSAim.AimStateArgs());
+    }
+
     private void setupHudCustomization() {
         if (parent instanceof MCAlly ally) {
             HudCustomization customization = ally.getHudCustomization();
 
-            Map<String, Runnable> validateActions = new HashMap<>();
-            if (ally.getTurnState().canMove())
-                validateActions.put("MOVE", () -> goToReady());
-            if (ally.getTurnState().canAttack())
-                validateActions.put("ATTACK", () -> changeState("attackChoice", new MCCSAttackChoice.AtkChoiceStateArgs()));
-            customization.carouselValidateActions = validateActions;
-
-            Map<String, Runnable> focusActions = new HashMap<>();
-            focusActions.put("MOVE", () -> System.out.println("Move focused"));
-            focusActions.put("ATTACK", () -> System.out.println("Attack focused"));
-            customization.carouselFocusActions = focusActions;
+            customization.reset();
+            if (ally.getTurnState().canMove()) {
+                customization.carouselItems.add(new CarouselItem(
+                    "MOVE",
+                    () -> goToReady(),
+                    null
+                ));
+            }
+            if (ally.getTurnState().canAttack()) {
+                customization.carouselItems.add(new CarouselItem(
+                    "ATTACK",
+                    () -> goToAim(),
+                    null
+                ));
+            }
 
             customization.choiceMessage = "What should I do ?";
             customization.canShow = true;

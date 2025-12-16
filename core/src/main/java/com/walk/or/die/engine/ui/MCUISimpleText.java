@@ -25,6 +25,7 @@ public class MCUISimpleText {
     private final float SPACE_FACTOR = 2.5f;
 
     protected Zone zone;
+    protected Viewport viewport;
     protected MCAbstractHUD parent;
     protected SpriteBatch currentBatch;
     protected String currentText = "AAAHH";
@@ -33,6 +34,7 @@ public class MCUISimpleText {
     protected Color color;
     protected float scale;
     protected float spacing;
+    protected float alpha = 1f;
 
     protected float offsetX = 0f;
     public boolean centered = true;
@@ -51,6 +53,8 @@ public class MCUISimpleText {
         this.color = color;
         this.scale = scale;
         this.spacing = spacing;
+
+        viewport = MCHUDManager.get().getViewport();
     }
 
     protected void drawSpacedText(String text, float x, float y) {
@@ -92,18 +96,16 @@ public class MCUISimpleText {
             x = zone.inX() + (zone.inWidth() - dimensions.x) / 2f;
         else 
             x = zone.inX();
-
-        Viewport hudViewport = MCHUDManager.get().getViewport();
         
         Vector3 ll = new Vector3(zone.inX(), zone.inY(), 0f);
-        hudViewport.project(ll);
+        viewport.project(ll);
 
         Vector3 ur = new Vector3(
             zone.inX() + zone.inWidth(),
             zone.inY() + zone.inHeight(),
             0f
         );
-        hudViewport.project(ur);
+        viewport.project(ur);
 
         int scissorWidth = (int) (ur.x - ll.x);
         int scissorHeight = (int) (ur.y - ll.y);

@@ -56,6 +56,7 @@ public class MCSharedAssets {
 
         addSavedTile("validAttackTile");
         //addSavedTile("debugTile");
+        addOnePixelTexture("empty", new Color(1f, 1f, 1f, 0.25f));
         addOnePixelTexture("fallback", Color.MAGENTA);
         addOnePixelTexture("black", Color.BLACK);
         addOnePixelTexture("white", Color.WHITE);
@@ -67,8 +68,8 @@ public class MCSharedAssets {
         addGradientTexture("whiteFade", Color.WHITE);
 
         this.fontPath = fontPath;
-        addSavedBitmapFont("Minecraft");
-        addSavedBitmapFont("ariBlackAlpha");
+        addSavedBitmapFont("ariBlackAlpha", "ariBlackAlpha", true);
+        addSavedBitmapFont("ariBlackAlpha", "ariBlackAlphaFP", false);
     }
 
     private void addOnePixelTexture(String name, Color color) {
@@ -110,15 +111,15 @@ public class MCSharedAssets {
         savedTextures.put(nameVal, texture);
     }
  
-    private void addSavedBitmapFont(String filename) throws NotBeautifulFontException { 
+    private void addSavedBitmapFont(String filename, String petName, boolean intPos) throws NotBeautifulFontException { 
         if (filename.contains("Arial")) {
             throw new NotBeautifulFontException(filename);
         }
         BitmapFont font = new BitmapFont(Gdx.files.internal(fontPath + filename + ".fnt"));
         // pour pas smooth la police (garder rendu pixel perfect)
         font.getRegion().getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-        font.setUseIntegerPositions(true);
-        savedBitmapFonts.put(filename, font);
+        font.setUseIntegerPositions(intPos);
+        savedBitmapFonts.put(petName, font);
     }
 
     /**

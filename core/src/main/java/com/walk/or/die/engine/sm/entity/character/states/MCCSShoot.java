@@ -76,8 +76,8 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
         if (result.success) {
             int damage = args.attack.getDamageTo(args.target);
             parent.shootThenCall(args.target.getTilePosition(), args.attack, () -> {
-                if (MCCameraManager.get().getMode() == CameraMode.FOLLOW)
-                    MCCameraManager.get().setFollowTarget(args.target);
+                if (camManager.getMode() == CameraMode.FOLLOW)
+                    camManager.setFollowTarget(args.target);
                 args.target.getHurt(damage);
                 changeState("idle", new MCCSIdle.IdleStateArgs());
             });

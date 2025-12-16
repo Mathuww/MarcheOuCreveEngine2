@@ -75,18 +75,16 @@ public class MCUIScrollingText extends MCUISimpleText {
 
         //float ascent = -font.getData().ascent * font.getScaleY(); 
         float y = zone.inY() + (zone.inHeight() + dimensions.y) / 2f; // + ascent;
-
-        Viewport hudViewport = MCHUDManager.get().getViewport();
         
         Vector3 ll = new Vector3(zone.inX(), zone.inY(), 0f);
-        hudViewport.project(ll);
+        viewport.project(ll);
 
         Vector3 ur = new Vector3(
             zone.inX() + zone.inWidth(),
             zone.inY() + zone.inHeight(),
             0f
         );
-        hudViewport.project(ur);
+        viewport.project(ur);
 
         int scissorWidth = (int) (ur.x - ll.x);
         int scissorHeight = (int) (ur.y - ll.y);

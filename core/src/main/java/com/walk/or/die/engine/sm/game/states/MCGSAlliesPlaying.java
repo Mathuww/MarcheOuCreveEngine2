@@ -33,19 +33,18 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
         System.out.println("entering allies playing");
         bus.on(this, "InputPressed", this::inputPressed);
 
-        for (MCAlly a : MCEntityManager.get().getAllies()) {
-            //System.out.println("adding to allies turn states " + a.getId());
+        for (MCAlly a : MCEntityManager.get().getAllies())
             a.getTurnState().reset();
-        }
 
-        MCHUDManager hudManager = MCHUDManager.get();
         hudManager.getCharacterHud().setRightPanelDisplay(true);
         hudManager.getSimpleHud().setText("END TURN");
         hudManager.getSimpleHud().setAction(
             () -> bus.emit("InputPressed", new MCInputManager.NextTurnCommand())
         );
         hudManager.getSimpleHud().enable();
-        MCCameraManager.get().setMode(CameraMode.ARROWS);
+
+        // pour le démarrage du jeu 
+        camManager.setMode(CameraMode.ARROWS);
         super.enter(args);
     }
 
@@ -66,9 +65,9 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
             MCEntity e = MCEntityManager.get().getEntityFromTile(1, tileCmd.getIntVect());
 
             if (e instanceof MCCharacter c) {
-                MCHUDManager.get().getCharacterHud().setCharacter(c);
+                hudManager.getCharacterHud().setCharacter(c);
             } else if (e == null) // pour cacher le hud en cliquant sur une tile vide
-                MCHUDManager.get().getCharacterHud().hide();
+                hudManager.getCharacterHud().hide();
 
             if (e instanceof MCAlly ally) 
                 parent.changeFocus(ally);

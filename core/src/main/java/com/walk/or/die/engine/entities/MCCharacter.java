@@ -9,6 +9,7 @@ import java.util.Random;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCEventBus;
@@ -22,21 +23,22 @@ import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.ui.MCCharacterHUD;
 import com.walk.or.die.engine.ui.MCHUDManager;
 import com.walk.or.die.engine.ui.MCTerrainHPBar;
+import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
 
 /**
  * An entity wich can move and shoot.
  */
 public class MCCharacter extends MCEntity {
     public class HudCustomization {
-        public Map<String, Runnable> carouselValidateActions = new HashMap<>();
-        public Map<String, Runnable> carouselFocusActions = new HashMap<>();
+        public List<CarouselItem> carouselItems = new ArrayList<>();
+        public int carouselFirstIndex = 0;
         public String carouselEmptyMsg = "(Nothing to see here)";
         public String choiceMessage = "";
         public boolean canShow = true;
 
         public void reset() {
-            carouselValidateActions = new HashMap<>();
-            carouselFocusActions = new HashMap<>();
+            carouselItems = new ArrayList<>();
+            carouselFirstIndex = 0;
             carouselEmptyMsg = "(Nothing to see here)";
             choiceMessage = "";
             canShow = true;
@@ -85,7 +87,7 @@ public class MCCharacter extends MCEntity {
     @Override
     public void onSpawn() {
         stateManager.setCurrentState("idle", new MCCSIdle.IdleStateArgs());
-        healthBar = new MCTerrainHPBar(this);
+        healthBar = new MCTerrainHPBar(this, getParent().gameViewport);
     }
 
     @Override
@@ -133,6 +135,10 @@ public class MCCharacter extends MCEntity {
     public void render(SpriteBatch batch) {
         super.render(batch);
         stateManager.render(batch);
+    }
+
+    public void spawnDamageIndicator(int damage) {
+        healthBar.showDamage(damage);
     }
 
     /**

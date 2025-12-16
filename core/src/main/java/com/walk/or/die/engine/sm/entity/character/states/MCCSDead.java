@@ -3,6 +3,7 @@ package com.walk.or.die.engine.sm.entity.character.states;
 import com.walk.or.die.engine.entities.MCAnimation;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntityManager;
+import com.walk.or.die.engine.entities.MCCharacter.HudCustomization;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 
 /**
@@ -30,6 +31,7 @@ public class MCCSDead extends MCCharacterState<MCCSDead.DeadStateArgs> {
     @Override
     public void enter(DeadStateArgs args) {
         super.enter(args);
+        parent.getHudCustomization().canShow = false;
         stateTime = 0f;
         MCAnimation deadAnim = parent.getAnimation("dead");
         if (deadAnim != null) {

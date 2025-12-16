@@ -25,17 +25,16 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
     @Override
     public void enter(ExplStateArgs args) {
         super.enter(args);
-        MCHUDManager hudManager = MCHUDManager.get();
         try {
             MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
-            MCCameraManager.get().setFollowTarget(player);
+            camManager.setFollowTarget(player);
             // hudManager.setCharaHudTarget(player);
         } catch (Exception e) {
             e.printStackTrace();
             System.err.println("no player in this map");
             return;
         }
-        MCCameraManager.get().setMode(MCCameraManager.CameraMode.FOLLOW);
+        camManager.setMode(MCCameraManager.CameraMode.FOLLOW);
         bus.on(this, "InputPressed", this::inputPressed);
         hudManager.getSimpleHud().setText("INVENTORY");
         hudManager.getSimpleHud().setAction(() -> System.out.println("Inventory shown"));
@@ -53,7 +52,7 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
             if (keyCmd.key == Input.Keys.C) {
-                MCCameraManager.get().setMode(MCCameraManager.CameraMode.ARROWS);
+                camManager.setMode(MCCameraManager.CameraMode.ARROWS);
                 changeState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
             }
         }

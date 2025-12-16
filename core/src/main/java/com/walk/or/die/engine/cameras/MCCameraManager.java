@@ -59,9 +59,9 @@ public class MCCameraManager {
     private float trauma = 0f; // camera shake trauma !
     private float stateTime = 0f;
     private final float TRAUMA_DECAY = 0.5f; // trauma units/s
-    private final float SHAKE_MAX_ANGLE = 30f; // deg (libgdx fonctionne en deg pour .rotate())
-    private final float SHAKE_MAX_OFFSET = 3f;
-    private final float SHAKE_NOISE_SPEED = 30f;
+    private final float SHAKE_MAX_ANGLE = 15f; // deg (libgdx fonctionne en deg pour .rotate())
+    private final float SHAKE_MAX_OFFSET = 1.5f;
+    private final float SHAKE_NOISE_SPEED = 20f;
 
     public final float ZOOM_LERP = 5f;
     public final float ZOOM_STEP = 0.085f;

@@ -24,6 +24,21 @@ import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
 public class MCUICarousel {
+    public static class CarouselItem {
+        public String name;
+        public Runnable onValidate;
+        public Runnable onFocus;
+        public float offsetX;
+        public float width;
+
+        public CarouselItem(String name, Runnable onValidate, Runnable onFocus) {
+            this.name = name;
+            this.onValidate = onValidate;
+            this.onFocus = onFocus;
+        }
+    }
+
+    private final float INTERACT_OFFSET_TOLERANCE = 15f;
     private final float SCROLL_LERP = 8f;
     private final int SPACES_BETWEEN_ITEMS = 5;
     private final float FADE_WIDTH = 60f; 
@@ -31,11 +46,7 @@ public class MCUICarousel {
     private final float CORNER_PADDING = CORNER_SIZE * 3f;
 
     private String textIfEmpty = "(NOTHING TO DO)";
-    private List<String> items = new ArrayList<>();
-    private List<Runnable> focusActions = new ArrayList<>();
-    private List<Runnable> validateActions = new ArrayList<>();
-    private List<Float> itemsOffsetX = new ArrayList<>();
-    private List<Float> itemsWidth = new ArrayList<>();
+    private List<CarouselItem> items = new ArrayList<>();
     private float totalWidth = 0f;
     private int currentIndex = 0;
     private Rectangle focusedItemRect;
@@ -81,10 +92,6 @@ public class MCUICarousel {
 
     public void clearActions() {
         this.items.clear();
-        this.validateActions.clear();
-        this.focusActions.clear();
-        this.itemsOffsetX.clear();
-        this.itemsWidth.clear();
 
         currentIndex = 0;
         targetOffsetX = 0f;
@@ -96,31 +103,26 @@ public class MCUICarousel {
         textIfEmpty = t;
     }
 
-    public void loadActions(Map<String, Runnable> validateActions, Map<String, Runnable> focusActions) {
+    public void loadItems(List<CarouselItem> items, int firstIndex) {
         clearActions();
-        if (validateActions.size() == 0) {
+        if (items.size() == 0) {
             updateGeometry();
             return;
         }
 
-        this.items.addAll(validateActions.keySet());
+        this.items.addAll(items);
         float cursor = 0f;
         String totalText = "";
 
         for (int i = 0; i < items.size(); i++) {
-            String item = items.get(i);
-            this.validateActions.add(validateActions.get(item));
-            // c'est pas grave si on add null. 
-            // ca veut juste dire que cette action fait rien quand 
-            // la met au milieu du carousel.
-            this.focusActions.add(focusActions.get(item));
+            CarouselItem item = items.get(i);
 
-            itemsOffsetX.add(cursor);
+            item.offsetX = cursor;
 
-            float visualItemWidth = textComponent.textDimensions(item).x;
-            itemsWidth.add(visualItemWidth);
+            float visualItemWidth = textComponent.textDimensions(item.name).x;
+            item.width = visualItemWidth;
 
-            String itemWithSpaces = item;
+            String itemWithSpaces = item.name;
             if (i < items.size() - 1) {// pas le dernier 
                 for (int j = 0; j < SPACES_BETWEEN_ITEMS; j++)
                     itemWithSpaces += " ";
@@ -135,10 +137,9 @@ public class MCUICarousel {
         System.out.println("all carousel text is " + totalText);
         textComponent.setText(totalText);
 
-        if (this.focusActions.get(currentIndex) != null) {
-            System.out.println("running first action");
-            this.focusActions.get(currentIndex).run();
-        }
+        currentIndex = firstIndex;
+        if (items.get(firstIndex).onFocus != null)
+            items.get(firstIndex).onFocus.run();
 
         updateGeometry();
     }
@@ -146,30 +147,38 @@ public class MCUICarousel {
     public void next() {
         if (items.isEmpty())
             return;
+
         currentIndex++;
         if (currentIndex >= items.size())
             currentIndex = 0;
-        else if (focusActions.get(currentIndex) != null)
-            focusActions.get(currentIndex).run();
+
+        CarouselItem item = items.get(currentIndex);
+        if (item.onFocus != null)
+            item.onFocus.run();
+
         updateGeometry();
     }
 
     public void previous() {
         if (items.isEmpty())
             return;
+        
         currentIndex--;
         if (currentIndex < 0)
             currentIndex = items.size() - 1;
-        else if (focusActions.get(currentIndex) != null)
-            focusActions.get(currentIndex).run();
+
+        CarouselItem item = items.get(currentIndex);
+        if (item.onFocus != null)
+            item.onFocus.run();
+
         updateGeometry();
     }
 
     public void validate() {
         if (items.isEmpty())
             return;
-        if (validateActions.get(currentIndex) != null)
-            validateActions.get(currentIndex).run();
+        if (items.get(currentIndex).onValidate != null)
+            items.get(currentIndex).onValidate.run();
     }
 
     public void updateGeometry() {
@@ -179,14 +188,14 @@ public class MCUICarousel {
             return;
         } else
             textComponent.centered = false;
-        float itemStart = itemsOffsetX.get(currentIndex);
-        float itemWidth = itemsWidth.get(currentIndex);
-        float itemCenter = itemStart + itemWidth / 2f;
+
+        CarouselItem item = items.get(currentIndex);
+        float itemCenter = item.offsetX + item.width / 2f;
 
         float zoneCenter = zone.inWidth() / 2f;
         targetOffsetX = zoneCenter - itemCenter;
 
-        focusedItemRect.width = itemWidth + 2f * CORNER_PADDING;
+        focusedItemRect.width = item.width + 2f * CORNER_PADDING;
         focusedItemRect.x = zone.outside().x + (zone.outside().width - focusedItemRect.width) / 2f;
         // y et height bougent pas, on reste centrés verticalement
     }
@@ -198,7 +207,7 @@ public class MCUICarousel {
             displayHighlight = !displayHighlight;
         }
 
-        if (Math.abs(targetOffsetX - offsetX) > 0.05f)
+        if (Math.abs(targetOffsetX - offsetX) > 0.5f) // pour rendre le truc un peu "snappy"
             offsetX += (targetOffsetX - offsetX) * SCROLL_LERP * delta;
         else
             offsetX = targetOffsetX; // pour pas rater la cible pendant le lerp, comme d'hab
@@ -228,8 +237,12 @@ public class MCUICarousel {
         gradientTexture.flip(true, false);
     }
 
+    private boolean closeEnoughToCenter() {
+        return (Math.abs(targetOffsetX - offsetX) < INTERACT_OFFSET_TOLERANCE);
+    }
+
     public void render(SpriteBatch batch) {
-        if (offsetX == targetOffsetX && !items.isEmpty() && parent.isFullyShown()) {
+        if (closeEnoughToCenter() && !items.isEmpty() && parent.isFullyShown()) {
             if (focusedItemHovered)
                 parent.drawFilledRectangle(focusedItemRect, greyTexture);
             if (displayHighlight)
@@ -255,7 +268,7 @@ public class MCUICarousel {
     }
 
     public void handleClick(Vector2 pos) {
-        if (targetOffsetX != offsetX)
+        if (!closeEnoughToCenter())
             return;
         if (focusedItemRect.contains(pos))
             validate();

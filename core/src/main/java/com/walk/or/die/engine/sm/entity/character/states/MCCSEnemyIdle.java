@@ -14,6 +14,7 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
+import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
 
 /**
  * The idle state for ennemies.<br>
@@ -91,30 +92,27 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
             Map<String, MCAttack> attacks = enemy.getAttacks();
             HudCustomization customization = enemy.getHudCustomization();
 
-            Map<String, Runnable> validateActions = new HashMap<>();
+            customization.reset();
             for (String attackName : attacks.keySet()) {
-                MCAttack attack = attacks.get(attackName);
-                validateActions.put(attackName, null);
-            }
-            customization.carouselValidateActions = validateActions;
-
-            Map<String, Runnable> focusActions = new HashMap<>();
-            for (String attackName : attacks.keySet()) {
-                MCAttack attack = attacks.get(attackName);
-                focusActions.put(
+                MCAttack newAttack = attacks.get(attackName);
+                customization.carouselItems.add(new CarouselItem(
                     attackName,
+                    null,
                     () -> {
                         if (displayedAttack != null)
                             displayedAttack.display = false;
-                        attack.computeValidTilesDisplay();
-                        attack.display = true;
-                        displayedAttack = attack;
-                        customization.choiceMessage = attack.getSummary();
+
+                        if (!parent.getParent().getStateManager().isIn("AlliesPlaying"))
+                            return;
+                        newAttack.computeValidTilesDisplay();
+                        newAttack.display = true;
+                        displayedAttack = newAttack;
+                        customization.choiceMessage = newAttack.getSummary();
                         hudManager.getCharacterHud().refreshRequest(parent, false);
                     }
-                );
+                ));
             }
-            customization.carouselFocusActions = focusActions;
+
             customization.canShow = true;
             enemy.notifyHudUpdate(true);
         } 

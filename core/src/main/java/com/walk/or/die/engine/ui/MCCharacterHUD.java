@@ -160,6 +160,13 @@ public class MCCharacterHUD extends MCAbstractHUD {
         scrollTo(0f);
     }
 
+    public boolean getRightPanelDisplay() {
+        if (scrolling)
+            return renderRPafterScroll;
+        else
+            return renderRightPanel;
+    }
+
     public void setRightPanelDisplay(boolean display) {
         if (display && (shown || scrolling)) 
             renderRPafterScroll = display;
@@ -174,7 +181,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
     }
 
     public void setCharacter(MCCharacter newCharacter) {
-        if (newCharacter == null) {
+        if (newCharacter == null || newCharacter.isDead()) {
             System.out.println("simple close");
             hide();
             return;
@@ -226,11 +233,8 @@ public class MCCharacterHUD extends MCAbstractHUD {
         choiceMessageText.setText(customization.choiceMessage);
         choiceMessageText.startTyping();
         //choiceCarousel.clearActions();
-        if (reloadCarousel && renderRightPanel) {
-            choiceCarousel.loadActions(
-                customization.carouselValidateActions,
-                customization.carouselFocusActions
-            );
+        if (reloadCarousel) {
+            choiceCarousel.loadItems(customization.carouselItems, customization.carouselFirstIndex);
             choiceCarousel.setEmptyText(customization.carouselEmptyMsg);
         }
     }

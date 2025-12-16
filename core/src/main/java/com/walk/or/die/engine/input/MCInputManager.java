@@ -351,30 +351,28 @@ public class MCInputManager implements InputProcessor {
     }
 
     @Override public boolean mouseMoved(int x, int y) {
-        boolean treated = false;
-        Vector3 worldPos = new Vector3(x, y, 0);
-        vp.unproject(worldPos);
-        Vector2 worldCoords = new Vector2(
-            MathUtils.floor(worldPos.x), 
-            MathUtils.floor(worldPos.y)
-        );
-
-        if (mouseMovedFunction != null) {
-            mouseMovedFunction.accept(worldCoords);
-            treated = true;
-        } 
-
         Vector3 hudPos = new Vector3(x, y, 0f);
         hudManager.getViewport().unproject(hudPos);
         Vector2 hudCoords = new Vector2(hudPos.x, hudPos.y);
 
         if (hudManager.posBelongsToHud(hudCoords)) {
             hudManager.handleHover(hudCoords);
-            treated = true;
-        }
-        else
+            return true;
+        } else 
             hudManager.handleHoverGone();
-        return treated;
+
+        if (mouseMovedFunction != null) {
+            Vector3 worldPos = new Vector3(x, y, 0);
+            vp.unproject(worldPos);
+            Vector2 worldCoords = new Vector2(
+                MathUtils.floor(worldPos.x),
+                MathUtils.floor(worldPos.y)
+            );
+            mouseMovedFunction.accept(worldCoords);
+            return true;
+        }
+
+        return false;
     }
 
     /**

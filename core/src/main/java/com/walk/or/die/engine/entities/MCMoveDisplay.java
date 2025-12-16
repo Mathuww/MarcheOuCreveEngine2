@@ -19,6 +19,7 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
  */
 public class MCMoveDisplay {
     private final MCCharacter parent;
+    private final MCSharedAssets sharedAssets = MCSharedAssets.get();
     private Array<Sprite> displaySprites = new Array<>();
     private TextureRegion validTileTexture;
     private final Color VALID_COLOR = new Color(1f, 1f, 1f, 0.5f);
@@ -35,7 +36,7 @@ public class MCMoveDisplay {
      */
     public MCMoveDisplay(MCCharacter parent) throws Exception {
         this.parent = parent;
-        validTileTexture = MCSharedAssets.get().getSavedTexture("validAttackTile");
+        validTileTexture = sharedAssets.getSavedTexture("validAttackTile");
     }
 
     /**

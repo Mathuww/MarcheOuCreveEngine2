@@ -60,14 +60,13 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
         enemies.addAll(MCEntityManager.get().getEnemies());
         nextTurnRequest = true;
         firstPlay = true;
-        MCHUDManager hudManager = MCHUDManager.get();
         hudFocusBefore = hudManager.getCharacterHud().getCharacter();
         hudManager.getSimpleHud().disable();
         hudManager.getCharacterHud().hide();
         hudManager.getCharacterHud().setRightPanelDisplay(false);
 
-        cameraPosBefore = MCCameraManager.get().getPosition();
-        MCCameraManager.get().setMode(CameraMode.FOLLOW);
+        cameraPosBefore = camManager.getPosition();
+        camManager.setMode(CameraMode.FOLLOW);
     }
 
     private void playOne() {
@@ -81,8 +80,8 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
         }
         MCEnemy enemy = enemies.poll();
         if (enemy != null && !enemy.isDead()) {
-            MCCameraManager.get().setFollowTarget(enemy);
-            MCHUDManager.get().getCharacterHud().setCharacter(enemy);
+            camManager.setFollowTarget(enemy);
+            hudManager.getCharacterHud().setCharacter(enemy);
             enemy.playDecision(() -> {
                 nextTurnRequest = true;
             });
@@ -94,11 +93,11 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
     public void exit() {
         nextTurnRequest = false;
         if (hudFocusBefore != null) {
-            MCHUDManager.get().getCharacterHud().setCharacter(hudFocusBefore);
-            MCHUDManager.get().getCharacterHud().refreshRequest(hudFocusBefore, true);
-        }
-        MCHUDManager.get().getCharacterHud().hide();
-        MCCameraManager.get().interpolateTo(cameraPosBefore);
+            hudManager.getCharacterHud().setCharacter(hudFocusBefore);
+        } else
+            hudManager.getCharacterHud().hide();
+        camManager.setMode(CameraMode.ARROWS);
+        camManager.interpolateTo(cameraPosBefore);
         super.exit();
     }
 }

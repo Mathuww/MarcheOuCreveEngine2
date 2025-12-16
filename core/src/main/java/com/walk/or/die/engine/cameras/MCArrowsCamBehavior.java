@@ -113,7 +113,7 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
 
         if (translating) {
             if (Math.abs(targetX - gdxCam.position.x) > 0.01f
-                || Math.abs(targetX - gdxCam.position.x) > 0.001) {
+                || Math.abs(targetX - gdxCam.position.x) > 0.01f) {
                 gdxCam.position.x += (targetX - gdxCam.position.x) * delta * CAM_LERP;
                 gdxCam.position.y += (targetY - gdxCam.position.y) * delta * CAM_LERP;
             } else {

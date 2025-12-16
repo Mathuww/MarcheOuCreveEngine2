@@ -40,6 +40,7 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
     private int damage;
 
     private MCCharacter hudFocusBeforeHurt;
+    private boolean hudRightPanelDispBefore = false;
 
     /**
      * The constructor.
@@ -57,20 +58,25 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
         latencyPassed = false;
         stateTime = 0f;
         blinkingTime = 0f;
-        hudFocusBeforeHurt = MCHUDManager.get().getCharacterHud().getCharacter();
-        MCHUDManager.get().getCharacterHud().setCharacter(parent);
+        hudFocusBeforeHurt = hudManager.getCharacterHud().getCharacter();
+        hudRightPanelDispBefore = hudManager.getCharacterHud().getRightPanelDisplay();
+        hudManager.getCharacterHud().setRightPanelDisplay(false);
+        hudManager.getCharacterHud().setCharacter(parent);
         if (parent instanceof MCAlly) {
-            MCCameraManager.get().addTrauma(
-                MathUtils.clamp(((float)damage / (float)parent.getMaxHp()), 0f, 1f)
+            camManager.addTrauma(
+                MathUtils.clamp(((float)damage / (float)parent.getHealth()), 0f, 0.5f)
             );
         }
+
+        parent.spawnDamageIndicator(damage);
+
         parent.playAnimation(args.targetAnim);
     }  
 
     @Override
     public void update(float delta) {
         // pour avoir l'effet bien kiffant de la barre de vie qui descend en gros
-        if (!MCHUDManager.get().getCharacterHud().isFullyShown())
+        if (!hudManager.getCharacterHud().isFullyShown())
             return;
         if (!latencyPassed) {
             parent.setHealth(Math.max(0, parent.getHealth() - damage));
@@ -94,9 +100,10 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
     @Override
     public void exit() {
         if (hudFocusBeforeHurt != null) {
-            MCHUDManager.get().getCharacterHud().setCharacter(hudFocusBeforeHurt);
-            MCHUDManager.get().getCharacterHud().refreshRequest(hudFocusBeforeHurt, true);
+            hudManager.getCharacterHud().setCharacter(hudFocusBeforeHurt);
+            hudManager.getCharacterHud().refreshRequest(hudFocusBeforeHurt, true);
         }
+        hudManager.getCharacterHud().setRightPanelDisplay(hudRightPanelDispBefore);
         parent.display = true;
     }
     

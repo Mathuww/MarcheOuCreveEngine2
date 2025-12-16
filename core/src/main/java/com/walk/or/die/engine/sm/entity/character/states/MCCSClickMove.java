@@ -7,6 +7,7 @@ import java.util.List;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
+import com.walk.or.die.engine.entities.MCEnemy;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCIntVector2;
@@ -97,7 +98,10 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
         movements.clear();
         movements.addAll(args.path);
         playAnimationOr("run", "walk");
-        parent.getHudCustomization().canShow = true;
+        if (parent instanceof MCEnemy)
+            parent.getHudCustomization().canShow = true;
+        else
+            parent.getHudCustomization().canShow = false;
         parent.notifyHudUpdate(true);
         super.enter(args);
     }

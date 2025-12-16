@@ -3,10 +3,16 @@ package com.walk.or.die.engine.sm;
 import java.util.function.Consumer;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.walk.or.die.engine.cameras.MCCameraManager;
+import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
+import com.walk.or.die.engine.ui.MCHUDManager;
 
 public abstract class MCState<T extends MCState.StateArgs> {
     public static class StateArgs {}
+
+    protected final MCCameraManager camManager = MCCameraManager.get();
+    protected final MCHUDManager hudManager = MCHUDManager.get();
 
     protected String name;
     protected MCEventBus bus;
