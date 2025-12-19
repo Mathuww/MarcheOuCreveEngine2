@@ -1,7 +1,6 @@
 package com.walk.or.die.engine.shared;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
@@ -18,7 +17,6 @@ import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.exceptions.NotBeautifulFontException;
 import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
-import com.walk.or.die.engine.tiledmap.MCMapObject;
 
 /**
  * A singleton useful to load only one time assets used in many classes.
@@ -55,6 +53,7 @@ public class MCSharedAssets {
         miscTilesLayer = miscTilesMap.getLayer(0);
 
         addSavedTile("validAttackTile");
+        addSavedTile("trajectoryTile");
         //addSavedTile("debugTile");
         addOnePixelTexture("empty", new Color(1f, 1f, 1f, 0.25f));
         addOnePixelTexture("fallback", Color.MAGENTA);

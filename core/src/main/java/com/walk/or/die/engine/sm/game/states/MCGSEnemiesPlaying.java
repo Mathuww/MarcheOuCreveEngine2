@@ -57,6 +57,7 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
     public void enter(EnemiesPlayingArgs args) {
         super.enter(args);
         enemies.clear();
+        for (MCEnemy e : MCEntityManager.get().getEnemies()) e.newTurn();
         enemies.addAll(MCEntityManager.get().getEnemies());
         nextTurnRequest = true;
         firstPlay = true;

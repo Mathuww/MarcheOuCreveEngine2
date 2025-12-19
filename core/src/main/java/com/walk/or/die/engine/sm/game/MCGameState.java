@@ -36,7 +36,7 @@ public abstract class MCGameState<T extends MCGameState.StateArgs> extends MCSta
     }
 
     @Override
-    public void renderOnGridOverlay(SpriteBatch batch) {
+    public void renderEffects(SpriteBatch batch) {
         
     }
 

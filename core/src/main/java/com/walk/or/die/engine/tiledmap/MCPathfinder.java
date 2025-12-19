@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.tiledmap ;
 
+import com.badlogic.gdx.math.MathUtils;
 //import com.badlogic.gdx.math.MathUtils;
 //import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
@@ -200,21 +201,52 @@ public class MCPathfinder {
      */
     public List<MCIntVector2> getBestTrajectory(MCIntVector2 v1, MCIntVector2 v2) {
         // Mon implémentation ne distinguera pas un personnage d'un bloc/obstacle, ce que je trouve problématique
+
+        // Il faut simplement détecter la taille du chemin (a savoir si il fait 2) + si le bloc est a coté
+        // il faut faire remplacé les quarts par des tiers
+
         List<MCIntVector2> try1 = getTrajectory(v1, v2);
         cutTrajectoryOnHit(try1);
-        if (try1.get(try1.size()-1).equals(v2)) return try1;
+        if (try1.get(try1.size()-1).equals(v2) || try1.size()==2) return try1;
+        
 
-        int moveX = Math.abs(v2.x - v1.x);
-        int moveY = Math.abs(v2.y - v1.y);
+        int dx = v2.x - v1.x;
+        int dy = v2.y - v1.y;
 
         Queue<MCIntVector2> queuePos = new ArrayDeque<>();
-        if (moveY >= moveX) { // Nord/Sud donc déplacement horizontaux
-            queuePos.add(new MCIntVector2(v1.x + 1, v1.y));
-            queuePos.add(new MCIntVector2(v1.x - 1, v1.y));
+
+        
+        if (dx >= 0 && dy >= 0) { // Nord-Est
+            if (Math.abs(dx) >= Math.abs(dy)) { // priorité verticale
+                queuePos.add(new MCIntVector2(v1.x, v1.y + 1));
+            }
+            if (Math.abs(dx) <= Math.abs(dy)) { // priorité horizontale
+                queuePos.add(new MCIntVector2(v1.x + 1, v1.y));
+            }
         }
-        if (moveX >= moveY) { // Ouest/Est donc déplacements verticaux
-            queuePos.add(new MCIntVector2(v1.x, v1.y + 1));
-            queuePos.add(new MCIntVector2(v1.x, v1.y - 1));
+        else if (dx < 0 && dy >= 0) { // Nord-Ouest
+            if (Math.abs(dx) >= Math.abs(dy)) { // priorité verticale
+                queuePos.add(new MCIntVector2(v1.x, v1.y + 1));
+            }
+            if (Math.abs(dx) <= Math.abs(dy)) { // priorité horizontale
+                queuePos.add(new MCIntVector2(v1.x - 1, v1.y));
+            }
+        }
+        else if (dx >= 0 && dy < 0) { // Sud-Est
+            if (Math.abs(dx) >= Math.abs(dy)) { // priorité verticale
+                queuePos.add(new MCIntVector2(v1.x, v1.y - 1));
+            }
+            if (Math.abs(dx) <= Math.abs(dy)) { // priorité horizontale
+                queuePos.add(new MCIntVector2(v1.x + 1, v1.y));
+            }
+        }
+        if (dx < 0 && dy < 0) { // Sud-Ouest
+            if (Math.abs(dx) >= Math.abs(dy)) { // priorité verticale
+                queuePos.add(new MCIntVector2(v1.x, v1.y - 1));
+            }
+            if (Math.abs(dx) <= Math.abs(dy)) { // priorité horizontale
+                queuePos.add(new MCIntVector2(v1.x - 1, v1.y));
+            }
         }
 
         List<MCIntVector2> try2;

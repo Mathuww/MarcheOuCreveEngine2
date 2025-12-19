@@ -36,7 +36,7 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     }
 
     @Override
-    public void renderOnGridOverlay(SpriteBatch batch) {
+    public void renderEffects(SpriteBatch batch) {
         if (displayedAttack == null)
             return;
         displayedAttack.render(batch);

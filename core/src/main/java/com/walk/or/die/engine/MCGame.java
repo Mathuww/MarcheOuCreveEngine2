@@ -1,26 +1,19 @@
 package com.walk.or.die.engine;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.walk.or.die.engine.cameras.MCCameraManager;
-import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCAttackFactory;
 import com.walk.or.die.engine.entities.MCCharacter;
-import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityFactory;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.exceptions.InvalidDataException;
@@ -32,7 +25,6 @@ import com.walk.or.die.engine.input.MCInputManager.PreviousMapCommand;
 import com.walk.or.die.engine.screens.MCGameScreen;
 import com.walk.or.die.engine.shared.MCDebugRenderer;
 import com.walk.or.die.engine.shared.MCEventBus;
-import com.walk.or.die.engine.vehicles.MCVehicle;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.sm.MCStateMachine;
@@ -40,11 +32,10 @@ import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.sm.game.states.MCGSAlliesPlaying;
 import com.walk.or.die.engine.sm.game.states.MCGSEnemiesPlaying;
 import com.walk.or.die.engine.sm.game.states.MCGSExploration;
-import com.walk.or.die.engine.tiledmap.MCMap;
-import com.walk.or.die.engine.tiledmap.MCMapLayer;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.ui.MCHUDManager;
+import com.walk.or.die.engine.vehicles.MCVehicle;
 
 /**
  * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
@@ -67,11 +58,11 @@ public class MCGame extends Game {
     /**
      * Describe how far the camera can exceed the map lower boundaries.
     */
-    public static final Vector2 CAM_LOWER_LIMIT_OFFSET = new Vector2(-2f, -4f);
+    public static final Vector2 CAM_LOWER_LIMIT_OFFSET = new Vector2(0f, -4f);
     /**
      * Describe how far the camera can exceed the map upper boundaries.
     */
-    public static final Vector2 CAM_UPPER_LIMIT_OFFSET = new Vector2(2f, 2f); 
+    public static final Vector2 CAM_UPPER_LIMIT_OFFSET = new Vector2(0f, 1f); 
 
     /** 
      * Sets fixed HUD viewport height

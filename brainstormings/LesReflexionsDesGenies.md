@@ -125,6 +125,9 @@ Si une entité existe dans *entities_anims*, on peut la build à travers cette f
 ### MCAttackFactory
 Si une attaque existe dans *attacks*, on peut la build à travers cette factory.
 
+### AI
+
+Refaire la logique de l'ia pour que les décisions osit liées et non pas indépendantes
 
 # pseudo code collisions
 

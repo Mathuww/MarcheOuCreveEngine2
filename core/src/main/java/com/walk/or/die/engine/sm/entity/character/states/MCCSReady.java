@@ -42,7 +42,7 @@ public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
     }
 
     @Override
-    public void renderOnGridOverlay(SpriteBatch batch) {
+    public void renderEffects(SpriteBatch batch) {
         parent.getMoveDisplay().render(batch);
     }
 

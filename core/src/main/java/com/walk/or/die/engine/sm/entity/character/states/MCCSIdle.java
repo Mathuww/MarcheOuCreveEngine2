@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.walk.or.die.engine.entities.MCAlly;
-import com.walk.or.die.engine.entities.MCAttack;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.entities.MCCharacter.HudCustomization;
@@ -24,9 +23,9 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     /**
      * Class which represents args needed by idle move to start.
      */
-    public static class IdleStateArgs extends MCCharacterState.StateArgs {}
-
-    private MCAttack displayedAttack;
+    public static class IdleStateArgs extends MCCharacterState.StateArgs {
+        // ajouter derniere direction pour jouer idle_up, idle_right etc.
+    }
 
     /**
      * The constructor.

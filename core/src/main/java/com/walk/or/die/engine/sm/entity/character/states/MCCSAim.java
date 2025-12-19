@@ -50,7 +50,7 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
     }
 
     @Override
-    public void renderOnGridOverlay(SpriteBatch batch) {
+    public void renderEffects(SpriteBatch batch) {
         if (currentAttack != null)
             currentAttack.render(batch);
     }

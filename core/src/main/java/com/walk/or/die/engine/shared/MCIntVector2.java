@@ -2,7 +2,6 @@ package com.walk.or.die.engine.shared;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.input.MCInputManager.DirectionalCommand;
 
 /**
  * Our personal Vector2, which uses int instead of float.

@@ -74,6 +74,13 @@ public class MCProjectile extends MCEntity {
         float dist = startPos.dst(this.targetPos);
         totalDuration = (1.5f * dist) / speed;
 
+        // calculer rotation
+        float dx = targetGridPos.x - startPos.x;
+        float dy = targetGridPos.y - startPos.y;
+        float angleRad = (float) Math.atan2(dy, dx);
+        float angleDeg = (float) Math.toDegrees(angleRad);
+        getSprite().setRotation(angleDeg);
+
         display = true;
     }
 

@@ -22,7 +22,7 @@ public abstract class MCExplorationPlayerState<T extends MCExplorationPlayerStat
     public void render(SpriteBatch batch) {}
 
     @Override
-    public void renderOnGridOverlay(SpriteBatch batch) {}
+    public void renderEffects(SpriteBatch batch) {}
 
     // à override pour tous les états bloquants !
     public boolean isBlocking() {

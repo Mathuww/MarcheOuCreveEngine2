@@ -1,7 +1,9 @@
 package com.walk.or.die.engine.entities;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.assets.AssetManager;
@@ -138,14 +140,15 @@ public class MCEntityFactory {
             }
 
             MCAnimation anim = new MCAnimation();
-            Array<TextureRegion> animRegions = new Array<>();
+            Array<TextureRegion> animRegions = new Array<TextureRegion>();
 
             for (TiledMapTile tile : row) {
                 int i = 0;
                 if (tile != null) {
-                    if (tile.getTextureRegion() != null) 
-                        animRegions.add(tile.getTextureRegion());
-
+                    if (tile.getTextureRegion() != null) {
+                        TextureRegion frame = new TextureRegion(tile.getTextureRegion());
+                        animRegions.add(frame);
+                    }
                 }
                 i++;
             }
@@ -154,6 +157,33 @@ public class MCEntityFactory {
             anim.setRawAnim(rawAnim);
 
             entity.addAnimation(animName, anim);
+        }
+
+        List<String> addedAnims = new ArrayList<>(entity.getAnimations());
+        for (String animName : addedAnims) {
+            System.out.println("checking if " + animName);
+            if (animName.endsWith("_right")) {
+                String base = animName.substring(0, animName.length() - "_right".length());
+                String leftName = base + "_left";
+
+                if (!entity.hasAnimation(leftName)) {
+                    System.out.println("flipping : " + leftName);
+                    MCAnimation rightAnim = entity.getAnimation(animName);
+                    MCAnimation leftAnim = rightAnim.getFlippedAnim();
+                    entity.addAnimation(leftName, leftAnim);
+                }
+            }
+
+            if (animName.endsWith("_left")) {
+                String base = animName.substring(0, animName.length() - "_left".length());
+                String rightName = base + "_right";
+
+                if (!entity.hasAnimation(rightName)) {
+                    MCAnimation leftAnim = entity.getAnimation(animName);
+                    MCAnimation rightAnim = leftAnim.getFlippedAnim();
+                    entity.addAnimation(rightName, rightAnim);
+                }
+            }
         }
 
         entity.onSpawn();

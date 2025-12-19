@@ -34,7 +34,7 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
         bus.on(this, "InputPressed", this::inputPressed);
 
         for (MCAlly a : MCEntityManager.get().getAllies())
-            a.getTurnState().reset();
+            a.newTurn();
 
         hudManager.getCharacterHud().setRightPanelDisplay(true);
         hudManager.getSimpleHud().setText("END TURN");

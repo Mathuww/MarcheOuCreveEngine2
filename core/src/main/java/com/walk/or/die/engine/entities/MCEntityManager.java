@@ -256,7 +256,7 @@ public class MCEntityManager {
         // to make sure they're always on top !
         for (MCEntity e : entities) {
             if (e instanceof MCCharacter c)
-                c.renderOnGridOverlay(batch);
+                c.renderEffects(batch);
         }
         MCHUDManager.get().getFocusHud().render(batch);
     }

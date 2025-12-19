@@ -2,6 +2,7 @@ package com.walk.or.die.engine.entities;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -109,6 +110,14 @@ public abstract class MCEntity {
     public void addAnimation(String animName, MCAnimation anim) {
         animations.put(animName, anim);
         //System.out.println("mes animations sont mtn : " + animations.keySet());
+    }
+
+    public Set<String> getAnimations() {
+        return animations.keySet();
+    }
+
+    public boolean hasAnimation(String animName) {
+        return animations.containsKey(animName);
     }
 
     /**

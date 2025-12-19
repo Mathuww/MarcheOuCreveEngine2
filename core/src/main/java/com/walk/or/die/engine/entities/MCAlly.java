@@ -61,6 +61,11 @@ public class MCAlly extends MCCharacter {
         stateManager.addState(new MCCSDead(this));
     }
 
+    @Override
+    public void newTurn() {
+        super.newTurn();
+        getTurnState().reset();
+    }
     /**
      * Get the current ally actions.
      * @return

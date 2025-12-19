@@ -1,22 +1,15 @@
 package com.walk.or.die.engine.shared;
 
-import com.walk.or.die.engine.input.MCInputManager;
-import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
-import com.walk.or.die.engine.sm.game.MCGameState;
-import com.badlogic.gdx.math.Vector2;
-import com.walk.or.die.engine.entities.MCCharacter;
-import com.walk.or.die.engine.entities.MCEntity;
-import com.walk.or.die.engine.exceptions.VoluntaryCrashException;
-
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ArrayList;
-import java.lang.invoke.SerializedLambda;
-import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.function.Consumer;
+
+import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.exceptions.VoluntaryCrashException;
+import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.vehicles.MCVehicle;
 
 /**

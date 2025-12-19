@@ -5,10 +5,23 @@ import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.entity.explorationplayer.MCExplorationPlayerState;
 
+
+/**
+ * The idle state for explorer player.<br>
+ * Name = "idle"<br>
+ * This is a non-blocking state.
+ */
 public class MCEPSIdle extends MCExplorationPlayerState<MCEPSIdle.IdleStateArgs> {
 
+    /**
+     * Class which represents args needed by idle move to start.
+     */
     public static class IdleStateArgs extends MCExplorationPlayerState.StateArgs {}
 
+    /**
+     * The constructor.
+     * @param parent
+     */
     public MCEPSIdle(MCExplorationPlayer parent) {
         super(parent);
         this.name = "idle";

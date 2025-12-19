@@ -6,7 +6,6 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
-import com.walk.or.die.engine.sm.entity.character.states.MCCSIdle;
 import com.walk.or.die.engine.sm.entity.explorationplayer.MCExplorationPlayerState;
 import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSIdle;
 import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSMove;

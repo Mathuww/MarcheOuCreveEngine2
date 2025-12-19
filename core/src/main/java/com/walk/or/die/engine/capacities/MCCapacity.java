@@ -16,14 +16,4 @@ public abstract class MCCapacity {
         System.out.println(name + " used on " + parent.getId());
     }
 
-    public void onAttack(MCAttack attack) {
-    }
-
-    public void onHurt(int damage) {
-        parent.getHurt(damage * 10); // j'avoue je l'utiliserais pas cette capacité là
-    }
-
-    public int getMaxMoves() {
-        return parent.getMaxMoves();
-    }
 }

@@ -3,8 +3,11 @@ package com.walk.or.die.engine.entities;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.w3c.dom.Text;
+
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * A class that plays an animation.
@@ -74,4 +77,29 @@ public class MCAnimation {
         stateTime = 0f;
     }
 
+    public MCAnimation getFlippedAnim() {
+        Array<TextureRegion> flippedFrames = new Array<>();
+
+        Object[] keyFrames = animation.getKeyFrames();
+        for (Object frameObj : keyFrames) {
+            if (!(frameObj instanceof TextureRegion)) 
+                throw new IllegalStateException("not a TextureRegion: ");
+
+            TextureRegion srcFrame = (TextureRegion) frameObj;
+
+            // Clonage et flip
+            TextureRegion flipped = new TextureRegion(srcFrame);
+            flipped.flip(true, false);
+            flippedFrames.add(flipped);
+        }
+
+        // Création de l'animation flippée
+        Animation<TextureRegion> flippedAnim = new Animation<>(
+            animation.getFrameDuration(),
+            flippedFrames,
+            animation.getPlayMode()
+        );
+
+        return new MCAnimation(flippedAnim);
+    }
 }

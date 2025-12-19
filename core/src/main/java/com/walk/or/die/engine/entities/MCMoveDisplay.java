@@ -21,9 +21,11 @@ public class MCMoveDisplay {
     private final MCCharacter parent;
     private final MCSharedAssets sharedAssets = MCSharedAssets.get();
     private Array<Sprite> displaySprites = new Array<>();
+    private Array<Sprite> trajectorySprites = new Array<>();
     private TextureRegion validTileTexture;
+    private TextureRegion trajTexture;
     private final Color VALID_COLOR = new Color(1f, 1f, 1f, 0.5f);
-    private final Color TRAJ_COLOR = new Color(1f, 0f, 0f, 0.6f);
+    private final Color TRAJ_COLOR = new Color(1f, 1f, 1f, 0.8f);
     public boolean display = false;
 
     private String senderAnim;
@@ -37,6 +39,7 @@ public class MCMoveDisplay {
     public MCMoveDisplay(MCCharacter parent) throws Exception {
         this.parent = parent;
         validTileTexture = sharedAssets.getSavedTexture("validAttackTile");
+        trajTexture = sharedAssets.getSavedTexture("trajectoryTile");
     }
 
     /**
@@ -70,8 +73,7 @@ public class MCMoveDisplay {
      * Erase trajectories.
      */
     public void clearTrajectory() {
-        for (Sprite spr : displaySprites)
-            spr.setColor(VALID_COLOR);
+        trajectorySprites.clear();
     }
 
     /**
@@ -79,24 +81,16 @@ public class MCMoveDisplay {
      * @param traj
      */
     public void showTrajectory(List<MCIntVector2> traj) {
-        //System.out.println("New trajectory");
-        for (Sprite spr : displaySprites) {
-            spr.setColor(VALID_COLOR);
-        }
-        for (Sprite spr : displaySprites) {
-            boolean isInTrajectory = false;
-
-            for (MCIntVector2 pos : traj) {
-                if (new MCIntVector2(spr.getX(), spr.getY()).equals(pos)) {
-                    isInTrajectory = true;
-                    break;
-                }
-            }
-
-            if (isInTrajectory) {
-                // System.out.println("(" + spr.posX + "," + spr.posY + ")");
-                spr.setColor(TRAJ_COLOR);
-            } 
+        trajectorySprites.clear();
+        for (int i = 0; i < traj.size(); i++) {
+            if (i == 0)
+                continue;
+            MCIntVector2 pos = traj.get(i);
+            Sprite spr = new Sprite(trajTexture);
+            spr.setPosition(pos.x, pos.y);
+            spr.setSize(1f, 1f);
+            spr.setColor(TRAJ_COLOR);
+            trajectorySprites.add(spr);
         }
     }
 
@@ -107,6 +101,8 @@ public class MCMoveDisplay {
     public void render(SpriteBatch batch) {
         if (!display) return;
         for (Sprite spr : displaySprites)
+            spr.draw(batch);
+        for (Sprite spr : trajectorySprites)
             spr.draw(batch);
     }
     

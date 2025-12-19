@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/objects.tsx",
+    "activeFile": "entities_anims/explorationPlayer.tmx",
     "expandedProjectPaths": [
         ".",
-        "attacks",
+        "maps",
         "entities_anims",
-        "maps"
+        "attacks"
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
@@ -35,21 +35,33 @@
             "scale": 2,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 80,
+                "x": 136,
                 "y": 111.75
             }
+        },
+        "entities_anims/Soldier.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
         },
         "entities_anims/ally.tmx": {
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 53.333333333333336,
-                "y": 81.5
+                "x": 128,
+                "y": 127.83333333333331
             }
         },
         "entities_anims/ally.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 8
+        },
+        "entities_anims/ally1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
+        "entities_anims/ally_real.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 3
         },
         "entities_anims/animWalk_explorationPlayer.tsx": {
             "scaleInDock": 1,
@@ -89,11 +101,11 @@
             "scaleInEditor": 1
         },
         "entities_anims/enemy.tmx": {
-            "scale": 2.00390625,
+            "scale": 1.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 63.875243664717345,
-                "y": 63.62573099415205
+                "x": 128,
+                "y": 127.66666666666663
             }
         },
         "entities_anims/enemy.tsx": {
@@ -113,12 +125,16 @@
             "scaleInDock": 1,
             "scaleInEditor": 4
         },
+        "entities_anims/enemy_real.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
         "entities_anims/explorationPlayer.tmx": {
-            "scale": 5.2769531249999995,
+            "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 64.05211340587758,
-                "y": 63.95736175882746
+                "x": 26.5,
+                "y": 231.5
             }
         },
         "entities_anims/explorationPlayer.tmx#chara1": {
@@ -134,12 +150,20 @@
             "scaleInDock": 8,
             "scaleInEditor": 16
         },
+        "entities_anims/mainally.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
+        },
+        "entities_anims/player.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
         "entities_anims/projectile.tmx": {
             "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 64,
-                "y": 64.125
+                "x": 128,
+                "y": 128.125
             }
         },
         "entities_anims/projectile.tmx#enemy1": {
@@ -148,6 +172,26 @@
         "entities_anims/projectile.tsx": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "entities_anims/realally1.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "entities_anims/soldier.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 5.5
+        },
+        "entities_anims/test.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 4
+        },
+        "entities_anims/test2.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 3
+        },
+        "entities_anims/test3.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 3
         },
         "maps/Ground.tsx": {
             "scaleInDock": 5.5,
@@ -170,7 +214,7 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 64,
-                "y": 64.125
+                "y": 63.875
             }
         },
         "maps/misc.tmx#chara1": {
@@ -179,7 +223,11 @@
         "maps/misc.tsx": {
             "dynamicWrapping": false,
             "scaleInDock": 1,
-            "scaleInEditor": 16
+            "scaleInEditor": 4
+        },
+        "maps/newmisc.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 11
         },
         "maps/objects.tmx": {
             "scale": 7.8374999999999995,
@@ -198,10 +246,10 @@
                 5
             ],
             "scale": 2,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 130.5,
-                "y": 21.25
+                "x": 128,
+                "y": 79.75
             }
         },
         "maps/start.tmx#main": {
@@ -212,13 +260,14 @@
         },
         "maps/start2.tmx": {
             "expandedObjectLayers": [
-                3
+                3,
+                5
             ],
-            "scale": 11,
-            "selectedLayer": 3,
+            "scale": 4,
+            "selectedLayer": 4,
             "viewCenter": {
                 "x": 176,
-                "y": 159.95454545454544
+                "y": 159.875
             }
         },
         "maps/start2.tmx#main": {
@@ -239,8 +288,9 @@
             "scaleInDock": 1
         }
     },
+    "frame.defaultDuration": 240,
     "last.externalTilesetPath": "/users/etudiant/d/dm316680/PASZDEFICHIERYSTEM/unpacked/entities_anims",
-    "last.imagePath": "/users/etudiant/r/re408676/Téléchargements/unpacked/spritesheets",
+    "last.imagePath": "/users/etudiant/d/df401928/Téléchargements/assets/tiled/unpacked/spritesheets",
     "map.fixedSize": true,
     "map.height": 16,
     "map.lastUsedFormat": "tmx",
@@ -259,26 +309,39 @@
         "maps/Ground.tsx",
         "maps/objects.tsx",
         "attacks/square_attack.tmx",
-        "entities_anims/projectile.tmx"
+        "entities_anims/projectile.tmx",
+        "entities_anims/enemy.tmx",
+        "entities_anims/soldier.tsx",
+        "entities_anims/Soldier.tsx",
+        "entities_anims/mainally.tsx",
+        "entities_anims/test.tsx",
+        "entities_anims/player.tsx",
+        "entities_anims/test3.tsx",
+        "entities_anims/ally_real.tsx",
+        "maps/newmisc.tsx",
+        "entities_anims/enemy_real.tsx",
+        "entities_anims/projectile.tsx"
     ],
     "project": "walkordie.tiled-project",
     "property.type": "string",
     "recentFiles": [
-        "entities_anims/explorationPlayer.tmx",
-        "maps/start.tmx",
-        "maps/misc.tmx",
-        "maps/misc.tsx",
-        "entities_anims/ally.tsx",
-        "entities_anims/ally.tmx",
-        "entities_anims/animWalk_explorationPlayer.tsx",
-        "maps/start2.tmx",
-        "maps/Ground.tsx",
-        "entities_anims/projectile.tmx",
-        "attacks/square_attack.tmx",
-        "maps/objects.tsx"
+        "entities_anims/projectile.tsx",
+        "entities_anims/enemy_real.tsx",
+        "maps/newmisc.tsx",
+        "entities_anims/ally_real.tsx",
+        "entities_anims/test3.tsx",
+        "entities_anims/player.tsx",
+        "entities_anims/test.tsx",
+        "entities_anims/mainally.tsx",
+        "entities_anims/Soldier.tsx",
+        "entities_anims/soldier.tsx",
+        "entities_anims/enemy.tmx",
+        "entities_anims/projectile.tmx"
     ],
     "tileset.lastUsedFilter": "Fichiers de jeu de tuiles Tiled (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",
+    "tileset.margin": 0,
+    "tileset.spacing": 0,
     "tileset.tileSize": {
         "height": 16,
         "width": 16

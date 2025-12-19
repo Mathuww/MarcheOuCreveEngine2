@@ -2,6 +2,7 @@ package com.walk.or.die.engine.entities;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -11,6 +12,9 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.capacities.MCEffects;
+import com.walk.or.die.engine.capacities.MCShieldEffect;
+import com.walk.or.die.engine.capacities.MCSpeedUpEffect;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
@@ -64,6 +68,8 @@ public class MCCharacter extends MCEntity {
     private MCTerrainHPBar healthBar;
     private HudCustomization hudCustomization = new HudCustomization();
 
+    private List<MCEffects> effects = new ArrayList<>();
+
     private Random rng = new Random("laleatoire nexiste pas cest un mensonge".hashCode());
 
     /**
@@ -88,6 +94,8 @@ public class MCCharacter extends MCEntity {
     public void onSpawn() {
         stateManager.setCurrentState("idle", new MCCSIdle.IdleStateArgs());
         healthBar = new MCTerrainHPBar(this, getParent().gameViewport);
+        effects.add(new MCSpeedUpEffect(this, "speed"));
+        effects.add(new MCShieldEffect(this, "shield_test"));
     }
 
     @Override
@@ -129,6 +137,7 @@ public class MCCharacter extends MCEntity {
         stateManager.update(delta);
         if (healthBar != null)
             healthBar.update(delta);
+        for (MCEffects e: effects) e.update(delta);
     }
 
     @Override
@@ -142,17 +151,57 @@ public class MCCharacter extends MCEntity {
     }
 
     /**
+     * Add an effect to the character.
+     * @param effect
+     */
+    public void addEffect(MCEffects effect) {
+        effects.add(effect);
+    }
+    
+    /**
+     * Remove an effect.
+     * @param name of the effect
+     */
+    public void removeEffect(String name) {
+        Iterator<MCEffects> it = effects.iterator();
+        while (it.hasNext()) {
+            if (it.next().name.equals("name")) it.remove();
+        }
+    }
+
+    /**
+     * Remove all ended effects. Call each turn by default.
+     */
+    public void cleanEffects() {
+        Iterator<MCEffects> it = effects.iterator();
+        while (it.hasNext()) {
+            if (it.next().isDisposable()) it.remove();
+        }
+    }
+
+    /**
+     * Call at the beginning of the turn.
+     */
+    public void newTurn() {
+        for (MCEffects e: effects) {
+            e.onNewTurn();
+        }
+        cleanEffects();
+    }
+    
+    /**
      * Render effect (call each frame, after classic render)
      * @param batch
      */
-    public void renderOnGridOverlay(SpriteBatch batch) {
+    public void renderEffects(SpriteBatch batch) {
         // j'ai séparé le rendu de l'entité proprement dit
         // et celles de ses overlays
         // dans EntityManager,
         // sinon les prochaines entités viennent par dessus
-        stateManager.renderOnGridOverlay(batch);
+        stateManager.renderEffects(batch);
         if (healthBar != null && hp < maxHp)
             healthBar.render(batch);
+        for (MCEffects e: effects) e.render();
     }
 
     /**
@@ -168,7 +217,11 @@ public class MCCharacter extends MCEntity {
      * @return
      */
     public int getMaxMoves() {
-        return this.maxDeplacements;
+        int move = this.maxDeplacements;
+        for (MCEffects e: effects) {
+            move = e.getMaxMoves(move);
+        }
+        return move;
     }
 
     /**
@@ -195,11 +248,15 @@ public class MCCharacter extends MCEntity {
         return attacks.get("BOW");
         // faudra que les ennemis puissent décider QUELLE attaque utiliser parmi les leurs
         // pas juste une seule attaque aussi !
-        /* 
+        /*
         MCAttack attack = attacks.get(baseAttack);
         if (attack == null)
             throw new IllegalStateException("trying to shoot without a base attack !");
-        return attack; */
+        for (MCEffects e: effects) {
+            e.onAttack(attack);
+        }
+        return attack;
+        */
     }
     
     /**
@@ -254,6 +311,9 @@ public class MCCharacter extends MCEntity {
         if (damage < 0f) 
             throw new IllegalArgumentException("cant get hurt with negative damage");
 
+        for (MCEffects e: effects) {
+            damage = e.onHurt(damage);
+        }
         // Anim aléatoire parmi hurt, hurt2, hurt3 ...
         List<String> existingHurtAnims = new ArrayList<>();
         for (int i = 1; i < MAX_HURT_ANIM_NUMBER; i++) {
