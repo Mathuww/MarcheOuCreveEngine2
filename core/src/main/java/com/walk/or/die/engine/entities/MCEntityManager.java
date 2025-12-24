@@ -1,6 +1,8 @@
 package com.walk.or.die.engine.entities;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -9,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.exceptions.TooManyExceptionsException;
+import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
@@ -37,12 +40,14 @@ public class MCEntityManager {
      */
     public void init(MCGame game) {
         parent = game;
+        MCEventBus.get().on(this, "freezeGame", this::freezeAll);
+        MCEventBus.get().on(this, "unfreezeGame", this::unfreezeAll);
     }
 
     //private MCGame parent;
-    private Set<MCEntity> entities = new HashSet<>();
-    private Set<MCEntity> toKill = new HashSet<>();
-    private Set<MCEntity> toAdd = new HashSet<>();
+    private Set<MCEntity> entities = Collections.newSetFromMap(new IdentityHashMap<>());
+    private Set<MCEntity> toKill = Collections.newSetFromMap(new IdentityHashMap<>());
+    private Set<MCEntity> toAdd = Collections.newSetFromMap(new IdentityHashMap<>());
     private Array<Sprite> corpses = new Array<>();
 
     /**
@@ -53,19 +58,35 @@ public class MCEntityManager {
      * @see MCProjectile
      */
     public MCProjectile buildProjectile(String projType) throws Exception {
-        // projectiles can only be built once !!!!! once at a time !!!
+        // projectiles can only be built once !!!!! once at a time !!! 
         MCProjectile proj = (MCProjectile) MCEntityFactory.get().build(
             parent, 
             parent.getTerrainMap(), 
             projType, 
-            "projectile");
-        if (proj != null) {
-            addEntity(proj);
-            //entities.add(proj);
-        }
+            "projectile", null);
+        
+        //if (proj != null) {
+        //    addEntity(proj);
+        //}
+        addEntity(proj);
+        //System.out.println("added : " + proj);
         return proj;
     }
 
+    public void freezeAll(MCEntity except) {
+        System.out.println("Freeze");
+        for (MCEntity e: entities) {
+            if (e != except) e.setFreeze(true);
+        }
+    }
+
+    public void unfreezeAll(Object c) {
+        System.out.println("Unfreeze");
+        for (MCEntity e: entities) {
+            e.setFreeze(false);
+        }
+    }
+    
     /**
      * Remove an entity.
      * @param e
@@ -172,7 +193,7 @@ public class MCEntityManager {
     }
 
     /**
-     * Clear the list entities (Don't remove the entities !!!)
+     * Clear the list entities
      */
     public void clearEntities() {
         entities.clear();
@@ -224,7 +245,8 @@ public class MCEntityManager {
      */
     public void update(float delta) {
         for (MCEntity e : entities) {
-            e.update(delta);
+            //if (e instanceof MCProjectile p) System.out.println(p);
+            if (!e.isFreeze()) e.update(delta);
         }
         // si on fait pas ca
         // ca fait des concurrent modification exception de partout
@@ -235,6 +257,7 @@ public class MCEntityManager {
         }
         if (!toAdd.isEmpty()) {
             entities.addAll(toAdd);
+            //System.out.println(toAdd);
             toAdd.clear();
         }
         

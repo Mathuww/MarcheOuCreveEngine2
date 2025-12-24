@@ -386,7 +386,7 @@ public class MCInputManager implements InputProcessor {
 
     public Vector3 askWorldMousePos() {
         Vector3 worldCoords = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-        System.out.println(vp.getScreenWidth() + vp.getScreenHeight());
+        //System.out.println(vp.getScreenWidth() + vp.getScreenHeight());
         vp.unproject(worldCoords);
         return worldCoords;
     }

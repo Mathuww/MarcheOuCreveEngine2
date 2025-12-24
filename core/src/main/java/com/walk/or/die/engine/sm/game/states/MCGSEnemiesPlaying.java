@@ -26,14 +26,12 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
     private float intermediateTime = 0f;
     private final float MIN_TIME_BETWEEN_PLAYS = 2.5f;
     private Queue<MCEnemy> enemies = new ArrayDeque<>();
+    private MCEnemy enemy = null;
 
     private MCCharacter hudFocusBefore;
     private Vector2 cameraPosBefore = new Vector2();
 
-    public static class EnemiesPlayingArgs extends MCState.StateArgs {
-
-    }
-
+    public static class EnemiesPlayingArgs extends MCState.StateArgs {}
 
     public MCGSEnemiesPlaying(MCGame parent) {
         super(parent);
@@ -45,7 +43,8 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
         //System.out.println("On respire le bon air de la nature");
         intermediateTime += delta;
         if (nextTurnRequest && !MCEntityManager.get().isAnyoneBusy() 
-            && (intermediateTime >= MIN_TIME_BETWEEN_PLAYS || firstPlay)) {
+            && (intermediateTime >= MIN_TIME_BETWEEN_PLAYS || firstPlay) ||
+            (enemy != null && enemy.isDead()) ) {
             intermediateTime = 0f;
             if (firstPlay) firstPlay = false;
             nextTurnRequest = false;
@@ -79,7 +78,7 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
             changeState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
             return;
         }
-        MCEnemy enemy = enemies.poll();
+        enemy = enemies.poll();
         if (enemy != null && !enemy.isDead()) {
             camManager.setFollowTarget(enemy);
             hudManager.getCharacterHud().setCharacter(enemy);

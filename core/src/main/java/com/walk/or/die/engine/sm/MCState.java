@@ -8,35 +8,35 @@ import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
- * Abstract class for state
+ * Abstract class for state.
  * @param <T> type of arguments' state
  */
 public abstract class MCState<T extends MCState.StateArgs> {
 
     /**
-     * Class of arguments' state
+     * Class of the args needed by the state to start.
      */
     public static class StateArgs {}
 
     /**
-     * The only MCCameraManager
+     * The MCCameraManager.
      * @see MCCameraManager
      */
     protected final MCCameraManager camManager = MCCameraManager.get();
 
     /**
-     * The only MCHUDManager
+     * The MCHUDManager.
      * @see MCHUDManager
      */
     protected final MCHUDManager hudManager = MCHUDManager.get();
 
     /**
-     * Name of state
+     * Name of the state.
      */
     protected String name;
 
     /**
-     * The only EventBus
+     * The EventBus.
      * @see MCEventBus
      */
     protected MCEventBus bus;
@@ -75,19 +75,19 @@ public abstract class MCState<T extends MCState.StateArgs> {
     public abstract void renderEffects(SpriteBatch batch);
 
     /**
-     * When it arrives in this current state when the transition
+     * Call when the state starts, become the current state.
      * @param args
      */
     public abstract void enter(T args);
 
     /**
-     * When it exit in this current state when the transition
+     * Call when the state ends, loses the current state.
      * @param args
      */
     public abstract void exit();
 
     /**
-     * STP s'il te plaît, je ne vois pas quand il est utilisé
+     * Connect easely a method to a event.
      * @param <U>
      * @param eventName
      * @param listener

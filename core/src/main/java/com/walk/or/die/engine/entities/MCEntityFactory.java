@@ -10,12 +10,14 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.utils.Array;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.tiledmap.MCMap;
+import com.walk.or.die.engine.tiledmap.MCMapObject;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**
@@ -58,6 +60,7 @@ public class MCEntityFactory {
         entityTypes.put("enemy", MCEnemy.class);
         entityTypes.put("explorationPlayer", MCExplorationPlayer.class);
         entityTypes.put("projectile", MCProjectile.class);
+        entityTypes.put("portal", MCPortal.class);
 
         //System.out.println("INIIIIIIIIIIIIIIIIT COME INUITTTTTTTTTTTTT");
         // on recupere la liste de toutes les entités possibles
@@ -83,7 +86,7 @@ public class MCEntityFactory {
      * @throws IllegalStateException
      * @throws InvalidDataException
      */
-    public MCEntity build(MCGame parentScreen, MCTerrainMap parentMap, String entityGenericName, String entityId) throws Exception {  
+    public MCEntity build(MCGame parentScreen, MCTerrainMap parentMap, String entityGenericName, String entityId, MapProperties props) throws Exception {  
         if (assetManager == null) 
             throw new IllegalStateException("must init entity factory before using it");
 
@@ -104,13 +107,15 @@ public class MCEntityFactory {
         final MCEntity entity;
         try {
             entity = clazz
-                .getDeclaredConstructor(MCGame.class, MCTerrainMap.class, String.class)
-                .newInstance(parentScreen, parentMap, entityId);
+                    .getDeclaredConstructor(MCGame.class, MCTerrainMap.class, String.class)
+                    .newInstance(parentScreen, parentMap, entityId);
+            entity.initFromMapProperties(props);
         } catch (InvocationTargetException  e) {
             e.printStackTrace();
             if (e.getCause() != null) e.getCause().printStackTrace();
             throw new IllegalStateException("cannot build entity " + entityGenericName + " of type " + typeStr + " because invoking constructor failed");
         }
+        
 
         // Partie 2 : transmettre les propriétés éventuelles
         // ca javoue c'est l'entité qui gere mdr
@@ -161,13 +166,13 @@ public class MCEntityFactory {
 
         List<String> addedAnims = new ArrayList<>(entity.getAnimations());
         for (String animName : addedAnims) {
-            System.out.println("checking if " + animName);
+            //System.out.println("checking if " + animName);
             if (animName.endsWith("_right")) {
                 String base = animName.substring(0, animName.length() - "_right".length());
                 String leftName = base + "_left";
 
                 if (!entity.hasAnimation(leftName)) {
-                    System.out.println("flipping : " + leftName);
+                    //System.out.println("flipping : " + leftName);
                     MCAnimation rightAnim = entity.getAnimation(animName);
                     MCAnimation leftAnim = rightAnim.getFlippedAnim();
                     entity.addAnimation(leftName, leftAnim);

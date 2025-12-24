@@ -118,7 +118,7 @@ public class MCTerrainHPBar extends MCAbstractHUD {
         }
 
         damageAlpha = Interpolation.exp5In.apply(1f, 0f, timeRatio);
-        System.out.println("damage alpha = " + damageAlpha);
+        //System.out.println("damage alpha = " + damageAlpha);
 
         if (Math.abs(DAMAGE_END_Y_OFFSET - damageOffsetY) > 0.001f)
             damageOffsetY += (DAMAGE_END_Y_OFFSET - damageOffsetY) * delta * DAMAGE_UP_LERP;

@@ -48,6 +48,8 @@ public abstract class MCEntity {
     private MCAnimation currentAnim;
     private Sprite sprite;
     private int layer = 1;
+    private boolean freeze = false;
+
     /**
      * If the entity need to be display or not.
      */
@@ -89,6 +91,8 @@ public abstract class MCEntity {
         hitbox = new Rectangle(0, 0, sprite.getWidth(), sprite.getHeight());
     }
 
+    public void initFromMapProperties(MapProperties props) {};
+
     /**
      * Call on spawn
      */
@@ -120,6 +124,14 @@ public abstract class MCEntity {
         return animations.containsKey(animName);
     }
 
+    public void setFreeze(boolean bool) {
+        freeze = bool;
+    }
+
+    public boolean isFreeze() {
+        return freeze;
+    }
+    
     /**
      * Get an entity's animation.
      * @param animName

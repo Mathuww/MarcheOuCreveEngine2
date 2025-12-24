@@ -1,6 +1,7 @@
 package com.walk.or.die.engine.entities;
 
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.capacities.MCSpeedShoot;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSAim;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSClickMove;
@@ -9,6 +10,7 @@ import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSIdle;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSReady;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSShoot;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSSpeedShoot;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**
@@ -59,6 +61,7 @@ public class MCAlly extends MCCharacter {
         stateManager.addState(new MCCSReady(this));
         stateManager.addState(new MCCSHurt(this));
         stateManager.addState(new MCCSDead(this));
+        stateManager.addState(new MCCSSpeedShoot(this));
     }
 
     @Override

@@ -56,7 +56,7 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
 
     protected void inputPressed(MCInputManager.Command data) {
         if (MCEntityManager.get().isAnyoneBusy()) {
-            System.out.println("cant process input, someone s busy");
+            //System.out.println("cant process input, someone s busy");
             return; // on attend tranquillement qu'un ennemi finisse d'etre hurt, etc.
         }
 

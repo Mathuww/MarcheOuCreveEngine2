@@ -28,7 +28,6 @@ public class MCExplorationPlayer extends MCEntity {
     @Override
     public void onSpawn() {
         stateManager.setCurrentState("idle", new MCEPSIdle.IdleStateArgs());
-        //playAnimation("idle");
     }
 
     @Override
@@ -47,11 +46,7 @@ public class MCExplorationPlayer extends MCEntity {
     @Override
     public void render(SpriteBatch batch) {
         super.render(batch);
-        //stateManager.render(batch);
-    }
-
-    public void renderOnGridOverlay(SpriteBatch batch) {
-        //stateManager.renderOnGridOverlay(batch);
+        stateManager.render(batch);
     }
 
     public void setStateManager(MCStateMachine<MCExplorationPlayerState, MCEntity> stateManager) {
@@ -69,7 +64,7 @@ public class MCExplorationPlayer extends MCEntity {
             throw new IllegalArgumentException("cant get hurt with negative damage");
         hp = Math.max(0, hp - damage);
         stateManager.setCurrentState("hurt", new MCCSHurt.HurtStateArgs(damage, targetAnim));
-        System.out.println("J'ai pris " + damage + "dégats !");
+        //System.out.println("J'ai pris " + damage + "dégats !");
     }
     
     public Float getToleranceHitbox() {

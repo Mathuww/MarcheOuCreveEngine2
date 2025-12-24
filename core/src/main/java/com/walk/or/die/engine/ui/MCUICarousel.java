@@ -118,13 +118,13 @@ public class MCUICarousel {
                     itemWithSpaces += " ";
             }
             totalText += itemWithSpaces;
-            System.out.println("adding carousel item w/sp " + itemWithSpaces);
+            //System.out.println("adding carousel item w/sp " + itemWithSpaces);
 
             float itemBlockWidth = textComponent.textDimensions(itemWithSpaces).x;
             cursor += itemBlockWidth;
         }
 
-        System.out.println("all carousel text is " + totalText);
+        //System.out.println("all carousel text is " + totalText);
         textComponent.setText(totalText);
 
         currentIndex = firstIndex;

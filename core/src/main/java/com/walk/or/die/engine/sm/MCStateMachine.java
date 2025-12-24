@@ -8,15 +8,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
 /**
- * Class with all state methods global
+ * Class to represents the state machine, which manages states and transitions between them.
  * @param <T> type of state
  * @param <U> parent object owning this state machine
  */
 public class MCStateMachine<T extends MCState, U> {
     
     /**
-     * Class intern to permit to clean transition
-     * with the previous and the next state
+     * Class intern to permit clean transitions between the previous and the next state.
      * @param <T> next State
      */
     public static class TransitionArgs<T extends MCState.StateArgs> {
@@ -49,28 +48,28 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * parent object owning this state machine
+     * Parent object owning this state machine.
      */
     protected U parent;
 
     /**
-     * List  possibilities states for parent 
+     * List of the possible states.
      */
     private List<T> states;
 
     /**
-     * Actual state
+     * Actual state, wich is update an render each frame.
      */
     private T currentState;
 
     /**
-     * Receives previous and next state when the state stransition in successful
+     * Call when the state changes.
      */
     private BiConsumer<T, T> callback;
 
 
     /**
-     * Constructor
+     * The constructor.
      * @param parent
      */
     public MCStateMachine(U parent) {
@@ -79,7 +78,7 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * Getter of currentState
+     * Getter of currentState.
      * @return currentState
      */
     public T getCurrentState() {
@@ -87,26 +86,29 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * Setter of currentState
+     * Setter of currentState.
      * @param name
      * @param args
      */
     public void setCurrentState(String name, T.StateArgs args) {
+        if (currentState != null) {
+            currentState.exit();
+        }
         currentState = getState(name);
         currentState.enter(args); 
     }
 
     /**
-     * Verificate if the name of state is equal in current state
+     * Check if the currentState have the given name.
      * @param name
-     * @return verification of equality
+     * @return 
      */
     public boolean isIn(String name) {
         return currentState.getName().equals(name);
     }
 
     /**
-     * Add a possibility state to states
+     * Add a possibe state at the state machine.
      * @param state
      */
     public void addState(T state) {
@@ -114,9 +116,9 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * Global update
+     * Call each frame (used to call update in the current state).
      * @param delta
-     * @return exceptionally if the current state doesn't exist
+     * @return
      */
     public void update(float delta) {
         if (currentState == null) return ;
@@ -124,7 +126,7 @@ public class MCStateMachine<T extends MCState, U> {
     }
     
     /**
-     * Global render
+     * Render (used to call render in the current state). 
      * @param batch
      * @return exceptionally if the current state doesn't exist
      */
@@ -134,7 +136,7 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * !!Je te la laisse lol!! STP s'il te plaît
+     * Render call after the main render (used for visual effects).
      * @param batch
      */
     public void renderEffects(SpriteBatch batch) {
@@ -143,8 +145,7 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * Verification if the args are possible for the transition between the previous and the next state
-     * if yes, this function execute transition
+     * Allow or not the transition.
      * @param args
      */
     public void stateTransitionCheck(TransitionArgs<?> args) {
@@ -158,9 +159,9 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * Verificate if the name is in the states (the list of parent possibilities states)
+     * Check if a possible state have the given name.
      * @param name
-     * @return verification if the state exist
+     * @return
      */
     public boolean stateExists(String name) {
         for (T state : states) {
@@ -172,7 +173,7 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * Getteur state (with a name)
+     * Get a state based on his name.
      * @param name
      * @return state (or null)
      */
@@ -186,7 +187,7 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * Clean transition
+     * Transition between two states.
      * @param <V>
      * @param prevState
      * @param nextState

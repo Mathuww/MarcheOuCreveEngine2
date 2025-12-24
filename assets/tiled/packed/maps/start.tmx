@@ -92,7 +92,7 @@
 18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18
 </data>
  </layer>
- <objectgroup id="5" name="Entities">
+ <objectgroup id="5" name="Primary_Entities">
   <object id="42" x="146.653" y="43.4685">
    <properties>
     <property name="name" value="ally"/>

@@ -20,8 +20,8 @@ public class MCTerrainFocusHUD extends MCAbstractHUD {
     public MCTerrainFocusHUD() {}
 
     public void setTarget(MCCharacter target) {
-        if (target != null)
-            System.out.println("focus hud target is now " + target.getId());
+        //if (target != null)
+            //System.out.println("focus hud target is now " + target.getId());
         this.target = target;
     }
 

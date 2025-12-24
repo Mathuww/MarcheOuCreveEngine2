@@ -35,6 +35,9 @@ public class MCProjectile extends MCEntity {
 
     private final Interpolation easing = Interpolation.pow2Out;
 
+    private static int NEXT_ID = 0;
+    private final int id = NEXT_ID++;
+
     /**
      * The constructor.
      * @param parent
@@ -44,6 +47,7 @@ public class MCProjectile extends MCEntity {
     public MCProjectile(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
         display = false;
+        //System.out.println("new projo : " + this);
     }
 
     @Override public void onSpawn() {}
@@ -53,6 +57,12 @@ public class MCProjectile extends MCEntity {
         speed = MCUtils.getFloatProperty(props, "speed", speed);
     }
 
+    @Override 
+    public void setFreeze(boolean bool) {
+        if (bool)
+        System.out.println("Aie aie aie je suis freeze " + this);
+        super.setFreeze(bool);
+    }
     /**
      * Call the callback when the run ends.
      * @param callback
@@ -89,6 +99,7 @@ public class MCProjectile extends MCEntity {
     // donc plus aucune vérification ici.
     @Override
     public void update(float delta) {
+        //System.out.println("update : " + fading + " | " +markedToKill + " | " + this);
         if (markedToKill)  // en attente de la PDM
             return;
 
@@ -123,6 +134,7 @@ public class MCProjectile extends MCEntity {
             // dst2 : dst^2 (+ rapide)
             if (newPos.dst2(targetPos) <= COLLISION_THRESHOLD * COLLISION_THRESHOLD) { 
                 // la balle est arrivée billy !! :(
+                System.out.println("end : " + this);
                 if (callback != null) {
                     callback.run();
                     callback = null;
@@ -137,5 +149,10 @@ public class MCProjectile extends MCEntity {
     @Override
     public void render(SpriteBatch batch) {
         super.render(batch);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " id : " + id;
     }
 }

@@ -110,7 +110,7 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
 
     public void gameStateChanged(MCGameState newState) {
         if (newState instanceof MCGSAlliesPlaying) {
-            System.out.println("new state is alies playing ! hourrayyy");
+            //System.out.println("new state is alies playing ! hourrayyy");
             setupHudCustomization();
         }
     }

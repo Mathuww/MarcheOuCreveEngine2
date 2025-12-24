@@ -137,15 +137,24 @@ public class MCTerrainMap extends MCMap {
      * @see MCEntity
      */
     public Set<MCEntity> spawnEntities(MCGame game) throws Exception {
-        MCMapLayer layer = this.getLayer("Entities");
-        if (layer == null) throw new InvalidDataException("no Entities layer in game map");
+        MCMapLayer primaryLayer = this.getLayer("Primary_Entities");
+        MCMapLayer portalLayer = this.getLayer("Portals");
+        if (primaryLayer == null) throw new InvalidDataException("no Primary Entities layer in game map");
+        if (portalLayer == null) throw new InvalidDataException("no Portal Entities layer in game map");
 
         MCEntityFactory entityFact = MCEntityFactory.get();
 
         Set<MCEntity> entityArray = new HashSet<>();
         Map<String, Integer> entityCounter = new HashMap<>();
 
-        MapObjects objects = layer.getObjects();
+        MapObjects objects = primaryLayer.getObjects();
+
+        // Layer Integration => Portals, in objects for Entities
+        MapObjects portalObjects = portalLayer.getObjects();
+        for (MapObject portal : portalObjects) {
+            objects.add(portal);
+        }
+
         for (MapObject rawObj : objects) {
             MapProperties props = rawObj.getProperties();
             if (!props.containsKey("name")) continue;
@@ -164,7 +173,8 @@ public class MCTerrainMap extends MCMap {
                     count = 1;
                 }
                 entityCounter.put(entityName, count);
-                MCEntity entity = entityFact.build(game, this, entityName, entityName + "_" + String.format("%03d", count));
+
+                MCEntity entity = entityFact.build(game, this, entityName, entityName + "_" + String.format("%03d", count), props);
 
                 if (entity instanceof MCCharacter character) {
                     String entityDisplayName = props.get("displayName", String.class);

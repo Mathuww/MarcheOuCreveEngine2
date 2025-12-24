@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.capacities.MCEffects;
 import com.walk.or.die.engine.capacities.MCShieldEffect;
+import com.walk.or.die.engine.capacities.MCSpeedShoot;
 import com.walk.or.die.engine.capacities.MCSpeedUpEffect;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCEventBus;
@@ -21,6 +22,7 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSDead;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSIdle;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
@@ -95,7 +97,8 @@ public class MCCharacter extends MCEntity {
         stateManager.setCurrentState("idle", new MCCSIdle.IdleStateArgs());
         healthBar = new MCTerrainHPBar(this, getParent().gameViewport);
         effects.add(new MCSpeedUpEffect(this, "speed"));
-        effects.add(new MCShieldEffect(this, "shield_test"));
+        //effects.add(new MCShieldEffect(this, "shield_test"));
+        //effects.add(new MCSpeedShoot(this, "speedShoot"));
     }
 
     @Override
@@ -134,7 +137,7 @@ public class MCCharacter extends MCEntity {
     @Override
     public void update(float delta) {
         super.update(delta);
-        stateManager.update(delta);
+        if (!isFreeze()) stateManager.update(delta);
         if (healthBar != null)
             healthBar.update(delta);
         for (MCEffects e: effects) e.update(delta);
@@ -165,7 +168,7 @@ public class MCCharacter extends MCEntity {
     public void removeEffect(String name) {
         Iterator<MCEffects> it = effects.iterator();
         while (it.hasNext()) {
-            if (it.next().name.equals("name")) it.remove();
+            if (it.next().name.equals(name)) it.remove();
         }
     }
 
@@ -318,9 +321,9 @@ public class MCCharacter extends MCEntity {
         List<String> existingHurtAnims = new ArrayList<>();
         for (int i = 1; i < MAX_HURT_ANIM_NUMBER; i++) {
             String hurtAnimToSearch = (i == 1) ? "hurt" : ("hurt" + i);
-            System.out.println("searching for hurt anim " + hurtAnimToSearch);
+            //System.out.println("searching for hurt anim " + hurtAnimToSearch);
             if (getAnimation(hurtAnimToSearch) != null) {
-                System.out.println("anim " + hurtAnimToSearch + " exists");
+                //System.out.println("anim " + hurtAnimToSearch + " exists");
                 existingHurtAnims.add(hurtAnimToSearch);
             }
         }
@@ -332,8 +335,16 @@ public class MCCharacter extends MCEntity {
             int animIndexToPlay = rng.nextInt(existingHurtAnims.size());
             animToPlay = existingHurtAnims.get(animIndexToPlay);
         }
-        stateManager.setCurrentState("hurt", new MCCSHurt.HurtStateArgs(damage, animToPlay));
-        System.out.println("J'ai pris " + damage + "dégats !");
+
+        if (!isFreeze())  {
+            stateManager.setCurrentState("hurt", new MCCSHurt.HurtStateArgs(damage, animToPlay));
+            //System.out.println("On lance le hurt");
+        } else {
+            setHealth(Math.max(0, getHealth() - damage));
+            if (getHealth() <= 0)
+                stateManager.setCurrentState("dead", new MCCSDead.DeadStateArgs());
+        }
+        //System.out.println("J'ai pris " + damage + "dégats !");
     }
     
     /**

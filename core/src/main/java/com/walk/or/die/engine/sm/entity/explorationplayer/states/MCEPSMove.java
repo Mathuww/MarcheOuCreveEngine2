@@ -44,25 +44,24 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         super(parent);
         this.name = "move";
         currentInput = new HashMap<>();
-        limitX = parent.getMap().getWidth() - parent.getSize();
-        limitY = parent.getMap().getHeight() - parent.getSize();
-        relativeMove = new Vector2(0, 0);
+        limitX = (float) parent.getMap().getWidth() - parent.getSize();
+        limitY = (float) parent.getMap().getHeight() - parent.getSize();
+        relativeMove = new Vector2(0f, 0f);
     }
 
     private void updateCommand(MCInputManager.DirectionalCommand cmd, boolean action) {
         if(action) {
             currentInput.put(cmd.getIntVect(), true);
             lastCmd = cmd;
-            relativeMove.set(0,0);
         } else {
             currentInput.put(cmd.getIntVect(), false);
         }
     }
 
     private boolean limitMapBlocked(float projX, float projY) {
-        if((relativeMove.y == 0) && (projX == 0 || projX  >= limitX)) {
+        if((relativeMove.y == 0f) && (projX == 0f || projX  >= limitX)) {
             return true;
-        } else if ((relativeMove.x == 0) && (projY == 0 || projY  >= limitY)) {
+        } else if ((relativeMove.x == 0f) && (projY == 0f || projY  >= limitY)) {
             return true;
         } else {
             return false;
@@ -72,7 +71,7 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     private boolean collisionBlocked(float projX, float projY) {
         float tolerance = parent.getToleranceHitbox();
 
-        Rectangle projHitbox = new Rectangle( // NOOOOOOOOOOOOOOOOOOOOOOOOON?
+        Rectangle projHitbox = new Rectangle(
             projX + tolerance,
             projY + tolerance,
             parent.getSize() - 2 * tolerance,
@@ -88,12 +87,12 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         }
 
         int minX = (int) Math.floor((projX + tolerance));
-        int maxX = (int) Math.ceil((projX + parent.getSize() - tolerance)); // NOOOOOOOOOOOOOOOON
+        int maxX = (int) Math.ceil((projX + parent.getSize() - tolerance));
 
         int minY = (int) Math.floor((projY + tolerance));
-        int maxY = (int) Math.ceil((projY + parent.getSize()  - tolerance)); // NOOOOOOOOOOOOOOOOOON
+        int maxY = (int) Math.ceil((projY + parent.getSize()  - tolerance));
 
-        for (int i = minX; i < maxX; i++) { // NOOOOOOOOOOOOOOOOOOON Pas de <= normalement, si sinon cela passe jamais dans la boucle ?
+        for (int i = minX; i < maxX; i++) {
             for (int j = minY; j < maxY; j++) {
                 MCIntVector2 projPos = new MCIntVector2(i, j);
                 if (!parent.getMap().isWalkable(new MCIntVector2(i, j))) {
@@ -110,11 +109,11 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     }
 
     private void resetInput() {
-        int[][] directions = {
-            {0, +1}, {0, -1},
-            {+1, 0}, {-1, 0}
+        float[][] directions = {
+            {0f, +1f}, {0f, -1f},
+            {+1f, 0f}, {-1f, 0f}
         };
-        for (int[] dir : directions) {
+        for (float[] dir : directions) {
             currentInput.put(new MCIntVector2(dir[0], dir[1]), false);
         }
         relativeMove.x = 0f;
@@ -178,8 +177,8 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         for (Map.Entry<MCIntVector2, Boolean> entry : currentInput.entrySet()) {
             if(entry.getValue() && ((nbConcurrentCommand == 1) || (entry.getKey().equals(lastCmd.getIntVect())))) {
                 MCIntVector2 command = entry.getKey();
-                relativeMove.x += command.x;
-                relativeMove.y += command.y;
+                relativeMove.x = (float) command.x;
+                relativeMove.y = (float) command.y;
             }
         }
         if (relativeMove.len() > 0) relativeMove.nor();
@@ -187,8 +186,8 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         relativeMove.x = relativeMove.x * CAM_MOVE_SPEED;
         relativeMove.y = relativeMove.y * CAM_MOVE_SPEED;
         
-        float posX = parent.getX() + relativeMove.x;
-        float posY = parent.getY() + relativeMove.y;
+        float posX = (float) parent.getX() + relativeMove.x;
+        float posY = (float) parent.getY() + relativeMove.y;
 
         posX = MathUtils.clamp(
             posX, 
@@ -206,20 +205,17 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
             changeState("idle", new MCEPSIdle.IdleStateArgs());
             return;
         } else {
-            if (relativeMove.x > 0) {
+            if (relativeMove.x > 0f) {
                 parent.playAnimationWithoutReset("walk_right");
-            } else if (relativeMove.x < 0) {
+            } else if (relativeMove.x < 0f) {
                 parent.playAnimationWithoutReset("walk_left");
-            } else if (relativeMove.y > 0) {
+            } else if (relativeMove.y > 0f) {
                 parent.playAnimationWithoutReset("walk_up");
-            } else if (relativeMove.y < 0) {
+            } else if (relativeMove.y < 0f) {
                 parent.playAnimationWithoutReset("walk_down");
             }
             parent.setX(posX);
             parent.setY(posY);
         }
-
-
-
     }
 }

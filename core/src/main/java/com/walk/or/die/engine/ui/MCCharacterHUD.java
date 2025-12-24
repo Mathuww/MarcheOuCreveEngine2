@@ -174,7 +174,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     public void setCharacter(MCCharacter newCharacter) {
         if (newCharacter == null || newCharacter.isDead()) {
-            System.out.println("simple close");
+            // System.out.println("simple close");
             hide();
             return;
         }
@@ -185,12 +185,12 @@ public class MCCharacterHUD extends MCAbstractHUD {
         }
 
         if (shown) {
-            System.out.println("beginning switch");
+            // System.out.println("beginning switch");
             switching = true;
             afterSwitchCharacter = newCharacter;
             hide();
         } else {
-            System.out.println("simple open");
+            // System.out.println("simple open");
             currentCharacter = newCharacter;
             repopulateHud(true);
             show();
@@ -208,7 +208,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
         if (!customization.canShow)
             hide();
         else {
-            System.out.println("je vais réafficher");
+            // System.out.println("je vais réafficher");
             repopulateHud(reloadCarousel);
             if (!shown)
                 show();
@@ -242,7 +242,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
             return;
 
         if (cmd instanceof MCInputManager.HudCommand hudCmd){
-            System.out.println("commande recue et je vais la process");
+            // System.out.println("commande recue et je vais la process");
             switch (hudCmd.type) {
                 case LEFT:
                     choiceCarousel.previous();
@@ -264,12 +264,12 @@ public class MCCharacterHUD extends MCAbstractHUD {
         if (scrolling) {
             boolean arrived = Math.abs(targetOffsetY - offsetY) <= 5f; // tolerance de fou je sais
             if (arrived) {
-                System.out.println("arrived");
+                // System.out.println("arrived");
                 scrolling = false;
                 offsetY = targetOffsetY; // pour isFullyShown
 
                 if (switching) {
-                    System.out.println("arrived & switching");
+                    // System.out.println("arrived & switching");
                     currentCharacter = afterSwitchCharacter;
                     switching = false;
                     repopulateHud(true);

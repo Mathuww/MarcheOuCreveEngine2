@@ -11,6 +11,7 @@ import com.walk.or.die.engine.sm.entity.character.states.MCCSDead;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSEnemyIdle;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSShoot;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSSpeedShoot;
 import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSMove;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
@@ -40,6 +41,7 @@ public class MCEnemy extends MCCharacter{
         stateManager.addState(new MCCSShoot(this));
         stateManager.addState(new MCCSHurt(this));
         stateManager.addState(new MCCSDead(this));
+        stateManager.addState(new MCCSSpeedShoot(this));
         stateManager.setCallback(this::nextDecision);
     }
 

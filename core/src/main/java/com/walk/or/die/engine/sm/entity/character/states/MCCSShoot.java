@@ -83,7 +83,7 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
             });
         } else { // miss shot !
            parent.shootThenCall(result.endPos, args.attack, () -> {
-                System.out.println("MissShot");
+                //System.out.println("MissShot");
                 changeState("idle", new MCCSIdle.IdleStateArgs());
             });
         }

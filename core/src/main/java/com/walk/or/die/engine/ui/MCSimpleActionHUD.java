@@ -106,7 +106,7 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
         if (scrolling) {
             boolean arrived = Math.abs(targetOffsetY - offsetY) <= 0.05f; // tolerance de fou je sais
             if (arrived) {
-                System.out.println("arrived");
+                //System.out.println("arrived");
                 scrolling = false;
                 offsetY = targetOffsetY; // pour isFullyShown
             } else 
