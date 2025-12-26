@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="10" infinite="0" nextlayerid="7" nextobjectid="52" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="16"><properties><property name="atlas" value="tileset/start.atlas"/></properties>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="10" infinite="0" nextlayerid="7" nextobjectid="54" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="16"><properties><property name="atlas" value="tileset/start.atlas"/></properties>
  <tileset columns="8" firstgid="1" name="main" tilecount="64" tileheight="16" tilewidth="16">
   <image height="128" source="../spritesheets/tileset_1bit.png" width="128"/>
   <tile id="8">
@@ -134,5 +134,22 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup id="6" name="Portals"/>
+ <objectgroup id="6" name="Portals">
+  <object id="52" x="66.5" y="108.5">
+   <properties>
+    <property name="destMap" value="start2"/>
+    <property name="destPortal_ID" type="int" value="1"/>
+    <property name="name" value="bluePortal"/>
+    <property name="portal_ID" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="53" x="202.5" y="43">
+   <properties>
+    <property name="destMap" value="start2"/>
+    <property name="destPortal_ID" type="int" value="2"/>
+    <property name="name" value="bluePortal"/>
+    <property name="portal_ID" type="int" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

@@ -225,19 +225,14 @@ public class MCCameraManager {
     /**
      * Set the camera's target.
      * @param target
-     * @throws MissingDataException
      */
     public void setFollowTarget(MCEntity target) {
-        /* if (target == null) {
-            throw new MissingDataException("Missing Entity");
-        } */
         this.target = target;
     }
 
     /**
      * Useful function to shake, use it without moderation.
-     * @param intensity
-     * @param duration
+     * @param traumaAddition
      */
     public void addTrauma(float traumaAddition) {
         System.out.println("adding " + traumaAddition + " trauma");

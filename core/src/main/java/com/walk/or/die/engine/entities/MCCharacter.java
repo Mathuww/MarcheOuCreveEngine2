@@ -306,7 +306,6 @@ public class MCCharacter extends MCEntity {
     /**
      * Hurt behavior.
      * @param damage
-     * @param targetAnim
      */
     public void getHurt(int damage) {
         if (dead)

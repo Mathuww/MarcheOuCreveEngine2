@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.exceptions.VoluntaryCrashException;
 import com.walk.or.die.engine.input.MCInputManager;
@@ -84,8 +85,6 @@ public class MCEventBus implements MCVehicle {
         addEvent("GameStateChanged", MCGameState.class);
         addEvent("freezeGame", MCEntity.class);
         addEvent("unfreezeGame", MCEmpty.class);
-        //addEvent("ChangedFocus", MCEntity.class);
-        //addEvent("ChangeState", MCStateMachine.TransitionArgs.class);
     }
 
     /**

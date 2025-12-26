@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "maps/start2.tmx",
+    "activeFile": "maps/start.tmx",
     "expandedProjectPaths": [
-        "entities_anims",
-        ".",
         "attacks",
-        "maps"
+        "maps",
+        ".",
+        "entities_anims"
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
@@ -310,9 +310,9 @@
                 5
             ],
             "scale": 2,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 94.75,
+                "x": 94.5,
                 "y": 79.75
             }
         },
@@ -324,14 +324,14 @@
         },
         "maps/start2.tmx": {
             "expandedObjectLayers": [
-                5,
-                3
+                3,
+                5
             ],
-            "scale": 2,
+            "scale": 1.5,
             "selectedLayer": 4,
             "viewCenter": {
                 "x": 176,
-                "y": 159.75
+                "y": 159.66666666666666
             }
         },
         "maps/start2.tmx#main": {
@@ -391,6 +391,10 @@
     "project": "walkordie.tiled-project",
     "property.type": "string",
     "recentFiles": [
+        "maps/start2.tmx",
+        "entities_anims/blue_portal.tsx",
+        "entities_anims/enemy.tsx",
+        "entities_anims/enemy.tmx",
         "entities_anims/purplePortal.tmx",
         "entities_anims/orangePortal.tmx",
         "entities_anims/greenPortal.tmx",
@@ -398,11 +402,7 @@
         "entities_anims/projectile.tmx",
         "entities_anims/Soldier.tsx",
         "maps/Ground.tsx",
-        "entities_anims/mainally.tsx",
-        "maps/misc.tmx",
-        "entities_anims/projectile.tsx",
-        "entities_anims/purple_portal.tsx",
-        "entities_anims/orange_portal.tsx"
+        "entities_anims/mainally.tsx"
     ],
     "tileset.lastUsedFilter": "Fichiers de jeu de tuiles Tiled (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",

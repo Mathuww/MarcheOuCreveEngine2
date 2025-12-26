@@ -5,6 +5,7 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.entities.MCExplorationPlayer;
+import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
@@ -25,15 +26,12 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
     @Override
     public void enter(ExplStateArgs args) {
         super.enter(args);
-        try {
-            MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
-            camManager.setFollowTarget(player);
-            // hudManager.setCharaHudTarget(player);
-        } catch (Exception e) {
-            e.printStackTrace();
+        MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
+        if (player == null) {
             System.err.println("no player in this map");
             return;
         }
+        camManager.setFollowTarget(player);
         camManager.setMode(MCCameraManager.CameraMode.FOLLOW);
         bus.on(this, "InputPressed", this::inputPressed);
         hudManager.getSimpleHud().setText("INVENTORY");

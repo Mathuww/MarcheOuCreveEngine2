@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCExplorationPlayer;
+import com.walk.or.die.engine.entities.MCPortal;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.Command;
@@ -81,7 +82,12 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         for (MCEntity e : MCEntityManager.get().getEntities()) {
             if (!e.equals(parent)) {
                 if (e.getHitbox().overlaps(projHitbox)) {
-                    return true;
+                    if(e instanceof MCPortal portal) {
+                        portal.teleportation();
+                        return false;
+                    } else {
+                        return true;
+                    }
                 }
             }
         }

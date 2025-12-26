@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.sm.MCStateMachine;
@@ -91,7 +92,7 @@ public abstract class MCEntity {
         hitbox = new Rectangle(0, 0, sprite.getWidth(), sprite.getHeight());
     }
 
-    public void initFromMapProperties(MapProperties props) {};
+    public void initFromMapProperties(MapProperties props) throws MissingDataException {};
 
     /**
      * Call on spawn

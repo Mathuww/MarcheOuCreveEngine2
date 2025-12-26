@@ -2,6 +2,7 @@ package com.walk.or.die.engine;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -14,9 +15,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCAttackFactory;
 import com.walk.or.die.engine.entities.MCCharacter;
+import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityFactory;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.exceptions.InvalidDataException;
+import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.input.MCInputManager.Command;
@@ -176,10 +179,16 @@ public class MCGame extends Game {
      */
     private MCHUDManager hudManager = MCHUDManager.get();
 
+    private String mapFileToLoad = null;
+
     /**
      * A very big constructor
      */
     public MCGame() {}
+
+    public String getRootMap () {
+        return MAP_ROOT;
+    }
 
     @Override // commence pas je vais t'attraper
               // cast me if you can ;)
@@ -238,11 +247,25 @@ public class MCGame extends Game {
         }
     }
 
+    /**
+     * The trigger for a clean transition, with the map name (tmx file)
+     * @param filename
+     */
+    public void teleportationActivate (String filename) {
+        mapFileToLoad = filename;
+    }
+
+    /**
+     * load clean a map with the map name (tmx file)
+     * @param filename
+     * @throws IllegalStateException
+     */
     private void loadMap(String filename) throws IllegalStateException {
         FileHandle mapFile = Gdx.files.internal(MAP_ROOT + filename);
-        if (!mapFile.exists())
+        if (!mapFile.exists()) {
             throw new IllegalStateException("map " + filename + " trying to be loaded but doesn't exist.");
-
+        }
+        System.out.println("teleportation to " + filename);
         hudManager.getCharacterHud().hide();
         entityManager.clearEntities();
         if (map != null)
@@ -264,7 +287,6 @@ public class MCGame extends Game {
             try {
                 entityManager.addAllEntities(map.spawnEntities(this));
             } catch (Exception e) {
-                System.err.println("cant spawn entities in map " + filename);
                 e.printStackTrace();
             }
             // sinon les entités ne sont pas créées
@@ -273,8 +295,13 @@ public class MCGame extends Game {
         }
     }
 
+    /**
+     * load a new Map with inputs
+     * @param cmd
+     */
     public void inputPressed(Command cmd) {
         int newMapIndex;
+        String newMapName;
         if (cmd instanceof PreviousMapCommand) {
             newMapIndex = mapIndex - 1;
         } else if (cmd instanceof NextMapCommand) {
@@ -282,7 +309,12 @@ public class MCGame extends Game {
         } else {
             return;
         }
-        String newMapName = (newMapIndex <= 1) ? "start" : ("start" + newMapIndex);
+        if (newMapIndex <= 1) {
+            newMapIndex = 1;
+            newMapName = "start";
+        } else {
+            newMapName = "start" + newMapIndex;
+        }
         newMapName += ".tmx";
         FileHandle newMapFile = Gdx.files.internal(MAP_ROOT + newMapName);
         if (!newMapFile.exists()) {
@@ -316,6 +348,12 @@ public class MCGame extends Game {
         entityManager.update(delta);
 
         hudManager.update(delta);
+
+        // la condition pour que le changement de map se fait correctement par portail
+        if(mapFileToLoad != null) {
+            loadMap(mapFileToLoad);
+            mapFileToLoad = null;
+        }
     }
 
     @Override

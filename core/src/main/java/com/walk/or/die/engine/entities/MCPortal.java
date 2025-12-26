@@ -1,8 +1,11 @@
 package com.walk.or.die.engine.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
@@ -16,28 +19,32 @@ public class MCPortal extends MCEntity {
     private int ID;
     private int destID;
     private String destMap;
-    //private MCStateMachine<MCExplorationPlayerState, MCEntity> stateManager;
 
     public MCPortal(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
     }   
 
     @Override
-    public void initFromMapProperties(MapProperties props) {
-        ID = MCUtils.getIntProperty(props, "portal_ID", 0);
-        destID = MCUtils.getIntProperty(props, "destPortal_ID", 0);
-        try {
-           destMap = props.get("destMap", String.class); 
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("not all portal have a destination!!");
+    public void initFromMapProperties(MapProperties props) throws MissingDataException {
+        ID = MCUtils.getIntProperty(props, "portal_ID", -1);
+        destID = MCUtils.getIntProperty(props, "destPortal_ID", -1);
+        destMap = props.get("destMap", String.class);
+        if(ID < -1) {
+            throw new MissingDataException("the portal " + ID + " don't have an identification !");
+        } else if(destID < -1) {
+            throw new MissingDataException("the portal " + destID + " don't have an identification for the destination portal!");
+        } else if (destMap == null || destMap.isEmpty()) {
+            throw new MissingDataException("the portal doesn' have a desination map");
+        }
+        FileHandle mapFile = Gdx.files.internal(getParent().getRootMap() + destMap + ".tmx");
+        if (!mapFile.exists()) {
+            throw new MissingDataException("cant load " + mapFile + " for the destination map of portal because it doesnt exists.");
         }
     }
 
     @Override
     public void onSpawn() {
         playAnimation("idle");
-        System.out.println("Portail " + ID + " vers le portail " + destID + " sur " + destMap);
     }
 
     @Override
@@ -53,5 +60,12 @@ public class MCPortal extends MCEntity {
     @Override
     public void render(SpriteBatch batch) {
         super.render(batch);
+    }
+
+    /**
+     * Activate the teleportation (load the new map) with the portal data
+     */
+    public void teleportation() {
+        getParent().teleportationActivate(destMap + ".tmx");
     }
 }

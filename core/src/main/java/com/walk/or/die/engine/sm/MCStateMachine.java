@@ -118,7 +118,6 @@ public class MCStateMachine<T extends MCState, U> {
     /**
      * Call each frame (used to call update in the current state).
      * @param delta
-     * @return
      */
     public void update(float delta) {
         if (currentState == null) return ;
@@ -128,7 +127,6 @@ public class MCStateMachine<T extends MCState, U> {
     /**
      * Render (used to call render in the current state). 
      * @param batch
-     * @return exceptionally if the current state doesn't exist
      */
     public void render(SpriteBatch batch) {
         if (currentState == null) return;

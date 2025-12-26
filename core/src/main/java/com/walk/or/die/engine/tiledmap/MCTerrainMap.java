@@ -138,20 +138,26 @@ public class MCTerrainMap extends MCMap {
      */
     public Set<MCEntity> spawnEntities(MCGame game) throws Exception {
         MCMapLayer primaryLayer = this.getLayer("Primary_Entities");
-        MCMapLayer portalLayer = this.getLayer("Portals");
-        if (primaryLayer == null) throw new InvalidDataException("no Primary Entities layer in game map");
-        if (portalLayer == null) throw new InvalidDataException("no Portal Entities layer in game map");
+        MCMapLayer portalLayer  = this.getLayer("Portals");
+
+        if (primaryLayer == null)
+            throw new InvalidDataException("no Primary Entities layer in game map");
+        if (portalLayer == null)
+            throw new InvalidDataException("no Portal Entities layer in game map");
 
         MCEntityFactory entityFact = MCEntityFactory.get();
 
         Set<MCEntity> entityArray = new HashSet<>();
         Map<String, Integer> entityCounter = new HashMap<>();
 
-        MapObjects objects = primaryLayer.getObjects();
+        MapObjects objects = new MapObjects();
 
-        // Layer Integration => Portals, in objects for Entities
-        MapObjects portalObjects = portalLayer.getObjects();
-        for (MapObject portal : portalObjects) {
+        for (MapObject obj : primaryLayer.getObjects()) {
+            objects.add(obj);
+        }
+
+        // Portals => Integration avec un autre layer
+        for (MapObject portal : portalLayer.getObjects()) {
             objects.add(portal);
         }
 
@@ -172,7 +178,7 @@ public class MCTerrainMap extends MCMap {
                 } else {
                     count = 1;
                 }
-                entityCounter.put(entityName, count);
+                entityCounter.put(entityName, count); // POURQUOI ??
 
                 MCEntity entity = entityFact.build(game, this, entityName, entityName + "_" + String.format("%03d", count), props);
 

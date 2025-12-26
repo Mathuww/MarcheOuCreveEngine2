@@ -82,7 +82,6 @@ public abstract class MCState<T extends MCState.StateArgs> {
 
     /**
      * Call when the state ends, loses the current state.
-     * @param args
      */
     public abstract void exit();
 

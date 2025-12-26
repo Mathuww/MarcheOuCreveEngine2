@@ -8,6 +8,8 @@ import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityManager;
+import com.walk.or.die.engine.entities.MCExplorationPlayer;
+import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
@@ -75,8 +77,12 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
             changeState("EnemiesPlaying", new MCGSEnemiesPlaying.EnemiesPlayingArgs());
         } else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
             if (keyCmd.key == Input.Keys.E) {
+                MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
+                if (player == null) {
+                    System.out.println("Aucun player dans la map");
+                    return;
+                }
                 changeState("exploration", new MCGSExploration.ExplStateArgs());
-                System.out.println("Je m'ennuis, p'tit pause s'impose");
             }
         }
     }

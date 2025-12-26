@@ -204,7 +204,7 @@ public class MCEntityManager {
 
     /**
      * Launch the same animation for all the entities.
-     * @param anim
+     * @param anim 
      */
     public void playGlobalAnimation(String anim) {
         for (MCEntity e : entities) {
