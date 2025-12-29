@@ -56,6 +56,9 @@ public class MCTerrainMap extends MCMap {
 
     /**
      * Return if the tile itself's at the given position is walkable.
+     * A tile isn't walkable if it's void on all layers,
+     * or if it is "blocked" at the highest layer
+     * that isn't void at this tile.
      * @param pos
      * @return
      */
@@ -64,22 +67,26 @@ public class MCTerrainMap extends MCMap {
         if (pos.x < 0 || pos.x >= getWidth() || pos.y < 0 || pos.y >= getHeight())
             return false;
         // tester toutes les layers
-        boolean voidAtAllLayers = true;
-        for (MapLayer layer : tiledMap.getLayers()) {
+        boolean foundNotVoidLayer = false;
+        for (int i = tiledMap.getLayers().getCount() - 1 ; i >= 0; i--) {
+            MapLayer layer = tiledMap.getLayers().get(i);
+            //System.out.println(layer.getName());
             if (layer instanceof TiledMapTileLayer tileLayer) {
                 TiledMapTileLayer.Cell cell = tileLayer.getCell(pos.x, pos.y);
         
                 if (cell == null || cell.getTile() == null) 
                     continue;
 
-                voidAtAllLayers = false;
                 MapProperties props = cell.getTile().getProperties();
-                if (props.containsKey("blocked") || props.containsKey("collision")) {
-                    return false;
+                if (!foundNotVoidLayer) {
+                    foundNotVoidLayer = true;
+                    if (props.containsKey("blocked") || props.containsKey("collision")) {
+                        return false;
+                    }
                 }
             }
         }
-        if (voidAtAllLayers)
+        if (!foundNotVoidLayer)
             return false;
         return true;
     }
@@ -87,6 +94,7 @@ public class MCTerrainMap extends MCMap {
            
     /**
      * Return if the tile itself's at the given position blocks bullets.
+     * A tile is protecting if the highest non void layer has property "blocked".
      * @param pos
      * @return
      */
@@ -95,22 +103,26 @@ public class MCTerrainMap extends MCMap {
         if (pos.x < 0 || pos.x >= getWidth() || pos.y < 0 || pos.y >= getHeight())
             return false;
         // tester toutes les layers
-        boolean voidAtAllLayers = true;
-        for (MapLayer layer : tiledMap.getLayers()) {
+        boolean foundNotVoidLayer = false;
+        for (int i = tiledMap.getLayers().getCount() - 1 ; i >= 0; i--) {
+            MapLayer layer = tiledMap.getLayers().get(i);
+            //System.out.println(layer.getName());
             if (layer instanceof TiledMapTileLayer tileLayer) {
                 TiledMapTileLayer.Cell cell = tileLayer.getCell(pos.x, pos.y);
         
                 if (cell == null || cell.getTile() == null) 
                     continue;
 
-                voidAtAllLayers = false;
                 MapProperties props = cell.getTile().getProperties();
-                if (props.containsKey("blocked") || props.containsKey("collision")) {
-                    return true;
+                if (!foundNotVoidLayer) {
+                    foundNotVoidLayer = true;
+                    if (props.containsKey("blocked") || props.containsKey("collision")) {
+                        return true;
+                    }
                 }
             }
         }
-        if (voidAtAllLayers)
+        if (!foundNotVoidLayer)
             return false;
         return false;
     }

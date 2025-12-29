@@ -143,16 +143,23 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
             gdxCam.position.x += driftX;
             gdxCam.position.y += driftY;
 
-            gdxCam.position.x = MathUtils.clamp(
-                gdxCam.position.x, 
-                lowerLimit.x + camHalfWidth, 
-                upperLimit.x - camHalfWidth
-            );
-            gdxCam.position.y = MathUtils.clamp(
-                gdxCam.position.y, 
-                lowerLimit.y + camHalfHeight, 
-                upperLimit.y - camHalfHeight
-            );
+            float minX = lowerLimit.x + camHalfWidth;
+            float maxX = upperLimit.x - camHalfWidth;
+            
+            if (minX > maxX) {
+                gdxCam.position.x = (lowerLimit.x + upperLimit.x) / 2f;
+            } else {
+                gdxCam.position.x = MathUtils.clamp(gdxCam.position.x, minX, maxX);
+            }
+
+            float minY = lowerLimit.y + camHalfHeight;
+            float maxY = upperLimit.y - camHalfHeight;
+
+            if (minY > maxY) {
+                gdxCam.position.y = (lowerLimit.y + upperLimit.y) / 2f;
+            } else {
+                gdxCam.position.y = MathUtils.clamp(gdxCam.position.y, minY, maxY);
+            }
 
             gdxCam.update(); 
         }
@@ -171,21 +178,25 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         relativeMove.x = relativeMove.x * CAM_MOVE_SPEED;
         relativeMove.y = relativeMove.y * CAM_MOVE_SPEED;
 
-        float targetX = gdxCam.position.x + relativeMove.x;
-        float targetY = gdxCam.position.y + relativeMove.y;
+        gdxCam.position.x += relativeMove.x;
+        gdxCam.position.y += relativeMove.y;
 
-        targetX = MathUtils.clamp(
-            targetX, 
-            lowerLimit.x + camHalfWidth, 
-            upperLimit.x - camHalfWidth
-        );
-        targetY = MathUtils.clamp(
-            targetY, 
-            lowerLimit.y + camHalfHeight, 
-            upperLimit.y - camHalfHeight
-        );
+        float minX = lowerLimit.x + camHalfWidth;
+        float maxX = upperLimit.x - camHalfWidth;
+        
+        if (minX > maxX) {
+            gdxCam.position.x = (lowerLimit.x + upperLimit.x) / 2f;
+        } else {
+            gdxCam.position.x = MathUtils.clamp(gdxCam.position.x, minX, maxX);
+        }
 
-        gdxCam.position.x = targetX;
-        gdxCam.position.y = targetY;
+        float minY = lowerLimit.y + camHalfHeight;
+        float maxY = upperLimit.y - camHalfHeight;
+
+        if (minY > maxY) {
+            gdxCam.position.y = (lowerLimit.y + upperLimit.y) / 2f;
+        } else {
+            gdxCam.position.y = MathUtils.clamp(gdxCam.position.y, minY, maxY);
+        }
     }
 }

@@ -68,16 +68,23 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
         Vector2 lowerLimit = camManager.getGlobalLowerLimit();
         Vector2 upperLimit = camManager.getGlobalUpperLimit();
 
-        targetX = MathUtils.clamp(
-            targetX, 
-            lowerLimit.x + camHalfWidth, 
-            upperLimit.x - camHalfWidth
-        );
-        targetY = MathUtils.clamp(
-            targetY, 
-            lowerLimit.y + camHalfHeight, 
-            upperLimit.y - camHalfHeight
-        );
+        float minX = lowerLimit.x + camHalfWidth;
+        float maxX = upperLimit.x - camHalfWidth;
+        
+        if (minX > maxX) {
+            targetX = (lowerLimit.x + upperLimit.x) / 2f;
+        } else {
+            targetX = MathUtils.clamp(targetX, minX, maxX);
+        }
+
+        float minY = lowerLimit.y + camHalfHeight;
+        float maxY = upperLimit.y - camHalfHeight;
+
+        if (minY > maxY) {
+            targetY = (lowerLimit.y + upperLimit.y) / 2f;
+        } else {
+            targetY = MathUtils.clamp(targetY, minY, maxY);
+        }
 
 
         float newX = gdxCam.position.x + ((targetX - gdxCam.position.x) * CAM_LERP * delta);
