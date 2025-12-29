@@ -210,4 +210,8 @@ public class MCEventBus implements MCVehicle {
     public void crash() throws VoluntaryCrashException {
         throw new VoluntaryCrashException("EXPLOSION !!!!!! over. *Fermeture des rideaux*");
     }
+
+    public int getSpeedLimit() {
+        return 0xffffffff;
+    }
 }
