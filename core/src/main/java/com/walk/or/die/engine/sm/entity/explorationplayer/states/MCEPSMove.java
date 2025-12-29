@@ -207,10 +207,7 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
             limitY
         );
 
-        if(blocked(posX, posY)) {
-            changeState("idle", new MCEPSIdle.IdleStateArgs());
-            return;
-        } else {
+        if(!blocked(posX, posY)) {
             if (relativeMove.x > 0f) {
                 parent.playAnimationWithoutReset("walk_right");
             } else if (relativeMove.x < 0f) {

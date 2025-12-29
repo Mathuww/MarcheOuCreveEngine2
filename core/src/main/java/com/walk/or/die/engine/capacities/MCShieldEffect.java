@@ -24,6 +24,11 @@ public class MCShieldEffect extends MCEffects{
     }
 
     @Override
+    public int getHurtDamage(int damage) {
+        return 0;
+    }
+
+    @Override
     public void onNewTurn() {
         setDispose(true);
     }

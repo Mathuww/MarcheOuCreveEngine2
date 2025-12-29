@@ -238,7 +238,6 @@ public class MCGame extends Game {
         hudManager.init(WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
 
         loadMap("start.tmx");
-        bus.on(this, "InputPressed", this::inputPressed);
 
         try {
             setScreen(new MCGameScreen(this));
@@ -296,36 +295,6 @@ public class MCGame extends Game {
     }
 
     /**
-     * load a new Map with inputs
-     * @param cmd
-     */
-    public void inputPressed(Command cmd) {
-        int newMapIndex;
-        String newMapName;
-        if (cmd instanceof PreviousMapCommand) {
-            newMapIndex = mapIndex - 1;
-        } else if (cmd instanceof NextMapCommand) {
-            newMapIndex = mapIndex + 1;
-        } else {
-            return;
-        }
-        if (newMapIndex <= 1) {
-            newMapIndex = 1;
-            newMapName = "start";
-        } else {
-            newMapName = "start" + newMapIndex;
-        }
-        newMapName += ".tmx";
-        FileHandle newMapFile = Gdx.files.internal(MAP_ROOT + newMapName);
-        if (!newMapFile.exists()) {
-            System.err.println("cant load " + newMapFile + " because it doesnt exists.");
-            return;
-        }
-        mapIndex = newMapIndex;
-        loadMap(newMapName);
-    }
-
-    /**
      * The global logic of the game, triggered each frame.
      * @param delta
      */
@@ -333,6 +302,12 @@ public class MCGame extends Game {
         // We don't give a fuck about logic
         // Because we implement MVC (Modular Venomous Contraception) // co autored by
         // mathuww
+
+        // la condition pour que le changement de map se fait correctement par portail
+        if(mapFileToLoad != null) {
+            loadMap(mapFileToLoad);
+            mapFileToLoad = null;
+        }
 
         try {
             camManager.update(delta);
@@ -348,12 +323,6 @@ public class MCGame extends Game {
         entityManager.update(delta);
 
         hudManager.update(delta);
-
-        // la condition pour que le changement de map se fait correctement par portail
-        if(mapFileToLoad != null) {
-            loadMap(mapFileToLoad);
-            mapFileToLoad = null;
-        }
     }
 
     @Override

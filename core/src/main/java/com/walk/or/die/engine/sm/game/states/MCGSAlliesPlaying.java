@@ -79,7 +79,7 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
             if (keyCmd.key == Input.Keys.E) {
                 MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
                 if (player == null) {
-                    System.out.println("Aucun player dans la map");
+                    System.out.println("No player in this map");
                     return;
                 }
                 changeState("exploration", new MCGSExploration.ExplStateArgs());

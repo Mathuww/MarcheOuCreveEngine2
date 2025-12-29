@@ -19,7 +19,17 @@ public class MCStrengthEffect extends MCEffects{
 
     @Override
     public void onAttack(MCAttack attack) {
+        getAttack(attack);
+    }
+
+    @Override
+    public void getAttack(MCAttack attack) {
         attack.setPower(attack.getPower()*2);
+    }
+
+    @Override
+    public void onNewTurn() {
+        setDispose(true);
     }
 
 }

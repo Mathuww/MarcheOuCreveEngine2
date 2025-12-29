@@ -255,6 +255,7 @@ public class MCCharacter extends MCEntity {
         MCAttack attack = attacks.get(baseAttack);
         if (attack == null)
             throw new IllegalStateException("trying to shoot without a base attack !");
+        attack.setPower(attack.getBasePower());
         for (MCEffects e: effects) {
             e.onAttack(attack);
         }

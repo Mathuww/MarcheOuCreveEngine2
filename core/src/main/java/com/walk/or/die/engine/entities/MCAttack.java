@@ -28,7 +28,8 @@ public class MCAttack {
     private String attackName;
     private final MCEntity parent;
     private final MCSharedAssets sharedAssets = MCSharedAssets.get();
-    private int power;
+    private int basePower;
+    private int currentPower;
     private Map<MCIntVector2, Float> damagePattern;
     private Array<Sprite> displaySprites = new Array<>();
     private Array<Sprite> trajectorySprites = new Array<>();
@@ -52,7 +53,8 @@ public class MCAttack {
     public MCAttack(MCEntity parent, String name, int power, Map<MCIntVector2, Float> pattern) throws Exception {
         this.parent = parent;
         this.attackName = name;
-        this.power = power;
+        this.basePower = power;
+        this.currentPower = power;
         this.damagePattern = pattern;
         validTileTexture = sharedAssets.getSavedTexture("validAttackTile");
         trajTexture = sharedAssets.getSavedTexture("trajectoryTile");
@@ -88,7 +90,7 @@ public class MCAttack {
         if (damage == null)
             return -1;
         else
-            return MathUtils.round(damage * power);
+            return MathUtils.round(damage * currentPower);
     }
 
     /**
@@ -179,16 +181,20 @@ public class MCAttack {
         return MCEntityManager.get().buildProjectile(projectileName);
     }
 
-    public void setPower(int new_power) {
-        power = new_power;
+    public int getBasePower() {
+        return basePower;
+    }
+
+    public void setPower(int newPower) {
+        currentPower = newPower;
     }
 
     public int getPower() {
-        return power;
+        return currentPower;
     }
     
     public String getSummary() {
-        String summary = "Power : " + power;
+        String summary = "Power : " + currentPower;
         return summary;
     }
 

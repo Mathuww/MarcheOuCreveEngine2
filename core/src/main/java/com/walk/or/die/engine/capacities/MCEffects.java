@@ -5,7 +5,7 @@ import com.walk.or.die.engine.entities.MCCharacter;
 
 /**
  * An abstract class to build effects who affects the characters.<br>
- * Override the methods to build your own effects.
+ * Override the methods to build your own effects.<br>
  */
 public abstract class MCEffects {
     /**
@@ -36,6 +36,7 @@ public abstract class MCEffects {
      * Render (call each frame).
      */
     public void render() {}
+    
     /**
      * Call each turn.
      */
@@ -44,10 +45,16 @@ public abstract class MCEffects {
     }
 
     /**
-     * Call when we check the character's base attack. Modify the attack.
+     * Call when attack. Modify the attack currently.
      * @param attack
      */
     public void onAttack(MCAttack attack) {}
+
+    /**
+     * Call when we check the character's attack. Modify the attack currently.
+     * @param attack
+     */
+    public void getAttack(MCAttack attack) {}
 
     /**
      * Call when the character get hurt.
@@ -55,6 +62,15 @@ public abstract class MCEffects {
      * @return the new ammount of damage
      */
     public int onHurt(int damage) {
+        return damage;
+    }
+
+    /**
+     * Call when we ask how much damage the character should take.
+     * @param damage
+     * @return
+     */
+    public int getHurtDamage(int damage) {
         return damage;
     }
 
