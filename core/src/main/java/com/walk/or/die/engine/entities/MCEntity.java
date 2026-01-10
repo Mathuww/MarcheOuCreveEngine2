@@ -117,8 +117,12 @@ public abstract class MCEntity {
         //System.out.println("mes animations sont mtn : " + animations.keySet());
     }
 
-    public Set<String> getAnimations() {
+    public Set<String> getAnimationNames() {
         return animations.keySet();
+    }
+
+    public Map<String, MCAnimation> getAnimationMap() {
+        return animations;
     }
 
     public boolean hasAnimation(String animName) {

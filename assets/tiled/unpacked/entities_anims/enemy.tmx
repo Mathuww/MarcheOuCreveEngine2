@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="32" tileheight="32" infinite="0" nextlayerid="2" nextobjectid="1">
+ <properties>
+  <property name="attack1" value="square_attack"/>
+  <property name="attack2" value="close_attack"/>
+  <property name="baseAttack" value="square_attack"/>
+  <property name="hitboxTolerancePercentage" type="float" value="40"/>
+  <property name="hp" type="int" value="10"/>
+  <property name="maxMoves" type="int" value="4"/>
+  <property name="type" value="enemy"/>
+ </properties>
+ <tileset firstgid="1" source="enemy.tsx"/>
+ <tileset firstgid="65" source="enemy_real.tsx"/>
+ <layer id="1" name="Calque de Tuiles 1" width="8" height="8">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,
+72,113,114,115,8,0,0,0,
+113,114,115,0,0,0,0,0,
+101,102,103,104,105,106,107,108,
+95,96,97,98,99,100,0,0,
+89,90,91,92,93,94,0,0,
+83,84,85,86,87,88,0,0,
+71,72,74,75,76,0,0,0
+</data>
+ </layer>
+</map>

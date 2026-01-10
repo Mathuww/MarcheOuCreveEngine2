@@ -187,7 +187,7 @@ public class MCPathfinder {
             vec = it.next();
             if (cut) {
                 it.remove();
-            } else if (!isWalkable(vec)) {
+            } else if (isProtect(vec)) {
                 cut = true;
             }
         }
@@ -286,7 +286,7 @@ public class MCPathfinder {
         MCIntVector2 pos = it.next();
         while (it.hasNext()) {
             pos = it.next();
-            if (!isWalkable(pos) && it.hasNext()) return new Simulation (false, pos);
+            if (isProtect(pos) && it.hasNext()) return new Simulation (false, pos);
             if (pos.equals(end)) return new Simulation(true, new MCIntVector2(-1, -1));
         }
         //System.out.println("hop ça marche (pas)");
@@ -304,7 +304,7 @@ public class MCPathfinder {
         while (it.hasNext()) {
             pos = it.next();
             if (pos.equals(end)) return 1f;
-            if (!isWalkable(pos) && it.hasNext()) return 0f;
+            if (isProtect(pos) && it.hasNext()) return 0f;
         }
 
         return 0f;

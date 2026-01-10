@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="64" tileheight="64" infinite="0" nextlayerid="2" nextobjectid="1">
+ <properties>
+  <property name="fps" type="int" value="11"/>
+  <property name="type" value="portal"/>
+ </properties>
+ <tileset firstgid="1" source="blue_portal.tsx"/>
+ <tileset firstgid="9" source="green_portals.tsx"/>
+ <tileset firstgid="17" source="orange_portal.tsx"/>
+ <tileset firstgid="25" source="purple_portal.tsx"/>
+ <layer id="1" name="Calque de Tuiles 1" width="8" height="8">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,
+17,18,19,20,21,22,23,24,
+0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0
+</data>
+ </layer>
+</map>

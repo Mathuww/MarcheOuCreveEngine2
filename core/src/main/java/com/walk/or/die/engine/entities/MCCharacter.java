@@ -58,6 +58,7 @@ public class MCCharacter extends MCEntity {
 
     private Integer maxHp;
     private Integer hp;
+    private Float toleranceHitbox;
     private boolean dead = false;
     private Integer maxDeplacements;
     private MCStateMachine<MCCharacterState, MCEntity> stateManager;
@@ -72,7 +73,7 @@ public class MCCharacter extends MCEntity {
 
     private List<MCEffects> effects = new ArrayList<>();
 
-    private Random rng = new Random("laleatoire nexiste pas cest un mensonge".hashCode());
+    private Random rng = new Random();
 
     /**
      * The creator.
@@ -106,6 +107,7 @@ public class MCCharacter extends MCEntity {
         maxHp = MCUtils.getIntProperty(props, "hp", 100);
         hp = maxHp;
         maxDeplacements = MCUtils.getIntProperty(props, "maxMoves", 2);
+        toleranceHitbox = (MCUtils.getFloatProperty(props, "hitboxTolerancePercentage", 0.05f))/(100*2);
 
         MCAttackFactory attackFact = MCAttackFactory.get();
         for (int i = 1; i < MAX_ATTACK_NUMBER; i++) {
@@ -225,6 +227,10 @@ public class MCCharacter extends MCEntity {
             move = e.getMaxMoves(move);
         }
         return move;
+    }
+
+    public Float getToleranceHitbox() {
+        return toleranceHitbox;
     }
 
     /**

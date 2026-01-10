@@ -18,13 +18,22 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "java.l
         at com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application.<init>(Lwjgl3Application.java:153)
         at com.walk.or.die.engine.lwjgl3.Lwjgl3Launcher.createApplication(Lwjgl3Launcher.java:1
 
-- créer des Game states AlliesPlaying (actions via UI) et EnemiesPlaying (actions via IA) : on alterne entres les 2
-on peut sortir dans la map quand tous les ennemis sont mort
-on respawn si toues les allies sont morts
-- pour les états (Allies/Enemies)Playing : Map<MCAlly/Enemy, boolean> pour savoir qui a déjà joué
-    - (on init avec tous les ally/enemy présents à false et quand ils sont tous à true on passe au tour de l'autre camp)
-
-- Portals pour pouvoir changer de map !
-    - props : destMap avec le chemin dans maps/
-
 - son musique + effets sonores
+
+# BUGS
+- !!! Bug du HUD au changement de map
+- !!!! La prévisualisation des attaques reste affichée alors que l'ennemi n'est pas/plus sélectionné à ce moment-là*
+- !!!!! Les enemies se déplacent BCPPPPPP trop, car ils comptent la distance à vol d'oiseau
+- Carré violet qui apparait 1 frame quand on lance un projectile (ca doit avoir un rapport avec l'ordre des opérations au lancement du projectile)
+- !!! Ca crash quand on quitte mdr (It's a feature, not a bug)
+- !!!!!! Quand un game state exit() son inputPressed unregister pas du event bus
+
+# FEATURES
+- !!!!!!! REECRIRE SCRIPT PACK EN BATCH WINDOWS
+- !! Différencier corps-à-corps et attaque à dist
+- ! Prévisualiser moves ennemies
+- !!!! Capacité spé : intégration graphique
+- ????? Mode de jeu adapté à la situation
+- ???? Allié > expl. player à la fin d'un combat
+- ??? Alliés au début d'un combat
+- !? Son

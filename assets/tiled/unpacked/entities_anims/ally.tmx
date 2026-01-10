@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="8" height="8" tilewidth="32" tileheight="32" infinite="0" nextlayerid="3" nextobjectid="1">
+ <properties>
+  <property name="attack1" value="square_attack"/>
+  <property name="attack2" value="close_attack"/>
+  <property name="baseAttack" value="square_attack"/>
+  <property name="hitboxTolerancePercentage" type="float" value="40"/>
+  <property name="hp" type="int" value="16"/>
+  <property name="maxMoves" type="int" value="4"/>
+  <property name="type" value="ally"/>
+ </properties>
+ <tileset firstgid="1" source="explorationPlayer.tsx"/>
+ <tileset firstgid="65" source="ally.tsx"/>
+ <tileset firstgid="129" source="animWalk_explorationPlayer.tsx"/>
+ <tileset firstgid="145" source="ally_real.tsx"/>
+ <layer id="1" name="Calque de Tuiles 1" width="8" height="8">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,
+163,164,165,166,167,168,0,0,
+169,170,171,172,173,174,0,0,
+175,176,177,178,179,180,0,0,
+0,0,0,0,0,0,0,0,
+181,182,183,184,0,0,0,0,
+193,194,195,0,0,0,0,0,
+151,152,153,154,155,156,0,0
+</data>
+ </layer>
+</map>

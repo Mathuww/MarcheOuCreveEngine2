@@ -114,6 +114,33 @@ public class MCEntityManager {
     }
 
     /**
+     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+     * @param e
+     */
+    public void addExplorationEntities(Set<MCEntity> entities) {
+        Set<MCAlly> list = new HashSet<>();
+
+        Set<MCAlly> allies = new HashSet<>();
+
+        for (MCEntity e : entities) {
+            if (e instanceof MCAlly ally) {
+                allies.add(ally);
+            }
+        }
+        
+        MCAlly chosen = allies.iterator().next();
+        MCExplorationPlayer player = new MCExplorationPlayer(chosen);
+
+        addEntity(player);
+
+        for (MCEntity e : entities) {
+            if (!(e instanceof MCEnemy enemy) || !(e instanceof MCAlly ally)) {
+                addEntity(e);
+            }
+        }
+    }
+
+    /**
      * Add a set of entities.
      * @param e
      */
@@ -169,26 +196,11 @@ public class MCEntityManager {
      * @see MCExplorationPlayer
      */
     public MCExplorationPlayer getExplorationPlayer()  {
-        try {
-            try {
-                try {
-                    for (MCEntity e: entities) {
-                        if (e instanceof MCExplorationPlayer player) {
-                            return player;
-                        }
-                    }
-                } catch (Exception e) {
-                    throw new MissingDataException("player doesn't exist in this map!");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new TooManyExceptionsException("exception manager");
+        for (MCEntity e: entities) {
+            if (e instanceof MCExplorationPlayer player) {
+                return player;
             }
-        } catch (TooManyExceptionsException e) {
-            System.out.println("nothing to see here");
         }
-        
-    
         return null;
     }
 

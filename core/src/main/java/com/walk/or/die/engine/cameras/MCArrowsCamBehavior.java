@@ -17,11 +17,10 @@ import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 
 /**
- * Behavior class which allows player to control the camera with the arrows.
+ * Behavioral class which allows the player to control the camera with the arrows.
  */
 public class MCArrowsCamBehavior extends MCCameraBehavior {
     private final float CAM_MOVE_SPEED = 0.05f;
-    // pour translation vers point avant enemies playing
     private final float CAM_LERP = 3f;
     private float targetX = 0f, targetY = 0f;
     private boolean translating = false;

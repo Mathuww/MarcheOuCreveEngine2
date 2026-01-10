@@ -53,6 +53,7 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
     @Override
     public void exit() {
         bus.off(this, "InputPressed");
+        hudManager.getCharacterHud().hide();
         super.exit();
     }
 

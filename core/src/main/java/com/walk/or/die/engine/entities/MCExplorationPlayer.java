@@ -1,5 +1,6 @@
 package com.walk.or.die.engine.entities;
 
+import java.util.Map;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapProperties;
 import com.walk.or.die.engine.MCGame;
@@ -12,7 +13,8 @@ import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSMove;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 public class MCExplorationPlayer extends MCEntity {
-    private Integer hp;
+    private int hp;
+    private int maxHp;
     private boolean dead = false;
     private Float speed;
     private Float toleranceHitbox;
@@ -25,6 +27,27 @@ public class MCExplorationPlayer extends MCEntity {
         stateManager.addState(new MCEPSMove(this));
     }
 
+    public MCExplorationPlayer(MCAlly ally) {
+        super(
+            ally.getParent(),
+            ally.getMap(),
+            "explorationPlayer"
+        );
+        this.setMaxHp(ally.getMaxHp());
+        this.setHealth(ally.getHealth());
+        this.setPosition(ally.getPosition());
+
+        Map<String, MCAnimation> animations = ally.getAnimationMap();
+        for (String animName : animations.keySet()) {
+            MCAnimation anim = animations.get(animName);
+            addAnimation(animName, anim);
+        }
+
+        stateManager = new MCStateMachine<>(this);
+        stateManager.addState(new MCEPSIdle(this));
+        stateManager.addState(new MCEPSMove(this));
+    }
+
     @Override
     public void onSpawn() {
         stateManager.setCurrentState("idle", new MCEPSIdle.IdleStateArgs());
@@ -32,7 +55,8 @@ public class MCExplorationPlayer extends MCEntity {
 
     @Override
     public void initFromProperties(MapProperties props) throws Exception {
-        hp = MCUtils.getIntProperty(props, "hp", 100);
+        maxHp = MCUtils.getIntProperty(props, "hp", 100);
+        hp = maxHp;
         speed = MCUtils.getFloatProperty(props, "speed", 2);
         toleranceHitbox = (MCUtils.getFloatProperty(props, "hitboxTolerancePercentage", 0.05f))/(100*2);
     }
@@ -57,6 +81,10 @@ public class MCExplorationPlayer extends MCEntity {
         return hp;
     }
 
+    public int getMaxHp() {
+        return maxHp;
+    }
+
     public void getHurt(int damage, String targetAnim) {
         if (dead)
             return;
@@ -73,6 +101,14 @@ public class MCExplorationPlayer extends MCEntity {
 
     public boolean isDead() {
         return dead;
+    }
+
+    public void setMaxHp(int maxHp) {
+        this.maxHp = maxHp;
+    }
+
+    public void setHealth(int h) {
+        this.hp = h;
     }
 
     public void setDead() {

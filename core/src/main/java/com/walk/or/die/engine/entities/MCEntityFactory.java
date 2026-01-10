@@ -164,7 +164,7 @@ public class MCEntityFactory {
             entity.addAnimation(animName, anim);
         }
 
-        List<String> addedAnims = new ArrayList<>(entity.getAnimations());
+        List<String> addedAnims = new ArrayList<>(entity.getAnimationNames());
         for (String animName : addedAnims) {
             //System.out.println("checking if " + animName);
             if (animName.endsWith("_right")) {

@@ -162,7 +162,9 @@ savestate.sh
 .vscode/
 .editorconfig
 misc/
-assets/
+assets/tiled/packed
+brainstormings/
+javadoc.sh
 # en vrai pour l'instant
 
 ## Special cases:

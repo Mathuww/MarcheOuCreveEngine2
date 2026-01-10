@@ -126,20 +126,6 @@ public class MCTerrainMap extends MCMap {
             return false;
         return false;
     }
-    /*
-    TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(0);
-        if (layer == null) return false;
-        if (pos.x < 0 || pos.x >= layer.getWidth() || pos.y < 0 || pos.y >= layer.getHeight()) return false;
-        TiledMapTileLayer.Cell cell = layer.getCell(pos.x, pos.y);
-        
-        if (cell == null || cell.getTile() == null) return false;
-
-        MapProperties props = cell.getTile().getProperties();
-        if (props.containsKey("blocked") || props.containsKey("collision")) {
-            return true;
-        }
-        return false;
-     */
 
     /**
      * Create all the entities on the map

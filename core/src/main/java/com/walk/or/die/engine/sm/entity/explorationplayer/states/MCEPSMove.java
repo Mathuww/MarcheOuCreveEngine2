@@ -171,7 +171,7 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     }
 
     @Override
-    public void update(float delta) {
+    public void update(float delta) { // IL FAUT UTILISER LE DELTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         nbConcurrentCommand = 0;
 
         for (Boolean action : currentInput.values()) {

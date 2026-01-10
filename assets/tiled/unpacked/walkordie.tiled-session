@@ -5,10 +5,10 @@
     },
     "activeFile": "entities_anims/blue_portal.tsx",
     "expandedProjectPaths": [
-        "maps",
-        "attacks",
+        ".",
         "entities_anims",
-        "."
+        "maps",
+        "attacks"
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
@@ -47,8 +47,8 @@
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 128,
-                "y": 128.16666666666666
+                "x": 128.16666666666666,
+                "y": 128.16666666666669
             }
         },
         "entities_anims/ally.tsx": {
@@ -71,7 +71,7 @@
             "scale": 1.1151367187499999,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 256.0224187757247,
+                "x": 255.12566774673792,
                 "y": 256.0224187757247
             }
         },
@@ -116,7 +116,7 @@
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 123.33333333333331,
+                "x": 123.16666666666666,
                 "y": 128.16666666666669
             }
         },
@@ -142,11 +142,11 @@
             "scaleInEditor": 2
         },
         "entities_anims/explorationPlayer.tmx": {
-            "scale": 2,
+            "scale": 5.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 90.25,
-                "y": 95.75
+                "x": 38.81818181818182,
+                "y": 143.36363636363637
             }
         },
         "entities_anims/explorationPlayer.tmx#chara1": {
@@ -161,7 +161,7 @@
             "scale": 1.1151367187499999,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 256.0224187757247,
+                "x": 255.12566774673792,
                 "y": 256.0224187757247
             }
         },
@@ -229,7 +229,7 @@
             "scale": 1.1151367187499999,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 202.2173570365181,
+                "x": 202.6657325510115,
                 "y": 256.0224187757247
             }
         },
@@ -259,7 +259,7 @@
         },
         "maps/Ground.tsx": {
             "scaleInDock": 2,
-            "scaleInEditor": 8
+            "scaleInEditor": 1.5
         },
         "maps/battle1.tmx": {
             "expandedObjectLayers": [
@@ -267,7 +267,7 @@
                 3
             ],
             "scale": 1.6220170454545453,
-            "selectedLayer": 4,
+            "selectedLayer": 3,
             "viewCenter": {
                 "x": 175.3988965758823,
                 "y": 159.98598826517213
@@ -278,11 +278,11 @@
                 5,
                 3
             ],
-            "scale": 1,
+            "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 120.5,
-                "y": 392.5
+                "x": 297.75,
+                "y": 21.75
             }
         },
         "maps/exemple.tmx": {
@@ -318,7 +318,7 @@
             "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 56.25,
+                "x": 56.125,
                 "y": 63.875
             }
         },
@@ -387,11 +387,11 @@
                 5,
                 3
             ],
-            "scale": 0.75,
-            "selectedLayer": 1,
+            "scale": 1,
+            "selectedLayer": 3,
             "viewCenter": {
-                "x": 175.3333333333333,
-                "y": 39.33333333333326
+                "x": 24.5,
+                "y": 40.5
             }
         },
         "misc.tmx": {
@@ -416,37 +416,23 @@
     "map.tileWidth": 64,
     "map.width": 8,
     "openFiles": [
-        "maps/start.tmx",
-        "maps/battle1.tmx",
-        "maps/tunnel.tmx",
-        "maps/misc.tmx",
-        "maps/battle2.tmx",
-        "maps/Ground.tsx",
-        "maps/exemple.tmx",
-        "entities_anims/purplePortal.tmx",
-        "entities_anims/orangePortal.tmx",
-        "entities_anims/greenPortal.tmx",
-        "entities_anims/bluePortal.tmx",
-        "entities_anims/explorationPlayer.tmx",
-        "entities_anims/Soldier.tsx",
-        "entities_anims/animWalk_explorationPlayer.tsx",
         "entities_anims/blue_portal.tsx"
     ],
     "project": "walkordie.tiled-project",
-    "property.type": "bool",
+    "property.type": "string",
     "recentFiles": [
+        "entities_anims/blue_portal.tsx",
+        "entities_anims/ally.tmx",
+        "entities_anims/enemy.tmx",
+        "entities_anims/animWalk_explorationPlayer.tsx",
+        "entities_anims/explorationPlayer.tmx",
+        "entities_anims/bluePortal.tmx",
+        "entities_anims/greenPortal.tmx",
+        "entities_anims/orangePortal.tmx",
         "maps/start.tmx",
         "maps/battle1.tmx",
         "maps/tunnel.tmx",
-        "maps/misc.tmx",
-        "maps/battle2.tmx",
-        "maps/Ground.tsx",
-        "maps/exemple.tmx",
-        "entities_anims/purplePortal.tmx",
-        "entities_anims/orangePortal.tmx",
-        "entities_anims/greenPortal.tmx",
-        "entities_anims/bluePortal.tmx",
-        "entities_anims/explorationPlayer.tmx"
+        "maps/misc.tmx"
     ],
     "tileset.lastUsedFilter": "Fichiers de jeu de tuiles Tiled (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",

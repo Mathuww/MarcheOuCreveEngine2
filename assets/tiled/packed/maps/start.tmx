@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="11" infinite="0" nextlayerid="6" nextobjectid="14" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="11">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><map height="11" infinite="0" nextlayerid="6" nextobjectid="15" orientation="orthogonal" renderorder="right-down" tiledversion="1.11.2" tileheight="16" tilewidth="16" version="1.10" width="11">
  <properties><property name="atlas" value="tileset/start.atlas"/>
   <property name="isBattle" type="bool" value="false"/>
  </properties>
@@ -51,9 +51,14 @@
 </data>
  </layer>
  <objectgroup id="3" name="Primary_Entities">
-  <object height="9.72727" id="5" width="12.9091" x="81.4543" y="36.2727">
+  <object height="9.72727" id="5" width="12.9091" x="143.788" y="19.2727">
    <properties>
-    <property name="name" value="explorationPlayer"/>
+    <property name="name" value="ally"/>
+   </properties>
+  </object>
+  <object height="9.72727" id="14" width="12.9091" x="17.5455" y="49.803">
+   <properties>
+    <property name="name" value="ally"/>
    </properties>
   </object>
  </objectgroup>

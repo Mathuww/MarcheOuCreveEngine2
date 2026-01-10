@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -267,30 +268,38 @@ public class MCGame extends Game {
         System.out.println("teleportation to " + filename);
         hudManager.getCharacterHud().hide();
         entityManager.clearEntities();
+        
         if (map != null)
             map.dispose();
         map = new MCTerrainMap(MAP_ROOT + filename, drh);
+        MapProperties mapProps = map.getProperties();
+        Boolean mapCombat = mapProps.get("isBattle", Boolean.class);
+        if(mapCombat == null) {
+            mapCombat = false;
+        }
+        
         camManager.setUpperLimit(new Vector2(
             CAM_UPPER_LIMIT_OFFSET.x + map.getWidth(),
             CAM_UPPER_LIMIT_OFFSET.y + map.getHeight()
         ));
-        Boolean mapState = mapsStates.get(filename);
-        // true : combat déjà fini (aucun sens pour les maps explo pures), false : pas finies/exploration
-        if (mapState != null && mapState == true) {
-            // spawn juste l'exploration player (ca j'ai pas fait)
-             // sinon les entités ne sont pas créées
-            entityManager.update(Gdx.graphics.getDeltaTime());
-            stateManager.setCurrentState("Exploration", new MCGSExploration.ExplStateArgs());
-        } else { // null ou false
-            // combat pas fini, on spawn tout
+
+        if (mapCombat) {
             try {
                 entityManager.addAllEntities(map.spawnEntities(this));
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            // sinon les entités ne sont pas créées
             entityManager.update(Gdx.graphics.getDeltaTime());
             stateManager.setCurrentState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
+
+        } else {
+            try {
+                entityManager.addExplorationEntities(map.spawnEntities(this));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            entityManager.update(Gdx.graphics.getDeltaTime());
+            stateManager.setCurrentState("Exploration", new MCGSExploration.ExplStateArgs());
         }
     }
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="22" height="5" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="15">
+ <properties>
+  <property name="isBattle" type="bool" value="false"/>
+ </properties>
+ <tileset firstgid="1" source="Ground.tsx"/>
+ <tileset firstgid="121" source="objects.tsx"/>
+ <layer id="2" name="Ground" width="22" height="5">
+  <data encoding="csv">
+72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72,72
+</data>
+ </layer>
+ <layer id="1" name="Ground2" width="22" height="5">
+  <data encoding="csv">
+9,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,10,
+49,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,50,
+49,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,50,
+49,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,47,50,
+89,87,87,87,87,87,87,87,87,87,87,87,87,87,87,87,87,87,87,87,87,90
+</data>
+ </layer>
+ <layer id="4" name="Ground3" width="22" height="5" visible="0">
+  <data encoding="csv">
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,124,0,0,0,0,0,0,0,0,0,124,0,
+0,0,124,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,152,152,152,0,0,0,0,0,0,0,0,0,0
+</data>
+ </layer>
+ <objectgroup id="3" name="Primary_Entities">
+  <object id="14" x="19.5606" y="35.4242" width="9.54545" height="9.81818">
+   <properties>
+    <property name="name" value="ally"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <objectgroup id="5" name="Portals">
+  <properties>
+   <property name="destFile" value="start2.tmx"/>
+  </properties>
+  <object id="8" x="324.34" y="38.1288" width="3.66667" height="5.66667">
+   <properties>
+    <property name="destMap" value="battle2"/>
+    <property name="destPortal_ID" type="int" value="1"/>
+    <property name="name" value="orangePortal"/>
+    <property name="portal_ID" type="int" value="1"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

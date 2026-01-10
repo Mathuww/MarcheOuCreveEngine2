@@ -70,6 +70,7 @@ public class MCMap implements Disposable {
         //System.out.println("tile size : " + this.tileSize + " so unit scale is " + this.unitScale);
     }
 
+
     /**
      * @return the width of the map.
      */

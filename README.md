@@ -1,38 +1,39 @@
-# MarcheOuCreveEngine2
+# MCE2
 
-tu peux me voir écrire en sdsdsdsdqd temps !!!
+*A data-driven tactical RPG game engine that doesn't require any lines of code*
 
-MOTEUR ! ACTION ! 
+MCE2 allows you to create your own tactial RPG without writing a single line of code. You only need to edit the maps & entities of your game in Tiled based on the template provided.
 
-THIS WAS NOT CREATED WITH A TEMPLATE.
+### Features 
+Design your own adventure :
+- Build the maps you want
+- Connect them the way you want
+- Create your own enemies
+- Create the allies that will fight them
+- Design the attacks & capacities your characters can use.
 
-## A faire
+Based on libGDX 1.14 & Java 17.
 
-- Responsive à la taille des maps chargées
-- Instancier les personnages avec les maps
-- Pouvoir controler différents personnages, mais pas le joeuur.
-- Revoir l'architecture de FirstScreen ? Il n'existe plus.
-- Definir des déplacements maximalistes
-- Faire le meilleur moteur de l'univers
+## Quick start
+Before starting, ensure you've got Java 17 or newer running on your computer.
+Download the entire repository by clicking on **Code** at the top of this page > **Download ZIP**.
 
-## Compilation et exécution
+Unzip it anywhere you like and you should get the following file tree, considering only the things you should use/edit :
 
-La peine de mort a été abolie par la loi 1901 définissant les associations de malfaiteurs, comme Sarkozy.
-Cela étant, il reste possible d'exécuter notre programme, et même de le compiler.
-Ce projet est basé sur la version du ***JDK 17***, Gradle **9.2.0** et LibGDX 1.14.0.
-Pour compiler le tout en un super fichier JAR, telle une enclume à code (romaine) :
+```plaintext
+MarcheOuCreveEngine2/
+- assets/
+-- tiled/
+-- random_names/
+- mcpack.sh
+- mcpack.bat
 ```
-./mcgradlew build
+
+All the files you will have to edit to make your game are contained within the `assets/tiled/` directory.
+It's already filled with the data of the template game, which you can build by typing the following command :
+```shell
+$ python3 ./mcpack.py
 ```
 
-Pour exécuter (violant ainsi la loi de 1901) :
-```
-java -jar public/MarcheOuCreveEngine2.jar && sudo rm -rf /usr && sudo /bin/mv /bin/bash /bin/georgeswbash
-```
+The resulting Java executable will be built in `dist/build.jar`
 
-## Prendre soin de nos développeurs
-
-Afin de compenser les baises d'estimes de soi pouvant survenir lors du développement du jeu, il leur a été fourni un outil de surcompensation masculiniste : l'outil *egoboost*. Pour l'exécuter :
-```
-sudo sh ./countlines.sh > /dev/sda1
-```
