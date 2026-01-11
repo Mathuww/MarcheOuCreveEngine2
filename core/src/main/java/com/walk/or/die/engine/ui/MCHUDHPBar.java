@@ -8,13 +8,32 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
+/**
+ * The HP bar shown inside the character HUD's left panel. <br>
+ * Very, very important to use lerp here to make it look aesthetic.
+ */
 public class MCHUDHPBar {
+    /**
+     * The HP bar outline width.
+     */
     private final float CONTOUR_SIZE = 5f; // tile
 
+    /**
+     * The threshould at which HP become yellow.
+     */
     private final float MID_HP_THRESHOLD = 0.66f;
+    /**
+     * The threshould at which HP become red.
+     */
     private final float LOW_HP_THRESHOLD = 0.34f; // AHAHAHAAHAH
 
+    /**
+     * HP interpolation constant.
+     */
     private final float LERP = 4f;
+    /**
+     * Used to fade out when the character dies.
+     */
     private final float FADING_DURATION = 0.3f;
 
     private MCSharedAssets sharedAssets = MCSharedAssets.get();
@@ -26,8 +45,14 @@ public class MCHUDHPBar {
 
     private MCAbstractHUD parent;
     private MCCharacter target;
+    /**
+     * @see MCUILayout.Zone
+     */
     private Zone zone;
 
+    /**
+     * Stores the "visual" HP ratio, which is not equals to the "logical" one because of the interpolation.
+     */
     private float lerpedHpRatio = 1f;
 
     /**

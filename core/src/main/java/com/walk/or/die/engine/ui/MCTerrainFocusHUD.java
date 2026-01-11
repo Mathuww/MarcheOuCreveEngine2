@@ -5,14 +5,27 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.entities.MCCharacter;
 
+/**
+ * The little blinking HUD that allows us to display whether a character is currently focused. <br>
+ * Consists of a little blinking square in each corner of the focused character.
+ */
 public class MCTerrainFocusHUD extends MCAbstractHUD {
+    /**
+     * The width of the corners.
+     */
     private final float CORNER_SIZE = 0.2f; // tile (unit viewport monde pas viewport HUD)
 
     private MCCharacter target;
 
     private Rectangle rect = new Rectangle();
 
+    /**
+     * The interval (in seconds) between blinks.
+     */
     private final float BLINKING_INTERVAL = 0.65f;
+    /**
+     * Stores elapsed time since the last interval was over.
+     */
     private float blinkingTime = 0f;
 
     private boolean display = true;

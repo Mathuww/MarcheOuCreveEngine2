@@ -5,14 +5,13 @@
 MCE2 allows you to create your own tactial RPG without writing a single line of code. You only need to edit the maps & entities of your game in Tiled based on the template provided.
 
 ### Features 
-Design your own adventure :
 - Build the maps you want
 - Connect them the way you want
 - Create your own enemies
 - Create the allies that will fight them
 - Design the attacks & capacities your characters can use.
 
-Based on libGDX 1.14 & Java 17.
+MCE2 is based on libGDX 1.14 & Java 17.
 
 ## Quick start
 Before starting, ensure you've got Java 17 or newer running on your computer, as well as Python 3 installed (this is required for the packing script).
@@ -27,25 +26,28 @@ MarcheOuCreveEngine2/
 --- unpacked/
 --- packed/
 -- random_names/
-- die.py
+- walkordie.py
+- ...
 ```
+
+`walkordie.py` is the main interface for our game engine. It only has the two commands described below, and therefore only does two things : packing the game data and building a .jar executable, and running the built .jar file.
 
 All the files you will have to edit to make your game are contained within the `assets/tiled/unpacked/` directory.
 It's already filled with the data of the template game, which you can build by typing the following command :
 ```shell
-$ python3 ./die.py pack
+$ python3 ./walkordie.py pack
 ```
 
 The resulting Java executable will be built in `public/build.jar`, and can be launched easily via :
 ```shell
-$ python3 ./die.py run
+$ python3 ./walkordie.py run
 ```
 
 
 ## Overview
 
 You should start in a map in Exploration mode. It's one of the two game modes :
-- The mode you're currently in, the Exploration mode, allow you to freely move an ally with the keyboard around the map and to cross portals between worlds. As its name suggests, it's made to explore and you cannot lose any health nor die in this mode ;
+- The mode you're currently in, the Exploration mode, allows you to freely move an ally with the keyboard around the map and to cross portals between worlds. As its name suggests, it's made to explore and you cannot lose any health nor die in this mode ;
 - The Combat mode, in which allies are only controllable using a classical tactical RPG interface. In this mode, moving, attacking and other actions are obviously restricted since it's a turn-based system. It is not possible to cross portals in this game mode, for obvious reasons.
 
 Crossing the first portal brings you to a tunnel leading to another portal. This one actually brings you to a Combat map. A Combat is a succession of Allies and Enemies turns, that only ends when one of the team defeated the whole adverse team. 

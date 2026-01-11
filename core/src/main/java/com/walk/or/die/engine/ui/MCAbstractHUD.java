@@ -8,13 +8,23 @@ import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
+/**
+ * The abstract class of all HUD elements that share the need for the basic textures (black, white grey), drawing fancy rectangles and handling user input. 
+ */
 public abstract class MCAbstractHUD {
+    /**
+     * Stores the current batch to avoid passing the batch argument everywhere.
+     */
     protected SpriteBatch currentBatch;
     protected final MCSharedAssets sharedAssets = MCSharedAssets.get();
     protected TextureRegion blackTexture;
     protected TextureRegion whiteTexture;
     protected TextureRegion greyTexture;
 
+    /**
+     * Constructs a basic HUD elements. <br>
+     * Does nothing else than storing the basic textures needed (black, white, grey).
+     */
     public MCAbstractHUD() {
         try {
             blackTexture = sharedAssets.getSavedTexture("black");

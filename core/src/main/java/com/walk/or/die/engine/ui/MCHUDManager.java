@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+/**
+ * This class makes the link between several HUD elements. <br>
+ * It also greatly helps to manage HUD input (see posBelongsToHud)
+ */
 public class MCHUDManager {
     private static MCHUDManager instance = null;
 
@@ -22,8 +26,17 @@ public class MCHUDManager {
     public FitViewport hudViewport;
     private OrthographicCamera hudCamera;
 
+    /**
+     * @see MCCharacterHUD
+     */
     private MCCharacterHUD characterHUD;
+    /**
+     * @see MCSimpleActionHUD
+     */
     private MCSimpleActionHUD simpleActionHUD;
+    /**
+     * @see MCTerrainFocusHUD
+     */
     private MCTerrainFocusHUD focusHUD;
 
     /**
@@ -111,7 +124,8 @@ public class MCHUDManager {
     }
 
     /**
-     * Determines if the position belongs to the HUD.
+     * Determines if the position belongs to the HUD. <br>
+     * It would difficult to implement the input dispatching like that without a single Manager class.
      *
      * @param pos the position
      * @return true if the position belongs to the HUD, false otherwise
@@ -122,7 +136,9 @@ public class MCHUDManager {
     }
 
     /**
-     * Handles the hover event.
+     * Handles the hover event. <br>
+     * Dispatches the same way as posBelongsToHud.
+     * @see posBelongsToHud
      *
      * @param pos the position
      */

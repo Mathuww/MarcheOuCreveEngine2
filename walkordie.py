@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 
+## Interface principale de notre moteur
+## Le script sert surtout à "pack" les données Tiled (avec TiledMapPacker)
+## tout en conservant la structure des répertoires (sinon TMP l'écrase complètement)
+
 import os
 import shutil
 import subprocess
@@ -67,7 +71,7 @@ def pack():
             
             print(f"Packing: {rel_path}")
             
-            # Écriture dans le log
+            # ecriture dans le log
             with open(PACKING_LOG, "a") as log:
                 log.write(f"Packing {rel_path}\n")
 
@@ -83,6 +87,9 @@ def pack():
             has_xvfb = shutil.which("xvfb-run") is not None
 
             if is_linux and no_display:
+                # permet à TMP de tourner sur un serveur headless
+                # (comme celui ou on a codé tout le long, c'est surtout pour ça
+                # qu'il y a ces lignes)
                 if has_xvfb:
                     cmd = ["xvfb-run", "-a"] + cmd
                 else:

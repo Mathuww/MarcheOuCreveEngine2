@@ -13,15 +13,10 @@ import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 
-/*
-si on appelle le render de cette classe,
-alors on considere que la vérification "pas de voisins qui ont une
-barre HP qui se chevauche à la mienne"
-a déjà été faite. (dans MCCharacter.renderOnGridOverlay)
-
-du coup ici on se concentre juste sur le fait d'adapter l'affichage aux limites de la caméra (X et Y)
-*/
-
+/**
+ * The HP bar displayed for each character on terrain. <br>
+ * Only displayed when the HP are below maximum HP.
+ */
 public class MCTerrainHPBar extends MCAbstractHUD {
     private final float CONTOUR_SIZE = 0.055f; // tile
     private final float BAR_HEIGHT = 0.08f; // tile

@@ -10,6 +10,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCEventBus;
 
+/**
+ * This is the HUD shown at the upper right corner. <br>
+ * It only consists of the single button. <br>
+ * The only complexity resides in managing mouse hovering. <br>
+ * A lot of the stuff here is highly similar to MCCharacterHUD, excepts the callback function.
+ * @see MCCharacterHUD
+ */
 public class MCSimpleActionHUD extends MCAbstractHUD {
     private final String FONT_FAMILY = "ariBlackAlpha";
 
@@ -39,8 +46,14 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     private boolean scrolling = false;
     private boolean shown = false;
 
+    /**
+     * Is this HUD currently hovered ? Used to adjust rendering accordingly.
+     */
     private boolean hovered = false;
 
+    /**
+     * The function to run when the button is clicked.
+     */
     private Runnable callback;
 
     private final MCEventBus bus = MCEventBus.get();
