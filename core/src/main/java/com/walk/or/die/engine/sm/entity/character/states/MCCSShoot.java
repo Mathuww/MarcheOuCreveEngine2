@@ -22,7 +22,7 @@ import com.walk.or.die.engine.ui.MCHUDManager;
 public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
 
     /**
-     * Class wich represents args needed by shoot state to start.
+     * Class which represents args needed by shoot state to start.
      */
     public static class ShootStateArgs extends MCCharacterState.StateArgs {
         MCCharacter target;
@@ -31,9 +31,9 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
 
         /**
          * The constructor.
-         * @param e - the target
-         * @param a - the used attack
-         * @param traj - path of the bullet
+         * @param e The target
+         * @param a The used attack
+         * @param traj Path of the bullet
          */
         public ShootStateArgs(MCCharacter e, MCAttack a, List<MCIntVector2> traj) {
             target = e;
@@ -45,7 +45,7 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
 
     /**
      * The constructor.
-     * @param parent
+     * @param parent The parent
      */
     public MCCSShoot(MCCharacter parent) {
         super(parent);
@@ -54,7 +54,7 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
 
     @Override
     public void update(float delta) {
-        //if (finished) changeState("idle", new MCESIdle.IdleStateArgs()); 
+        //if (finished) changeState("idle", new MCESIdle.IdleStateArgs());
     }
 
     @Override
@@ -62,6 +62,10 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
         
     }
 
+    /**
+     * Called at state entrance.
+     * @param args The shoot state arguments
+     */
     @Override
     public void enter(ShootStateArgs args) {
         super.enter(args);
@@ -90,11 +94,17 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
 
     }
 
+    /**
+     * Called at state exit.
+     */
     @Override
     public void exit() {
         super.exit();
     }
     
+    /**
+     * @param data The input command data
+     */
     @Override
     protected void inputPressed(MCInputManager.Command data) {}
 

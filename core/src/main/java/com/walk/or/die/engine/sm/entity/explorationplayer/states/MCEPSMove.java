@@ -23,17 +23,19 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     public static class MoveStateArgs extends MCExplorationPlayerState.StateArgs {
         public MCInputManager.DirectionalCommand firstData;
 
+        /**
+         * @param firstData The initial directional command.
+         */
         public MoveStateArgs(MCInputManager.DirectionalCommand firstData) {
             this.firstData = firstData;
         }
     }
 
     private Vector2 relativeMove;
-    private float speed = 4f;
     private DirectionalCommand lastCmd;
     private int nbConcurrentCommand;
 
-    private final float CAM_MOVE_SPEED = 0.022f;
+    private final float MOVE_SPEED = 2f;
 
     private Map<MCIntVector2, Boolean> currentInput;
 
@@ -41,6 +43,9 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     private float limitY;
 
 
+    /**
+     * @param parent The exploration player.
+     */
     public MCEPSMove(MCExplorationPlayer parent) {
         super(parent);
         this.name = "move";
@@ -50,6 +55,11 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         relativeMove = new Vector2(0f, 0f);
     }
 
+    /**
+     * Updates the command.
+     * @param cmd The directional command.
+     * @param action A boolean indicating whether the command is being activated or deactivated.
+     */
     private void updateCommand(MCInputManager.DirectionalCommand cmd, boolean action) {
         if(action) {
             currentInput.put(cmd.getIntVect(), true);
@@ -59,6 +69,12 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         }
     }
 
+    /**
+     * Checks if the map limit is blocked.
+     * @param projX The projected X coordinate.
+     * @param projY The projected Y coordinate.
+     * @return True if the map limit is blocked, false otherwise.
+     */
     private boolean limitMapBlocked(float projX, float projY) {
         if((relativeMove.y == 0f) && (projX == 0f || projX  >= limitX)) {
             return true;
@@ -69,6 +85,12 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         }
     }
 
+    /**
+     * Checks if a collision is blocking the movement.
+     * @param projX The projected X coordinate.
+     * @param projY The projected Y coordinate.
+     * @return True if a collision is blocking the movement, false otherwise.
+     */
     private boolean collisionBlocked(float projX, float projY) {
         float tolerance = parent.getToleranceHitbox();
 
@@ -110,10 +132,19 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         return false;
     }
 
+    /**
+     * Checks if the movement is blocked.
+     * @param projX The projected X coordinate.
+     * @param projY The projected Y coordinate.
+     * @return True if the movement is blocked, false otherwise.
+     */
     private boolean blocked(float projX, float projY) {
         return limitMapBlocked(projX, projY) || collisionBlocked(projX, projY);
     }
 
+    /**
+     * Resets the input.
+     */
     private void resetInput() {
         float[][] directions = {
             {0f, +1f}, {0f, -1f},
@@ -126,6 +157,10 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         relativeMove.y = 0f;
     }
 
+    /**
+     * Called at entrance
+     * @param args The move state arguments.
+     */
     @Override
     public void enter(MoveStateArgs args) {
         parent.playAnimation("walk");
@@ -135,6 +170,9 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         bus.on(this, "InputReleased", this::inputReleased);
     }
 
+    /**
+     * Called at exit
+     */
     @Override
     public void exit() {
         bus.off(this, "InputPressed");
@@ -142,8 +180,8 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     }
 
     /**
-     * Call when a input is pressed.
-     * @param data
+     * Called when an input is pressed.
+     * @param data The command data.
      */
     public void inputPressed(Command data) {
         if(data instanceof DirectionalCommand cmd) {
@@ -152,8 +190,8 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     }
 
     /**
-     * Call when a input is released.
-     * @param data
+     * Called when an input is released.
+     * @param data The command data.
      */
     public void inputReleased(Command data) {
         if (data instanceof DirectionalCommand cmd) {
@@ -170,6 +208,10 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         }
     }
 
+    /**
+     * Called on each frame
+     * @param delta The time delta
+     */
     @Override
     public void update(float delta) { // IL FAUT UTILISER LE DELTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         nbConcurrentCommand = 0;
@@ -189,8 +231,8 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         }
         if (relativeMove.len() > 0) relativeMove.nor();
 
-        relativeMove.x = relativeMove.x * CAM_MOVE_SPEED;
-        relativeMove.y = relativeMove.y * CAM_MOVE_SPEED;
+        relativeMove.x = relativeMove.x * MOVE_SPEED * delta;
+        relativeMove.y = relativeMove.y * MOVE_SPEED * delta;
         
         float posX = (float) parent.getX() + relativeMove.x;
         float posY = (float) parent.getY() + relativeMove.y;

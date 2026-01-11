@@ -130,6 +130,10 @@ public class MCCharacterHUD extends MCAbstractHUD {
         bus.on(this, "InputPressed", this::inputPressed);
     }
 
+    /**
+     * Scrolls to a specific target offset.
+     * @param targetOffsetY The target offset to scroll to.
+     */
     private void scrollTo(float targetOffsetY) {
         if (this.targetOffsetY == targetOffsetY)
             return;
@@ -137,6 +141,9 @@ public class MCCharacterHUD extends MCAbstractHUD {
         this.targetOffsetY = targetOffsetY;
     }
 
+    /**
+     * Hides the HUD.
+     */
     public void hide() {
         if (currentCharacter != null)
             currentCharacter.onHudVisibilityLost();
@@ -144,6 +151,9 @@ public class MCCharacterHUD extends MCAbstractHUD {
         scrollTo(SCROLL_Y);
     }
 
+    /**
+     * Shows the HUD.
+     */
     public void show() {
         HudCustomization customization = currentCharacter.getHudCustomization();
         if (!customization.canShow)
@@ -152,6 +162,10 @@ public class MCCharacterHUD extends MCAbstractHUD {
         scrollTo(0f);
     }
 
+    /**
+     * Gets the display status of the right panel.
+     * @return True if the right panel is displayed, false otherwise.
+     */
     public boolean getRightPanelDisplay() {
         if (scrolling)
             return renderRPafterScroll;
@@ -159,6 +173,10 @@ public class MCCharacterHUD extends MCAbstractHUD {
             return renderRightPanel;
     }
 
+    /**
+     * Sets the display status of the right panel.
+     * @param display True to display the right panel, false otherwise.
+     */
     public void setRightPanelDisplay(boolean display) {
         if (display && (shown || scrolling)) 
             renderRPafterScroll = display;
@@ -168,10 +186,18 @@ public class MCCharacterHUD extends MCAbstractHUD {
         }
     }
 
+    /**
+     * Gets the current character.
+     * @return The current character.
+     */
     public MCCharacter getCharacter() {
         return currentCharacter;
     }
 
+    /**
+     * Sets the current character.
+     * @param newCharacter The new character to set.
+     */
     public void setCharacter(MCCharacter newCharacter) {
         if (newCharacter == null || newCharacter.isDead()) {
             // System.out.println("simple close");
@@ -197,6 +223,11 @@ public class MCCharacterHUD extends MCAbstractHUD {
         } 
     }
 
+    /**
+     * Requests a refresh of the HUD.
+     * @param c The character to refresh the HUD for.
+     * @param reloadCarousel True to reload the carousel, false otherwise.
+     */
     public void refreshRequest(MCCharacter c, boolean reloadCarousel) {
         if (currentCharacter == null) 
             return;
@@ -215,6 +246,10 @@ public class MCCharacterHUD extends MCAbstractHUD {
         }
     }
 
+    /**
+     * Repopulates the HUD with the current character's information.
+     * @param reloadCarousel True to reload the carousel, false otherwise.
+     */
     private void repopulateHud(boolean reloadCarousel) {
         if (currentCharacter == null)
             return;
@@ -231,11 +266,19 @@ public class MCCharacterHUD extends MCAbstractHUD {
         }
     }
 
+    /**
+     * Sets the message to be displayed in the choice message text.
+     * @param text The text to set.
+     */
     public void setMessage(String text) {
         choiceMessageText.setText(text);
         choiceMessageText.startTyping();
     }
     
+    /**
+     * Handles input when a button is pressed.
+     * @param cmd The command that was pressed.
+     */
     @Override
     public void inputPressed(MCInputManager.Command cmd) {
         if (!isFullyShown())
@@ -259,6 +302,10 @@ public class MCCharacterHUD extends MCAbstractHUD {
         }
     }
 
+    /**
+     * Called on each frame.
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void update(float delta) {
         if (scrolling) {
@@ -304,10 +351,8 @@ public class MCCharacterHUD extends MCAbstractHUD {
     }
 
     /**
-     * HUD 
-     * 1/3 infos - 2/3 choix
-     * Parties infos :
-     * 1/3 sprite - 2/3 noms : HP
+     * Called on each frame.
+     * @param batch The sprite batch to render with.
      */
     @Override
     public void render(SpriteBatch batch) {
@@ -331,14 +376,26 @@ public class MCCharacterHUD extends MCAbstractHUD {
         }      
     }
 
+    /**
+     * Renders debug information.
+     */
     public void renderDebug() {
         layout.renderDebug();
     }
 
+    /**
+     * Checks if the HUD is fully shown.
+     * @return True if the HUD is fully shown, false otherwise.
+     */
     public boolean isFullyShown() {
         return shown && !scrolling && (offsetY == targetOffsetY);
     }
 
+    /**
+     * Checks if a position belongs to a HUD component.
+     * @param mousePos The position to check.
+     * @return True if the position belongs to a HUD component, false otherwise.
+     */
     public boolean posBelongsToHudComponent(Vector2 mousePos) {
         if (renderRightPanel)
             return layout.zone("characterHud").posBelongsToZone(mousePos);
@@ -346,6 +403,10 @@ public class MCCharacterHUD extends MCAbstractHUD {
             return layout.zone("infoPanel").posBelongsToZone(mousePos);
     }
 
+    /**
+     * Handles hover events.
+     * @param pos The position of the hover event.
+     */
     public void handleHover(Vector2 pos) {
         if (renderRightPanel && choiceCarousel.posBelongsToHudComponent(pos) && isFullyShown())
             choiceCarousel.handleHover(pos);
@@ -353,10 +414,17 @@ public class MCCharacterHUD extends MCAbstractHUD {
             choiceCarousel.handleHoverGone();
     }
 
+    /**
+     * Handles hover gone events.
+     */
     public void handleHoverGone() {
         choiceCarousel.handleHoverGone();
     }
 
+    /**
+     * Handles click events.
+     * @param pos The position of the click event.
+     */
     public void handleClick(Vector2 pos) {
         if (!isFullyShown())
             return;
@@ -364,6 +432,11 @@ public class MCCharacterHUD extends MCAbstractHUD {
             choiceCarousel.handleClick(pos);
     }
 
+    /**
+     * Handles scroll events.
+     * @param pos The position of the scroll event.
+     * @param dy The amount of the scroll.
+     */
     public void handleScroll(Vector2 pos, float dy) {
         if (!isFullyShown())
             return;

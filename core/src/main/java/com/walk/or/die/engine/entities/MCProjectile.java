@@ -14,7 +14,7 @@ import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**
- * An bullet entity.
+ * A bullet entity.
  */
 public class MCProjectile extends MCEntity {
     private final float COLLISION_THRESHOLD = 0.75f;
@@ -40,9 +40,9 @@ public class MCProjectile extends MCEntity {
 
     /**
      * The constructor.
-     * @param parent
-     * @param map
-     * @param entityGenericName
+     * @param parent The parent MCGame.
+     * @param map The MCTerrainMap.
+     * @param entityGenericName The entity generic name.
      */
     public MCProjectile(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
@@ -64,16 +64,16 @@ public class MCProjectile extends MCEntity {
         super.setFreeze(bool);
     }
     /**
-     * Call the callback when the run ends.
-     * @param callback
+     * Calls the callback when the run ends.
+     * @param callback The callback to be called.
      */
     public void callOnArrival(Runnable callback) {
         this.callback = callback;
     }
 
     /**
-     * Shoot the bullet towards a tile.
-     * @param targetGridPos
+     * Shoots the bullet towards a tile.
+     * @param targetGridPos The target grid position.
      */
     public void launchTo(MCIntVector2 targetGridPos) {
         playAnimation("idle");
@@ -146,6 +146,10 @@ public class MCProjectile extends MCEntity {
         super.update(delta);
     }
 
+    /**
+     * Called on each frame.
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void render(SpriteBatch batch) {
         super.render(batch);

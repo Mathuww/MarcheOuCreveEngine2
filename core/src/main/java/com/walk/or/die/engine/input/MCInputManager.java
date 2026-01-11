@@ -22,8 +22,8 @@ public class MCInputManager implements InputProcessor {
     private static MCInputManager instance = null;
 
     /**
-     * The getter.
-     * @return
+     * Gets the singleton instance.
+     * @return the singleton instance.
      */
     public static MCInputManager get() {
         if (instance == null) instance = new MCInputManager();
@@ -31,15 +31,15 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * Init the singleton.
-     * @param v
+     * Initializes the singleton.
+     * @param v The viewport to use.
      */
     public void init(Viewport v) {
         vp = v;
     }
 
     /**
-     * Command class, destinate to be extend.
+     * Command class, destined to be extended.
      */
     public static abstract class Command {}
 
@@ -51,7 +51,7 @@ public class MCInputManager implements InputProcessor {
 
         /**
          * The creator, by a (MC)vector.
-         * @param v
+         * @param v The MCIntVector2 to use.
          */
         public DirectionalCommand(MCIntVector2 v) {
             this.v = v;
@@ -59,16 +59,16 @@ public class MCInputManager implements InputProcessor {
 
         /**
          * The creator, by int.
-         * @param x
-         * @param y
+         * @param x The x coordinate.
+         * @param y The y coordinate.
          */
         public DirectionalCommand(int x, int y) {
             this.v = new MCIntVector2(x, y);
         }
         
         /**
-         * Get the direction pressed.
-         * @return
+         * Gets the direction pressed.
+         * @return the direction pressed.
          */
         public MCIntVector2 getIntVect() {
             return this.v;
@@ -83,15 +83,15 @@ public class MCInputManager implements InputProcessor {
 
         /**
          * The creator.
-         * @param v
+         * @param v The MCIntVector2 to use.
          */
         public ClickTileCommand(MCIntVector2 v) {
             this.v = v;
         }
 
         /**
-         * Return the tile position.
-         * @return
+         * Returns the tile position.
+         * @return the tile position.
          */
         public MCIntVector2 getIntVect() {
             return this.v;
@@ -123,6 +123,9 @@ public class MCInputManager implements InputProcessor {
 
         public Type type;
 
+        /**
+         * @param type The type of HudCommand.
+         */
         public HudCommand(Type type) {
             this.type = type;
         }
@@ -139,7 +142,7 @@ public class MCInputManager implements InputProcessor {
 
         /**
          * The creator.
-         * @param key
+         * @param key The key code.
          */
         public OtherKeyCommand(int key) {
             this.key = key;
@@ -156,6 +159,9 @@ public class MCInputManager implements InputProcessor {
     public static class CameraZoomCommand extends Command {
         public float scrollDelta;
 
+        /**
+         * @param scroll The scroll value.
+         */
         public CameraZoomCommand(float scroll) {
             scrollDelta = scroll;
         }
@@ -165,6 +171,10 @@ public class MCInputManager implements InputProcessor {
         public float deltaX;
         public float deltaY;
 
+        /**
+         * @param dx The delta X value.
+         * @param dy The delta Y value.
+         */
         public CameraPanCommand(float dx, float dy) {
             deltaX = dx;
             deltaY = dy;
@@ -172,14 +182,14 @@ public class MCInputManager implements InputProcessor {
     }
     
     /**
-     * A class to store functions to call when the mouse move.
+     * A class to store functions to call when the mouse moves.
      */
     public static class MouseListener {
         public Consumer<Vector2> mouseMovedFunction;
 
         /**
          * The constructor.
-         * @param consumer
+         * @param consumer The consumer to call when the mouse moves.
          */
         public MouseListener(Consumer<Vector2> consumer) {
             this.mouseMovedFunction = consumer;
@@ -201,8 +211,8 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * Call the given function when the mouse move.
-     * @param consumer
+     * Calls the given function when the mouse moves.
+     * @param consumer The mouse listener.
      */
     public void connectMouseMoved(MouseListener consumer) {
         if (mouseMovedFunction != null) 
@@ -211,8 +221,8 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * Stop to call the function
-     * @param consumer
+     * Stops calling the function.
+     * @param consumer The mouse listener.
      */
     public void disconnectMouseMoved(MouseListener consumer) {
         mouseMovedFunction = null;
@@ -384,6 +394,10 @@ public class MCInputManager implements InputProcessor {
         mouseMoved(x, y);
     }
 
+    /**
+     * Asks for the world mouse position.
+     * @return the world mouse position.
+     */
     public Vector3 askWorldMousePos() {
         Vector3 worldCoords = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         //System.out.println(vp.getScreenWidth() + vp.getScreenHeight());

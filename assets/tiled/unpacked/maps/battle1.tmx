@@ -103,11 +103,6 @@
     <property name="name" value="enemy"/>
    </properties>
   </object>
-  <object id="7" x="164.636" y="211.364" width="9.54545" height="9.81818">
-   <properties>
-    <property name="name" value="explorationPlayer"/>
-   </properties>
-  </object>
  </objectgroup>
  <objectgroup id="5" name="Portals">
   <properties>

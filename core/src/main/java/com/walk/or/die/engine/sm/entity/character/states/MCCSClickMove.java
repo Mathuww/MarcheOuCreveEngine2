@@ -28,7 +28,7 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
 
         /**
          * The constructor.
-         * @param target - The targeted pos.
+         * @param target - The targeted position.
          * @param path - The path to follow.
          */
         public MoveStateArgs(MCIntVector2 target, List<MCIntVector2> path) {
@@ -48,7 +48,7 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
 
     /**
      * The constructor.
-     * @param parent
+     * @param parent - The parent character.
      */
     public MCCSClickMove(MCCharacter parent) {
         super(parent);
@@ -56,6 +56,10 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
         this.name = "click_move";
     }
 
+    /**
+     * Called on each frame.
+     * @param delta - The time delta.
+     */
     @Override
     public void update(float delta) {
         if (deplacement.x != 0f) {
@@ -90,6 +94,10 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
         }
     }
 
+    /**
+     * Called at state entrance.
+     * @param args - The arguments for the move state.
+     */
     @Override
     public void enter(MoveStateArgs args) {
         if (parent instanceof MCAlly ally)
@@ -106,6 +114,9 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
         super.enter(args);
     }
 
+    /**
+     * Called at state exit.
+     */
     @Override
     public void exit() {
         super.exit();
@@ -118,7 +129,7 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
     }
 
     /**
-     * Process the next movement. Change state to idle if finished.
+     * Processes the next movement. Changes state to idle if finished.
      */
     private void nextMove() {
         if (movements.size() == 0) {
@@ -151,6 +162,11 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
         }
     }
     
+    /**
+     * Plays the given animation or a secondary one if the first one does not exist.
+     * @param anim1 - The primary animation name.
+     * @param anim2 - The secondary animation name.
+     */
     private void playAnimationOr(String anim1, String anim2) {
         if (!parent.playAnimationWithoutReset(anim1))
             parent.playAnimationWithoutReset(anim2);

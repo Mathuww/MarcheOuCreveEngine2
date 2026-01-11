@@ -15,6 +15,10 @@ public class MCCSSpeedShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
         this.name = "speedShoot";
     }
 
+    /**
+     * Called at state entrance.
+     * @param args the shoot state arguments.
+     */
     @Override
     public void enter(MCCSShoot.ShootStateArgs args) {
         super.enter(args);
@@ -40,6 +44,9 @@ public class MCCSSpeedShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
         }
     }
     
+    /**
+     * Called at state exit.
+     */
     @Override
     public void exit() {
         bus.emit("unfreezeGame", null);

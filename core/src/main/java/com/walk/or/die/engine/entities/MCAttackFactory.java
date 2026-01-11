@@ -17,14 +17,14 @@ import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
 
 /**
- * An other singleton factory, for attacks this time.
+ * Another singleton factory, for attacks this time.
  */
 public class MCAttackFactory {
     private static MCAttackFactory instance = null;
 
     /**
-     * The getter.
-     * @return
+     * Gets the instance.
+     * @return the singleton instance.
      */
     public static MCAttackFactory get() {
         if (instance == null) instance = new MCAttackFactory();
@@ -42,9 +42,9 @@ public class MCAttackFactory {
     }
 
     /**
-     * Init the singleton.
-     * @param assetManager
-     * @throws InvalidDataException
+     * Initializes the singleton.
+     * @param assetManager the asset manager.
+     * @throws InvalidDataException if there is invalid data.
      */
     public void init(AssetManager assetManager) throws InvalidDataException {
         this.assetManager = assetManager;
@@ -61,11 +61,11 @@ public class MCAttackFactory {
     }
 
     /**
-     * Create a new attack instance.
-     * @param parent
-     * @param attackName
-     * @return
-     * @throws Exception
+     * Builds a new attack instance.
+     * @param parent the parent entity.
+     * @param attackName the attack name.
+     * @return the new attack instance.
+     * @throws Exception if there is an error.
      */
     public MCAttack build(MCEntity parent, String attackName) throws Exception {
         if (assetManager == null) 
@@ -125,6 +125,9 @@ public class MCAttackFactory {
         return attack;
     }
     
+    /**
+     * Disposes of the resources.
+     */
     public void dispose() {
         for (MCMap m : mapCache.values())
             m.dispose();

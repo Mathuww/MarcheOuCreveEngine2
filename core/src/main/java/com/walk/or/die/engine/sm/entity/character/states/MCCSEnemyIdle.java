@@ -17,7 +17,7 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
 
 /**
- * The idle state for ennemies.<br>
+ * The idle state for enemies.<br>
  * Name = "idle".<br>
  * This is a non-blocking state.
  */
@@ -25,6 +25,10 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
 
     private MCAttack displayedAttack;
 
+    /**
+     * Constructs a new MCCSEnemyIdle state.
+     * @param parent The parent character.
+     */
     public MCCSEnemyIdle(MCCharacter parent) {
         super(parent);
         this.name = "idle";
@@ -66,17 +70,17 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     }
 
     /**
-     * Launch move action.
-     * @param pos - to move on.
+     * Launches move action.
+     * @param pos The position to move on.
      */
     public void play(MCIntVector2 pos) {
         changeState("click_move", new MCCSClickMove.MoveStateArgs(pos, MCPathfinder.get().getPath(parent.getTilePosition(), pos)));
     }
 
     /**
-     * Launch shoot action.
-     * @param ally - targeted.
-     * @param traj - of the bullet.
+     * Launches shoot action.
+     * @param ally The targeted ally.
+     * @param traj The trajectory of the bullet.
      */
     public void shoot(MCAlly ally, List<MCIntVector2> traj) {
         changeState("shoot", new MCCSShoot.ShootStateArgs((MCCharacter)ally, parent.getAttack(), traj));
@@ -118,6 +122,9 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         } 
     }
 
+    /**
+     * Called when hud visibility is lost.
+     */
     @Override
     public void onHudVisibilityLost() {
         if (displayedAttack != null) {

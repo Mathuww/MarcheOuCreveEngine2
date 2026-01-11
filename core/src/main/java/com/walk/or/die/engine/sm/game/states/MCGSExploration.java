@@ -18,11 +18,19 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
         this.name = "Exploration";
     }
 
+    /**
+     * Called on each frame.
+     */
     @Override
     public void update(float delta) {
         //System.out.println("On respire le bon air de la nature");
     }
 
+    /**
+     * Called at state entrance.
+     * Sets up camera & HUD.
+     * @param args The arguments passed to the state.
+     */
     @Override
     public void enter(ExplStateArgs args) {
         super.enter(args);
@@ -39,13 +47,21 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
         hudManager.getSimpleHud().enable();
         hudManager.getCharacterHud().hide();
     }
-
+    
+    /**
+     * Called at state exit.
+     */
     @Override
     public void exit() {
         bus.off(this, "InputPressed");
         super.exit();
     }
     
+    /**
+     * Handles input when a key is pressed.
+     *
+     * @param data The input command data.
+     */
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
         if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
@@ -56,4 +72,12 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
         }
     }
 
+    /**
+     * Called on each frame.
+     * @param delta The time in seconds since the last frame.
+     */
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+    }
 }

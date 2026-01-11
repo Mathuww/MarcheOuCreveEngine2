@@ -78,7 +78,7 @@ run {
 
 // === JAR configuration ===
 // Répertoire de sortie constant pour les JARs publics
-def publicOutputDir = file("/home/gaia/dev/java/pcoo/walkordie/public")
+def publicOutputDir = file("../public")
 
 // === JAR principal ===
 tasks.named('jar', Jar) {

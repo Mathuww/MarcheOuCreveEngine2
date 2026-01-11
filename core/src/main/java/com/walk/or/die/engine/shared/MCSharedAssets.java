@@ -25,8 +25,8 @@ public class MCSharedAssets {
     private static MCSharedAssets instance = null;
 
     /**
-     * Get the singleton instance.
-     * @return
+     * Gets the singleton instance.
+     * @return The singleton instance.
      */
     public static MCSharedAssets get() {
         if (instance == null) instance = new MCSharedAssets();
@@ -42,11 +42,11 @@ public class MCSharedAssets {
     private MCSharedAssets() {}
 
     /**
-     * Init the singleton.
-     * @param miscMapPath
-     * @param fontPath
-     * @param drh
-     * @throws Exception
+     * Initializes the singleton.
+     * @param miscMapPath The path to the misc map.
+     * @param fontPath The path to the font.
+     * @param drh The asset manager.
+     * @throws Exception if an error occurs during initialization.
      */
     public void init(String miscMapPath, String fontPath, AssetManager drh) throws Exception {
         MCMap miscTilesMap = new MCMap(miscMapPath, drh);
@@ -122,10 +122,10 @@ public class MCSharedAssets {
     }
 
     /**
-     * Get a tiled from his name.
-     * @param name
-     * @return
-     * @throws Exception if the tile doesn't exist or the name is false.
+     * Gets a tile from his name.
+     * @param name The name of the tile.
+     * @return The tiled map tile.
+     * @throws Exception If the tile doesn't exist or the name is false.
      */
     public TiledMapTile getSavedTile(String name) throws Exception {
         TiledMapTile tile = savedTiles.get(name);
@@ -135,10 +135,10 @@ public class MCSharedAssets {
     }
 
     /**
-     * Get a texture from his name.
-     * @param name
-     * @return
-     * @throws Exception if the texture doesn't exist or the name is false.
+     * Gets a texture from its name.
+     * @param name The name of the texture.
+     * @return The texture region.
+     * @throws Exception If the texture doesn't exist or the name is false.
      */
     public TextureRegion getSavedTexture(String name) throws Exception {
         TextureRegion texture = savedTextures.get(name);
@@ -148,10 +148,10 @@ public class MCSharedAssets {
     }
 
     /**LEFT
-     * Get a font from his name.
-     * @param name
-     * @return
-     * @throws Exception if the font doesn't exist or the name is false.
+     * Gets a font from its name.
+     * @param name The name of the font.
+     * @return The bitmap font.
+     * @throws Exception If the font doesn't exist or the name is false.
      */
     public BitmapFont getSavedFont(String name) throws Exception {
         BitmapFont font = savedBitmapFonts.get(name);
@@ -160,6 +160,9 @@ public class MCSharedAssets {
         return font;
     }
 
+    /**
+     * Disposes of all saved textures and fonts.
+     */
     public void dispose() {
         for (TextureRegion t : savedTextures.values()) {
             if (t.getTexture() != null)

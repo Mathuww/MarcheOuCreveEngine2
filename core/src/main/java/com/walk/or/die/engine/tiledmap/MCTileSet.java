@@ -11,27 +11,27 @@ public class MCTileSet extends TiledMapTileSet {
     private TiledMapTileSet ts;
 
     /**
-     * The constructor
-     * @param ts
+     * The constructor.
+     * @param ts The TiledMapTileSet to wrap.
      */
     public MCTileSet(TiledMapTileSet ts) {
         this.ts = ts;
     }
 
     /**
-     * Get a a tile from his type
-     * @param type string
-     * @return
+     * Gets a tile from its type.
+     * @param type The type string.
+     * @return The TiledMapTile that matches the given type.
      */
     public TiledMapTile getTileByType(String type) {
         return getTileByProperty("type", type);
     }
     
     /**
-     * Return a tile with the given property
-     * @param property
-     * @param value
-     * @return
+     * Returns a tile with the given property.
+     * @param property The property to search for.
+     * @param value The value of the property.
+     * @return The TiledMapTile with the given property and value.
      */
     public TiledMapTile getTileByProperty(String property, String value) {
         for (TiledMapTile tile : this.ts) {

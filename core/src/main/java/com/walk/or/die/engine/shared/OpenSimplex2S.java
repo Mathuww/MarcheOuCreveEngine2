@@ -31,6 +31,10 @@ public class OpenSimplex2S {
 
     /**
      * 2D OpenSimplex2S/SuperSimplex noise, standard lattice orientation.
+     * @param seed The seed value.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     * @return The noise value at the given coordinates.
      */
     public static float noise2(long seed, double x, double y) {
 
@@ -47,6 +51,10 @@ public class OpenSimplex2S {
      * Probably slightly less optimal for heightmaps or continent maps,
      * unless your map is centered around an equator. It's a slight
      * difference, but the option is here to make it easy.
+     * @param seed The seed value.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     * @return The noise value at the given coordinates.
      */
     public static float noise2_ImproveX(float seed, float x, float y) {
 
@@ -59,6 +67,10 @@ public class OpenSimplex2S {
 
     /**
      * 2D  OpenSimplex2S/SuperSimplex noise base.
+     * @param seed The seed value.
+     * @param xs The skewed x coordinate.
+     * @param ys The skewed y coordinate.
+     * @return The noise value at the given coordinates.
      */
     private static float noise2_UnskewedBase(long seed, double xs, double ys) {
 
@@ -169,6 +181,15 @@ public class OpenSimplex2S {
      * Utility
      */
 
+    /**
+     * Calculates the gradient.
+     * @param seed The seed value.
+     * @param xsvp The x seed prime.
+     * @param ysvp The y seed prime.
+     * @param dx The x delta.
+     * @param dy The y delta.
+     * @return The gradient value.
+     */
     private static float grad(long seed, long xsvp, long ysvp, float dx, float dy) {
         long hash = seed ^ xsvp ^ ysvp;
         hash *= HASH_MULTIPLIER;
@@ -177,6 +198,11 @@ public class OpenSimplex2S {
         return GRADIENTS_2D[gi | 0] * dx + GRADIENTS_2D[gi | 1] * dy;
     }
 
+    /**
+     * Calculates the fast floor.
+     * @param x The x value.
+     * @return The fast floor value.
+     */
     private static int fastFloor(double x) {
         int xi = (int)x;
         return x < xi ? xi - 1 : xi;

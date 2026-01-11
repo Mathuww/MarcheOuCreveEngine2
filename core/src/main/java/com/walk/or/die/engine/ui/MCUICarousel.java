@@ -21,6 +21,13 @@ public class MCUICarousel {
         public float offsetX;
         public float width;
 
+        /**
+         * CarouselItem constructor.
+         *
+         * @param name The name of the item.
+         * @param onValidate The runnable to validate.
+         * @param onFocus The runnable to focus.
+         */
         public CarouselItem(String name, Runnable onValidate, Runnable onFocus) {
             this.name = name;
             this.onValidate = onValidate;
@@ -57,6 +64,13 @@ public class MCUICarousel {
     private TextureRegion gradientTexture;
     private TextureRegion greyTexture;
 
+    /**
+     * MCUICarousel constructor.
+     *
+     * @param parent The parent HUD.
+     * @param font The font.
+     * @param zone The zone.
+     */
     public MCUICarousel(MCAbstractHUD parent, BitmapFont font, Zone zone) {
         this.parent = parent;
         this.zone = zone;
@@ -80,6 +94,9 @@ public class MCUICarousel {
         }
     }
 
+    /**
+     * Clears the actions.
+     */
     public void clearActions() {
         this.items.clear();
 
@@ -89,10 +106,21 @@ public class MCUICarousel {
         textComponent.setText(textIfEmpty);
     }
 
+    /**
+     * Sets the empty text.
+     *
+     * @param t The text to set when the carousel is empty.
+     */
     public void setEmptyText(String t) {
         textIfEmpty = t;
     }
 
+    /**
+     * Loads the items.
+     *
+     * @param items The list of carousel items.
+     * @param firstIndex The index of the first item.
+     */
     public void loadItems(List<CarouselItem> items, int firstIndex) {
         clearActions();
         if (items.size() == 0) {
@@ -134,6 +162,9 @@ public class MCUICarousel {
         updateGeometry();
     }
 
+    /**
+     * Selects the next item.
+     */
     public void next() {
         if (items.isEmpty())
             return;
@@ -149,6 +180,9 @@ public class MCUICarousel {
         updateGeometry();
     }
 
+    /**
+     * Selects the previous item.
+     */
     public void previous() {
         if (items.isEmpty())
             return;
@@ -164,6 +198,9 @@ public class MCUICarousel {
         updateGeometry();
     }
 
+    /**
+     * Validates the current item.
+     */
     public void validate() {
         if (items.isEmpty())
             return;
@@ -171,6 +208,9 @@ public class MCUICarousel {
             items.get(currentIndex).onValidate.run();
     }
 
+    /**
+     * Updates the geometry.
+     */
     public void updateGeometry() {
         if (items.isEmpty()) {
             targetOffsetX = 0f;
@@ -190,6 +230,11 @@ public class MCUICarousel {
         // y et height bougent pas, on reste centrés verticalement
     }
 
+    /**
+     * Called on each frame
+     *
+     * @param delta The delta time
+     */
     public void update(float delta) {
         blinkingTime += delta;
         if (blinkingTime >= BLINKING_INTERVAL) {
@@ -231,6 +276,11 @@ public class MCUICarousel {
         return (Math.abs(targetOffsetX - offsetX) < INTERACT_OFFSET_TOLERANCE);
     }
 
+    /**
+     * Called on each frame
+     *
+     * @param delta The delta time
+     */
     public void render(SpriteBatch batch) {
         if (closeEnoughToCenter() && !items.isEmpty() && parent.isFullyShown()) {
             if (focusedItemHovered)
@@ -242,10 +292,21 @@ public class MCUICarousel {
         edgeGradient(batch);
     }
 
+    /**
+     * Checks if a position belongs to the HUD component.
+     *
+     * @param pos The position to check.
+     * @return True if the position belongs to the HUD component, false otherwise.
+     */
     public boolean posBelongsToHudComponent(Vector2 pos) {
         return zone.posBelongsToZone(pos);
     }
 
+    /**
+     * Handles hover.
+     *
+     * @param pos The position of the cursor.
+     */
     public void handleHover(Vector2 pos) {
         if (focusedItemRect.contains(pos))
             focusedItemHovered = true;
@@ -253,10 +314,18 @@ public class MCUICarousel {
             focusedItemHovered = false;
     }
 
+    /**
+     * Handles when the hover is gone.
+     */
     public void handleHoverGone() {
         focusedItemHovered = false;
     }
 
+    /**
+     * Handles a click.
+     *
+     * @param pos The position of the click.
+     */
     public void handleClick(Vector2 pos) {
         if (!closeEnoughToCenter())
             return;
@@ -273,6 +342,11 @@ public class MCUICarousel {
         }
     }
 
+    /**
+     * Handles a scroll event.
+     *
+     * @param dy The scroll amount.
+     */
     public void handleScroll(float dy) {
         if (targetOffsetX != offsetX)
             return;

@@ -33,8 +33,8 @@ public class MCMoveDisplay {
 
     /**
      * The constructor.
-     * @param parent
-     * @throws Exception
+     * @param parent The parent MCCharacter.
+     * @throws Exception If an error occurs during initialization.
      */
     public MCMoveDisplay(MCCharacter parent) throws Exception {
         this.parent = parent;
@@ -43,7 +43,7 @@ public class MCMoveDisplay {
     }
 
     /**
-     * Update the tiles to show.
+     * Updates the tiles to show.
      */
     public void computeValidTilesDisplay() {
         //System.out.println("updating attack");
@@ -70,15 +70,15 @@ public class MCMoveDisplay {
     }
 
     /**
-     * Erase trajectories.
+     * Erases trajectories.
      */
     public void clearTrajectory() {
         trajectorySprites.clear();
     }
 
     /**
-     * Show a trajectory.
-     * @param traj
+     * Shows a trajectory.
+     * @param traj The list of MCIntVector2 representing the trajectory.
      */
     public void showTrajectory(List<MCIntVector2> traj) {
         trajectorySprites.clear();
@@ -95,8 +95,8 @@ public class MCMoveDisplay {
     }
 
     /**
-     * Render (call each frame)
-     * @param batch
+     * Called on each frame
+     * @param batch The sprite batch used for rendering.
      */
     public void render(SpriteBatch batch) {
         if (!display) return;

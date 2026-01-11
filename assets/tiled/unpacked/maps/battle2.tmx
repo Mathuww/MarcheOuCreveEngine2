@@ -216,11 +216,6 @@
     <property name="name" value="enemy"/>
    </properties>
   </object>
-  <object id="19" x="82.7347" y="20.8106" width="6.36364" height="6.54545">
-   <properties>
-    <property name="name" value="explorationPlayer"/>
-   </properties>
-  </object>
   <object id="20" x="277.318" y="3.22727" width="6.36364" height="6.54545">
    <properties>
     <property name="name" value="ally"/>

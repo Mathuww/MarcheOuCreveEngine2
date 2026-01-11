@@ -9,7 +9,7 @@ import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
  * Abstract class for state.
- * @param <T> type of arguments' state
+ * @param <T> Type of arguments' state
  */
 public abstract class MCState<T extends MCState.StateArgs> {
 
@@ -49,56 +49,55 @@ public abstract class MCState<T extends MCState.StateArgs> {
     }
 
     /**
-     * Getter name of state
-     * @return name
+     * Gets the name of the state.
+     * @return The name of the state
      */
     public String getName() {
         return name;
     }
 
     /**
-     * @see MCStateMachine
-     * @param delta
+     * Called on each frame
+     * @param delta the time delta
      */
     public abstract void update(float delta);
 
     /**
-     * @see MCStateMachine
-     * @param batch
+     * Called on each frame
+     * @param batch the sprite batch
      */
     public abstract void render(SpriteBatch batch);
 
     /**
-     * @see MCStateMachine
-     * @param batch
+     * @param batch the sprite batch
      */
     public abstract void renderEffects(SpriteBatch batch);
 
     /**
-     * Call when the state starts, become the current state.
-     * @param args
+     * Called at state entrance
+     * @param args the arguments
      */
     public abstract void enter(T args);
 
     /**
-     * Call when the state ends, loses the current state.
+     * Called at state exit
      */
     public abstract void exit();
 
     /**
-     * Connect easely a method to a event.
-     * @param <U>
-     * @param eventName
-     * @param listener
+     * Connects easily a method to an event.
+     * @param <U> the type of the listener
+     * @param eventName the name of the event
+     * @param listener the listener
      */
     protected <U> void listen(String eventName, Consumer<U> listener) {
         bus.on(this, eventName, listener);
     }
 
     /**
-     * Change the state, and call a new one with its needed argument.
-     * @param newState
-     * @param args
+     * Changes the state, and calls a new one with its needed argument.
+     * @param newState the new state
+     * @param args the state arguments
      */
     protected abstract void changeState(String newState, StateArgs args);
 }

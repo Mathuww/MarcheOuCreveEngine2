@@ -17,11 +17,22 @@ public class MCSpeedShoot extends MCEffects {
 
     private boolean hasShoot = false;
 
+    /**
+     * Constructs a new MCSpeedShoot object.
+     *
+     * @param parent The parent character.
+     * @param displayName The display name of the effect.
+     */
     public MCSpeedShoot(MCCharacter parent, String displayName) {
         super(parent, displayName);
         MCEventBus.get().on(this, "EntityTileReached", this::tileReached);
     }
 
+    /**
+     * Handles the tile reached event.
+     *
+     * @param args The tile reached arguments.
+     */
     private void tileReached(MCEntity.TileReachedArgs args) {
         if (hasShoot) return ;
         this.args = args;
@@ -35,6 +46,11 @@ public class MCSpeedShoot extends MCEffects {
         }
     }
 
+    /**
+     * Delays the shoot action.
+     *
+     * @param n The object.
+     */
     private void delay(Object n) {
         if (hasShoot) return ;
         if (parent.isFreeze()) return;
@@ -42,6 +58,9 @@ public class MCSpeedShoot extends MCEffects {
         shoot();
     }
 
+    /**
+     * Performs the shoot action.
+     */
     private void shoot() {
         System.out.println("Shoot");
         List<MCIntVector2> list = MCPathfinder.get().getBestTrajectory(parent.getTilePosition(), args.tile);
@@ -54,6 +73,11 @@ public class MCSpeedShoot extends MCEffects {
         }
     }
 
+    /**
+     * Sets the dispose state of the effect.
+     *
+     * @param bool The dispose state.
+     */
     @Override
     public void setDispose(boolean bool) {
         if (bool) {
@@ -63,6 +87,9 @@ public class MCSpeedShoot extends MCEffects {
         super.setDispose(bool);
     }
 
+    /**
+     * Called on a new turn.
+     */
     @Override
     public void onNewTurn() {
         setDispose(true);

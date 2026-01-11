@@ -1,10 +1,13 @@
 package com.walk.or.die.engine.exceptions;
 
 /**
- * Throw this exception when there too many exceptions.<br>
- * DISCLAIMER : Don't throw the TooManyExceptionsException due to a TooManyExceptionsException, you would be stuck in a infinit circle of TooManyExceptionsException.
+ * Throws this exception when there are too many exceptions.<br>
+ * DISCLAIMER : Don't throw the TooManyExceptionsException due to a TooManyExceptionsException, you would be stuck in an infinite circle of TooManyExceptionsException.
  */
 public class TooManyExceptionsException extends Exception {
+    /**
+     * @param msg The message.
+     */
     public TooManyExceptionsException(String msg) {
         super("error : too many acurrate exceptions have occured, " + msg);
     }

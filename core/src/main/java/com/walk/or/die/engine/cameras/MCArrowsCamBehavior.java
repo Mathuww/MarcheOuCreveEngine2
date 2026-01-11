@@ -17,7 +17,7 @@ import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 
 /**
- * Behavioral class which allows the player to control the camera with the arrows.
+ * Represents a behavioral class that allows the player to control the camera with the arrows.
  */
 public class MCArrowsCamBehavior extends MCCameraBehavior {
     private final float CAM_MOVE_SPEED = 0.05f;
@@ -31,12 +31,15 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
     private Map<MCIntVector2, Boolean> currentInput;
 
     /**
-     * The constructor.
+     * Constructs a new instance of the arrow camera behavior.
      */
     public MCArrowsCamBehavior() {
         currentInput = new HashMap<>();
     }
 
+    /**
+     * Called at state entrance.
+     */
     @Override
     public void enter() {
         int[][] directions = {
@@ -49,12 +52,16 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         MCEventBus bus = MCEventBus.get();
     }
 
+    /**
+     * Called at state exit.
+     */
     @Override
     public void exit() {}
 
     /**
-     * Call when a input is pressed.
-     * @param data
+     * Handles when an input is pressed.
+     * @param gdxCam The LibGDX OrthographicCamera.
+     * @param data The input command data.
      */
     @Override
     public void handleInputPressed(OrthographicCamera gdxCam, Command data) {
@@ -65,7 +72,7 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         if(data instanceof DirectionalCommand cmd) {
             currentInput.put(cmd.getIntVect(), true);
         } else if (data instanceof CameraZoomCommand zoomCmd) {
-            System.out.println("received zoom cdm");
+            //System.out.println("received zoom cdm");
             targetZoom = gdxCam.zoom + camManager.ZOOM_STEP * zoomCmd.scrollDelta;
             targetZoom = MathUtils.clamp(targetZoom, camManager.ZOOM_MIN, camManager.ZOOM_MAX);
         } else if (data instanceof CameraPanCommand panCmd) {
@@ -90,8 +97,8 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
     }
 
     /**
-     * Call when a input is released.
-     * @param data
+     * Handles when an input is released.
+     * @param data The input command data.
      */
     public void handleInputReleased(Command data) {
         if (data instanceof DirectionalCommand cmd) {
@@ -99,6 +106,10 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         } 
     }
 
+    /**
+     * Moves to the target position by interpolating.
+     * @param pos The target position.
+     */
     @Override
     public void interpolateTo(Vector2 pos) {
         targetX = pos.x;
@@ -106,6 +117,11 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
         translating = true;
     }
 
+    /**
+     * Called on each frame.
+     * @param gdxCam The LibGDX OrthographicCamera.
+     * @param delta The time since the last frame (in seconds).
+     */
     @Override
     public void update(OrthographicCamera gdxCam, float delta) {
         MCCameraManager camManager = MCCameraManager.get();

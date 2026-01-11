@@ -16,14 +16,14 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
- * A singleton who manages all the entity in the game.
+ * A singleton that manages all the entities in the game.
  */
 public class MCEntityManager {
     private static MCEntityManager instance = null;
 
     /**
-     * The getter.
-     * @return
+     * Gets the instance.
+     * @return the instance
      */
     public static MCEntityManager get() {
         if (instance == null) instance = new MCEntityManager();
@@ -35,8 +35,8 @@ public class MCEntityManager {
     private MCGame parent;
 
     /**
-     * Init the singleton
-     * @param game
+     * Initializes the singleton.
+     * @param game the game instance
      */
     public void init(MCGame game) {
         parent = game;
@@ -51,10 +51,10 @@ public class MCEntityManager {
     private Array<Sprite> corpses = new Array<>();
 
     /**
-     * Create a projectile entity.
-     * @param projType
-     * @return
-     * @throws Exception
+     * Creates a projectile entity.
+     * @param projType the projectile type
+     * @return the created projectile
+     * @throws Exception if an error occurs during projectile creation
      * @see MCProjectile
      */
     public MCProjectile buildProjectile(String projType) throws Exception {
@@ -73,6 +73,10 @@ public class MCEntityManager {
         return proj;
     }
 
+    /**
+     * Freezes all entities except the specified one.
+     * @param except the entity to exclude from freezing
+     */
     public void freezeAll(MCEntity except) {
         System.out.println("Freeze");
         for (MCEntity e: entities) {
@@ -80,6 +84,10 @@ public class MCEntityManager {
         }
     }
 
+    /**
+     * Unfreezes all entities.
+     * @param c the object that triggered the unfreeze
+     */
     public void unfreezeAll(Object c) {
         System.out.println("Unfreeze");
         for (MCEntity e: entities) {
@@ -88,16 +96,16 @@ public class MCEntityManager {
     }
     
     /**
-     * Remove an entity.
-     * @param e
+     * Removes an entity.
+     * @param e the entity to remove
      */
     public void kill(MCEntity e) {
         toKill.add(e);
     }
 
     /**
-     * Remove an entity, and show his corpse.
-     * @param e
+     * Removes an entity and shows its corpse.
+     * @param e the entity to remove
      */
     public void killAndKeepCorpse(MCEntity e) {
         corpses.add(e.getSprite());
@@ -105,8 +113,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Add a new entity.
-     * @param e
+     * Adds a new entity.
+     * @param e the entity to add
      */
     public void addEntity(MCEntity e) {
         toAdd.add(e);
@@ -114,8 +122,8 @@ public class MCEntityManager {
     }
 
     /**
-     * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-     * @param e
+     * Adds exploration entities.
+     * @param entities the set of entities to add
      */
     public void addExplorationEntities(Set<MCEntity> entities) {
         Set<MCAlly> list = new HashSet<>();
@@ -130,19 +138,21 @@ public class MCEntityManager {
         
         MCAlly chosen = allies.iterator().next();
         MCExplorationPlayer player = new MCExplorationPlayer(chosen);
+        player.onSpawn();
 
+        System.out.println("adding exp player " + player.getId());
         addEntity(player);
 
         for (MCEntity e : entities) {
-            if (!(e instanceof MCEnemy enemy) || !(e instanceof MCAlly ally)) {
+            if (!(e instanceof MCEnemy enemy) && !(e instanceof MCAlly ally)) {
                 addEntity(e);
             }
         }
     }
 
     /**
-     * Add a set of entities.
-     * @param e
+     * Adds a set of entities.
+     * @param e the set of entities to add
      */
     public void addAllEntities(Set<MCEntity> e) {
         toAdd.addAll(e);
@@ -150,16 +160,16 @@ public class MCEntityManager {
     }
 
     /**
-     * Get all entities in game.
-     * @return
+     * Gets all entities in the game.
+     * @return the set of entities
      */
     public Set<MCEntity> getEntities() {
         return this.entities;
     }
 
     /**
-     * Get all MCAllies in the game.
-     * @return
+     * Gets all MCAllies in the game.
+     * @return the set of allies
      * @see MCAlly
      */
     public Set<MCAlly> getAllies() {
@@ -175,8 +185,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Get all MCEnnemies in the game.
-     * @return
+     * Gets all MCEnemies in the game.
+     * @return the set of enemies
      */
     public Set<MCEnemy> getEnemies() {
         Set<MCEnemy> list = new HashSet<>();
@@ -191,8 +201,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Get the MCExplorationPlayer (unique in theory)
-     * @return
+     * Gets the MCExplorationPlayer (unique in theory).
+     * @return the exploration player
      * @see MCExplorationPlayer
      */
     public MCExplorationPlayer getExplorationPlayer()  {
@@ -205,7 +215,7 @@ public class MCEntityManager {
     }
 
     /**
-     * Clear the list entities
+     * Clears the list of entities.
      */
     public void clearEntities() {
         entities.clear();
@@ -215,8 +225,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Launch the same animation for all the entities.
-     * @param anim 
+     * Launches the same animation for all the entities.
+     * @param anim the animation name
      */
     public void playGlobalAnimation(String anim) {
         for (MCEntity e : entities) {
@@ -225,10 +235,10 @@ public class MCEntityManager {
     }
     
     /**
-     * Get an entity from its tile's position.
-     * @param layer
-     * @param pos
-     * @return
+     * Gets an entity from its tile's position.
+     * @param layer the layer of the tile
+     * @param pos the position of the tile
+     * @return the entity at the specified tile position
      */
     public MCEntity getEntityFromTile(int layer, MCIntVector2 pos) {
         for (MCEntity e: entities) {
@@ -239,8 +249,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Check if a entity block the process.
-     * @return
+     * Checks if an entity blocks the process.
+     * @return true if anyone is busy, false otherwise
      */
     public boolean isAnyoneBusy() {
         for (MCEntity e : getEntities()) {
@@ -252,8 +262,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Call each frame.
-     * @param delta
+     * Called on each frame.
+     * @param delta the time delta
      */
     public void update(float delta) {
         for (MCEntity e : entities) {
@@ -266,6 +276,14 @@ public class MCEntityManager {
             //System.out.println("hehe");
             entities.removeAll(toKill);
             toKill.clear();
+
+            if (getAllies().isEmpty()) {
+                MCEventBus.get().emit("CombatDone", MCGame.CombatDoneArgs.ENEMIES_WON);
+                System.out.println("sending  enemies won event");
+            } else if (getEnemies().isEmpty()) {
+                MCEventBus.get().emit("CombatDone", MCGame.CombatDoneArgs.ALLIES_WON);
+                System.out.println("sending  zalloies won event");
+            }
         }
         if (!toAdd.isEmpty()) {
             entities.addAll(toAdd);
@@ -276,8 +294,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Render (call each frame).
-     * @param batch
+     * Called on each frame.
+     * @param batch the sprite batch
      */
     public void render(SpriteBatch batch) {
         // 1 : render corpses

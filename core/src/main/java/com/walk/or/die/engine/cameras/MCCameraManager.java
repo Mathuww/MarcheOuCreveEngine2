@@ -21,11 +21,11 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.OpenSimplex2S;
 
 /**
- * The singleton class which manages the camera.
+ * The singleton class which manages the camera system.
  */
 public class MCCameraManager {
     /**
-     * An enum for camera mode.
+     * Enumerates the available camera modes.
      */
     public static enum CameraMode {
         FOLLOW,
@@ -35,39 +35,100 @@ public class MCCameraManager {
     private static MCCameraManager instance;
 
     /**
-     * The getter.
-     * @return
+     * Gets the singleton instance.
+     * @return the singleton instance.
      */
     public static MCCameraManager get() {
         if (instance == null) instance = new MCCameraManager();
         return instance;
     }
 
+    /**
+     * The libGDX camera object.
+     */
     private OrthographicCamera gdxCam;
+    /**
+     * Used to check if the camera moved during a frame.
+     */
     private float oldX, oldY;
 
+    /**
+     * Contains the possible behaviors.
+     */
     private Map<CameraMode, MCCameraBehavior> behaviors = new HashMap<>();
+    /**
+     * Current mode.
+     */
     private CameraMode mode;
 
+    /**
+     * Contains the current lower left limit.
+     */
     private Vector2 lowerLimit = new Vector2(0f, 0f);
+    /**
+     * Contains the current upper right limit.
+     */
     private Vector2 upperLimit = new Vector2(16f, 16f); // arbitraire
 
+    /**
+     * True if the camera moved this frame.
+     */
     private boolean movedThisFrame = false;
 
+    /**
+     * Contains the current camera target. Especially useful for FollowCamBehavior.
+     */
     private MCEntity target;
 
-    private float trauma = 0f; // camera shake trauma !
+    /**
+     * Current camera shake trauma (intensity level), between 0 and 1.
+     */
+    private float trauma = 0f; 
+    /**
+     * Used to count time since the camera shake started.
+     */
     private float stateTime = 0f;
-    private final float TRAUMA_DECAY = 0.5f; // trauma units/s
-    private final float SHAKE_MAX_ANGLE = 15f; // deg (libgdx fonctionne en deg pour .rotate())
+    /**
+     * Trauma decay (trauma units/sec)
+     */
+    private final float TRAUMA_DECAY = 0.5f;
+    /**
+     * Max. camera shake rotation angle (degrees)
+     */
+    private final float SHAKE_MAX_ANGLE = 15f; 
+    /**
+     * Max. camera shake translation offset (tiles)
+     */
     private final float SHAKE_MAX_OFFSET = 1.5f;
+    /**
+     * Simplex noise speed used for camera shake.
+     * Directly affects how intense it will look for all damage taken on screen.
+     */
     private final float SHAKE_NOISE_SPEED = 20f;
 
+    /**
+     * Zoom interpolation constant
+     */
     public final float ZOOM_LERP = 5f;
+    /**
+     * Zoom level delta per wheel notch.
+     */
     public final float ZOOM_STEP = 0.085f;
-    public final float ZOOM_MIN = 0.75f;
+    /**
+     * Min. zoom level
+     */
+    public final float ZOOM_MIN = 0.45f;
+    /**
+     * Max. zoom level
+     */
     public final float ZOOM_MAX = 1.25f;
+    /**
+     * Used for "zoom to mouse" effect
+     */
     private Vector3 zoomTargetPos = new Vector3();
+    /**
+     * Used for zoom interpolation.
+     */
     private float zoomTarget;
 
     private final MCEventBus bus = MCEventBus.get();
@@ -78,79 +139,84 @@ public class MCCameraManager {
     }
 
     /**
-     * Get the lower limit of the camera.
-     * @return 
+     * Gets the global lower limit of the camera.
+     * @return the lower limit vector.
      */
     public Vector2 getGlobalLowerLimit() {
         return this.lowerLimit;
     }
 
     /**
-     * Set the lower limit of the camera.
-     * @param limit
+     * Sets the global lower limit of the camera.
+     * @param limit the new lower limit coordinates.
      */
     public void setLowerLimit(Vector2 limit) {
         this.lowerLimit = limit;
     }
 
     /**
-     * Get the upper limit of the camera.
-     * @return 
+     * Gets the global upper limit of the camera.
+     * @return the upper limit vector.
      */
     public Vector2 getGlobalUpperLimit() {
         return this.upperLimit;
     }
 
     /**
-     * Set the upper limit of the camera.
-     * @param limit
+     * Sets the global upper limit of the camera.
+     * @param limit the new upper limit coordinates.
      */
     public void setUpperLimit(Vector2 limit) {
         this.upperLimit = limit;
     }
 
     /**
-     * Get the current camera's position
-     * @return
+     * Gets the current camera's position.
+     * @return the position vector.
      */
     public Vector2 getPosition() {
         return new Vector2(gdxCam.position.x, gdxCam.position.y);
     }
 
     /**
-     * Set the camera's position.
-     * @param pos
+     * Sets the camera's position.
+     * @param pos the new position vector.
      */
     public void setPosition(Vector2 pos) {
         gdxCam.position.x = pos.x;
         gdxCam.position.y = pos.y;
     }
 
+    /**
+     * Used to begin interpolating to the desired position.
+     * Delegates the logic to the current behavior.
+     * @param pos the target position.
+     */
     public void interpolateTo(Vector2 pos) {
         if (mode != null)
             behaviors.get(mode).interpolateTo(pos);
     }
 
     /**
-     * Add a behavior and the associated mode in the manager.
-     * @param mode
-     * @param behavior
+     * Registers a camera behavior associated with a specific mode.
+     * @param mode the mode to associate with the behavior.
+     * @param behavior the behavior to execute for this mode.
      */
     public void register(CameraMode mode, MCCameraBehavior behavior) {
         behaviors.put(mode, behavior);
     }
 
     /**
-     * Get the current camera's mode.
-     * @return 
+     * Gets the current camera mode.
+     * @return the active camera mode.
      */
     public CameraMode getMode() {
         return this.mode;
     }
 
     /**
-     * Set the camera's mode.
-     * @param mode
+     * Sets the active camera mode.
+     * @param mode the new mode to activate.
      */
     public void setMode(CameraMode mode) {
         if (this.mode != null) behaviors.get(this.mode).exit();
@@ -159,10 +225,10 @@ public class MCCameraManager {
     }
 
     /**
-     * Init the manager.
-     * @param viewportWidth
-     * @param viewportHeight
-     * @param mode
+     * Initializes the camera manager.
+     * @param viewportWidth the width of the camera viewport.
+     * @param viewportHeight the height of the camera viewport.
+     * @param mode the initial camera mode.
      */
     public void init(float viewportWidth, float viewportHeight, CameraMode mode) {
         gdxCam = new OrthographicCamera(viewportWidth, viewportHeight);
@@ -175,74 +241,74 @@ public class MCCameraManager {
     }
 
     /**
-     * Get the x-coordinate of the top-right point.
-     * @return
+     * Gets the x-coordinate of the top-right viewport corner.
+     * @return the x-coordinate.
      */
     public float getCurrentUpperLimitX() {
         return gdxCam.position.x + gdxCam.viewportWidth / 2;
     }
 
     /**
-     * Get the y-coordinate of the top-right point.
-     * @return 
+     * Gets the y-coordinate of the top-right viewport corner.
+     * @return the y-coordinate.
      */
     public float getCurrentUpperLimitY() {
         return gdxCam.position.y + gdxCam.viewportHeight / 2;
     }
 
     /**
-     * Get the x-coordinate of the bottom-left point.
-     * @return 
+     * Gets the x-coordinate of the bottom-left viewport corner.
+     * @return the x-coordinate.
      */
     public float getCurrentLowerLimitX() {
         return gdxCam.position.x - gdxCam.viewportWidth / 2;
     }
 
     /**
-     * Get the y-coordinate of the bottom-left point.
-     * @return 
+     * Gets the y-coordinate of the bottom-left viewport corner.
+     * @return the y-coordinate.
      */
     public float getCurrentLowerLimitY() {
         return gdxCam.position.y - gdxCam.viewportHeight / 2;
     }
 
     /**
-     * Get the camera.
-     * @return 
+     * Gets the underlying LibGDX OrthographicCamera.
+     * @return the OrthographicCamera instance.
      */
     public OrthographicCamera getGdxCam() {
         return gdxCam;
     }
 
     /**
-     * Get the camera's target.
-     * @return 
+     * Gets the entity currently being followed by the camera.
+     * @return the target entity.
      */
     public MCEntity getFollowTarget() {
         return this.target;
     }
 
     /**
-     * Set the camera's target.
-     * @param target
+     * Sets the entity to be followed by the camera.
+     * @param target the entity to follow.
      */
     public void setFollowTarget(MCEntity target) {
         this.target = target;
     }
 
     /**
-     * Useful function to shake, use it without moderation.
-     * @param traumaAddition
+     * Adds trauma to the camera to induce shaking.
+     * @param traumaAddition the amount of trauma to add.
      */
     public void addTrauma(float traumaAddition) {
-        System.out.println("adding " + traumaAddition + " trauma");
+        //System.out.println("adding " + traumaAddition + " trauma");
         trauma = MathUtils.clamp(trauma + traumaAddition, 0f, 1f);
     }
 
     /**
-     * Call each frame.
-     * @param delta
-     * @throws UnexistingBehaviorException
+     * Updates the camera logic. Called each frame.
+     * @param delta the time elapsed since the last frame.
+     * @throws UnexistingBehaviorException if no behavior is associated with the current mode.
      */
     public void update(float delta) throws UnexistingBehaviorException {
         movedThisFrame = false;
@@ -252,7 +318,7 @@ public class MCCameraManager {
         stateTime += delta;
 
         if (Math.abs(trauma - 0f) > 0.01f) {
-            System.out.println("trauma is now " + trauma);
+            //System.out.println("trauma is now " + trauma);
             // restaurer l'état "stable" de la caméra (0 translation, 0 rotation)
             gdxCam.position.x = oldX;
             gdxCam.position.y = oldY;
@@ -287,18 +353,26 @@ public class MCCameraManager {
     }
 
     /**
-     * Return if the camera has moved.
-     * @return 
+     * Checks if the camera has moved during the current frame.
+     * @return true if the camera has moved, false otherwise.
      */
     public boolean hasMovedThisFrame() {
         return this.movedThisFrame;
     }
 
+    /**
+     * Delegates input pressed logic to the current behavior.
+     * @param cmd the input command.
+     */
     public void inputPressed(Command cmd) {
         if (mode != null)
             behaviors.get(mode).handleInputPressed(gdxCam, cmd);
     }
 
+    /**
+     * Delegates input released logic to the current behavior.
+     * @param cmd the input command.
+     */
     public void inputReleased(Command cmd) {
         if (mode != null)
             behaviors.get(mode).handleInputReleased(cmd);

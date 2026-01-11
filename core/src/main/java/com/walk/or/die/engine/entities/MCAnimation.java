@@ -10,11 +10,17 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * A class that plays an animation.
+ * Wraps a libGDX animation in an easier-to-use interface.
  * @see Animation
  */
 public class MCAnimation {
+    /**
+     * libGDX animation.
+     */
     private Animation<TextureRegion> animation;
+    /**
+     * Time elapsed since the animation started.
+     */
     private float stateTime;
 
     /**
@@ -26,7 +32,7 @@ public class MCAnimation {
 
     /**
      * The constructor.
-     * @param anim
+     * @param anim A libGDX animation.
      */
     public MCAnimation(Animation<TextureRegion> anim) {
         this.animation = anim;
@@ -34,17 +40,16 @@ public class MCAnimation {
     }
 
     /**
-     * Set the animation.
-     * @param anim
+     * Sets another libGDX animation to wrap into this object.
+     * @param anim The animation to set.
      */
     public void setRawAnim(Animation<TextureRegion> anim) {
         this.animation = anim;
     }
 
     /**
-     * Call each frame.
-     * @param delta
-     * @return the current frame.
+     * @param delta The time elapsed since last frame.
+     * @return The current key frame.
      */
     public TextureRegion update(float delta) {
         stateTime += delta;
@@ -54,16 +59,16 @@ public class MCAnimation {
     }
 
     /**
-     * Get the animation's duration.
-     * @return
+     * Gets the animation's duration.
+     * @return The duration of the animation.
      */
     public float getDuration() {
         return animation.getAnimationDuration();
     }
 
     /**
-     * Check if the animation is finished.
-     * @return
+     * Checks whether the animation finished.
+     * @return True if it is finished, false otherwise.
      */
     public boolean isOver() {
         return stateTime >= getDuration();
@@ -71,12 +76,17 @@ public class MCAnimation {
     }
 
     /**
-     * Reset the animation.
+     * Resets the animation.
      */
     public void reset() {
         stateTime = 0f;
     }
 
+    /**
+     * Creates a horizontally flipped copy of the animation.
+     * Useful if a spritesheets only contains a walk to the left animation for instance.
+     * @return A flipped copy of the animation.
+     */
     public MCAnimation getFlippedAnim() {
         Array<TextureRegion> flippedFrames = new Array<>();
 

@@ -12,6 +12,15 @@ public class MCUITypingText extends MCUISimpleText {
     private int typedChars = 0;
     private String fullText = "";
 
+    /**
+     * Creates a new MCUITypingText.
+     * @param parent The parent HUD.
+     * @param font The bitmap font.
+     * @param zone The zone.
+     * @param color The color.
+     * @param scale The scale.
+     * @param spacing The spacing.
+     */
     public MCUITypingText(
         MCAbstractHUD parent, 
         BitmapFont font, 
@@ -23,10 +32,17 @@ public class MCUITypingText extends MCUISimpleText {
         super(parent, font, zone, color, scale, spacing);
     }
 
+    /**
+     * Sets the typing speed.
+     * @param speed The typing speed to set.
+     */
     public void setSpeed(float speed) {
         typingSpeed = speed;
     }
 
+    /**
+     * Starts the typing animation.
+     */
     public void startTyping() {
         stateTime = 0f;
         typedChars = 0;
@@ -34,21 +50,36 @@ public class MCUITypingText extends MCUISimpleText {
         super.setText("");
     }
 
+    /**
+     * Ends the typing animation.
+     */
     public void endTyping() {
         typedChars = fullText.length();
         typing = false;
     }
 
+    /**
+     * Checks if the text is still typing.
+     * @return True if the text is still typing, false otherwise.
+     */
     public boolean stillTyping() {
         return typing;
     }
 
+    /**
+     * Sets the full text.
+     * @param text The text to set.
+     */
     @Override
     public void setText(String text) {
         fullText = text;
         super.setText("");
     }
 
+    /**
+     * Called on each frame
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void update(float delta) {
         super.update(delta);

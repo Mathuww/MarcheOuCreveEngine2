@@ -80,27 +80,48 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
         enable(); // pour tester
     }
 
+    /**
+     * Sets the text.
+     *
+     * @param newText The new text to set.
+     */
     public void setText(String newText) {
         text.setText(newText);
     }
 
+    /**
+     * Scrolls to.
+     *
+     * @param targetOffsetY The target offset Y.
+     */
     private void scrollTo(float targetOffsetY) {
-        if (this.targetOffsetY == targetOffsetY)
+        if (this.targetOffsetY == targetOffsetY) {
             return;
+        }
         scrolling = true;
         this.targetOffsetY = targetOffsetY;
     }
 
+    /**
+     * Disables this instance.
+     */
     public void disable() {
         scrollTo(SCROLL_Y);
         shown = false;
     }
 
+    /**
+     * Enables this instance.
+     */
     public void enable() {
         scrollTo(0f);
         shown = true;
     }
 
+    /**
+     * Called on each frame
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void update(float delta) {
         if (scrolling) {
@@ -109,14 +130,19 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
                 //System.out.println("arrived");
                 scrolling = false;
                 offsetY = targetOffsetY; // pour isFullyShown
-            } else 
+            } else {
                 offsetY += (targetOffsetY - offsetY) * delta * SCROLL_LERP;
+            }
             offsetY = MathUtils.clamp(offsetY, 0f, SCROLL_Y);
         }
 
         layout.zone("nextTurnZone").setOffset(0f, offsetY);
     }
 
+    /**
+     * Called on each frame
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void render(SpriteBatch batch) {
         super.render(batch);
@@ -127,33 +153,66 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
         text.render(batch);
     }
 
+    /**
+     * Renders the debug.
+     */
     public void renderDebug() {
         layout.renderDebug();
     }
 
+    /**
+     * Checks if this instance is fully shown.
+     *
+     * @return True if fully shown, false otherwise.
+     */
     public boolean isFullyShown() {
         return shown && !scrolling && (offsetY == targetOffsetY);
     }
 
+    /**
+     * Checks if the position belongs to HUD component.
+     *
+     * @param mousePos The mouse position.
+     * @return True if the position belongs to HUD component, false otherwise.
+     */
     public boolean posBelongsToHudComponent(Vector2 mousePos) {
         boolean belongs = layout.zone("nextTurnPanel").posBelongsToZone(mousePos);
         return belongs;
     }
     
+    /**
+     * Handles hover.
+     *
+     * @param hoverPos The hover position.
+     */
     public void handleHover(Vector2 hoverPos) {
         hovered = true;
     }
 
+    /**
+     * Handles hover gone.
+     */
     public void handleHoverGone() {
         hovered = false;
     }
 
+    /**
+     * Handles click.
+     *
+     * @param clickPos The click position.
+     */
     public void handleClick(Vector2 clickPos) {
-        if (!isFullyShown() || callback == null)
+        if (!isFullyShown() || callback == null) {
             return;
+        }
         callback.run();
     }
 
+    /**
+     * Sets the action.
+     *
+     * @param callback The callback.
+     */
     public void setAction(Runnable callback) {
         this.callback = callback;
     }

@@ -14,41 +14,41 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * The class which gives us an interface for MapLayer from gdx
+ * The class which gives an interface for MapLayer from gdx.
  * @see MapLayer
  */
 public class MCMapLayer {
     private MapLayer ml;
 
     /**
-     * The constructor
-     * @param ml
+     * The constructor.
+     * @param ml The MapLayer to wrap.
      */
     public MCMapLayer(MapLayer ml) {
         this.ml = ml;
     }
 
     /**
-     * Return the MapLayer
-     * @return
+     * Gets the MapLayer.
+     * @return The wrapped MapLayer.
      */
     public MapLayer getRawLayer() {
         return ml;
     }
 
     /**
-     * Get all the objects on the layer
-     * @return
+     * Gets all the objects on the layer.
+     * @return The MapObjects instance containing all objects.
      */
     public MapObjects getObjects() {
         return this.ml.getObjects();
     }
 
     /**
-     * Get all the objects with a specified property
-     * @param name
-     * @param value
-     * @return A list of these objects
+     * Gets all the objects with a specified property.
+     * @param name The name of the property to search for.
+     * @param value The value of the property to match.
+     * @return A list of these objects.
      * @see MCMapObject
      */
     public List<MCMapObject> getObjectsByProperty(String name, String value) {
@@ -67,11 +67,11 @@ public class MCMapLayer {
     }
 
     /**
-     * Return the specified cell
-     * @param x
-     * @param y
-     * @return the cell
-     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer
+     * Gets the specified cell.
+     * @param x The x coordinate of the cell.
+     * @param y The y coordinate of the cell.
+     * @return The cell.
+     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer.
      */
     public TiledMapTileLayer.Cell getCell(int x, int y) throws IllegalStateException{
         if (!(ml instanceof TiledMapTileLayer)) {
@@ -84,11 +84,11 @@ public class MCMapLayer {
     }
 
     /**
-     * Get the position of the first tile with the given property
-     * @param name of the property
-     * @param value of the property
-     * @return
-     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer
+     * Gets the position of the first tile with the given property.
+     * @param name The name of the property.
+     * @param value The value of the property.
+     * @return The Vector2 representing the position, or null if not found.
+     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer.
      */
     public Vector2 getPosByProperty(String name, String value) {
          if (!(ml instanceof TiledMapTileLayer)) {
@@ -114,11 +114,11 @@ public class MCMapLayer {
     }
 
     /**
-     * Get the first cell with the given property
-     * @param name of the property
-     * @param value of the property
-     * @return
-     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer
+     * Gets the first cell with the given property.
+     * @param name The name of the property.
+     * @param value The value of the property.
+     * @return The TiledMapTileLayer.Cell, or null if not found.
+     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer.
      */
     public TiledMapTileLayer.Cell getCellByProperty(String name, String value) {
          if (!(ml instanceof TiledMapTileLayer)) {
@@ -144,9 +144,9 @@ public class MCMapLayer {
     }
 
     /**
-     * Return the layer split in a matrix of tiles
-     * @return
-     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer
+     * Gets the layer split in a matrix of tiles.
+     * @return The Array of Array of TiledMapTile representing the split tiles.
+     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer.
      */
     public Array<Array<TiledMapTile>> splitInTiles() {
         if (!(ml instanceof TiledMapTileLayer)) {

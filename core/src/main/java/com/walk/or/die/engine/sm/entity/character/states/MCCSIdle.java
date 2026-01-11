@@ -29,18 +29,26 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
 
     /**
      * The constructor.
-     * @param parent
+     * @param parent the parent character
      */
     public MCCSIdle(MCCharacter parent) {
         super(parent);
         this.name = "idle";
     }
 
+    /**
+     * Called on each frame
+     * @param delta the delta time
+     */
     @Override
     public void update(float delta) {
         //System.out.println("On respire le bon air de la nature");
     }
 
+    /**
+     * Called at state entrance.
+     * @param args the arguments for the idle state
+     */
     @Override
     public void enter(IdleStateArgs args) {
         setupHudCustomization();
@@ -50,6 +58,9 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         super.enter(args);
     }
 
+    /**
+     * Called at state exit
+     */
     @Override
     public void exit() {
         parent.keep = true;
@@ -57,10 +68,18 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         super.exit();
     }
     
+    /**
+     * Processes input when a key is pressed.
+     *
+     * @param data The input command data.
+     */
     @Override
     protected void inputPressed(MCInputManager.Command data) {
     }
 
+    /**
+     * Transitions to the "ready" state if conditions are met.
+     */
     public void goToReady() {
         if (!parent.focus)
             return; // sécurité
@@ -71,6 +90,9 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
             changeState("ready", new MCCSReady.ReadyStateArgs());
     }
 
+    /**
+     * Transitions to the "aim" state if conditions are met.
+     */
     public void goToAim() {
         if (!parent.focus)
             return;
@@ -81,6 +103,9 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
             changeState("aim", new MCCSAim.AimStateArgs());
     }
 
+    /**
+     * Sets up the HUD customization for the ally character.
+     */
     private void setupHudCustomization() {
         if (parent instanceof MCAlly ally) {
             HudCustomization customization = ally.getHudCustomization();
@@ -108,6 +133,11 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         } 
     }
 
+    /**
+     * Handles game state changes.
+     *
+     * @param newState The new game state.
+     */
     public void gameStateChanged(MCGameState newState) {
         if (newState instanceof MCGSAlliesPlaying) {
             //System.out.println("new state is alies playing ! hourrayyy");
@@ -115,6 +145,11 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         }
     }
 
+    /**
+     * Checks if this state is blocking.
+     *
+     * @return {@code false} because this state is non-blocking.
+     */
     @Override
     public boolean isBlocking() {
         return false;

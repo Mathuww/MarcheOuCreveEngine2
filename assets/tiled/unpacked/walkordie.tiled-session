@@ -281,8 +281,8 @@
             "scale": 2,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 297.75,
-                "y": 21.75
+                "x": 143.75,
+                "y": 30.25
             }
         },
         "maps/exemple.tmx": {
@@ -355,7 +355,7 @@
             "selectedLayer": 3,
             "viewCenter": {
                 "x": 87.83333333333331,
-                "y": 87.83333333333331
+                "y": 41.16666666666666
             }
         },
         "maps/start.tmx#main": {

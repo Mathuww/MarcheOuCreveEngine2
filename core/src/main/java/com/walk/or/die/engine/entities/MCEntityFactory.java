@@ -21,14 +21,14 @@ import com.walk.or.die.engine.tiledmap.MCMapObject;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**
- * A singleton wich create entities, based on tiled data.
+ * A singleton which creates entities, based on tiled data.
  */
 public class MCEntityFactory {
     private static MCEntityFactory instance = null;
 
     /**
-     * The getter.
-     * @return
+     * Gets the instance.
+     * @return the instance
      */
     public static MCEntityFactory get() {
         if (instance == null) instance = new MCEntityFactory();
@@ -48,9 +48,9 @@ public class MCEntityFactory {
     }
 
     /**
-     * Init the singleton.
-     * @param assetManager
-     * @throws InvalidDataException
+     * Inits the singleton.
+     * @param assetManager the asset manager
+     * @throws InvalidDataException if the data is invalid
      */
     public void init(AssetManager assetManager) throws InvalidDataException {
         this.assetManager = assetManager;
@@ -77,16 +77,17 @@ public class MCEntityFactory {
     }
 
     /**
-     * Create a new instance of an entity.
-     * @param parentScreen
-     * @param parentMap
-     * @param entityGenericName
-     * @param entityId
-     * @return
-     * @throws IllegalStateException
-     * @throws InvalidDataException
+     * Builds a new instance of an entity.
+     * @param parentScreen the parent screen
+     * @param parentMap the parent map
+     * @param entityGenericName the entity generic name
+     * @param entityId the entity id
+     * @param props the map properties
+     * @return the built entity
+     * @throws IllegalStateException if the state is illegal
+     * @throws InvalidDataException if the data is invalid
      */
-    public MCEntity build(MCGame parentScreen, MCTerrainMap parentMap, String entityGenericName, String entityId, MapProperties props) throws Exception {  
+    public MCEntity build(MCGame parentScreen, MCTerrainMap parentMap, String entityGenericName, String entityId, MapProperties props) throws Exception {
         if (assetManager == null) 
             throw new IllegalStateException("must init entity factory before using it");
 
@@ -195,6 +196,9 @@ public class MCEntityFactory {
         return entity;
     }
 
+    /**
+     * Disposes of the map cache.
+     */
     public void dispose() {
         for (MCMap m : mapCache.values())
             m.dispose();

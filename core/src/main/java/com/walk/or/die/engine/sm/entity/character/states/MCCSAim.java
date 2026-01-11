@@ -19,22 +19,26 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
 
 /**
- * The state to symbolize when we choose the target to shoot.<br>
+ * The state that symbolizes when the target to shoot is chosen.<br>
  * Name = "aim"
  */
 public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
     private MCAttack currentAttack;
     private MCIntVector2 tile = new MCIntVector2(-1, -1);
     /**
-     * Class which represents args needed by the aim state to start.
+     * Class which represents the args needed by the aim state to start.
      */
     public static class AimStateArgs extends MCCharacterState.StateArgs {
         /**
-         * Constructor
+         * Constructor.
          */
         public AimStateArgs() {}
     }
 
+    /**
+     * Constructor for MCCSAim.
+     * @param parent The parent MCCharacter.
+     */
     public MCCSAim(MCCharacter parent) {
         super(parent);
         this.name = "aim";
@@ -73,10 +77,17 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
         super.exit();
     }
 
+    /**
+     * Cancels the current action and returns to the idle state.
+     */
     private void cancel() {
         changeState("idle", new MCCSIdle.IdleStateArgs());
     }
     
+    /**
+     * Processes input pressed events.
+     * @param data The input command data.
+     */
     @Override
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
@@ -115,6 +126,10 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
         }
     }
 
+    /**
+     * Handles the mouse moved event.
+     * @param pos The current mouse position.
+     */
     private void mouseMoved(Vector2 pos) {
         if (currentAttack == null)
             return;
@@ -137,6 +152,9 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
         }
     }
     
+    /**
+     * Loads the attack choice carousel.
+     */
     public void loadAttackChoiceCarousel() {
         if (parent instanceof MCAlly ally) {
             Map<String, MCAttack> attacks = parent.getAttacks();

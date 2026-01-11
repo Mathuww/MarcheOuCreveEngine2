@@ -8,6 +8,11 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 public class MCHUDManager {
     private static MCHUDManager instance = null;
 
+    /**
+     * Gets the instance of the MCHUDManager.
+     *
+     * @return the instance
+     */
     public static MCHUDManager get() {
         if (instance == null)
             instance = new MCHUDManager();
@@ -21,6 +26,12 @@ public class MCHUDManager {
     private MCSimpleActionHUD simpleActionHUD;
     private MCTerrainFocusHUD focusHUD;
 
+    /**
+     * Initializes the HUD manager.
+     *
+     * @param width  the width of the viewport
+     * @param height the height of the viewport
+     */
     public void init(int width, int height) {
         hudCamera = new OrthographicCamera();
         hudViewport = new FitViewport(width, height, hudCamera);
@@ -29,26 +40,54 @@ public class MCHUDManager {
         focusHUD = new MCTerrainFocusHUD();
     }
 
+    /**
+     * Gets the viewport.
+     *
+     * @return the hudViewport
+     */
     public FitViewport getViewport() {
         return hudViewport;
     }
 
+    /**
+     * Gets the camera.
+     *
+     * @return the hudCamera
+     */
     public OrthographicCamera getCamera() {
         return hudCamera;
     }
 
+    /**
+     * Gets the character HUD.
+     *
+     * @return the characterHUD
+     */
     public MCCharacterHUD getCharacterHud() {
         return characterHUD;
     }
 
+    /**
+     * Gets the simple HUD.
+     *
+     * @return the simpleActionHUD
+     */
     public MCSimpleActionHUD getSimpleHud() {
         return simpleActionHUD;
     }
 
+    /**
+     * Gets the focus HUD.
+     *
+     * @return the focusHUD
+     */
     public MCTerrainFocusHUD getFocusHud() {
         return focusHUD;
     }
 
+    /**
+     * Called on each frame
+     */
     public void update(float delta) {
         hudCamera.update();
         characterHUD.update(delta);
@@ -56,6 +95,11 @@ public class MCHUDManager {
         focusHUD.update(delta);
     }
 
+    /**
+     * Called on each frame
+     *
+     * @param batch the sprite batch
+     */
     public void render(SpriteBatch batch) {
         hudViewport.apply();
         batch.setProjectionMatrix(hudCamera.combined);
@@ -66,11 +110,22 @@ public class MCHUDManager {
         //characterHUD.renderDebug();
     }
 
+    /**
+     * Determines if the position belongs to the HUD.
+     *
+     * @param pos the position
+     * @return true if the position belongs to the HUD, false otherwise
+     */
     public boolean posBelongsToHud(Vector2 pos) {
         return characterHUD.posBelongsToHudComponent(pos) 
             || simpleActionHUD.posBelongsToHudComponent(pos);
     }
 
+    /**
+     * Handles the hover event.
+     *
+     * @param pos the position
+     */
     public void handleHover(Vector2 pos) {
         if (characterHUD.posBelongsToHudComponent(pos))
             characterHUD.handleHover(pos);
@@ -78,11 +133,19 @@ public class MCHUDManager {
             simpleActionHUD.handleHover(pos);
     }
 
+    /**
+     * Handles the hover gone event.
+     */
     public void handleHoverGone() {
         characterHUD.handleHoverGone();
         simpleActionHUD.handleHoverGone();
     }
 
+    /**
+     * Handles the click event.
+     *
+     * @param pos the position
+     */
     public void handleClick(Vector2 pos) {
         if (characterHUD.posBelongsToHudComponent(pos))
             characterHUD.handleClick(pos);
@@ -90,6 +153,12 @@ public class MCHUDManager {
             simpleActionHUD.handleClick(pos);
     }
 
+    /**
+     * Handles the scroll event.
+     *
+     * @param pos the position
+     * @param dy  the scroll amount
+     */
     public void handleScroll(Vector2 pos, float dy) {
         characterHUD.handleScroll(pos, dy);
     }

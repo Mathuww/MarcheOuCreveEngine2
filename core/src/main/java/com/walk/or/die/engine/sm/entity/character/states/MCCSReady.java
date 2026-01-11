@@ -11,22 +11,22 @@ import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 /**
- * The state to symbolize when you choose your tile to move on.<br>
+ * The state to symbolize when the player chooses a tile to move on.<br>
  * Name = "ready"
  */
 public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
     private MCIntVector2 tile = new MCIntVector2(-1, -1);
 
     /**
-     * Class wich represents args needed by the ready state to start.
+     * Class which represents arguments needed by the ready state to start.
      */
     public static class ReadyStateArgs extends MCCharacterState.StateArgs {}
 
     /**
      * The constructor.
-     * @param parent 
+     * @param parent The parent character.
      */
-    public MCCSReady (MCCharacter parent) {
+    public MCCSReady(MCCharacter parent) {
         super(parent);
         this.name = "ready";
     }
@@ -41,11 +41,19 @@ public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
         
     }
 
+    /**
+     * Renders the effects.
+     * @param batch The sprite batch.
+     */
     @Override
     public void renderEffects(SpriteBatch batch) {
         parent.getMoveDisplay().render(batch);
     }
 
+    /**
+     * Called at entrance.
+     * @param args The state arguments.
+     */
     @Override
     public void enter(ReadyStateArgs args) {
         super.enter(args);
@@ -58,6 +66,9 @@ public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
         MCInputManager.get().triggerMouseUpdate();
     }
 
+    /**
+     * Called at exit.
+     */
     @Override
     public void exit() {
         parent.getMoveDisplay().display = false;
@@ -66,10 +77,17 @@ public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
         super.exit();
     }
 
+    /**
+     * Cancels the state.
+     */
     private void cancel() {
         changeState("idle", new MCCSIdle.IdleStateArgs());
     }
 
+    /**
+     * Called when an input is pressed.
+     * @param data The input data.
+     */
     @Override
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Idle");
@@ -93,7 +111,15 @@ public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
         }
     }
 
+    /**
+     * Called when the mouse is moved.
+     * @param pos The position of the mouse.
+     */
     private void mouseMoved(Vector2 pos) {
+        /**
+         * Gets the current position and verifies if it's walkable
+         * @param pos the current Vector2 position of the mouse.
+         */
         MCIntVector2 newPos = new MCIntVector2(pos);
         if (!newPos.equals(tile)) {
             tile = newPos;

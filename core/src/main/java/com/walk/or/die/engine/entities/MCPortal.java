@@ -22,8 +22,14 @@ public class MCPortal extends MCEntity {
 
     public MCPortal(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
-    }   
+    }
 
+    /**
+     * Initializes from map properties.
+     *
+     * @param props the MapProperties instance
+     * @throws MissingDataException When the map properties are missing or invalid
+     */
     @Override
     public void initFromMapProperties(MapProperties props) throws MissingDataException {
         ID = MCUtils.getIntProperty(props, "portal_ID", -1);
@@ -42,28 +48,45 @@ public class MCPortal extends MCEntity {
         }
     }
 
+    /**
+     * Called on spawn.
+     */
     @Override
     public void onSpawn() {
         playAnimation("idle");
     }
 
+    /**
+     * Initializes from properties.
+     *
+     * @param props the MapProperties instance
+     * @throws Exception When an error occurs
+     */
     @Override
     public void initFromProperties(MapProperties props) throws Exception {
         fps = MCUtils.getIntProperty(props, "fps", 4);
     }
 
+    /**
+     * Called on each frame.
+     * @param delta the delta time
+     */
     @Override
     public void update(float delta) {
         super.update(delta);
     }
 
+    /**
+     * Called on each frame.
+     * @param batch the SpriteBatch instance
+     */
     @Override
     public void render(SpriteBatch batch) {
         super.render(batch);
     }
 
     /**
-     * Activate the teleportation (load the new map) with the portal data
+     * Activates the teleportation (load the new map) with the portal data.
      */
     public void teleportation() {
         getParent().teleportationActivate(destMap + ".tmx");

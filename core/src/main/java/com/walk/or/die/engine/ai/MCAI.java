@@ -18,36 +18,35 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**
- * The class which takes decisions for enemies, for moving or shooting.<br>
- * All decisions are based on a score system.
+ * Represents the decision-making AI for enemies, calculating moves and shots based on a score system.
  */
 public class MCAI {
     
     private MCTerrainMap map;
 
     /**
-     * The pathfinder singleton object, required to get trajectories and to check for blocked spots. 
+     * The pathfinder singleton used for trajectory calculation and collision checks.
      */
     private MCPathfinder pathfinder;
     /**
-     * The enemy controlled by this AI instance.
+     * The enemy entity controlled by this AI instance.
      */
     private MCEnemy parent;
 
     /**
-     * Debug purpose.
+     * A list of sprites used for debugging purposes.
      */
     private List<Sprite> sprList;
     /**
-     * Debug purpose.
+     * The texture used to visually mark valid tiles for debugging.
      */
     private TextureRegion validTileTexture;
 
     /**
-     * The constructor.
+     * Constructs a new AI instance.
      * @param map The map on which the moves will occur.
-     * @param parent The parent game.
-     * @throws Exception
+     * @param parent The enemy entity controlled by this AI.
+     * @throws Exception If an error occurs during initialization.
      */
     public MCAI(MCTerrainMap map, MCEnemy parent) throws Exception {
         pathfinder = MCPathfinder.get();
@@ -56,10 +55,10 @@ public class MCAI {
     }
 
     /**
-     * Returns the best possible target, by score.
+     * Identifies the best target based on a scoring system.
      * @param pos The enemy position.
      * @param damage The damage the enemy could inflict.
-     * @return The best possible target.
+     * @return The best possible ally target, or null if none found.
      */
     public MCAlly getBestShootableAlly(MCIntVector2 pos, float damage) {
         float best_score = -1f;
@@ -77,11 +76,11 @@ public class MCAI {
     }
 
     /**
-     * Returns the score given by shooting a specified ally.
+     * Calculates the score for attacking a specific ally.
      * @param pos The enemy position (shooting source).
-     * @param ally The ally position (shooting target).
-     * @param degats The max damage the enemy could inflict.
-     * @return The ally score.
+     * @param ally The ally target.
+     * @param degats The maximum damage the enemy could inflict.
+     * @return The calculated score for this target.
      */
     private float scoreVictim(MCIntVector2 pos, MCAlly ally, float degats) {
 
@@ -93,9 +92,9 @@ public class MCAI {
     }
 
     /**
-     * Returns the allies reachable from the enemy position.
+     * Retrieves a set of allies that can be targeted from the current position.
      * @param pos The enemy position.
-     * @return The allies.
+     * @return A set containing all reachable allies.
      */
     private Set<MCAlly> getShootableAllies(MCIntVector2 pos) {
         Set<MCAlly> allies = new HashSet<>();
@@ -111,10 +110,10 @@ public class MCAI {
     }
 
     /**
-     * Returns what the AI thinks is the best position to move on.
+     * Determines the optimal position to move to.
      * @param oldPos The current enemy position.
-     * @param max_deplacement The max number of tiles we can walk on to reach destination.
-     * @return The best position to move.
+     * @param max_deplacement The maximum number of tiles the enemy can walk on.
+     * @return The best coordinates to move to.
      */
     public MCIntVector2 getNewPos(MCIntVector2 oldPos, int max_deplacement) {
         List<MCIntVector2> shelts = searchShelts(oldPos, max_deplacement);
@@ -134,10 +133,10 @@ public class MCAI {
     }
 
     /**
-     * Returns the safety score of a shelter. 
+     * Calculates the safety score of a potential shelter position.
      * The higher the score, the less safe the shelter is.
      * @param pos The shelter position.
-     * @return The score.
+     * @return The calculated safety score.
      */
     private float isSheltSafe(MCIntVector2 pos) {
         Set<MCAlly> list = MCEntityManager.get().getAllies();
@@ -165,10 +164,10 @@ public class MCAI {
     }
 
     /**
-     * Returns the shooting score of a shelter. 
-     * The higher the score, the better the shelter is.
+     * Calculates the offensive potential of a shelter position.
+     * The higher the score, the better the shelter is for attacking.
      * @param pos The shelter position.
-     * @return The score.
+     * @return The calculated shooting score.
      */
     private float isSheltShootSpot(MCIntVector2 pos) {
         Set<MCAlly> list = MCEntityManager.get().getAllies();
@@ -194,10 +193,10 @@ public class MCAI {
     }
 
     /**
-     * Returns a list of potentially protected positions.
-     * @param pos The shelter position.
-     * @param maxMoves The max number of tiles we can walk on to reach destination.
-     * @return The list of positions.
+     * Identifies a list of potential shelter positions within range.
+     * @param pos The starting position.
+     * @param maxMoves The maximum movement range in tiles.
+     * @return A list of valid shelter coordinates.
      */
     private List<MCIntVector2> searchShelts(MCIntVector2 pos, int maxMoves) {
         List<MCIntVector2> list = new ArrayList<>();
@@ -222,9 +221,9 @@ public class MCAI {
     }
 
     /**
-     * Returns whether something around is protecting the position.
-     * @param pos The position.
-     * @return 
+     * Checks if the specified position has adjacent protection (walls or obstacles).
+     * @param pos The position to check.
+     * @return True if the position is protected by neighbors, false otherwise.
      */
     private boolean neighborsShelt(MCIntVector2 pos) {
         List<MCIntVector2> newPositions = new ArrayList<>();
@@ -246,17 +245,17 @@ public class MCAI {
     }
 
     /**
-     * Return whether the position is filled.
-     * @param v The position.
-     * @return
+     * Checks if a specific tile provides protection (is an obstacle and not an ally).
+     * @param v The position to check.
+     * @return True if the tile provides protection, false otherwise.
      */
     private boolean check(MCIntVector2 v) {
         return pathfinder.isProtect(v) && !(MCEntityManager.get().getEntityFromTile(1, v) instanceof MCAlly);
     }
 
     /**
-     * Render (call each frame)
-     * @param batch
+     * Renders debug visuals.
+     * @param batch The sprite batch used for drawing.
      */
     public void render(SpriteBatch batch) {
         for (Sprite spr : sprList) {
@@ -265,8 +264,8 @@ public class MCAI {
     }
 
     /**
-     * Debug function. (Adds a static sprite to debug the given position.)
-     * @param spot
+     * Adds a debug marker to the specified position.
+     * @param spot The position to mark.
      */
     public void showSpot(MCIntVector2 spot) { 
         MCDebugRenderer.get().addDebugTile(spot);

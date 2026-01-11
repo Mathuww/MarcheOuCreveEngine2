@@ -3,20 +3,20 @@ package com.walk.or.die.engine.vehicles;
 import com.walk.or.die.engine.exceptions.VoluntaryCrashException;
 
 /**
- * A truly necessary interface to simulate complex vehicles
+ * A truly necessary interface to simulate complex vehicles.
  */
 public interface MCVehicle {
     /**
-     * Start
+     * Starts the vehicle.
      */
     public abstract void start();
     /**
-     * Stop (No one stop us)
+     * Stops the vehicle.
      * @throws VoluntaryCrashException
      */
     public abstract void stop() throws VoluntaryCrashException;
     /**
-     * Crash (crashing is a valid solution when someone try to stop you)
+     * Crashes the vehicle.
      * @throws VoluntaryCrashException
      */
     public abstract void crash() throws VoluntaryCrashException;

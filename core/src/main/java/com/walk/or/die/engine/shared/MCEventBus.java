@@ -14,15 +14,15 @@ import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.vehicles.MCVehicle;
 
 /**
- * The singleton which creates, handles and manages events through the game.
+ * The singleton which creates, handles, and manages events through the game.
  * @see MCVehicle
  */
 public class MCEventBus implements MCVehicle {
     private static MCEventBus instance;
 
     /**
-     * Get the singleton instance.
-     * @return
+     * Gets the singleton instance.
+     * @return The singleton instance.
      */
     public static MCEventBus get() {
         if (instance == null) instance = new MCEventBus();
@@ -30,7 +30,7 @@ public class MCEventBus implements MCVehicle {
     }
 
     /**
-     * A class wich represents a subscription at an event.
+     * A class which represents a subscription to an event.
      */
     public static class Subscription {
         Class cl;
@@ -40,9 +40,9 @@ public class MCEventBus implements MCVehicle {
 
         /**
          * The constructor.
-         * @param obj
-         * @param eventName
-         * @param listener
+         * @param obj The object.
+         * @param eventName The event name.
+         * @param listener The listener.
          */
         public Subscription(Object obj, String eventName, Consumer<?> listener) {
             this.cl = obj.getClass();
@@ -52,17 +52,17 @@ public class MCEventBus implements MCVehicle {
         }
 
         /**
-         * Return if the subscription concerns the given object and event.
-         * @param obj
-         * @param eventName
-         * @return 
+         * Checks if the subscription concerns the given object and event.
+         * @param obj The object.
+         * @param eventName The event name.
+         * @return True if the subscription concerns the given object and event, false otherwise.
          */
         public boolean check(Object obj, String eventName) {
             return (obj.getClass() == cl && id == System.identityHashCode(obj) && eventName == this.eventName);
         }
 
         /**
-         * End a subscription.
+         * Ends a subscription.
          */
         public void unsubscribe() {
             MCEventBus.get().unsubscribe(this);
@@ -83,6 +83,7 @@ public class MCEventBus implements MCVehicle {
         addEvent("connectMouseMoved", MCInputManager.MouseListener.class);
         addEvent("disconnectMouseMoved", MCInputManager.MouseListener.class);
         addEvent("GameStateChanged", MCGameState.class);
+        addEvent("CombatDone", MCGame.CombatDoneArgs.class);
         addEvent("freezeGame", MCEntity.class);
         addEvent("unfreezeGame", MCEmpty.class);
     }
@@ -102,10 +103,10 @@ public class MCEventBus implements MCVehicle {
     private String destination = "Aspremont";
 
     /**
-     * Create a new event, with a name and the type of argument it needs.
-     * @param <T>
-     * @param eventName
-     * @param argType
+     * Creates a new event, with a name and the type of argument it needs.
+     * @param <T> The type of the argument.
+     * @param eventName The event name.
+     * @param argType The argument type.
      */
     public <T> void addEvent(String eventName, Class<T> argType) {
         eventTypes.put(eventName, argType);
@@ -113,11 +114,11 @@ public class MCEventBus implements MCVehicle {
     }
 
     /**
-     * Connect an object's function at an event. 
-     * @param <T>
-     * @param obj
-     * @param eventName
-     * @param listener
+     * Connects an object's function to an event.
+     * @param <T> The type of the argument.
+     * @param obj The object.
+     * @param eventName The event name.
+     * @param listener The listener.
      */
     public <T> void on(Object obj, String eventName, Consumer<T> listener) {
         Class<?> argType = eventTypes.get(eventName);
@@ -143,9 +144,9 @@ public class MCEventBus implements MCVehicle {
     }
 
     /**
-     * Disconnect an object's function from an event.
-     * @param obj
-     * @param eventName
+     * Disconnects an object's function from an event.
+     * @param obj The object.
+     * @param eventName The event name.
      */
     public void off(Object obj, String eventName) {
         List list = new ArrayList<>();
@@ -159,10 +160,10 @@ public class MCEventBus implements MCVehicle {
     }
 
     /**
-     * Call each functions linked to the event.
-     * @param <T>
-     * @param eventName
-     * @param data
+     * Calls each function linked to the event.
+     * @param <T> The type of data.
+     * @param eventName The event name.
+     * @param data The data.
      */
     public <T> void emit(String eventName, T data) {
         Class<?> argType = eventTypes.get(eventName);
@@ -184,8 +185,8 @@ public class MCEventBus implements MCVehicle {
     }
 
     /**
-     * Call each functions linked to the event.
-     * @param eventName
+     * Calls each function linked to the event.
+     * @param eventName The event name.
      */
     public void emit(String eventName) {
         emit(eventName, null);
@@ -197,7 +198,7 @@ public class MCEventBus implements MCVehicle {
     }
 
     /**
-     * NO ONE STOP US, IDIOT
+     * No one stops us, idiot.
      */
     public void stop() throws VoluntaryCrashException {
         System.out.println("We never stop idiot");
@@ -205,12 +206,16 @@ public class MCEventBus implements MCVehicle {
     }
 
     /**
-     * CRASH THE BUS IN YOUR FACE
+     * Crashes the bus in your face.
      */
     public void crash() throws VoluntaryCrashException {
         throw new VoluntaryCrashException("EXPLOSION !!!!!! over. *Fermeture des rideaux*");
     }
 
+    /**
+     * Gets the speed limit.
+     * @return The speed limit.
+     */
     public int getSpeedLimit() {
         return 0xffffffff;
     }

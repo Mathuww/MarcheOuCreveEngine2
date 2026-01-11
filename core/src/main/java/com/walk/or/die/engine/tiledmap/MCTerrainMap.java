@@ -40,8 +40,8 @@ public class MCTerrainMap extends MCMap {
 
     /**
      * The constructor.
-     * @param mapPath
-     * @param assetManager
+     * @param mapPath The path of the map.
+     * @param assetManager The asset manager.
      */
     public MCTerrainMap(String mapPath, AssetManager assetManager) {
         super(mapPath, assetManager);
@@ -55,12 +55,12 @@ public class MCTerrainMap extends MCMap {
     }
 
     /**
-     * Return if the tile itself's at the given position is walkable.
-     * A tile isn't walkable if it's void on all layers,
+     * Gets if the tile itself at the given position is walkable.
+     * A tile isn't walkable if it is void on all layers,
      * or if it is "blocked" at the highest layer
      * that isn't void at this tile.
-     * @param pos
-     * @return
+     * @param pos The position to check.
+     * @return True if the tile is walkable, false otherwise.
      */
     public boolean isWalkable(MCIntVector2 pos) {
         // si ca excede la limite max
@@ -93,10 +93,10 @@ public class MCTerrainMap extends MCMap {
     
            
     /**
-     * Return if the tile itself's at the given position blocks bullets.
+     * Gets if the tile itself at the given position protects bullets.
      * A tile is protecting if the highest non void layer has property "blocked".
-     * @param pos
-     * @return
+     * @param pos The position to check.
+     * @return True if the tile is protecting, false otherwise.
      */
     public boolean isProtect(MCIntVector2 pos) {
         // si ca excede la limite max
@@ -128,10 +128,10 @@ public class MCTerrainMap extends MCMap {
     }
 
     /**
-     * Create all the entities on the map
-     * @param game
-     * @return
-     * @throws Exception
+     * Creates all the entities on the map.
+     * @param game The game instance.
+     * @return A set of spawned entities.
+     * @throws Exception If an error occurs during entity creation.
      * @see MCEntity
      */
     public Set<MCEntity> spawnEntities(MCGame game) throws Exception {
@@ -205,8 +205,8 @@ public class MCTerrainMap extends MCMap {
     }
 
     /**
-     * Render the map
-     * @param camera
+     * Renders the map.
+     * @param camera The camera to use for rendering.
      */
     public void render(OrthographicCamera camera) {
         //camera.update();
@@ -220,4 +220,3 @@ public class MCTerrainMap extends MCMap {
         super.dispose();
     }
 }
-

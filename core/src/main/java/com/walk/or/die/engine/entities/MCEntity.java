@@ -19,11 +19,11 @@ import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**
- * The base class to represents something on the grid.
+ * The base class that represents something on the grid.
  */
 public abstract class MCEntity {
     /**
-     * Represent the entity and his new position, useful to trigger events.
+     * Represents the entity and its new position, useful to trigger events.
      */
     public static class TileReachedArgs {
         public MCEntity entity;
@@ -31,8 +31,8 @@ public abstract class MCEntity {
 
         /**
          * The constructor.
-         * @param entity
-         * @param tile
+         * @param entity The entity.
+         * @param tile The tile.
          */
         public TileReachedArgs(MCEntity entity, MCIntVector2 tile) {
             this.entity = entity;
@@ -52,15 +52,15 @@ public abstract class MCEntity {
     private boolean freeze = false;
 
     /**
-     * If the entity need to be display or not.
+     * If the entity needs to be displayed or not.
      */
     public boolean display = true;
     /**
-     * If the player select the entity or not.
+     * If the player selects the entity or not.
      */
     public boolean focus = false;
     /**
-     * If the entity need to keep the focus or not (when moving for example).
+     * If the entity needs to keep the focus or not (when moving for example).
      */
     public boolean keep = false;
 
@@ -68,9 +68,9 @@ public abstract class MCEntity {
 
     /**
      * The constructor.
-     * @param parent
-     * @param map
-     * @param entityId
+     * @param parent The parent game.
+     * @param map The terrain map.
+     * @param entityId The entity id.
      */
     public MCEntity(MCGame parent, MCTerrainMap map, String entityId) {
         this.parent = parent;
@@ -95,21 +95,21 @@ public abstract class MCEntity {
     public void initFromMapProperties(MapProperties props) throws MissingDataException {};
 
     /**
-     * Call on spawn
+     * Called on spawn.
      */
     public abstract void onSpawn();
 
     /**
-     * Initialize parameters from tiled datas.
-     * @param props
+     * Initializes parameters from tiled datas.
+     * @param props The map properties.
      * @throws Exception
      */
     public abstract void initFromProperties(MapProperties props) throws Exception;
 
     /**
-     * Add a possible animation for the entity.
-     * @param animName
-     * @param anim
+     * Adds a possible animation for the entity.
+     * @param animName The animation name.
+     * @param anim The animation.
      * @see MCAnimation
      */
     public void addAnimation(String animName, MCAnimation anim) {
@@ -117,30 +117,51 @@ public abstract class MCEntity {
         //System.out.println("mes animations sont mtn : " + animations.keySet());
     }
 
+    /**
+     * Gets animation names.
+     * @return The set of animation names.
+     */
     public Set<String> getAnimationNames() {
         return animations.keySet();
     }
 
+    /**
+     * Gets the animation map.
+     * @return The map of animations.
+     */
     public Map<String, MCAnimation> getAnimationMap() {
         return animations;
     }
 
+    /**
+     * Checks if there is an animation.
+     * @param animName The animation name.
+     * @return True if there is the animation, false otherwise.
+     */
     public boolean hasAnimation(String animName) {
         return animations.containsKey(animName);
     }
 
+    /**
+     * Sets the freeze state.
+     * @param bool The freeze value.
+     */
     public void setFreeze(boolean bool) {
         freeze = bool;
     }
 
+    /**
+     * Checks if it is freezed.
+     * @return True if it is freezed, false otherwise.
+     */
     public boolean isFreeze() {
         return freeze;
     }
     
     /**
-     * Get an entity's animation.
-     * @param animName
-     * @return
+     * Gets an entity's animation.
+     * @param animName The animation name.
+     * @return The animation.
      * @see MCAnimation
      */
     public MCAnimation getAnimation(String animName) {
@@ -148,9 +169,9 @@ public abstract class MCEntity {
     }
 
     /**
-     * Play an animation.
-     * @param animName
-     * @return
+     * Plays an animation.
+     * @param animName The animation name.
+     * @return True if the animation is played, false otherwise.
      * @see MCAnimation
      */
     public boolean playAnimation(String animName) {
@@ -167,6 +188,11 @@ public abstract class MCEntity {
         }
     }
 
+    /**
+     * Plays an animation without reset.
+     * @param animName The animation name.
+     * @return True if the animation is played without reset, false otherwise.
+     */
     public boolean playAnimationWithoutReset(String animName) {
         //System.out.println("asking playanimnoreset : " + animName);
         if (currentAnimName == animName)
@@ -175,8 +201,8 @@ public abstract class MCEntity {
     }
 
     /**
-     * Call each frame.
-     * @param delta
+     * Called on each frame.
+     * @param delta The time delta.
      */
     public void update(float delta) {
         //stateManager.update(delta);
@@ -187,8 +213,8 @@ public abstract class MCEntity {
     }
 
     /**
-     * Render the entity.
-     * @param batch
+     * Renders the entity.
+     * @param batch The sprite batch.
      */
     public void render(SpriteBatch batch) {
         if (!display) return;
@@ -196,71 +222,72 @@ public abstract class MCEntity {
     }
 
     /**
-     * Get the parent (the game).
-     * @return
+     * Gets the parent (the game).
+     * @return The game.
      */
     public MCGame getParent() {
         return parent;
     }
     
     /**
-     * Get the x-coordinate.
+     * Gets the x-coordinate.
+     * @return The x-coordinate.
      */
     public float getX() {
         return this.hitbox.x;
     }
 
     /**
-     * Get the y-coordinate.
-     * @return
+     * Gets the y-coordinate.
+     * @return The y-coordinate.
      */
     public float getY() {
         return this.hitbox.y;
     }
 
     /**
-     * Set the x-coordinate.
-     * @param x
+     * Sets the x-coordinate.
+     * @param x The x-coordinate.
      */
     public void setX(float x) {
         this.hitbox.x = x;
     }
 
     /**
-     * Set the y-coordinate.
-     * @param y
+     * Sets the y-coordinate.
+     * @param y The y-coordinate.
      */
     public void setY(float y) {
         this.hitbox.y = y;
     }
 
     /**
-     * Get the size of the sprite's entity (assuming it's a square).
-     * @return
+     * Gets the size of the sprite's entity (assuming it is a square).
+     * @return The size.
      */
     public float getSize() {
         return sprite.getWidth();
     }
 
     /**
-     * Get the entity's layer.
-     * @return
+     * Gets the entity's layer.
+     * @return The layer.
      */
     public int getLayer() {
         return layer;
     }
 
     /**
-     * Get the entity's position.
-     * @return
+     * Gets the entity's position.
+     * @return The position.
      */
     public Vector2 getPosition() {
         return new Vector2(this.hitbox.x, this.hitbox.y);
     }
 
     /**
-     * Get the entity's tiled position.
-     * @return
+     * Gets the entity's tiled position.
+     * @return The tile position.
      * @see MCIntVector2
      */
     public MCIntVector2 getTilePosition() {
@@ -268,65 +295,65 @@ public abstract class MCEntity {
     }
 
     /**
-     * Set the entity's position.
-     * @param x
-     * @param y
+     * Sets the entity's position.
+     * @param x The x-coordinate.
+     * @param y The y-coordinate.
      */
     public void setPosition(float x, float y) {
         this.hitbox.setPosition(x, y);
     }
 
     /**
-     * Set the entity's position.
-     * @param pos
+     * Sets the entity's position.
+     * @param pos The position.
      */
     public void setPosition(Vector2 pos) {
         this.hitbox.setPosition(pos.x, pos.y);
     }
 
     /**
-     * Set the alpha of the sprite.
-     * @param alpha
+     * Sets the alpha of the sprite.
+     * @param alpha The alpha value.
      */
     public void setAlpha(float alpha) {
         sprite.setAlpha(MathUtils.clamp(alpha, 0f, 1f));
     }
 
     /**
-     * Get the hitbox.
-     * @return
+     * Gets the hitbox.
+     * @return The hitbox.
      */
     public Rectangle getHitbox() {
         return this.hitbox;
     }
 
     /**
-     * If the hitbox collides or overlap the given entity's hitbox
-     * @param e
-     * @return
+     * Checks if the hitbox collides or overlaps the given entity's hitbox.
+     * @param e The other entity.
+     * @return True if collides, false otherwise.
      */
     public boolean collidesWith(MCEntity e) {
         return this.hitbox.overlaps(e.getHitbox());
     }
 
     /**
-     * Get the sprite.
-     * @return
+     * Gets the sprite.
+     * @return The sprite.
      */
     public Sprite getSprite() {
         return sprite;
     }
 
     /**
-     * Get the map the entity is on.
-     * @return
+     * Gets the map the entity is on.
+     * @return The terrain map.
      */
     public MCTerrainMap getMap() {
         return map;
     }
 
     /**
-     * To give the focus at the entity.
+     * To give the focus to the entity.
      */
     public void getFocus() {
         focus = true;
@@ -335,8 +362,8 @@ public abstract class MCEntity {
     }
 
     /**
-     * Take off the focus at the entity
-     * @return false if the entity block the focus
+     * Takes off the focus from the entity.
+     * @return False if the entity blocks the focus, true otherwise.
      */
     public boolean loseFocus() {
         if (keep) return false;
@@ -345,30 +372,30 @@ public abstract class MCEntity {
     }
 
     /**
-     * If the entity is invisible or not.
-     * @return
+     * Checks if the entity is invisible or not.
+     * @return True if it is hidden, false otherwise.
      */
     public boolean isHidden() {
         return !display;
     }
 
     /**
-     * Make the entity visible.
+     * Makes the entity visible.
      */
     public void show() {
         display = true;
     }
 
     /**
-     * Make the entity invisible.
+     * Makes the entity invisible.
      */
     public void hide() {
         display = false;
     }
 
     /**
-     * Get the entity's id.
-     * @return
+     * Gets the entity's id.
+     * @return The id.
      */
     public String getId() {
         return this.id;
@@ -388,8 +415,8 @@ public abstract class MCEntity {
     }
 
     /**
-     * Get the state manager (null by default).
-     * @return
+     * Gets the state manager (null by default).
+     * @return The state manager.
      */
     public MCStateMachine getStateManager() {
         return null;

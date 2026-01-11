@@ -42,15 +42,15 @@ import com.walk.or.die.engine.ui.MCHUDManager;
 import com.walk.or.die.engine.vehicles.MCVehicle;
 
 /**
- * {@link com.badlogic.gdx.ApplicationListener} implementation shared by all
- * platforms.
- * tu peux me voir écrire en sdsdsdsdqd temps !!!
- * MOTEUR ! ACTION !
- * THIS WAS NOT CREATED WITH A TEMPLATE.
- * 
- * This is the main class of the game, who manage the whole game.
+ * Implements the {@link com.badlogic.gdx.ApplicationListener} shared by all
+ * platforms. This is the main class of the game, which manages the whole game.
  */
 public class MCGame extends Game {
+    public static enum CombatDoneArgs {
+        ALLIES_WON,
+        ENEMIES_WON
+    }
+
     /**
      * Width of the viewport.
      */
@@ -60,33 +60,33 @@ public class MCGame extends Game {
      */
     public static final int VIEWPORT_HEIGHT = 12;
     /**
-     * Describe how far the camera can exceed the map lower boundaries.
+     * Describes how far the camera can exceed the map lower boundaries.
     */
     public static final Vector2 CAM_LOWER_LIMIT_OFFSET = new Vector2(0f, -4f);
     /**
-     * Describe how far the camera can exceed the map upper boundaries.
+     * Describes how far the camera can exceed the map upper boundaries.
     */
     public static final Vector2 CAM_UPPER_LIMIT_OFFSET = new Vector2(0f, 1f); 
 
     /** 
-     * Sets fixed HUD viewport height
+     * Sets the fixed HUD viewport height.
     */
     public final static int WINDOW_DEFAULT_HEIGHT = 480;
       /** 
-     * Sets fixed HUD viewport width
+     * Sets the fixed HUD viewport width.
     */
     public final static int WINDOW_DEFAULT_WIDTH = 
         MathUtils.round((float)WINDOW_DEFAULT_HEIGHT * ((float)VIEWPORT_WIDTH / (float)VIEWPORT_HEIGHT));
 
     /**
-     * The current map we are playing on.
+     * The current map being played on.
      * @see MCTerrainMap
      */
     private MCTerrainMap map;
     private Map<String, Boolean> mapsStates = new HashMap<>();
     private int mapIndex = 1;
     /**
-     * The pathfinder's singleton.
+     * The pathfinder singleton.
      * @see MCPathfinder
      */
     private MCPathfinder pathfinder = MCPathfinder.get();
@@ -96,11 +96,11 @@ public class MCGame extends Game {
      */
     private AssetManager drh = new AssetManager();
     /**
-     * The path were all tiled files are.
+     * The path where all tiled files are stored.
      */
     private final String TILED_ROOT = "tiled/packed/";
     /**
-     * The path wera all tiled maps are.
+     * The path where all tiled maps are stored.
      */
     private final String MAP_ROOT = TILED_ROOT + "maps/";
     /**
@@ -109,17 +109,17 @@ public class MCGame extends Game {
     private final String FONT_ROOT = "fonts/";
 
     /**
-     * The MCEntityFactory's singleton.
+     * The MCEntityFactory singleton.
      * @see MCEntityFactory
      */
     private final MCEntityFactory entityFact = MCEntityFactory.get();
     /**
-     * The MCAttackFactory's singleton.
+     * The MCAttackFactory singleton.
      * @see MCAttackFactory
      */
     private final MCAttackFactory attackFact = MCAttackFactory.get();
     /**
-     * The MCSharedAssets's singleton.
+     * The MCSharedAssets singleton.
      * @see MCSharedAssets
      */
     private final MCSharedAssets sharedAssets = MCSharedAssets.get();
@@ -131,62 +131,69 @@ public class MCGame extends Game {
      */
     private final MCStateMachine<MCGameState, MCGame> stateManager = new MCStateMachine<MCGameState, MCGame>(this);
     /**
-     * The unpredictible EventBus, riding your fears, straight towards the wall.
+     * The unpredictable EventBus, which rides your fears straight towards the wall.
      * @see MCEventBus
      * @see MCVehicle
      */
     private final MCEventBus bus = MCEventBus.get();
 
     /**
-     * The CameraManager's singleton.
+     * The CameraManager singleton.
      * @see MCCameraManager
      */
     private final MCCameraManager camManager = MCCameraManager.get();
 
     /**
-     * The InputManager's singleton.
+     * The InputManager singleton.
      * @see MCInputManager
      */
     private MCInputManager inputHandler = MCInputManager.get();
 
     /**
-     * The EntityManager's singleton
+     * The EntityManager singleton.
      * @see MCEntityManager
      */
     private MCEntityManager entityManager = MCEntityManager.get();
     /**
-     * The current focus Character, null there's no focusCharacter.
+     * The current focused character, or null if there is no focused character.
      * @see MCCharacter
      */
     private MCCharacter focusedCharacter;
 
     /**
-     * The debug's singleton.
+     * The debug singleton.
      * @see MCDebugRenderer
      */
     private MCDebugRenderer debugRenderer = MCDebugRenderer.get();
 
     /**
+     * The sprite batch used for rendering.
      * @see SpriteBatch
      */
     public SpriteBatch batch;
     /**
+     * The game viewport.
      * @see FitViewport
      */
     public FitViewport gameViewport;
 
     /**
-     * HUD manager singleton
+     * The HUD manager singleton.
      */
     private MCHUDManager hudManager = MCHUDManager.get();
 
+    private String currentMapFile;
     private String mapFileToLoad = null;
 
     /**
-     * A very big constructor
+     * Constructs a new MCGame instance.
      */
     public MCGame() {}
 
+    /**
+     * Gets the root map.
+     * @return The root map.
+     */
     public String getRootMap () {
         return MAP_ROOT;
     }
@@ -248,27 +255,32 @@ public class MCGame extends Game {
     }
 
     /**
-     * The trigger for a clean transition, with the map name (tmx file)
-     * @param filename
+     * Triggers a clean transition with the map name (tmx file).
+     * @param filename The name of the map file.
      */
     public void teleportationActivate (String filename) {
         mapFileToLoad = filename;
     }
 
+    public void reloadMap() {
+        mapFileToLoad = currentMapFile;
+    }
+
     /**
-     * load clean a map with the map name (tmx file)
-     * @param filename
-     * @throws IllegalStateException
+     * Loads and cleans a map with the map name (tmx file).
+     * @param filename The name of the map file.
+     * @throws IllegalStateException If the map file does not exist.
      */
     private void loadMap(String filename) throws IllegalStateException {
         FileHandle mapFile = Gdx.files.internal(MAP_ROOT + filename);
         if (!mapFile.exists()) {
             throw new IllegalStateException("map " + filename + " trying to be loaded but doesn't exist.");
         }
+        currentMapFile = filename;
         System.out.println("teleportation to " + filename);
         hudManager.getCharacterHud().hide();
         entityManager.clearEntities();
-        
+
         if (map != null)
             map.dispose();
         map = new MCTerrainMap(MAP_ROOT + filename, drh);
@@ -291,7 +303,6 @@ public class MCGame extends Game {
             }
             entityManager.update(Gdx.graphics.getDeltaTime());
             stateManager.setCurrentState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
-
         } else {
             try {
                 entityManager.addExplorationEntities(map.spawnEntities(this));
@@ -304,8 +315,8 @@ public class MCGame extends Game {
     }
 
     /**
-     * The global logic of the game, triggered each frame.
-     * @param delta
+     * Handles the global logic of the game, triggered each frame.
+     * @param delta The time elapsed since the last frame.
      */
     private void logic(float delta) {
         // We don't give a fuck about logic
@@ -354,8 +365,8 @@ public class MCGame extends Game {
     }
 
     /**
-     * Change the focused Character
-     * @param c le nouveau character focus (peut être null)
+     * Changes the focused character.
+     * @param c The new focused character (can be null).
      */
     public void changeFocus(MCCharacter c) {
         if (focusedCharacter != null) {
@@ -374,22 +385,25 @@ public class MCGame extends Game {
     }
 
     /**
-     * @return the state manager.
+     * Gets the state manager.
+     * @return The state manager.
      */
     public MCStateMachine getStateManager() {
         return this.stateManager;
     }
 
     /**
-     * @return the terrain map.
+     * Gets the terrain map.
+     * @return The terrain map.
      */
     public MCTerrainMap getTerrainMap() {
         return this.map;
     }
 
     /**
-     * @param pos the case's position
-     * @return if we can walk on this case
+     * Determines if a case is walkable.
+     * @param pos The position of the tile.
+     * @return True if the case is walkable.
      */
     public boolean isWalkable(MCIntVector2 pos) {
         if (entityManager.getEntityFromTile(1, pos) == null) {

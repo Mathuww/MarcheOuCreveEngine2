@@ -18,6 +18,16 @@ public class MCUIScrollingText extends MCUISimpleText {
     private TextureRegion gradientTexture;
     private float scrollX = 0f;
 
+    /**
+     * Constructs a scrolling text object.
+     *
+     * @param parent The parent HUD.
+     * @param font The font to use.
+     * @param zone The zone to render in.
+     * @param color The color of the text.
+     * @param scale The scale of the text.
+     * @param spacing The spacing between characters.
+     */
     public MCUIScrollingText(
         MCAbstractHUD parent, 
         BitmapFont font, 
@@ -35,6 +45,9 @@ public class MCUIScrollingText extends MCUISimpleText {
         }
     }
 
+    /**
+     * Draws the edge gradient for the scrolling text effect.
+     */
     private void edgeGradient() {
         currentBatch.draw(
             gradientTexture, 
@@ -57,6 +70,11 @@ public class MCUIScrollingText extends MCUISimpleText {
         gradientTexture.flip(true, false);
     }
 
+    /**
+     * Renders the scrolling text.
+     *
+     * @param batch The sprite batch to render with.
+     */
     @Override
     public void render(SpriteBatch batch) {
         if (currentText == null || currentText == "")
@@ -104,6 +122,11 @@ public class MCUIScrollingText extends MCUISimpleText {
             edgeGradient();
     }
 
+    /**
+     * Sets the text to display.
+     *
+     * @param text The text to set.
+     */
     @Override
     public void setText(String text) {
         if (text.equals(currentText))
@@ -112,6 +135,11 @@ public class MCUIScrollingText extends MCUISimpleText {
         scrollX = 0f;
     }
 
+    /**
+     * Called on each frame
+     *
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void update(float delta) {
         super.update(delta);

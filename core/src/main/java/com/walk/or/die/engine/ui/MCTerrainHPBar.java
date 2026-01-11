@@ -13,10 +13,10 @@ import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 
-/* 
+/*
 si on appelle le render de cette classe,
-alors on considere que la vérification "pas de voisins qui ont une 
-barre HP qui se chevauche à la mienne" 
+alors on considere que la vérification "pas de voisins qui ont une
+barre HP qui se chevauche à la mienne"
 a déjà été faite. (dans MCCharacter.renderOnGridOverlay)
 
 du coup ici on se concentre juste sur le fait d'adapter l'affichage aux limites de la caméra (X et Y)
@@ -31,7 +31,7 @@ public class MCTerrainHPBar extends MCAbstractHUD {
 
     private final float DAMAGE_BASE_Y_OFFSET = 1.7f;
     private final float DAMAGE_END_Y_OFFSET = 3f;
-    private final float DAMAGE_DURATION = 3f; 
+    private final float DAMAGE_DURATION = 3f;
     private final float DAMAGE_UP_LERP = 0.2f;
     private final float DAMAGE_HEIGHT = 1f;
     private final float DAMAGE_FONT_SCALE = 0.0125f;
@@ -79,6 +79,12 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     private float damageStartX = 0f;
     private float damageStartY = 0f;
 
+    /**
+     * Constructs a {@code MCTerrainHPBar}.
+     *
+     * @param parent The parent MCCharacter.
+     * @param vp The viewport.
+     */
     public MCTerrainHPBar(MCCharacter parent, Viewport vp) {
         this.parent = parent;
 
@@ -95,6 +101,11 @@ public class MCTerrainHPBar extends MCAbstractHUD {
         }
     }
 
+    /**
+     * Shows the damage.
+     *
+     * @param damage The damage to show.
+     */
     public void showDamage(int damage) {
         damageStr = Integer.toString(damage);
         damageAlpha = 1f;
@@ -108,9 +119,14 @@ public class MCTerrainHPBar extends MCAbstractHUD {
         updateDamageIndicator(0f);
     }
 
+    /**
+     * Updates the damage indicator.
+     *
+     * @param delta The time delta.
+     */
     public void updateDamageIndicator(float delta) {
         damageFadeStateTime += delta;
-        
+
         float timeRatio = damageFadeStateTime / DAMAGE_DURATION;
         if (timeRatio >= 1f) {
             damageAlpha = 0f;
@@ -129,22 +145,27 @@ public class MCTerrainHPBar extends MCAbstractHUD {
         damageStartY = gdxParentPos.y + damageOffsetY;
     }
 
+    /**
+     * Called on each frame.
+     *
+     * @param delta The time delta.
+     */
     public void update(float delta) {
         // pour ne pas faire new Vector2 à chaque frame !
         gdxParentPos.set(parent.getPosition());
 
         if (damageAlpha > 0f) {
-           updateDamageIndicator(delta);
+            updateDamageIndicator(delta);
         }
 
         float newHpRatio = MathUtils.clamp(
-            (float) parent.getHealth() / (float) parent.getMaxHp(), 
-            0f, 
-            1f
+                (float) parent.getHealth() / (float) parent.getMaxHp(),
+                0f,
+                1f
         );
 
         if (Math.abs(newHpRatio - lerpedHpRatio) > 0.001f)
-            lerpedHpRatio += (newHpRatio - lerpedHpRatio) * delta * LERP; 
+            lerpedHpRatio += (newHpRatio - lerpedHpRatio) * delta * LERP;
         else
             lerpedHpRatio = newHpRatio; // snap
 
@@ -170,10 +191,15 @@ public class MCTerrainHPBar extends MCAbstractHUD {
             currentFillTexture = fillTextureMidHP;
         else if (lerpedHpRatio < LOW_HP_THRESHOLD)
             currentFillTexture = fillTextureLowHP;
-        else 
+        else
             currentFillTexture = fillTextureHighHP;
     }
 
+    /**
+     * Called on each frame.
+     *
+     * @param batch The sprite batch.
+     */
     public void render(SpriteBatch batch) {
         if(!display)
             return;
@@ -191,37 +217,65 @@ public class MCTerrainHPBar extends MCAbstractHUD {
 
         // 1 : le fond (contourTexture)
         batch.draw(
-            contourTexture, 
-            startX - CONTOUR_SIZE,       
-            startY - CONTOUR_SIZE,      
-            BAR_WIDTH + CONTOUR_SIZE * 2f, 
-            BAR_HEIGHT + CONTOUR_SIZE * 2f
+                contourTexture,
+                startX - CONTOUR_SIZE,
+                startY - CONTOUR_SIZE,
+                BAR_WIDTH + CONTOUR_SIZE * 2f,
+                BAR_HEIGHT + CONTOUR_SIZE * 2f
         );
 
         // 2 : la barre vide (backgroundTexture)
         batch.draw(
-            backgroundTexture, 
-            startX,       
-            startY,      
-            BAR_WIDTH, 
-            BAR_HEIGHT
+                backgroundTexture,
+                startX,
+                startY,
+                BAR_WIDTH,
+                BAR_HEIGHT
         );
 
         // 3 : les points de vie (fillTexture)
         batch.draw(
-            currentFillTexture, 
-            startX,       
-            startY,      
-            BAR_WIDTH * lerpedHpRatio, 
-            BAR_HEIGHT
+                currentFillTexture,
+                startX,
+                startY,
+                BAR_WIDTH * lerpedHpRatio,
+                BAR_HEIGHT
         );
 
         batch.setColor(1f, 1f, 1f, 1f);
     }
 
+    /**
+     * Checks if the hp bar is fully shown.
+     *
+     * @return {@code true} if the hp bar is fully shown, {@code false} otherwise.
+     */
     public boolean isFullyShown() { return display && !fading; }
+
+    /**
+     * Checks if a position belongs to the hud component.
+     *
+     * @param pos The position to check.
+     * @return {@code false} always.
+     */
     public boolean posBelongsToHudComponent(Vector2 pos) { return false; }
+
+    /**
+     * Handles hover.
+     *
+     * @param pos The position to handle.
+     */
     public void handleHover(Vector2 pos) {}
+
+    /**
+     * Handles hover gone.
+     */
     public void handleHoverGone() {}
+
+    /**
+     * Handles a click.
+     *
+     * @param pos The position of the click.
+     */
     public void handleClick(Vector2 pos) {}
 }

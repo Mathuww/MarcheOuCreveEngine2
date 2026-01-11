@@ -30,6 +30,12 @@ public class MCHUDHPBar {
 
     private float lerpedHpRatio = 1f;
 
+    /**
+     * Constructs a new MCHUDHPBar.
+     *
+     * @param parent the Parent HUD.
+     * @param zone the Zone where the HP bar is located.
+     */
     public MCHUDHPBar(MCAbstractHUD parent, Zone zone) {
         this.parent = parent;
         this.zone = zone;
@@ -44,6 +50,11 @@ public class MCHUDHPBar {
         }
     }
 
+    /**
+     * Sets the target character for the HP bar.
+     *
+     * @param target the Target character.
+     */
     public void setTarget(MCCharacter target) {
         this.target = target;
         float newHpRatio = MathUtils.clamp(
@@ -54,6 +65,10 @@ public class MCHUDHPBar {
         lerpedHpRatio = newHpRatio;
     }
 
+    /**
+     * Called on each frame.
+     * @param delta The time in seconds since the last frame.
+     */
     public void update(float delta) {
         if (target == null)
             return;
@@ -79,11 +94,20 @@ public class MCHUDHPBar {
             currentFillTexture = fillTextureHighHP;
     }
 
+    /**
+     * Gets the current lerped HP value.
+     *
+     * @return the Current lerped HP ratio.
+     */
     public int getCurrentLerpedHp() {
         float hpRatio = MathUtils.clamp(lerpedHpRatio * target.getMaxHp(), 0f, target.getMaxHp());
         return MathUtils.floor(hpRatio);
     }
 
+    /**
+     * Called on each frame.
+     * @param batch the Sprite batch being used to draw.
+     */
     public void render(SpriteBatch batch) {
         if (target == null)
             return;

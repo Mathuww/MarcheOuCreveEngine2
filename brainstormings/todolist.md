@@ -27,9 +27,11 @@ Exception in thread "main" java.lang.NullPointerException: Cannot invoke "java.l
 - Carré violet qui apparait 1 frame quand on lance un projectile (ca doit avoir un rapport avec l'ordre des opérations au lancement du projectile)
 - !!! Ca crash quand on quitte mdr (It's a feature, not a bug)
 - !!!!!! Quand un game state exit() son inputPressed unregister pas du event bus
+- !!!! Les trous dans les attaques
 
 # FEATURES
-- !!!!!!! REECRIRE SCRIPT PACK EN BATCH WINDOWS
+- ??? Faire HUD quand les ennemies gagnes ("[en petit :: you are] dead") + la gestion pour recommencer la map
+- ??? Faire HUD quand les alliés gagne ("Walk [en petit :: or die]")
 - !! Différencier corps-à-corps et attaque à dist
 - ! Prévisualiser moves ennemies
 - !!!! Capacité spé : intégration graphique

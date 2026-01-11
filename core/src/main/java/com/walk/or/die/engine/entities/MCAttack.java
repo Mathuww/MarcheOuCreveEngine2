@@ -44,9 +44,10 @@ public class MCAttack {
 
     /**
      * The creator.
-     * @param parent
-     * @param power
-     * @param pattern
+     * @param parent The parent entity.
+     * @param name The name of the attack.
+     * @param power The base power of the attack.
+     * @param pattern The damage pattern of the attack.
      * @throws Exception
      */
     
@@ -61,8 +62,8 @@ public class MCAttack {
     }
 
     /**
-     * Initialize parameters from tiled datas.
-     * @param props
+     * Initializes parameters from tiled datas.
+     * @param props The map properties.
      */
     public void initFromProperties(MapProperties props) {
         this.senderAnim = props.get("senderAnim", String.class);
@@ -70,9 +71,9 @@ public class MCAttack {
     }
 
     /**
-     * Get if the tile is concerned by the attack.
-     * @param targetPos
-     * @return
+     * Gets if the tile is concerned by the attack.
+     * @param targetPos The target position.
+     * @return True if the tile is valid, false otherwise.
      */
     public boolean isValidTile(MCIntVector2 targetPos) {
         MCIntVector2 relativePos = targetPos.subTo(parent.getTilePosition());
@@ -80,9 +81,9 @@ public class MCAttack {
     }
     
     /**
-     * Get the damage to a specific tile.
-     * @param targetPos
-     * @return
+     * Gets the damage to a specific tile.
+     * @param targetPos The target position.
+     * @return The damage value.
      */
     private int getDamageAtTile(MCIntVector2 targetPos) {
         MCIntVector2 relativePos = targetPos.subTo(parent.getTilePosition());
@@ -94,16 +95,16 @@ public class MCAttack {
     }
 
     /**
-     * Get the damage to an entity.
-     * @param targetEntity
-     * @return
+     * Gets the damage to an entity.
+     * @param targetEntity The target entity.
+     * @return The damage value.
      */
     public int getDamageTo(MCEntity targetEntity) {
         return getDamageAtTile(targetEntity.getTilePosition());
     }
 
     /**
-     * Compute all the tile to displaye.
+     * Computes all the tile to display.
      */
     public void computeValidTilesDisplay() {
         //System.out.println("updating attack");
@@ -128,15 +129,15 @@ public class MCAttack {
     }
 
     /**
-     * Clear the shown trajectories.
+     * Clears the shown trajectories.
      */
     public void clearTrajectory() {
         trajectorySprites.clear();
     }
 
     /**
-     * Show a trajectory.
-     * @param traj
+     * Shows a trajectory.
+     * @param traj The list of tile positions that make up the trajectory.
      */
     public void showTrajectory(List<MCIntVector2> traj) {
         trajectorySprites.clear();
@@ -153,8 +154,8 @@ public class MCAttack {
     }
 
     /**
-     * Render (call each frame).
-     * @param batch
+     * Called on each frame.
+     * @param batch The sprite batch.
      */
     public void render(SpriteBatch batch) {
         if (!display) return;
@@ -165,39 +166,59 @@ public class MCAttack {
     }
 
     /**
-     * Get the name of the anim to play on the sender.
-     * @return
+     * Gets the name of the anim to play on the sender.
+     * @return The sender animation name.
      */
     public String getSenderAnim() {
         return senderAnim;
     }
 
     /**
-     * Create the right projectile.
-     * @return
+     * Creates the right projectile.
+     * @return The projectile spawned.
      * @throws Exception
      */
     public MCProjectile spawnProjectile() throws Exception {
         return MCEntityManager.get().buildProjectile(projectileName);
     }
 
+    /**
+     * Gets the base power.
+     * @return The base power of the attack.
+     */
     public int getBasePower() {
         return basePower;
     }
 
+    /**
+     * Sets the current power.
+     * @param newPower The new power value.
+     */
     public void setPower(int newPower) {
         currentPower = newPower;
     }
 
+    /**
+     * Gets the current power.
+     * @return The current power of the attack.
+     */
     public int getPower() {
         return currentPower;
     }
     
+    /**
+     * Gets a summary of the attack.
+     * @return The summary string.
+     */
     public String getSummary() {
         String summary = "Power : " + currentPower;
         return summary;
     }
 
+    /**
+     * Gets the name of the attack.
+     * @return The attack name.
+     */
     public String getName() {
         return attackName;
     }

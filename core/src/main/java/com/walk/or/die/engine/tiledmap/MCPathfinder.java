@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.Collections;
 
 /**
- * A useful class for A*
+ * A useful class for A*.
  */
 class Tuple {
     int g;        // distance depuis le départ
@@ -29,6 +29,13 @@ class Tuple {
     MCIntVector2 pos;  // position
     Tuple parent; // parent pour reconstruire le chemin
 
+    /**
+     * Constructs a new Tuple.
+     * @param g The distance from the start.
+     * @param h The minimum distance to the end.
+     * @param pos The position.
+     * @param parent The parent for reconstructing the path.
+     */
     public Tuple(int g, int h, MCIntVector2 pos, Tuple parent) {
         this.g = g;
         this.h = h;
@@ -46,16 +53,16 @@ public class MCPathfinder {
     private static MCPathfinder instance = null;
 
     /**
-     * A class who returns a simulation of a trajectory, with the success and where it ends.
+     * A class that returns a simulation of a trajectory, with the success and where it ends.
      */
     public static class Simulation {
         public boolean success;
         public MCIntVector2 endPos;
 
         /**
-         * The constructor
-         * @param success
-         * @param pos
+         * Constructs a Simulation.
+         * @param success the success of the simulation
+         * @param pos the end position of the simulation
          */
         public Simulation(boolean success, MCIntVector2 pos) {
             this.success = success;
@@ -64,7 +71,8 @@ public class MCPathfinder {
     }
 
     /**
-     * The getter.
+     * Gets the singleton instance.
+     * @return The singleton instance of MCPathfinder.
      */
     public static MCPathfinder get() {
         if (instance == null) instance = new MCPathfinder();
@@ -72,18 +80,18 @@ public class MCPathfinder {
     }
 
     /**
-     * The init.
-     * @param game
+     * Initializes the pathfinder.
+     * @param game The game instance.
      */
     public void init (MCGame game) {
         this.game = game;
     }
 
     /**
-     * Get a path between 2 points using A*. Return a empty list if there's no path.
-     * @param start
-     * @param end
-     * @return
+     * Gets a path between 2 points using A*. Returns an empty list if there's no path.
+     * @param start The start position.
+     * @param end The end position.
+     * @return The list of MCIntVector2 representing the path.
      * @see MCIntVector2
      */
     public List<MCIntVector2> getPath(MCIntVector2 start, MCIntVector2 end) {
@@ -116,18 +124,18 @@ public class MCPathfinder {
     }
 
     /**
-     * Return if the tile at the given position is.
-     * @param pos
-     * @return
+     * Checks if the tile at the given position is walkable.
+     * @param pos The position to check.
+     * @return True if the tile is walkable, false otherwise.
      */
     public boolean isWalkable(MCIntVector2 pos) {
         return game.isWalkable(pos);
     }
 
     /**
-     * Return if a position contains something who protects from bullets.
-     * @param pos
-     * @return 
+     * Checks if a position contains something that protects from bullets.
+     * @param pos The position to check.
+     * @return True if the position is protected, false otherwise.
      */
     public boolean isProtect(MCIntVector2 pos) {
         if (MCEntityManager.get().getEntityFromTile(1, pos) == null) {
@@ -138,10 +146,10 @@ public class MCPathfinder {
     }
 
     /**
-     * Get a straight trajectory between two points, useful for bullets.
-     * @param v1
-     * @param v2
-     * @return
+     * Gets a straight trajectory between two points, useful for bullets.
+     * @param v1 The starting position.
+     * @param v2 The ending position.
+     * @return The list of MCIntVector2 representing the trajectory.
      */
     private List<MCIntVector2> getTrajectory(MCIntVector2 v1, MCIntVector2 v2) {
 
@@ -174,8 +182,8 @@ public class MCPathfinder {
     }
 
     /**
-     * Cut the given list when it hit something.
-     * @param list
+     * Cuts the given list when it hits something.
+     * @param list The list of MCIntVector2 representing the trajectory.
      */
     public void cutTrajectoryOnHit(List<MCIntVector2> list) {
         Iterator<MCIntVector2> it = list.iterator();
@@ -194,10 +202,10 @@ public class MCPathfinder {
     }
 
     /**
-     * Get the best trajectory to shoot on a target.
-     * @param v1
-     * @param v2
-     * @return
+     * Gets the best trajectory to shoot on a target.
+     * @param v1 The starting position.
+     * @param v2 The ending position.
+     * @return The list of MCIntVector2 representing the best trajectory.
      */
     public List<MCIntVector2> getBestTrajectory(MCIntVector2 v1, MCIntVector2 v2) {
         // Mon implémentation ne distinguera pas un personnage d'un bloc/obstacle, ce que je trouve problématique
@@ -261,10 +269,10 @@ public class MCPathfinder {
     }
 
     /**
-     * Get a trajectory between two points, without those points, for being tested.
-     * @param start
-     * @param end
-     * @return
+     * Gets a trajectory between two points, without those points, for being tested.
+     * @param start The starting position.
+     * @param end The ending position.
+     * @return The list of MCIntVector2 representing the valid trajectory.
      * @deprecated in theory
      */
     public List<MCIntVector2> getValidTrajectory(MCIntVector2 start, MCIntVector2 end) {
@@ -275,9 +283,10 @@ public class MCPathfinder {
     }
 
     /**
-     * Test if the given trajectory can be achieved (by checking between the first and the last point).
-     * @param trajectory
-     * @return the results of the Test
+     * Tests if the given trajectory can be achieved (by checking between the first and the last point).
+     * @param trajectory The list of MCIntVector2 representing the trajectory.
+     * @param end The end position.
+     * @return The results of the Test.
      * @see Simulation
      */
     public Simulation simulateTrajectory(List<MCIntVector2> trajectory, MCIntVector2 end) {
@@ -294,9 +303,10 @@ public class MCPathfinder {
     }
 
     /**
-     * Get the probability of succes of a trajectory.
-     * @param trajectory
-     * @return
+     * Gets the probability of success of a trajectory.
+     * @param trajectory The list of MCIntVector2 representing the trajectory.
+     * @param end The end position.
+     * @return The probability of success.
      */
     public float isCorrectTrajectory(List<MCIntVector2> trajectory, MCIntVector2 end) {
         Iterator<MCIntVector2> it = trajectory.iterator();
@@ -311,9 +321,9 @@ public class MCPathfinder {
     }
     
     /**
-     * Clean the given path, by leaving only the intersection's positions.
-     * @param path
-     * @return
+     * Cleans the given path, by leaving only the intersection's positions.
+     * @param path The list of MCIntVector2 representing the path.
+     * @return The cleaned list of MCIntVector2.
      * @see MCIntVector2
      */
     public List<MCIntVector2> clean(List<MCIntVector2> path) {
@@ -334,6 +344,11 @@ public class MCPathfinder {
         return newList;
     }
 
+    /**
+     * Reconstructs the path from the end node.
+     * @param endNode The end node.
+     * @return The list of MCIntVector2 representing the path.
+     */
     private List<MCIntVector2> reconstructPath(Tuple endNode) {
         List<MCIntVector2> path = new ArrayList<>();
         Tuple current = endNode;
@@ -345,6 +360,12 @@ public class MCPathfinder {
         return path;
     }
 
+    /**
+     * Compares two tuples based on their F value (g + h).
+     * @param x The first tuple.
+     * @param y The second tuple.
+     * @return -1 if x is less than y, 1 if x is greater than y, 0 otherwise.
+     */
     private int comparaison(Tuple x, Tuple y) {
         int value_x = x.g + x.h;
         int value_y = y.g + y.h;
@@ -356,10 +377,21 @@ public class MCPathfinder {
         return 0;
     }
 
+    /**
+     * Gets the Manhattan distance between two points.
+     * @param x The first point.
+     * @param y The second point.
+     * @return The Manhattan distance between the two points.
+     */
     private int getDist(MCIntVector2 x, MCIntVector2 y) {
         return (int)(Math.abs(x.x - y.x) + Math.abs(y.y - x.y));
     }
 
+    /**
+     * Gets the neighbors of a given position.
+     * @param current The current position.
+     * @return The list of neighboring MCIntVector2 positions.
+     */
     private List<MCIntVector2> getNeighbors(MCIntVector2 current) {
         List<MCIntVector2> neighbors = new ArrayList<>();
 

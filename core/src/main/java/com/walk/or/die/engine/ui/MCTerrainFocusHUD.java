@@ -19,12 +19,21 @@ public class MCTerrainFocusHUD extends MCAbstractHUD {
 
     public MCTerrainFocusHUD() {}
 
+    /**
+     * Sets the target character.
+     *
+     * @param target The target character to set.
+     */
     public void setTarget(MCCharacter target) {
         //if (target != null)
             //System.out.println("focus hud target is now " + target.getId());
         this.target = target;
     }
 
+    /**
+     * Called on each frame.
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void update(float delta) {
         if (target == null)
@@ -35,7 +44,7 @@ public class MCTerrainFocusHUD extends MCAbstractHUD {
         if (blinkingTime >= BLINKING_INTERVAL) {
             display = !display;
             blinkingTime = 0f;
-        }   
+        }
 
         rect.x = target.getX() - CORNER_SIZE;
         rect.y = target.getY() - CORNER_SIZE;
@@ -43,6 +52,10 @@ public class MCTerrainFocusHUD extends MCAbstractHUD {
         rect.height = target.getSize() + 2f * CORNER_SIZE;
     }
 
+    /**
+     * Called on each frame.
+     * @param batch The sprite batch to render with.
+     */
     @Override
     public void render(SpriteBatch batch) {
         super.render(batch);
@@ -57,9 +70,37 @@ public class MCTerrainFocusHUD extends MCAbstractHUD {
         drawFourCorners(rect, CORNER_SIZE);
     }
 
+    /**
+     * Gets whether the hud is fully shown.
+     *
+     * @return True if the hud is fully shown, false otherwise.
+     */
     public boolean isFullyShown() { return display; }
+
+    /**
+     * Checks if the position belongs to the hud component.
+     *
+     * @param pos The position to check.
+     * @return False, as the position never belongs to the hud component.
+     */
     public boolean posBelongsToHudComponent(Vector2 pos) { return false; }
+
+    /**
+     * Handles the hover event.
+     *
+     * @param pos The position of the hover.
+     */
     public void handleHover(Vector2 pos) {}
+
+    /**
+     * Handles the event when the hover is gone.
+     */
     public void handleHoverGone() {}
+
+    /**
+     * Handles the click event.
+     *
+     * @param pos The position of the click.
+     */
     public void handleClick(Vector2 pos) {}
 }

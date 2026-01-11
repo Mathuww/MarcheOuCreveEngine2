@@ -11,24 +11,49 @@ public abstract class MCExplorationPlayerState<T extends MCExplorationPlayerStat
         super(parent);
     }
 
+    /**
+     * Gets the parent.
+     * @return The parent.
+     */
     public MCExplorationPlayer getParent() {
         return parent;
     }
 
+    /**
+     * Called on each frame.
+     * @param delta The time delta.
+     */
     @Override
     public void update(float delta) {}
 
+    /**
+     * Called on each frame.
+     * @param batch The sprite batch.
+     */
     @Override
     public void render(SpriteBatch batch) {}
 
+    /**
+     * Called on each frame.
+     * @param batch The sprite batch.
+     */
     @Override
     public void renderEffects(SpriteBatch batch) {}
 
-    // à override pour tous les états bloquants !
+    /**
+     * Checks if it is blocking.
+     *
+     * @return True if blocking, false otherwise.
+     */
     public boolean isBlocking() {
         return false;
     }
     
+    /**
+     * Handles the input pressed.
+     *
+     * @param data The command data.
+     */
     protected void inputPressed(MCInputManager.Command data) {
         if (!(data instanceof MCInputManager.Command)) return;
         

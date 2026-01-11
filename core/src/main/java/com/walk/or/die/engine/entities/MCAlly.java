@@ -14,41 +14,77 @@ import com.walk.or.die.engine.sm.entity.character.states.MCCSSpeedShoot;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**
- * A character that can be controlled.
+ * Represents a controllable character entity (an ally).
  */
 public class MCAlly extends MCCharacter {
     /**
-     * A class to manage the actions.
+     * Manages the turn-based action states for this ally.
      */
     public class AllyTurnState {
+        /**
+         * Did it already move?
+         */
         public boolean hasMoved = false;
+        /**
+         * Did it already attack?
+         */
         public boolean hasAttacked = false;
+        /**
+         * Did it already use one of its capacities?
+         */
         public boolean hasUsedCapacity = false;
         
         public AllyTurnState() {}
 
+        /**
+         * Resets to the default turn state.
+         */
         public void reset() {
             hasMoved = false;
             hasAttacked = false;
             hasUsedCapacity = false;
         }
 
+        /**
+         * Checks if the ally can move.
+         * @return True if it can move, false otherwise.
+         */
         public boolean canMove() {return !hasMoved;}
+        /**
+         * Checks if the ally can attack.
+         * @return True if it can attack, false otherwise.
+         */
         public boolean canAttack() {return !hasAttacked;}
+        /**
+         * Checks if the ally can use a capacity.
+         * @return True if it can use a capacity, false otherwise.
+         */
         public boolean canUseCapacity() {return !hasUsedCapacity;}
 
+        /**
+         * Called when the ally moved during this turn.
+         */
         public void moved() {hasMoved = true;}
+        /**
+         * Called when the ally attacked during this turn.
+         */
         public void attacked() {hasAttacked = true;}
+        /**
+         * Called when the ally used a capacity during this turn.
+         */
         public void capacityUsed() {hasUsedCapacity = true;}
     }   
 
+    /**
+     * Stores info about what the ally did during the current turn.
+     */
     private AllyTurnState turnState = new AllyTurnState();
 
     /**
-     * The constructor.
-     * @param parent
-     * @param map
-     * @param entityGenericName
+     * Constructs a new ally instance.
+     * @param parent The parent game instance.
+     * @param map The terrain map associated with this entity.
+     * @param entityGenericName The unique identifier or name for this entity type.
      */
     public MCAlly(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
@@ -64,14 +100,19 @@ public class MCAlly extends MCCharacter {
         stateManager.addState(new MCCSSpeedShoot(this));
     }
 
+    /**
+     * Called when a new turn begins.
+     * Resets the current turn state for this ally so it can move/attack again.
+     */
     @Override
     public void newTurn() {
         super.newTurn();
         getTurnState().reset();
     }
+
     /**
-     * Get the current ally actions.
-     * @return
+     * Gets the current turn state object for this ally.
+     * @return The state object tracking movement and actions for the current turn.
      * @see AllyTurnState
      */
     public AllyTurnState getTurnState() {

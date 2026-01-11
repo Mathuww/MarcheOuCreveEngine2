@@ -26,19 +26,24 @@ public class MCGameScreen implements Screen {
 
     /**
      * The constructor.
-     * @param game
-     * @throws InvalidDataException
+     * @param game The game instance.
+     * @throws InvalidDataException If the data is invalid.
      */
     public MCGameScreen(MCGame game) throws InvalidDataException {
         this.game = game;
     }
     
-    // Called once (when the window oppened)
+    /**
+     * Called once (when the window is opened).
+     */
     @Override
     public void show() {
     }
 
-    // Called every frame
+    /**
+     * Called on each frame.
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void render(float delta) {
         ScreenUtils.clear(Color.BLACK);
@@ -57,6 +62,10 @@ public class MCGameScreen implements Screen {
         hudManager.render(game.batch);
     }
 
+    /**
+     * @param width The new width.
+     * @param height The new height.
+     */
     @Override
     public void resize(int width, int height) {
        game.gameViewport.update(width, height, true);

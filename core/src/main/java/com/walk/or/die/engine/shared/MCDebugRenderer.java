@@ -13,8 +13,8 @@ public class MCDebugRenderer {
     private static MCDebugRenderer instance = null;
 
     /**
-     * Get the singleton instance.
-     * @return
+     * Gets the singleton instance.
+     * @return the singleton instance
      */
     public static MCDebugRenderer get() {
         if (instance == null) instance = new MCDebugRenderer();
@@ -24,7 +24,7 @@ public class MCDebugRenderer {
     private MCDebugRenderer() {}
 
     /**
-     * Init the singleton and load textures.
+     * Initializes the singleton and loads textures.
      * @throws Exception
      */
     public void init() throws Exception {
@@ -32,34 +32,34 @@ public class MCDebugRenderer {
     }
 
     private Set<MCIntVector2> debugTiles = new HashSet<>();
-    private TextureRegion validTileTexture; 
+    private TextureRegion validTileTexture;
 
     /**
-     * Highlight a tile with his position.
-     * @param pos
+     * Highlights a tile with its position.
+     * @param pos The position of the tile
      */
     public void addDebugTile(MCIntVector2 pos) {
         debugTiles.add(pos);
     }
 
     /**
-     * Un-highlight a tile with his position.
-     * @param pos
+     * Un-highlights a tile with its position.
+     * @param pos The position of the tile
      */
     public void removeDebugTile(MCIntVector2 pos) {
         debugTiles.remove(pos);
     }
 
     /**
-     * Render the debug.
-     * @param batch
+     * Renders the debug.
+     * @param batch The sprite batch
      */
     public void render(SpriteBatch batch) {
         batch.setColor(0, 1, 0, 0.5f);
         for (MCIntVector2 pos : debugTiles) {
             batch.draw(validTileTexture, pos.x, pos.y, 1, 1);
         }
-        batch.setColor(1, 1, 1, 1); 
+        batch.setColor(1, 1, 1, 1);
     }
 
 }

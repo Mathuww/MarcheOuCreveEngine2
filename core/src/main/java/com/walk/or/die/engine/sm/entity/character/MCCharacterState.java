@@ -6,7 +6,7 @@ import com.walk.or.die.engine.sm.entity.MCEntityState;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
- * Abstract class for character's state. 
+ * Abstract class for character's state.
  */
 public abstract class MCCharacterState<T extends MCCharacterState.StateArgs> extends MCEntityState<T, MCCharacter> {
 
@@ -14,15 +14,16 @@ public abstract class MCCharacterState<T extends MCCharacterState.StateArgs> ext
 
     /**
      * The constructor.
-     * @param parent
+     * @param parent The parent character.
      */
     public MCCharacterState(MCCharacter parent) {
         super(parent);
     }
 
     /**
-     * Get the parent (a character).
+     * Gets the parent (a character).
      * @see MCCharacter
+     * @return The parent character.
      */
     public MCCharacter getParent() {
         return parent;
@@ -37,5 +38,8 @@ public abstract class MCCharacterState<T extends MCCharacterState.StateArgs> ext
     @Override
     public void renderEffects(SpriteBatch batch) {}
 
+    /**
+     * Called when HUD visibility is lost.
+     */
     public void onHudVisibilityLost() {}
 }

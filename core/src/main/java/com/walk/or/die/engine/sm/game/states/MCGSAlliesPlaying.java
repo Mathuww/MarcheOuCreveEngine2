@@ -6,6 +6,7 @@ import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraManager.CameraMode;
 import com.walk.or.die.engine.entities.MCAlly;
 import com.walk.or.die.engine.entities.MCCharacter;
+import com.walk.or.die.engine.entities.MCEnemy;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.entities.MCExplorationPlayer;
@@ -14,7 +15,7 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
-public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayingArgs> {
+public class MCGSAlliesPlaying extends MCGSCombat<MCGSAlliesPlaying.AlliesPlayingArgs> {
 
     public static class AlliesPlayingArgs extends MCGameState.StateArgs {
         public AlliesPlayingArgs() {}
@@ -25,15 +26,25 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
         this.name = "AlliesPlaying";
     }
 
+    /**
+     * Called on each frame.
+     */
     @Override
     public void update(float delta) {
         //System.out.println("On respire le bon air de la nature");
     }
 
+    /**
+     * Called at state entrance.
+     * Sets up the event listeners, resets the allies' turn states,
+     * then setups both the camera and the HUD.
+     * @param args The arguments for the state.
+     */
     @Override
     public void enter(AlliesPlayingArgs args) {
         System.out.println("entering allies playing");
         bus.on(this, "InputPressed", this::inputPressed);
+        bus.on(this, "CombatDone", this::combatDone);
 
         for (MCAlly a : MCEntityManager.get().getAllies())
             a.newTurn();
@@ -50,6 +61,10 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
         super.enter(args);
     }
 
+    /**
+     * Called at state exit.
+     * Hides the HUD.
+     */
     @Override
     public void exit() {
         bus.off(this, "InputPressed");
@@ -57,7 +72,13 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
         super.exit();
     }
 
-    protected void inputPressed(MCInputManager.Command data) {
+    /**
+     * Reacts to input commands not handled by the entities nor the HUD.
+     * Will instantly return if any entity is in a busy state.
+     * This event listener is primarily used to switch HUD focus between characters.
+     * @param data The input command data.
+     */
+    public void inputPressed(MCInputManager.Command data) {
         if (MCEntityManager.get().isAnyoneBusy()) {
             //System.out.println("cant process input, someone s busy");
             return; // on attend tranquillement qu'un ennemi finisse d'etre hurt, etc.
@@ -84,7 +105,25 @@ public class MCGSAlliesPlaying extends MCGameState<MCGSAlliesPlaying.AlliesPlayi
                     return;
                 }
                 changeState("exploration", new MCGSExploration.ExplStateArgs());
+            } else if (keyCmd.key == Input.Keys.K) {
+                // pour debug : tuer tous ennemis
+                for (MCEnemy e : MCEntityManager.get().getEnemies())
+                    e.getHurt(e.getMaxHp());
+            } else if (keyCmd.key == Input.Keys.T) {
+                for (MCAlly e : MCEntityManager.get().getAllies())
+                    e.getHurt(e.getMaxHp());
             }
         }
+    }
+
+    /**
+     * Called when a combat is done. <br>
+     * Delegates logic to MCGSCombat.
+     * @param args Which team won.
+     */
+    @Override
+    public void combatDone(MCGame.CombatDoneArgs args) {
+        System.out.println("received combat done evt");
+        super.combatDone(args);
     }
 }

@@ -29,6 +29,16 @@ public class MCUISimpleText {
     protected float offsetX = 0f;
     public boolean centered = true;
 
+    /**
+     * Constructs a MCUISimpleText.
+     *
+     * @param parent The parent HUD.
+     * @param font The bitmap font.
+     * @param zone The zone.
+     * @param color The color.
+     * @param scale The scale.
+     * @param spacing The spacing.
+     */
     public MCUISimpleText(
         MCAbstractHUD parent, 
         BitmapFont font, 
@@ -47,6 +57,13 @@ public class MCUISimpleText {
         viewport = MCHUDManager.get().getViewport();
     }
 
+    /**
+     * Draws spaced text.
+     *
+     * @param text The text to draw.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     */
     protected void drawSpacedText(String text, float x, float y) {
         font.setColor(color);
         font.getData().setScale(scale);
@@ -61,6 +78,12 @@ public class MCUISimpleText {
         }
     }
 
+    /**
+     * Calculates the dimensions of the text.
+     *
+     * @param text The text to measure.
+     * @return A Vector2 containing the width and height of the text.
+     */
     public Vector2 textDimensions(String text) {
         font.getData().setScale(scale);
         float realWidth = 0f;
@@ -75,6 +98,11 @@ public class MCUISimpleText {
         return new Vector2(realWidth, totalLayout.height);
     }
 
+    /**
+     * Called on each frame.
+     *
+     * @param batch The sprite batch.
+     */
     public void render(SpriteBatch batch) {
         if (currentText == null || currentText == "")
             return;
@@ -112,6 +140,11 @@ public class MCUISimpleText {
         }
     }
 
+    /**
+     * Sets the text.
+     *
+     * @param text The text to set.
+     */
     public void setText(String text) {
         if (text.equals(currentText))
             return;
@@ -121,10 +154,20 @@ public class MCUISimpleText {
         dimensions = textDimensions(currentText);
     }
 
+    /**
+     * Sets the offset X.
+     *
+     * @param offsetX The offset X to set.
+     */
     public void setOffsetX(float offsetX) {
         this.offsetX = offsetX;
     }
 
+    /**
+     * Called on each frame.
+     *
+     * @param delta The time delta.
+     */
     public void update(float delta) {
 
     }

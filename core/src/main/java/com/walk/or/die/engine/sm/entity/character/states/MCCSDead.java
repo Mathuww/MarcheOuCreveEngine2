@@ -3,7 +3,6 @@ package com.walk.or.die.engine.sm.entity.character.states;
 import com.walk.or.die.engine.entities.MCAnimation;
 import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntityManager;
-import com.walk.or.die.engine.entities.MCCharacter.HudCustomization;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 
 /**
@@ -21,13 +20,17 @@ public class MCCSDead extends MCCharacterState<MCCSDead.DeadStateArgs> {
 
     /**
      * The constructor.
-     * @param parent
+     * @param parent the parent
      */
     public MCCSDead(MCCharacter parent) {
         super(parent);
         this.name = "dead";
     }
 
+    /**
+     * Called at state entrance.
+     * @param args the args
+     */
     @Override
     public void enter(DeadStateArgs args) {
         super.enter(args);
@@ -40,8 +43,12 @@ public class MCCSDead extends MCCharacterState<MCCSDead.DeadStateArgs> {
             parent.playAnimation("dead");
         }
         parent.setDead();
-    }  
+    }
 
+    /**
+     * Called on each frame.
+     * @param delta the delta
+     */
     @Override
     public void update(float delta) {
         stateTime += delta;
@@ -50,6 +57,9 @@ public class MCCSDead extends MCCharacterState<MCCSDead.DeadStateArgs> {
         }
     }
 
+    /**
+     * Called at state exit.
+     */
     @Override
     public void exit() {
         //parent.display = true;

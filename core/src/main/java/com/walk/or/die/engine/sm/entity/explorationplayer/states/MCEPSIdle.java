@@ -20,7 +20,7 @@ public class MCEPSIdle extends MCExplorationPlayerState<MCEPSIdle.IdleStateArgs>
 
     /**
      * The constructor.
-     * @param parent
+     * @param parent The exploration player parent.
      */
     public MCEPSIdle(MCExplorationPlayer parent) {
         super(parent);
@@ -45,6 +45,10 @@ public class MCEPSIdle extends MCExplorationPlayerState<MCEPSIdle.IdleStateArgs>
         super.exit();
     }
     
+    /**
+     * Called when an input is pressed.
+     * @param data The input command data.
+     */
     @Override
     protected void inputPressed(MCInputManager.Command data) {
         if (!parent.getParent().getStateManager().isIn("Exploration"))

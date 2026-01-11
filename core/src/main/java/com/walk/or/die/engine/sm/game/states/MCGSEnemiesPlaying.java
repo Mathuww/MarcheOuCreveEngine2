@@ -19,16 +19,45 @@ import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
-public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPlayingArgs> {
+public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPlayingArgs> {
 
+    /**
+     * Does not refer to a Allies/Enemies turn,
+     * but to the internal turns within the current state. <br>
+     * True if it is time to make another enemy play. <br>
+     * Consumed when an enemy played. <br>
+     * Allows us to set a min. time between two enemies playing.
+     */
     private boolean nextTurnRequest = false;
+    /**
+     * Only true before the first enemy played.
+     */
     private boolean firstPlay = false;
+    /**
+     * Stores the time elapsed since the last enemy played.
+     */
     private float intermediateTime = 0f;
+    /**
+     * Used to artificially slow down the Enemies turn,
+     * to make it more bearable to watch and more cinematic.
+     */
     private final float MIN_TIME_BETWEEN_PLAYS = 2.5f;
+    /**
+     * Contains the enemies who should play.
+     */
     private Queue<MCEnemy> enemies = new ArrayDeque<>();
+    /**
+     * Current processed enemy.
+     */
     private MCEnemy enemy = null;
 
+    /**
+     * Used to reset HUD focus to the character selected before clicking END TURN.
+     */
     private MCCharacter hudFocusBefore;
+    /**
+     * Used to reset camera position to the one it had before clicking END TURN.
+     */
     private Vector2 cameraPosBefore = new Vector2();
 
     public static class EnemiesPlayingArgs extends MCState.StateArgs {}
@@ -38,6 +67,13 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
         this.name = "EnemiesPlaying";
     }
 
+    /**
+     * Called on each frame.
+     * If it is time for another enemy to play,
+     * will check if enough time elapsed and if that is the case,
+     * will make it play.
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void update(float delta) {
         //System.out.println("On respire le bon air de la nature");
@@ -52,9 +88,15 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
         }
     }
 
+    /**
+     * Called at state entrance.
+     * Inits the enemies list, then setups both HUD & camera.
+     * @param args The arguments passed to the state.
+     */
     @Override
     public void enter(EnemiesPlayingArgs args) {
         super.enter(args);
+        bus.on(this, "CombatDone", this::combatDone);
         enemies.clear();
         for (MCEnemy e : MCEntityManager.get().getEnemies()) e.newTurn();
         enemies.addAll(MCEntityManager.get().getEnemies());
@@ -69,6 +111,9 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
         camManager.setMode(CameraMode.FOLLOW);
     }
 
+    /**
+     * Called when a new enemy should play.
+     */
     private void playOne() {
         // nettoyer les ennemis morts
         while (!enemies.isEmpty() && enemies.peek().isDead())
@@ -89,6 +134,10 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
             nextTurnRequest = true;
     }
 
+    /**
+     * Called at state exit. <br>
+     * Resets HUD & camera to the state they were before.
+     */
     @Override
     public void exit() {
         nextTurnRequest = false;
@@ -99,5 +148,16 @@ public class MCGSEnemiesPlaying extends MCGameState<MCGSEnemiesPlaying.EnemiesPl
         camManager.setMode(CameraMode.ARROWS);
         camManager.interpolateTo(cameraPosBefore);
         super.exit();
+    }
+
+    /**
+     * Called when a combat is done. <br>
+     * Delegates logic to MCGSCombat.
+     * @param args Which team won.
+     */
+    @Override
+    public void combatDone(MCGame.CombatDoneArgs args) {
+        System.out.println("received combat done evt");
+        super.combatDone(args);
     }
 }

@@ -32,7 +32,7 @@ import com.walk.or.die.engine.ui.MCTerrainHPBar;
 import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
 
 /**
- * An entity wich can move and shoot.
+ * An entity which can move and shoot.
  */
 public class MCCharacter extends MCEntity {
     public class HudCustomization {
@@ -77,9 +77,9 @@ public class MCCharacter extends MCEntity {
 
     /**
      * The creator.
-     * @param parent
-     * @param map
-     * @param entityGenericName
+     * @param parent The parent MCGame.
+     * @param map The MCTerrainMap.
+     * @param entityGenericName The entity generic name.
      */
     public MCCharacter(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
@@ -127,9 +127,9 @@ public class MCCharacter extends MCEntity {
     }
 
     /**
-     * Add a attack to your character.
-     * @param name
-     * @param attack
+     * Adds an attack to your character.
+     * @param name The name of the attack.
+     * @param attack The MCAttack to add.
      * @see MCAttack
      */
     public void addAttack(String name, MCAttack attack) {
@@ -156,16 +156,16 @@ public class MCCharacter extends MCEntity {
     }
 
     /**
-     * Add an effect to the character.
-     * @param effect
+     * Adds an effect to the character.
+     * @param effect The MCEffects to add.
      */
     public void addEffect(MCEffects effect) {
         effects.add(effect);
     }
     
     /**
-     * Remove an effect.
-     * @param name of the effect
+     * Removes an effect.
+     * @param name The name of the effect.
      */
     public void removeEffect(String name) {
         Iterator<MCEffects> it = effects.iterator();
@@ -175,7 +175,7 @@ public class MCCharacter extends MCEntity {
     }
 
     /**
-     * Remove all ended effects. Call each turn by default.
+     * Removes all ended effects. Called each turn by default.
      */
     public void cleanEffects() {
         Iterator<MCEffects> it = effects.iterator();
@@ -185,7 +185,7 @@ public class MCCharacter extends MCEntity {
     }
 
     /**
-     * Call at the beginning of the turn.
+     * Called at the beginning of the turn.
      */
     public void newTurn() {
         for (MCEffects e: effects) {
@@ -195,8 +195,8 @@ public class MCCharacter extends MCEntity {
     }
     
     /**
-     * Render effect (call each frame, after classic render)
-     * @param batch
+     * Renders effect (call each frame, after classic render)
+     * @param batch The SpriteBatch to render to.
      */
     public void renderEffects(SpriteBatch batch) {
         // j'ai séparé le rendu de l'entité proprement dit
@@ -210,16 +210,16 @@ public class MCCharacter extends MCEntity {
     }
 
     /**
-     * Set the stage manager.
-     * @param stateManager
+     * Sets the state manager.
+     * @param stateManager The MCStateMachine to set.
      */
     public void setStateManager(MCStateMachine<MCCharacterState, MCEntity> stateManager) {
         this.stateManager = stateManager;
     }
 
     /**
-     * Get max moves.
-     * @return
+     * Gets max moves.
+     * @return The max moves.
      */
     public int getMaxMoves() {
         int move = this.maxDeplacements;
@@ -229,26 +229,34 @@ public class MCCharacter extends MCEntity {
         return move;
     }
 
+    /**
+     * Gets the tolerance hitbox.
+     * @return The tolerance hitbox.
+     */
     public Float getToleranceHitbox() {
         return toleranceHitbox;
     }
 
     /**
-     * Get the move display
-     * @return
+     * Gets the move display
+     * @return The MCMoveDisplay.
      * @see MCMoveDisplay
      */
     public MCMoveDisplay getMoveDisplay() {
         return moveDisplay;
     }
 
+    /**
+     * Gets the attacks.
+     * @return The attacks.
+     */
     public Map<String, MCAttack> getAttacks() {
         return attacks;
     }
 
     /**
-     * Get the current attack
-     * @return
+     * Gets the current attack.
+     * @return The MCAttack.
      * @throws IllegalStateException
      * @see MCAttack
      */
@@ -270,10 +278,10 @@ public class MCCharacter extends MCEntity {
     }
     
     /**
-     * Shoot and call a function when the action ends.
-     * @param end
-     * @param attack
-     * @param onArrival
+     * Shoots and calls a function when the action ends.
+     * @param end The target MCIntVector2.
+     * @param attack The MCAttack to use.
+     * @param onArrival The Runnable to call on arrival.
      */
     public void shootThenCall(MCIntVector2 end, MCAttack attack, Runnable onArrival) {
         // System.out.println("trying to shoot with damage : " + damage);
@@ -291,28 +299,32 @@ public class MCCharacter extends MCEntity {
     }
 
     /**
-     * Get the max hp.
-     * @return
+     * Gets the max hp.
+     * @return The maximum health.
      */
     public int getMaxHp() {
         return maxHp;
     }
 
     /**
-     * Get current health.
-     * @return
+     * Gets current health.
+     * @return The current health.
      */
     public int getHealth() {
         return hp;
     }
 
+    /**
+     * Sets the health.
+     * @param hp The hp to set.
+     */
     public void setHealth(int hp) {
         this.hp = MathUtils.clamp(hp, 0, maxHp);
     }
 
     /**
-     * Hurt behavior.
-     * @param damage
+     * Handles hurt behavior.
+     * @param damage The amount of damage.
      */
     public void getHurt(int damage) {
         if (dead)
@@ -354,23 +366,23 @@ public class MCCharacter extends MCEntity {
     }
     
     /**
-     * If the character is already dead.
-     * @return
+     * Checks if the character is already dead.
+     * @return True if dead, false otherwise.
      */
     public boolean isDead() {
         return dead;
     }
 
     /**
-     * Set dead state.
+     * Sets dead state.
      */
     public void setDead() {
         dead = true;
     }
 
     /**
-     * If there's currently an action running.
-     * @return
+     * Checks if there's currently an action running.
+     * @return True if busy, false otherwise.
      */
     public boolean isBusy() {
         if (stateManager.getCurrentState() == null) 
@@ -379,16 +391,16 @@ public class MCCharacter extends MCEntity {
     }
 
     /**
-     * Set the name to display.
-     * @param displayName
+     * Sets the name to display.
+     * @param displayName The name to display.
      */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
     /**
-     * Get the name to display.
-     * @return
+     * Gets the name to display.
+     * @return The name to display.
      */
     public String getDisplayName() {
         if (displayName != null)
@@ -398,20 +410,32 @@ public class MCCharacter extends MCEntity {
     }
 
     /**
-     * Get the state manager.
+     * Gets the state manager.
+     * @return The MCStateMachine.
      */
     public MCStateMachine getStateManager() {
         return stateManager;
     }
 
+    /**
+     * Gets the HUD customization.
+     * @return The HudCustomization.
+     */
     public HudCustomization getHudCustomization() {
         return hudCustomization;
     }
 
+    /**
+     * Notifies HUD update.
+     * @param reloadCarousel True to reload carousel.
+     */
     public void notifyHudUpdate(boolean reloadCarousel) {
         MCHUDManager.get().getCharacterHud().refreshRequest(this, reloadCarousel);
     }
 
+    /**
+     * Called when HUD visibility is lost.
+     */
     public void onHudVisibilityLost() {
         stateManager.getCurrentState().onHudVisibilityLost();
     }

@@ -27,10 +27,10 @@ public class MCEnemy extends MCCharacter{
 
     /**
      * The constructor.
-     * @param parent
-     * @param map
-     * @param entityGenericName
-     * @throws Exception
+     * @param parent The parent MCGame.
+     * @param map The MCTerrainMap.
+     * @param entityGenericName The generic name of the entity.
+     * @throws Exception If an error occurs during initialization.
      */
     public MCEnemy(MCGame parent, MCTerrainMap map, String entityGenericName) throws Exception {
         super(parent, map, entityGenericName);
@@ -46,9 +46,9 @@ public class MCEnemy extends MCCharacter{
     }
 
     /**
-     * Start to play.
-     * @param callback
-     * @return
+     * Starts to play.
+     * @param callback The callback to execute after the decision.
+     * @return True if the decision was played, false otherwise.
      */
     public boolean playDecision(Runnable callback) {
         action_finished = callback;
@@ -66,9 +66,9 @@ public class MCEnemy extends MCCharacter{
     }
 
     /**
-     * Shoot.
-     * @param state
-     * @return
+     * Shoots.
+     * @param state The enemy idle state.
+     * @return True if the shoot was executed.
      */
     public boolean shootDecision(MCCSEnemyIdle state) {
         MCAlly victim = ai.getBestShootableAlly(getTilePosition(), 4);
@@ -83,9 +83,9 @@ public class MCEnemy extends MCCharacter{
     }
 
     /**
-     * Handle decisions.
-     * @param prev
-     * @param next
+     * Handles decisions.
+     * @param prev The previous state.
+     * @param next The next state.
      */
     public void nextDecision(Object prev, Object next) {
         if (current_decision == 0 && prev instanceof MCCSClickMove moveState && next instanceof MCCSEnemyIdle idleState) {

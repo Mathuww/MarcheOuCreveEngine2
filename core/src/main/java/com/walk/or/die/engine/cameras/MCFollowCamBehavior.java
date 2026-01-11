@@ -16,21 +16,43 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 public class MCFollowCamBehavior extends MCCameraBehavior {
     private MCEntity target;
     
-    // Camera
+    /**
+     * The min space (in tiles) between the target and the screen edge, on the X axis.
+     */
     private final float CAM_MARGIN_X = 4f;
+    /**
+     * The min space (in tiles) between the target and the screen edge, on the Y axis.
+     */
     private final float CAM_MARGIN_Y = 4f;
+    /**
+     * The interpolation constant for interpolation.
+     */
     private final float CAM_LERP = 3f;
 
+    /**
+     * Used to interpolate to the target zoom level.
+     */
     private Float targetZoom;
 
     public MCFollowCamBehavior() {}
 
+    /**
+     * Called at state entrance.
+     */
     @Override
     public void enter() {}
 
+    /**
+     * Called at state exit.
+     */
     @Override
     public void exit() {}
     
+    /**
+     * Updates the camera behavior.
+     * @param gdxCam The libGDX OrthographicCamera.
+     * @param delta The time elapsed since the last frame.
+     */
     @Override
     public void update(OrthographicCamera gdxCam, float delta) {
         MCCameraManager camManager = MCCameraManager.get();
@@ -93,16 +115,26 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
         gdxCam.position.y = newY;
     }
 
+    /**
+     * Proceeds to update the camera accordingly to the given InputPressed command.
+     * @param gdxCam The camera to update.
+     * @param cmd The input command.
+     */
     @Override
     public void handleInputPressed(OrthographicCamera gdxCam, Command cmd) {
         MCCameraManager camManager = MCCameraManager.get();
         if (cmd instanceof CameraZoomCommand zoomCmd) {
-            System.out.println("received zoom cdm");
+            //System.out.println("received zoom cdm");
             targetZoom = gdxCam.zoom + camManager.ZOOM_STEP * zoomCmd.scrollDelta;
             targetZoom = MathUtils.clamp(targetZoom, camManager.ZOOM_MIN, camManager.ZOOM_MAX);
         }
     }
 
+    /**
+     * Proceeds to update the camera accordingly to the given InputReleased command.
+     * @param cmd The input command.
+     */
     @Override
-    public void handleInputReleased(Command cmd) {}
+    public void handleInputReleased(Command cmd) {
+    }
 }

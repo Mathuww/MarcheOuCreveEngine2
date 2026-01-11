@@ -14,7 +14,7 @@ import com.walk.or.die.engine.ui.MCHUDManager;
  */
 public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
     /**
-     * The class which represents args needed by hurt state to start.
+     * The class which represents arguments needed by hurt state to start.
      */
     public static class HurtStateArgs extends MCCharacterState.StateArgs {
         private int damage;
@@ -22,16 +22,32 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
 
         /**
          * The constructor.
-         * @param damage - taken by the character
-         * @param targetAnim - to play
+         * @param damage The damage taken by the character
+         * @param targetAnim The animation to play
          */
         public HurtStateArgs(int damage, String targetAnim) {
             this.damage = damage;
             this.targetAnim = targetAnim;
         }
+
+        /**
+         * Gets the damage.
+         * @return The damage
+         */
+        public int getDamage() {
+            return damage;
+        }
+
+        /**
+         * Gets the target animation.
+         * @return The target animation
+         */
+        public String getTargetAnim() {
+            return targetAnim;
+        }
     }
 
-    private float HURT_DURATION = 2f; 
+    private float HURT_DURATION = 2f;
 
     private final float BLINKING_INTERVAL = 0.1f;
     private boolean latencyPassed = false;
@@ -44,13 +60,17 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
 
     /**
      * The constructor.
-     * @param parent
+     * @param parent The parent character
      */
     public MCCSHurt(MCCharacter parent) {
         super(parent);
         this.name = "hurt";
     }
 
+    /**
+     * Called at state entrance.
+     * @param args The arguments for the hurt state
+     */
     @Override
     public void enter(HurtStateArgs args) {
         super.enter(args);
@@ -71,8 +91,12 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
         parent.spawnDamageIndicator(damage);
 
         parent.playAnimation(args.targetAnim);
-    }  
+    }
 
+    /**
+     * Called on each frame.
+     * @param delta The time delta
+     */
     @Override
     public void update(float delta) {
         // pour avoir l'effet bien kiffant de la barre de vie qui descend en gros
@@ -94,9 +118,12 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
         if (blinkingTime >= BLINKING_INTERVAL) {
             parent.display = !parent.display; // on inverse la visiblité
             blinkingTime = 0f;
-        }   
+        }
     }
 
+    /**
+     * Called at state exit.
+     */
     @Override
     public void exit() {
         if (hudFocusBeforeHurt != null) {

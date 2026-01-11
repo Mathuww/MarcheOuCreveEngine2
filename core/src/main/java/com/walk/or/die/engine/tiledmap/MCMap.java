@@ -31,9 +31,9 @@ public class MCMap implements Disposable {
     private int maxLayerHeight = 0;
 
     /**
-     * Create a new MCMap.
-     * @param mapPath path of the map in your folders.
-     * @param assetManager
+     * Creates a new MCMap.
+     * @param mapPath The path of the map in your folders.
+     * @param assetManager The asset manager.
      */
     public MCMap(String mapPath, AssetManager assetManager) {
         loadMapWithAtlas(mapPath, assetManager);
@@ -50,9 +50,9 @@ public class MCMap implements Disposable {
     }
 
     /**
-     * Load a map with the path of his atlas.
-     * @param mapPath
-     * @param assetManager
+     * Loads a map with the path of its atlas.
+     * @param mapPath The path to the map.
+     * @param assetManager The asset manager.
      */
     protected void loadMapWithAtlas(String mapPath, AssetManager assetManager) {
         // On configure le loader pour Tiled‑map packée
@@ -72,43 +72,49 @@ public class MCMap implements Disposable {
 
 
     /**
-     * @return the width of the map.
+     * Gets the width of the map.
+     * @return The width of the map.
      */
     public float getWidth() {
         return maxLayerWidth;
     }
 
     /**
-     * @return the height of the map.
+     * Gets the height of the map.
+     * @return The height of the map.
      */
     public float getHeight() {
         return maxLayerHeight;
     }
 
     /**
-     * @return the tiled map.
+     * Gets the tiled map.
+     * @return The tiled map.
      */
     public TiledMap getTiledMap() {
         return this.tiledMap;
     }
 
     /**
-     * @return the tile size of the map.
+     * Gets the tile size of the map.
+     * @return The tile size of the map.
      */
     public float getTileSize() {
         return this.tileSize;
     }
 
     /**
-     * @return the scale of a unit.
+     * Gets the scale of a unit.
+     * @return The scale of a unit.
      */
     public float getUnitScale() {
         return this.unitScale;
     }
 
     /**
-     * @param pos
-     * @return the vector of the tile where pos is.
+     * Gets the vector of the tile where pos is.
+     * @param pos The position vector.
+     * @return The vector of the tile where pos is.
      * @see MCIntVector2
      */
     public MCIntVector2 stickToNearestTile(Vector2 pos) {
@@ -119,36 +125,37 @@ public class MCMap implements Disposable {
     }
 
     /**
-     * @return the tiled map properties.
+     * Gets the tiled map properties.
+     * @return The tiled map properties.
      */
     public MapProperties getProperties() {
         return this.tiledMap.getProperties();
     }
 
     /**
-     * Get a specific property of the tiled map with his type.
-     * @param <T>
-     * @param name
-     * @param type
-     * @return
+     * Gets a specific property of the tiled map with its type.
+     * @param <T> The type of the property.
+     * @param name The name of the property.
+     * @param type The class type of the property.
+     * @return The property of the specified type.
      */
     public <T> T getProperty(String name, Class<T> type) {
         return this.tiledMap.getProperties().get(name, type);
     }
 
     /**
-     * Get a specific property of the tiled map.
-     * @param name
-     * @return
+     * Gets a specific property of the tiled map.
+     * @param name The name of the property.
+     * @return The property as a String.
      */
     public String getProperty(String name) {
         return getProperty(name, String.class);
     }
 
     /**
-     * Get a tileset from his id.
-     * @param id
-     * @return
+     * Gets a tileset from its id.
+     * @param id The id of the tileset.
+     * @return The tileset.
      * @see MCTileSet
      */
     public MCTileSet getTileSet(int id) {
@@ -156,9 +163,9 @@ public class MCMap implements Disposable {
     }
 
     /**
-     * Get a tileset from his name.
-     * @param name
-     * @return
+     * Gets a tileset from its name.
+     * @param name The name of the tileset.
+     * @return The tileset.
      * @see MCTileSet
      */
     public MCTileSet getTileSet(String name) {
@@ -166,9 +173,9 @@ public class MCMap implements Disposable {
     }
 
     /**
-     * Get a layer from his id.
-     * @param id
-     * @return
+     * Gets a layer from its id.
+     * @param id The id of the layer.
+     * @return The map layer.
      * @see MCMapLayer
      */
     public MCMapLayer getLayer(int id) {
@@ -176,9 +183,9 @@ public class MCMap implements Disposable {
     }
 
     /**
-     * Get a layer from his name
-     * @param name
-     * @return
+     * Gets a layer from its name.
+     * @param name The name of the layer.
+     * @return The map layer.
      * @see MCMapLayer
      */
     public MCMapLayer getLayer(String name) {
@@ -186,9 +193,9 @@ public class MCMap implements Disposable {
     }
 
     /**
-     * Return the display point of a tile from his tiled coords
-     * @param tiledCoords
-     * @return
+     * Returns the display point of a tile from its tiled coords.
+     * @param tiledCoords The tile coordinates.
+     * @return The display coordinates.
      */
     public Vector2 getDisplayCoordsFromTiled(Vector2 tiledCoords) {
         float displayX = tiledCoords.x * unitScale;
@@ -202,4 +209,3 @@ public class MCMap implements Disposable {
     }
 
 }
-
