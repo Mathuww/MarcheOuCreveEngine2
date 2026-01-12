@@ -11,43 +11,100 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCEventBus;
 
 /**
- * This is the HUD shown at the upper right corner. <br>
- * It only consists of the single button. <br>
- * The only complexity resides in managing mouse hovering. <br>
+ * This is the HUD shown at the upper right corner.
+ * It only consists of the single button.
+ * The only complexity resides in managing mouse hovering.
  * A lot of the stuff here is highly similar to MCCharacterHUD, excepts the callback function.
  * @see MCCharacterHUD
  */
 public class MCSimpleActionHUD extends MCAbstractHUD {
+    /**
+     * The font family for the HUD.
+     */
     private final String FONT_FAMILY = "ariBlackAlpha";
 
+    /**
+     * The HUD height (in HUD viewport units).
+     */
     private final float HUD_HEIGHT = MCGame.WINDOW_DEFAULT_HEIGHT * 0.095f;
+    /**
+     * The margin between the upper screen edge and the start of the HUD (in HUD viewport units).
+     */
     private final float HUD_TOP_MARGIN = MCGame.WINDOW_DEFAULT_HEIGHT * 0.05f;
+    /**
+     * The width of the panels' borders.
+     */
     private final float HUD_RECT_BORDER = MCGame.WINDOW_DEFAULT_HEIGHT * 0.0125f;
+    /**
+     * The padding between the start of the HUD and the true visual zone.
+     */
     private final float HUD_PADDING_HEIGHT  = MCGame.WINDOW_DEFAULT_HEIGHT * 0.025f;
+    /**
+     * The horizontal padding.
+     */
     private final float HUD_PADDING_WIDTH  = MCGame.WINDOW_DEFAULT_HEIGHT * 0.05f;
 
+    /**
+     * How much relative space the right panel takes.
+     */
     private final float HUD_RIGHT_PANEL_RATIO = 0.25f;
 
+    /**
+     * Horizontal padding between right panel border and its elements.
+     */
     private final float RIGHT_PANEL_PADDING_WIDTH = HUD_RECT_BORDER * 2f;
+    /**
+     * Vertical padding between right panel border and its elements.
+     */
     private final float RIGHT_PANEL_PADDING_HEIGHT = HUD_RECT_BORDER * 2f;
+    /**
+     * The font scale of the text.
+     */
     private final float FONT_SCALE = 0.35f;
+    /**
+     * The font spacing (between characters) of the text.
+     */
     private final float FONT_SPACING = 3f;
 
+    /**
+     * Scrolling interpolation constant.
+     */
     private final float SCROLL_LERP = 16f;
+    /**
+     * Target Y position when the HUD is "hidden".
+     */
     private final float SCROLL_Y = HUD_TOP_MARGIN + HUD_HEIGHT;
 
     private BitmapFont font;
+    /**
+     * @see MCUILayout
+     */
     private MCUILayout layout = new MCUILayout();
 
+    /**
+     * @see MCUISimpleText
+     */
     private MCUISimpleText text;
 
+    /**
+     * The current Y offset. Used for scrolling.
+     */
     private float offsetY = SCROLL_Y;
+    /**
+     * The target Y offset.
+     */
     private float targetOffsetY = SCROLL_Y;
+    /**
+     * Is the HUD currently scrolling?
+     */
     private boolean scrolling = false;
+    /**
+     * Is the HUD currently shown? Only true when it's ENTIRELY shown.
+     */
     private boolean shown = false;
 
     /**
-     * Is this HUD currently hovered ? Used to adjust rendering accordingly.
+     * Is this HUD currently hovered? Used to adjust rendering accordingly.
      */
     private boolean hovered = false;
 
@@ -58,6 +115,9 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
 
     private final MCEventBus bus = MCEventBus.get();
 
+    /**
+     * Constructs the simple action HUD.
+     */
     public MCSimpleActionHUD() {
         try {
             font = sharedAssets.getSavedFont(FONT_FAMILY);
@@ -94,8 +154,7 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
 
     /**
-     * Sets the text.
-     *
+     * Sets the text displayed on the button.
      * @param newText The new text to set.
      */
     public void setText(String newText) {
@@ -103,8 +162,7 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
 
     /**
-     * Scrolls to.
-     *
+     * Scrolls to a specific target offset.
      * @param targetOffsetY The target offset Y.
      */
     private void scrollTo(float targetOffsetY) {
@@ -116,7 +174,7 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
 
     /**
-     * Disables this instance.
+     * Disables and hides this HUD instance.
      */
     public void disable() {
         scrollTo(SCROLL_Y);
@@ -124,7 +182,7 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
 
     /**
-     * Enables this instance.
+     * Enables and shows this HUD instance.
      */
     public void enable() {
         scrollTo(0f);
@@ -132,7 +190,7 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
 
     /**
-     * Called on each frame
+     * Called on each frame.
      * @param delta The time in seconds since the last frame.
      */
     @Override
@@ -153,8 +211,8 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
 
     /**
-     * Called on each frame
-     * @param delta The time in seconds since the last frame.
+     * Called on each frame.
+     * @param batch The sprite batch to render with.
      */
     @Override
     public void render(SpriteBatch batch) {
@@ -167,15 +225,14 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
 
     /**
-     * Renders the debug.
+     * Renders debug information.
      */
     public void renderDebug() {
         layout.renderDebug();
     }
 
     /**
-     * Checks if this instance is fully shown.
-     *
+     * Checks if the HUD is fully shown.
      * @return True if fully shown, false otherwise.
      */
     public boolean isFullyShown() {
@@ -183,10 +240,9 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
 
     /**
-     * Checks if the position belongs to HUD component.
-     *
+     * Checks if a position belongs to a HUD component.
      * @param mousePos The mouse position.
-     * @return True if the position belongs to HUD component, false otherwise.
+     * @return True if the position belongs to a HUD component, false otherwise.
      */
     public boolean posBelongsToHudComponent(Vector2 mousePos) {
         boolean belongs = layout.zone("nextTurnPanel").posBelongsToZone(mousePos);
@@ -194,8 +250,7 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
     
     /**
-     * Handles hover.
-     *
+     * Handles hover events.
      * @param hoverPos The hover position.
      */
     public void handleHover(Vector2 hoverPos) {
@@ -203,15 +258,14 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
 
     /**
-     * Handles hover gone.
+     * Handles hover gone events.
      */
     public void handleHoverGone() {
         hovered = false;
     }
 
     /**
-     * Handles click.
-     *
+     * Handles click events.
      * @param clickPos The click position.
      */
     public void handleClick(Vector2 clickPos) {
@@ -222,9 +276,8 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
     }
 
     /**
-     * Sets the action.
-     *
-     * @param callback The callback.
+     * Sets the action to be executed on click.
+     * @param callback The callback runnable.
      */
     public void setAction(Runnable callback) {
         this.callback = callback;

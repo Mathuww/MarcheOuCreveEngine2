@@ -13,8 +13,18 @@ public class MCStrengthEffect extends MCEffects{
      * @param parent The parent character.
      * @param displayName The display name.
      */
-    public MCStrengthEffect(MCCharacter parent, String displayName) {
-        super(parent, displayName);
+    public MCStrengthEffect(MCCharacter parent) {
+        super(parent, "STRENGTH");
+    }
+
+    @Override
+    public String getSummary() {
+        return "This ally will be twice as strong for one turn.";
+    }
+
+    @Override
+    public MCEffects copy(MCCharacter target) {
+        return new MCStrengthEffect(target);
     }
 
     @Override

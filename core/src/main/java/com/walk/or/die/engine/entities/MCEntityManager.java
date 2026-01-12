@@ -14,6 +14,7 @@ import com.walk.or.die.engine.exceptions.TooManyExceptionsException;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.ui.MCHUDManager;
+import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**
  * A singleton that manages all the entities in the game.
@@ -78,7 +79,7 @@ public class MCEntityManager {
      * @param except the entity to exclude from freezing
      */
     public void freezeAll(MCEntity except) {
-        System.out.println("Freeze");
+        //System.out.println("Freeze");
         for (MCEntity e: entities) {
             if (e != except) e.setFreeze(true);
         }
@@ -89,7 +90,7 @@ public class MCEntityManager {
      * @param c the object that triggered the unfreeze
      */
     public void unfreezeAll(Object c) {
-        System.out.println("Unfreeze");
+        //System.out.println("Unfreeze");
         for (MCEntity e: entities) {
             e.setFreeze(false);
         }
@@ -124,30 +125,40 @@ public class MCEntityManager {
     /**
      * Adds exploration entities.
      * @param entities the set of entities to add
+     * @return what will be the exploration player
      */
-    public void addExplorationEntities(Set<MCEntity> entities) {
+    public MCExplorationPlayer addExplorationEntities(Set<MCEntity> entities, MCExplorationPlayer player) {
         Set<MCAlly> list = new HashSet<>();
+        MCExplorationPlayer newPlayer;
 
-        Set<MCAlly> allies = new HashSet<>();
+        if(player == null) {
+            Set<MCAlly> allies = new HashSet<>();
 
-        for (MCEntity e : entities) {
-            if (e instanceof MCAlly ally) {
-                allies.add(ally);
+            for (MCEntity e : entities) {
+                if (e instanceof MCAlly ally) {
+                    allies.add(ally);
+                }
             }
-        }
-        
-        MCAlly chosen = allies.iterator().next();
-        MCExplorationPlayer player = new MCExplorationPlayer(chosen);
-        player.onSpawn();
+            
+            MCAlly chosen = allies.iterator().next();
+            newPlayer = new MCExplorationPlayer(chosen);
+            addEntity(newPlayer);
+            newPlayer.onSpawn();
+        } else {
+            newPlayer = player;
 
-        System.out.println("adding exp player " + player.getId());
-        addEntity(player);
+        }
+
+        //addEntity(newPlayer);
+        //newPlayer.onSpawn();
 
         for (MCEntity e : entities) {
             if (!(e instanceof MCEnemy enemy) && !(e instanceof MCAlly ally)) {
                 addEntity(e);
             }
         }
+
+        return newPlayer;
     }
 
     /**
@@ -185,6 +196,37 @@ public class MCEntityManager {
     }
 
     /**
+     * Gets the MCAlly that has the highest priority to become a MCExplorationPlayer
+     * @return The chosen ally.
+     * @see MCAlly
+     */
+    public MCAlly getBestAlly() throws IllegalStateException {
+        MCAlly chosen = null;
+
+        int maxHP = 0;
+        int maxPriorityLevel = 0;
+
+        for (MCEntity e: entities) {
+            if (e instanceof MCAlly ally) {
+                if(maxPriorityLevel < ally.getPriorityLevel()) {
+                    chosen = ally;
+                    maxPriorityLevel = ally.getPriorityLevel();
+                    maxHP = ally.getHealth();
+                } else if ((maxPriorityLevel == ally.getPriorityLevel()) && (maxHP < ally.getHealth())) {
+                    chosen = ally;
+                    maxHP = ally.getHealth();    
+                }
+            }
+        }
+
+        if(chosen == null) {
+            throw new IllegalStateException("Missing ally for continuous game in exploration player!");
+        }
+
+        return chosen;
+    }
+
+    /**
      * Gets all MCEnemies in the game.
      * @return the set of enemies
      */
@@ -212,6 +254,47 @@ public class MCEntityManager {
             }
         }
         return null;
+    }
+
+    /**
+     * 
+     */
+    public void spawnExplorationPlayerWithPortal(Set<MCEntity> entities, int destID, MCExplorationPlayer player) throws IllegalStateException, MissingDataException {
+        Boolean findPortal = false;
+
+        for (MCEntity e: entities) {
+            if (e instanceof MCPortal portal) {
+                if(portal.getPortalID() == destID) {
+                    findPortal = true;
+                    //System.out.println("Portal Trouvé");
+                    MCIntVector2 direction = portal.getTilePosition();
+                    String spawnDirection = portal.getSpawnDirection();
+                    if (spawnDirection == null)
+                        throw new MissingDataException("missing spawnDirection prop. for portal " + portal.getPortalID());
+                    if (spawnDirection.isEmpty() || !(spawnDirection.equals("top") || spawnDirection.equals("bottom") || spawnDirection.equals("left") || spawnDirection.equals("right"))) {
+                        throw new IllegalStateException("the portal " + portal.getPortalID() + " doesn't have a good direction. The possible direction are 'bottom', 'left', 'top' and 'right'.");
+                    }
+                    if(portal.getSpawnDirection().equals("bottom")) {
+                        direction.y -= 1;
+                    } else if(portal.getSpawnDirection().equals("right")) {
+                        direction.x += 1;
+                    } else if(portal.getSpawnDirection().equals("top")) {
+                        direction.y += 1;
+                    } else if(portal.getSpawnDirection().equals("left")) {
+                        direction.x -= 1;
+                    }
+
+                    player.setTilePosition(direction);
+                    
+                    addEntity(player);
+                    player.onSpawn();
+                }
+            }
+        }
+
+        if(findPortal == false) {
+            throw new IllegalStateException("the destination portal " + destID + " doesn't exist in the next map!");
+        }
     }
 
     /**
@@ -279,10 +362,10 @@ public class MCEntityManager {
 
             if (getAllies().isEmpty()) {
                 MCEventBus.get().emit("CombatDone", MCGame.CombatDoneArgs.ENEMIES_WON);
-                System.out.println("sending  enemies won event");
+                //System.out.println("sending  enemies won event");
             } else if (getEnemies().isEmpty()) {
                 MCEventBus.get().emit("CombatDone", MCGame.CombatDoneArgs.ALLIES_WON);
-                System.out.println("sending  zalloies won event");
+                //System.out.println("sending  zalloies won event");
             }
         }
         if (!toAdd.isEmpty()) {

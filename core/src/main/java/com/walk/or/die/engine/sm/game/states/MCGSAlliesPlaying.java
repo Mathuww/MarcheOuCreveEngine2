@@ -42,7 +42,7 @@ public class MCGSAlliesPlaying extends MCGSCombat<MCGSAlliesPlaying.AlliesPlayin
      */
     @Override
     public void enter(AlliesPlayingArgs args) {
-        System.out.println("entering allies playing");
+        //System.out.println("entering allies playing");
         bus.on(this, "InputPressed", this::inputPressed);
         bus.on(this, "CombatDone", this::combatDone);
 
@@ -67,7 +67,9 @@ public class MCGSAlliesPlaying extends MCGSCombat<MCGSAlliesPlaying.AlliesPlayin
      */
     @Override
     public void exit() {
+        System.out.print("exiting allies playing");
         bus.off(this, "InputPressed");
+        bus.off(this, "CombatDone");
         hudManager.getCharacterHud().hide();
         super.exit();
     }
@@ -79,13 +81,15 @@ public class MCGSAlliesPlaying extends MCGSCombat<MCGSAlliesPlaying.AlliesPlayin
      * @param data The input command data.
      */
     public void inputPressed(MCInputManager.Command data) {
+        super.inputPressed(data);
+
         if (MCEntityManager.get().isAnyoneBusy()) {
             //System.out.println("cant process input, someone s busy");
             return; // on attend tranquillement qu'un ennemi finisse d'etre hurt, etc.
         }
 
         if (data instanceof MCInputManager.ClickTileCommand tileCmd) {
-            //System.out.println("Détecté par le game");
+            //System.out.println("current game state input istener is alliesplaying");
             MCEntity e = MCEntityManager.get().getEntityFromTile(1, tileCmd.getIntVect());
 
             if (e instanceof MCCharacter c) {
@@ -97,22 +101,6 @@ public class MCGSAlliesPlaying extends MCGSCombat<MCGSAlliesPlaying.AlliesPlayin
                 parent.changeFocus(ally);
         } else if (data instanceof MCInputManager.NextTurnCommand) {
             changeState("EnemiesPlaying", new MCGSEnemiesPlaying.EnemiesPlayingArgs());
-        } else if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
-            if (keyCmd.key == Input.Keys.E) {
-                MCExplorationPlayer player = MCEntityManager.get().getExplorationPlayer();
-                if (player == null) {
-                    System.out.println("No player in this map");
-                    return;
-                }
-                changeState("exploration", new MCGSExploration.ExplStateArgs());
-            } else if (keyCmd.key == Input.Keys.K) {
-                // pour debug : tuer tous ennemis
-                for (MCEnemy e : MCEntityManager.get().getEnemies())
-                    e.getHurt(e.getMaxHp());
-            } else if (keyCmd.key == Input.Keys.T) {
-                for (MCAlly e : MCEntityManager.get().getAllies())
-                    e.getHurt(e.getMaxHp());
-            }
         }
     }
 
@@ -123,7 +111,7 @@ public class MCGSAlliesPlaying extends MCGSCombat<MCGSAlliesPlaying.AlliesPlayin
      */
     @Override
     public void combatDone(MCGame.CombatDoneArgs args) {
-        System.out.println("received combat done evt");
+        //System.out.println("received combat done evt");
         super.combatDone(args);
     }
 }

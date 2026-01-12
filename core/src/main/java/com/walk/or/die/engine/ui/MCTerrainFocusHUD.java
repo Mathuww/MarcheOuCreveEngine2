@@ -28,6 +28,9 @@ public class MCTerrainFocusHUD extends MCAbstractHUD {
      */
     private float blinkingTime = 0f;
 
+    /**
+     * Not displayed when it's not the allies' turn.
+     */
     private boolean display = true;
 
     public MCTerrainFocusHUD() {}

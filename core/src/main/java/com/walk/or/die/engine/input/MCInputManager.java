@@ -133,6 +133,7 @@ public class MCInputManager implements InputProcessor {
 
     public static class PreviousMapCommand extends Command {}
     public static class NextMapCommand extends Command {}
+    public static class PauseCommand extends Command {}
 
     /**
      * Non-handled input.
@@ -248,56 +249,40 @@ public class MCInputManager implements InputProcessor {
                 break;
 
             case Input.Keys.UP:
-                if (hudManager.getCharacterHud().isFullyShown())
+                if (hudManager.canReceiveHudCommand())
                     bus.emit("InputPressed", new HudCommand(Type.UP));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(0, +1));
                 break;
 
             case Input.Keys.DOWN:
-                if (hudManager.getCharacterHud().isFullyShown())
+                if (hudManager.canReceiveHudCommand())
                     bus.emit("InputPressed", new HudCommand(Type.DOWN));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(0, -1));
                 break;
 
             case Input.Keys.LEFT:
-                if (hudManager.getCharacterHud().isFullyShown())
+                if (hudManager.canReceiveHudCommand())
                     bus.emit("InputPressed", new HudCommand(Type.LEFT));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(-1, 0));
                 break;
 
             case Input.Keys.RIGHT:
-                if (hudManager.getCharacterHud().isFullyShown())
+                if (hudManager.canReceiveHudCommand())
                     bus.emit("InputPressed", new HudCommand(Type.RIGHT));
                 else
                     bus.emit("InputPressed", new DirectionalCommand(+1, 0));
                 break;
 
-            case Input.Keys.Q:
-                //bus.emit("InputPressed", new AimCommand());
-                break;
-            
-            case Input.Keys.SEMICOLON:
-                //bus.emit("InputPressed", new ReadyCommand());
-                break;
-
-            case Input.Keys.SPACE:
-                bus.emit("InputPressed", new NextTurnCommand());
-                break;
-
             case Input.Keys.ENTER:
-                if (hudManager.getCharacterHud().isFullyShown())
+                if (hudManager.canReceiveHudCommand())
                     bus.emit("InputPressed", new HudCommand(Type.VALIDATE));
                 break;
 
-            case Input.Keys.P:
-                bus.emit("InputPressed", new NextMapCommand());
-                break;
-            
-            case Input.Keys.O:
-                bus.emit("InputPressed", new PreviousMapCommand());
+            case Input.Keys.ESCAPE:
+                bus.emit("InputPressed", new PauseCommand());
                 break;
 
             default:
@@ -340,7 +325,7 @@ public class MCInputManager implements InputProcessor {
 
         if (button == Buttons.LEFT) {
             if (hudManager.posBelongsToHud(hudPos)) {
-                System.out.println("sending click to hud");
+                //System.out.println("sending click to hud");
                 hudManager.handleClick(hudPos);
                 return true;
             }

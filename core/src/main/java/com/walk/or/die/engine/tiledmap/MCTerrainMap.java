@@ -80,7 +80,8 @@ public class MCTerrainMap extends MCMap {
                 MapProperties props = cell.getTile().getProperties();
                 if (!foundNotVoidLayer) {
                     foundNotVoidLayer = true;
-                    if (props.containsKey("blocked") || props.containsKey("collision")) {
+                    Boolean blocked = props.get("blocked", Boolean.class);
+                    if (blocked != null && blocked) {
                         return false;
                     }
                 }
@@ -116,7 +117,8 @@ public class MCTerrainMap extends MCMap {
                 MapProperties props = cell.getTile().getProperties();
                 if (!foundNotVoidLayer) {
                     foundNotVoidLayer = true;
-                    if (props.containsKey("blocked") || props.containsKey("collision")) {
+                    Boolean blocked = props.get("blocked", Boolean.class);
+                    if (blocked != null && blocked) {
                         return true;
                     }
                 }

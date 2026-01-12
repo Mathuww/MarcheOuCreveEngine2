@@ -209,7 +209,7 @@ public class OpenSimplex2S {
     }
 
     /*
-     * Lookup Tables & Gradients
+     * Lookup Tables and Gradients
      */
 
     private static float[] GRADIENTS_2D;

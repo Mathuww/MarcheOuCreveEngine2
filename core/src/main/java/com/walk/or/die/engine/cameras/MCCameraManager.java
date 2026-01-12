@@ -117,7 +117,7 @@ public class MCCameraManager {
     /**
      * Min. zoom level
      */
-    public final float ZOOM_MIN = 0.45f;
+    public final float ZOOM_MIN = 0.25f;
     /**
      * Max. zoom level
      */

@@ -1,9 +1,15 @@
 package com.walk.or.die.engine.entities;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.maps.MapProperties;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.capacities.MCSpeedShoot;
+import com.walk.or.die.engine.exceptions.MissingDataException;
+import com.walk.or.die.engine.shared.MCUtils;
 import com.walk.or.die.engine.sm.MCStateMachine;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSAim;
+import com.walk.or.die.engine.sm.entity.character.states.MCCSCapacityChoose;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSClickMove;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSDead;
 import com.walk.or.die.engine.sm.entity.character.states.MCCSHurt;
@@ -42,7 +48,7 @@ public class MCAlly extends MCCharacter {
         public void reset() {
             hasMoved = false;
             hasAttacked = false;
-            hasUsedCapacity = false;
+            // Capacité = une seule fois par game
         }
 
         /**
@@ -75,6 +81,8 @@ public class MCAlly extends MCCharacter {
         public void capacityUsed() {hasUsedCapacity = true;}
     }   
 
+    private int priorityLevel;
+
     /**
      * Stores info about what the ally did during the current turn.
      */
@@ -98,6 +106,18 @@ public class MCAlly extends MCCharacter {
         stateManager.addState(new MCCSHurt(this));
         stateManager.addState(new MCCSDead(this));
         stateManager.addState(new MCCSSpeedShoot(this));
+        stateManager.addState(new MCCSCapacityChoose(this));
+    }
+
+    /**
+     * Initializes from map properties.
+     *
+     * @param props the MapProperties instance
+     * @throws MissingDataException When the map properties are missing or invalid
+     */
+    @Override
+    public void initFromMapProperties(MapProperties props) throws MissingDataException {
+        priorityLevel = MCUtils.getIntProperty(props, "priorityLevel", 0);
     }
 
     /**
@@ -117,5 +137,13 @@ public class MCAlly extends MCCharacter {
      */
     public AllyTurnState getTurnState() {
         return turnState;
+    }
+
+    /**
+     * Gets the priority level
+     * @return priorityLevel
+     */
+    public int getPriorityLevel() {
+        return this.priorityLevel;
     }
 }

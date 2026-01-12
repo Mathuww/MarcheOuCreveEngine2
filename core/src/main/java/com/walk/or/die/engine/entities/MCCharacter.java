@@ -12,10 +12,13 @@ import com.badlogic.gdx.maps.MapProperties;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.MCGame;
+import com.walk.or.die.engine.capacities.MCDecreaseShieldEffect;
+import com.walk.or.die.engine.capacities.MCEffectFactory;
 import com.walk.or.die.engine.capacities.MCEffects;
 import com.walk.or.die.engine.capacities.MCShieldEffect;
 import com.walk.or.die.engine.capacities.MCSpeedShoot;
 import com.walk.or.die.engine.capacities.MCSpeedUpEffect;
+import com.walk.or.die.engine.capacities.MCStrengthEffect;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
@@ -52,6 +55,7 @@ public class MCCharacter extends MCEntity {
     }
 
     protected final int MAX_ATTACK_NUMBER = 6;
+    protected final int MAX_CAPACITY_NUMBER = 6;
     protected final int MAX_HURT_ANIM_NUMBER = 6;
     
     private String displayName;
@@ -61,6 +65,7 @@ public class MCCharacter extends MCEntity {
     private Float toleranceHitbox;
     private boolean dead = false;
     private Integer maxDeplacements;
+    private Float speed;
     private MCStateMachine<MCCharacterState, MCEntity> stateManager;
     private Map<String, MCAttack> attacks;
     private String baseAttack;
@@ -71,6 +76,7 @@ public class MCCharacter extends MCEntity {
     private MCTerrainHPBar healthBar;
     private HudCustomization hudCustomization = new HudCustomization();
 
+    private List<MCEffects> launchableEffects = new ArrayList<>();
     private List<MCEffects> effects = new ArrayList<>();
 
     private Random rng = new Random();
@@ -91,13 +97,21 @@ public class MCCharacter extends MCEntity {
             // Mouahahaha e.printStackTrace(); // pitié :'''''''''''''''''')
             e.printStackTrace();
         }
+
+        /*
+        launchableEffects.add(new MCDecreaseShieldEffect(this));
+        launchableEffects.add(new MCSpeedUpEffect(this));
+        launchableEffects.add(new MCSpeedShoot(this));
+        launchableEffects.add(new MCStrengthEffect(this));
+        launchableEffects.add(new MCShieldEffect(this));
+        */
     }
 
     @Override
     public void onSpawn() {
         stateManager.setCurrentState("idle", new MCCSIdle.IdleStateArgs());
         healthBar = new MCTerrainHPBar(this, getParent().gameViewport);
-        effects.add(new MCSpeedUpEffect(this, "speed"));
+        //effects.add(new MCSpeedUpEffect(this, "speed"));
         //effects.add(new MCShieldEffect(this, "shield_test"));
         //effects.add(new MCSpeedShoot(this, "speedShoot"));
     }
@@ -108,6 +122,7 @@ public class MCCharacter extends MCEntity {
         hp = maxHp;
         maxDeplacements = MCUtils.getIntProperty(props, "maxMoves", 2);
         toleranceHitbox = (MCUtils.getFloatProperty(props, "hitboxTolerancePercentage", 0.05f))/(100*2);
+        speed = (MCUtils.getFloatProperty(props, "speed", 2f));
 
         MCAttackFactory attackFact = MCAttackFactory.get();
         for (int i = 1; i < MAX_ATTACK_NUMBER; i++) {
@@ -121,6 +136,25 @@ public class MCCharacter extends MCEntity {
             MCAttack attack = attackFact.build(this, attackName);
             //System.out.println(attackName + attack.toString());
             addAttack(attack.getName(), attack);
+        }
+
+        for (int i = 1; i < MAX_CAPACITY_NUMBER; i++) {
+            String capacityName = props.get("capacity" + i, String.class);
+            if (capacityName == null) 
+                break;
+            MCEffects capa = MCEffectFactory.get().buildEffect(this, capacityName);
+            if (capa == null)
+                continue;
+            if (capa instanceof MCDecreaseShieldEffect se) {
+                float percentage = MCUtils.getFloatProperty(props, "capacity" + i + "_percentage", 50f);
+                se.setPercentage(percentage);
+                int dist = MCUtils.getIntProperty(props, "capacity" + i + "_dist", 4);
+                se.setAffectDistance(dist);
+            } else if (capa instanceof MCSpeedUpEffect eff) {
+                int dist = MCUtils.getIntProperty(props, "capacity" + i + "_dist", 4);
+                eff.setAffectDistance(dist);
+            }
+            launchableEffects.add(capa);
         }
 
         baseAttack = props.get("baseAttack", String.class);
@@ -153,6 +187,10 @@ public class MCCharacter extends MCEntity {
 
     public void spawnDamageIndicator(int damage) {
         healthBar.showDamage(damage);
+    }
+
+    public List<MCEffects> getLaunchableEffects() {
+        return launchableEffects;
     }
 
     /**
@@ -206,7 +244,7 @@ public class MCCharacter extends MCEntity {
         stateManager.renderEffects(batch);
         if (healthBar != null && hp < maxHp)
             healthBar.render(batch);
-        for (MCEffects e: effects) e.render();
+        for (MCEffects e: effects) e.render(batch);
     }
 
     /**
@@ -227,6 +265,10 @@ public class MCCharacter extends MCEntity {
             move = e.getMaxMoves(move);
         }
         return move;
+    }
+
+    public float getSpeed() {
+        return speed;
     }
 
     /**
@@ -362,7 +404,6 @@ public class MCCharacter extends MCEntity {
             if (getHealth() <= 0)
                 stateManager.setCurrentState("dead", new MCCSDead.DeadStateArgs());
         }
-        //System.out.println("J'ai pris " + damage + "dégats !");
     }
     
     /**

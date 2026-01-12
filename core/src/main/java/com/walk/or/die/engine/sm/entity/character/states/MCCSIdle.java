@@ -81,10 +81,13 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
      * Transitions to the "ready" state if conditions are met.
      */
     public void goToReady() {
+        //System.out.println(parent.getId() + "ran gotoready()");
         if (!parent.focus)
             return; // sécurité
+        //System.out.println(parent.getId() + "ran gotoready() past 1st security");
         if (MCEntityManager.get().isAnyoneBusy())
             return;
+        //System.out.println(parent.getId() + "ran gotoready() past 2nd security");
         if (parent instanceof MCAlly ally 
             && ally.getTurnState().canMove())
             changeState("ready", new MCCSReady.ReadyStateArgs());
@@ -101,6 +104,16 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         if (parent instanceof MCAlly ally 
             && ally.getTurnState().canAttack())
             changeState("aim", new MCCSAim.AimStateArgs());
+    }
+
+    public void goToCapaChoose() {
+        if (!parent.focus)
+            return;
+        if (MCEntityManager.get().isAnyoneBusy())
+            return;
+        if (parent instanceof MCAlly ally 
+            && ally.getTurnState().canUseCapacity())
+            changeState("capacityChoose", new MCCSCapacityChoose.CapaChooseArgs());
     }
 
     /**
@@ -122,6 +135,13 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
                 customization.carouselItems.add(new CarouselItem(
                     "ATTACK",
                     () -> goToAim(),
+                    null
+                ));
+            }
+            if (ally.getTurnState().canUseCapacity() && ally.getLaunchableEffects().size() > 0) {
+                customization.carouselItems.add(new CarouselItem(
+                    "CAPACITY",
+                    () -> goToCapaChoose(),
                     null
                 ));
             }

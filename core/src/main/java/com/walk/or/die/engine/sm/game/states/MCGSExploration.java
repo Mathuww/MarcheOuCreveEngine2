@@ -1,6 +1,7 @@
 package com.walk.or.die.engine.sm.game.states;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.entities.MCEntityManager;
@@ -28,7 +29,7 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
 
     /**
      * Called at state entrance.
-     * Sets up camera & HUD.
+     * Sets up camera and HUD.
      * @param args The arguments passed to the state.
      */
     @Override
@@ -42,9 +43,7 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
         camManager.setFollowTarget(player);
         camManager.setMode(MCCameraManager.CameraMode.FOLLOW);
         bus.on(this, "InputPressed", this::inputPressed);
-        hudManager.getSimpleHud().setText("INVENTORY");
-        hudManager.getSimpleHud().setAction(() -> System.out.println("Inventory shown"));
-        hudManager.getSimpleHud().enable();
+        hudManager.getSimpleHud().disable();
         hudManager.getCharacterHud().hide();
     }
     
@@ -63,21 +62,16 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
      * @param data The input command data.
      */
     protected void inputPressed(MCInputManager.Command data) {
+        super.inputPressed(data);
         //System.out.println("Input pressed detect in Idle");
-        if (data instanceof MCInputManager.OtherKeyCommand keyCmd) {
-            if (keyCmd.key == Input.Keys.C) {
-                camManager.setMode(MCCameraManager.CameraMode.ARROWS);
-                changeState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
-            }
-        }
     }
 
     /**
      * Called on each frame.
-     * @param delta The time in seconds since the last frame.
+     * @param batch The sprite batch.
      */
     @Override
-    public void render(float delta) {
-        super.render(delta);
+    public void render(SpriteBatch batch) {
+        super.render(batch);
     }
 }

@@ -1,8 +1,8 @@
-# MCE2
+# MCE2 (Marche ou Crève Engine 2)
 
 *A data-driven tactical RPG game engine that doesn't require any lines of code*
 
-MCE2 allows you to create your own tactial RPG without writing a single line of code. You only need to edit the maps & entities of your game in Tiled based on the template provided.
+Marche ou Crève Engine 2 (MCE2) allows you to create your own tactial RPG without writing a single line of code. You only need to edit the maps & entities of your game in Tiled based on the template provided.
 
 ### Features 
 - Build the maps you want
@@ -102,7 +102,7 @@ We'll now dive in each one of these, explaining how to customize the template we
 Maps are probably the easiest elements to customize.
 The game begins in `start.tmx`, and every other map needs to be made accessible via a portal to be visitable inside the game.
 
-The only property belonging to an entire terrain map (these properties can be shown using **Map** > **Map Properties...** in the app menu) is `boolean : isBattle`.
+The only property belonging to an entire terrain map (these properties can be shown using **Map** > **Map Properties...** in the app menu) is `boolean : battleMap`.
 - If set to `true`, entering this map will trigger a battle to start. All allies and enemies will thus spawn (as well as other entities). Exploration mode will only be entered when the battle is over.
 - If set to `false`, Combat mode will never be entered inside this map. No enemy will spawn, and only one ally will spawn and is going to be conttrolable using WASD/ZQSD. Entities of other kinds will still spawn.
 
@@ -115,8 +115,8 @@ The only property that's important for terrain tiles is `boolean : blocked`. It 
 Projectiles & entities will only collide with `blocked` tiles if they belong to the uppermost layer.
 
 ### Customizing the map's entities
-#### Classic entities (excluding portals)
-Asking the game engine to spawn an entity at a given position is made possible by adding an object inside the `Entities` layer.
+#### Primary entities (excluding portals)
+Asking the game engine to spawn an entity at a given position is made possible by adding an object inside the `Primary_Entities` layer.
 The entity will spawn at the position of the lower left corner of the object's shape.
 You may choose the entity to spawn by refering to an entity `tmx` file that exists within the `entities_anims/` folder.
 Entities' objects have to include only one property and it's `string : name`. You just have to refer to the file in `entities_anims/` you wan to spawn by specifying the corresponding filename, keeping only the filename part (don't put the entire path, nor the .tmx extension).
@@ -128,13 +128,21 @@ Entities can be of several types.
 - `projectile` : we'll get to them even later.
 As each entity (each .tmx inside `entities_anims/`) can only be of a defined type, you don't have to specify the type of the entity you want to spawn in an entity object.
 
-### Portals
-You can ask MCE2 to spawn a portal in the same way you ask it spawn an entity, by creating an object inside the `Entities` layer, and by giving the property `string : name` by making it refer to the .tmx of the portal you want to spawn (portals' .tmx are stored in the same folder as the entities' .tmx).
+#### Allies' specificities
+Once the player's team defeats every enemy in a battle, the game goes into Exploration mode, as stated before.
+However, the game engine must pick one of the allies to be the one that becomes controllable using the keyboard.
+That's why allies' spawning objects must contain one additional property `int : priorityLevel`.
+MCE2 will pick the ally that has the highest `priorityLevel` to become freely controllable (if two allies have the same `priorityLevel`, the game will pick the one with the highest remaining HP).
+The lowest possible `priorityLevel` is `0`. 
+
+#### Portals
+You can ask MCE2 to spawn a portal in the same way you ask it spawn an entity, the only difference being you have to create an object inside the `Portals` layer. Give it the property `string : name` by making it refer to the .tmx of the portal you want to spawn (portals' .tmx are stored in the same folder as the entities' .tmx).
 
 However, portals do have some special properties, required to determine where they should take you to :
 - `string : destMap` : the map (.tmx) inside `maps/` you want this portal to go. Don't add .tmx, and keep only the filename.
-- `int : destPortal_ID` : specifying only the filename makes cases where multiple portals exist inside the same map unable to exist. That's way we needed each portal to have an ID. When taking a portal that has `destMap` set to `aqualand.tmx` and a `destPortal_ID` of 1, it will teleport you to the portal with a `portal_ID` (which is a separate property, see below) of 1 inside `aqualand`.
+- `int : destPortal_ID` : Only important is your destination map is an Exploration-only map, because in this case when taking a portal that has `destMap` set to `aqualand.tmx` and a `destPortal_ID` of 1, it will teleport you to the portal with a `portal_ID` (which is a separate property, see below) of 1 inside `aqualand`. When the destination map is a Combat map, this property isn't required as the game engine doesn't have to spawn a character right at the destination portal position.
 - `int : portal_ID` : **this** portal's ID. **All portals should have an ID, even if there isn't any portal teleporting to them.**
+- `string : spawnDirection` : specifies at which tile next to the portal the player should spawn in the destination map. Can be either `top`, `bottom`, `left` or `right`. If set to `right` for example, the player will spawn at the tile just right to the destination portal.
 
 ## Customizing entities
 Whether it's a classic entity or a portal, each single entity that can be spawned in the game has a .tmx file here, describing its visuals and its properties.
@@ -169,6 +177,12 @@ On top of all these, characters also have these properties :
 - `string : baseAttack`. The base attack of your character. Obviously has to be one of the few stated in `attack[1,6]`. This is also required.
 
 We'll cover the way attacks can be customized later, but for now remember that each attack existing in the game is a .tmx file in the `attacks/` folder.
+
+Characters can have special capacities, that they can use only once per battle.
+As for attacks, you can specify `string : capacity[1,5]` and you can use the same five as you can see in `ally.tmx` (speedUp, speedShoot, strength, totalShield, decreaseShield). See the HUD for a summary of each one.
+
+#### Allies' specificities
+Specify `int : speed` to set the speed at which the ally will move if it becomes freely controllable (Exploration mode).
 
 #### Characters' visuals
 On top of `idle` (still required), characters may/can (according to the case) have each of these animations : 

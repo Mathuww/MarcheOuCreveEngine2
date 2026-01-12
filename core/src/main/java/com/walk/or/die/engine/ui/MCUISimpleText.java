@@ -11,7 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
+/**
+ * The basic text element of our user interface. <br>
+ */
 public class MCUISimpleText {
+    /**
+     * How much spaces between words need to be amplified in order to look aesthetic.
+     */
     private final float SPACE_FACTOR = 2.5f;
 
     protected Zone zone;
@@ -58,7 +64,7 @@ public class MCUISimpleText {
     }
 
     /**
-     * Draws spaced text.
+     * Draws text with spacing between the characters.
      *
      * @param text The text to draw.
      * @param x The x coordinate.
@@ -79,7 +85,7 @@ public class MCUISimpleText {
     }
 
     /**
-     * Calculates the dimensions of the text.
+     * Computes the x and y dimensions of the text.
      *
      * @param text The text to measure.
      * @return A Vector2 containing the width and height of the text.
@@ -99,7 +105,8 @@ public class MCUISimpleText {
     }
 
     /**
-     * Called on each frame.
+     * Called on each frame. <br>
+     * We used scissors (computed manually, it didn't work otherwise) to make sure the text doesn't overflow.
      *
      * @param batch The sprite batch.
      */
@@ -138,6 +145,11 @@ public class MCUISimpleText {
             currentBatch.flush();
             ScissorStack.popScissors();
         }
+    }
+
+    public void setScale(float scale) {
+        this.scale = scale;
+        setText(currentText); // maj des dimensions
     }
 
     /**

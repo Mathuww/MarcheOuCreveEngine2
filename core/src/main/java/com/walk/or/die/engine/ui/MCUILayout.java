@@ -9,6 +9,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
+/**
+ * A class used to easily design our user interface without using any absolute positioning. Very inspired by the way CSS works (especially for padding).
+ */
 public class MCUILayout {
     private Map<String, Zone> zones = new HashMap<>();
     private ShapeRenderer debugRenderer = new ShapeRenderer();
@@ -132,6 +135,10 @@ public class MCUILayout {
         debugRenderer.end();
     }
 
+    /**
+     * Contains info. about a layout's zone. <br>
+     * Especially wraps padding and alignment (left, center, right) computation.
+     */
     public static class Zone {
         private Zone parent;
         private Rectangle logicRect;

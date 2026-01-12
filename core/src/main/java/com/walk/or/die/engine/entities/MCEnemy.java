@@ -58,7 +58,6 @@ public class MCEnemy extends MCCharacter{
             state.play(pos);
             return true;
         }
-        System.out.println("oulala faut pas play quand il est pas en idle non mais oh");
         return false;
 
         // J'avoue c'est une méthode de brigand

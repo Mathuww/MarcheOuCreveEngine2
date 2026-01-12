@@ -13,6 +13,7 @@ import com.walk.or.die.engine.cameras.MCCameraManager;
 import com.walk.or.die.engine.cameras.MCCameraManager.CameraMode;
 import com.walk.or.die.engine.entities.MCEntityManager;
 import com.walk.or.die.engine.exceptions.InvalidDataException;
+import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
@@ -38,6 +39,7 @@ public class MCGameScreen implements Screen {
      */
     @Override
     public void show() {
+        hudManager.getMainMenuHud().setDisplay(false);
     }
 
     /**
@@ -75,6 +77,7 @@ public class MCGameScreen implements Screen {
     @Override
     public void pause() {
         // Invoked when your application is paused.
+        MCEventBus.get().emit("Pause");
     }
     
     @Override

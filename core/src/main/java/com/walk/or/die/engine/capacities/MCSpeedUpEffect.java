@@ -12,8 +12,23 @@ public class MCSpeedUpEffect extends MCEffects {
      * @param parent The parent MCCharacter.
      * @param displayName The display name of the effect.
      */
-    public MCSpeedUpEffect(MCCharacter parent, String displayName) {
-        super(parent, displayName);
+    public MCSpeedUpEffect(MCCharacter parent) {
+        super(parent, "SPEED UP");
+        this.affectDistance = 4;
+    }
+
+    @Override
+    public String getSummary() {
+        return "Everyone in " + affectDistance + " tiles will be able to move twice as far for one turn.";
+    }
+
+    public void setAffectDistance(int d) {
+        affectDistance = d;
+    }
+
+    @Override
+    public MCEffects copy(MCCharacter target) {
+        return new MCSpeedUpEffect(target);
     }
 
     /**

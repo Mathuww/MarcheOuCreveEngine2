@@ -14,11 +14,16 @@ import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSIdle;
 import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSMove;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
+/**
+ * The portal entity. When an MCExplorationPlayer comes across it, it gets teleported to the portal's destination.
+ * @see MCExplorationPlayer
+ */
 public class MCPortal extends MCEntity {
     private int fps;
     private int ID;
     private int destID;
     private String destMap;
+    private String spawnDirection;
 
     public MCPortal(MCGame parent, MCTerrainMap map, String entityGenericName) {
         super(parent, map, entityGenericName);
@@ -31,13 +36,14 @@ public class MCPortal extends MCEntity {
      * @throws MissingDataException When the map properties are missing or invalid
      */
     @Override
-    public void initFromMapProperties(MapProperties props) throws MissingDataException {
+    public void initFromMapProperties(MapProperties props) throws IllegalStateException, MissingDataException {
         ID = MCUtils.getIntProperty(props, "portal_ID", -1);
         destID = MCUtils.getIntProperty(props, "destPortal_ID", -1);
         destMap = props.get("destMap", String.class);
-        if(ID < -1) {
+        spawnDirection = props.get("spawnDirection", String.class);
+        if(ID <= -1) {
             throw new MissingDataException("the portal " + ID + " don't have an identification !");
-        } else if(destID < -1) {
+        } else if(destID <= -1) {
             throw new MissingDataException("the portal " + destID + " don't have an identification for the destination portal!");
         } else if (destMap == null || destMap.isEmpty()) {
             throw new MissingDataException("the portal doesn' have a desination map");
@@ -48,8 +54,24 @@ public class MCPortal extends MCEntity {
         }
     }
 
+    public int getPortalID() {
+        return ID;
+    }
+
+    public int getDestID() {
+        return destID;
+    }
+
+    public String getDestMap() {
+        return destMap;
+    }
+
+    public String getSpawnDirection() {
+        return spawnDirection;
+    }
+
     /**
-     * Called on spawn.
+     * Called on spawn
      */
     @Override
     public void onSpawn() {
@@ -89,6 +111,6 @@ public class MCPortal extends MCEntity {
      * Activates the teleportation (load the new map) with the portal data.
      */
     public void teleportation() {
-        getParent().teleportationActivate(destMap + ".tmx");
+        getParent().teleportationActivate(getDestMap() + ".tmx", getDestID());
     }
 }

@@ -14,7 +14,7 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
-public class MCGSCombat<T extends MCGameState.StateArgs> extends MCGameState<T> {
+public abstract class MCGSCombat<T extends MCGameState.StateArgs> extends MCGameState<T> {
 
     public MCGSCombat(MCGame parent) {
         super(parent);
@@ -50,16 +50,9 @@ public class MCGSCombat<T extends MCGameState.StateArgs> extends MCGameState<T> 
      * according to this order of priority :
      * - The priority index specified in the ally's data.
      * - The ally with the highest health points.
-     * @param args Specifies which team won the battle.
+     * @param cda Specifies which team won the battle.
      */
-    public void combatDone(MCGame.CombatDoneArgs args) {
-        if (args == MCGame.CombatDoneArgs.ALLIES_WON) {
-            // ... transformer l'ally élu en expl player!!
-            // choisir celui avec le explPriority le plus haut (ajouter ça dans initFromProperties)
-            // puis si meme priorty choisir le + haut HP
-            changeState("exploration", new MCGSExploration.ExplStateArgs());
-        } else if (args == MCGame.CombatDoneArgs.ENEMIES_WON) {
-            parent.reloadMap();
-        }
+    public void combatDone(MCGame.CombatDoneArgs cda) {
+        changeState("VeryBigInformation", new MCGSVeryBigInformation.MCGSVBIArgs(cda));
     }
 }

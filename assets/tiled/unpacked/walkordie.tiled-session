@@ -3,12 +3,12 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "entities_anims/blue_portal.tsx",
+    "activeFile": "maps/battle2.tmx",
     "expandedProjectPaths": [
-        ".",
         "entities_anims",
         "maps",
-        "attacks"
+        "attacks",
+        "."
     ],
     "file.lastUsedOpenFilter": "Tous les Fichiers (*)",
     "fileStates": {
@@ -20,7 +20,7 @@
             "scaleInDock": 1
         },
         "attacks/attack.tsx": {
-            "scaleInDock": 1,
+            "scaleInDock": 2,
             "scaleInEditor": 4
         },
         "attacks/close_attack.tmx": {
@@ -47,8 +47,8 @@
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 128.16666666666666,
-                "y": 128.16666666666669
+                "x": 130,
+                "y": 114.49999999999999
             }
         },
         "entities_anims/ally.tsx": {
@@ -71,7 +71,7 @@
             "scale": 1.1151367187499999,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 255.12566774673792,
+                "x": 254.67729223224453,
                 "y": 256.0224187757247
             }
         },
@@ -116,7 +116,7 @@
             "scale": 3,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 123.16666666666666,
+                "x": 134,
                 "y": 128.16666666666669
             }
         },
@@ -145,8 +145,8 @@
             "scale": 5.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 38.81818181818182,
-                "y": 143.36363636363637
+                "x": 121.0909090909091,
+                "y": 128.0909090909091
             }
         },
         "entities_anims/explorationPlayer.tmx#chara1": {
@@ -182,7 +182,7 @@
             "scale": 1.1151367187499999,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 255.12566774673792,
+                "x": 254.67729223224453,
                 "y": 256.0224187757247
             }
         },
@@ -211,11 +211,11 @@
             }
         },
         "entities_anims/projectile.tmx": {
-            "scale": 3,
+            "scale": 0.33,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 128,
-                "y": 128.16666666666669
+                "x": 127.27272727272725,
+                "y": 128.78787878787875
             }
         },
         "entities_anims/projectile.tmx#enemy1": {
@@ -229,7 +229,7 @@
             "scale": 1.1151367187499999,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 202.6657325510115,
+                "x": 202.66573255101147,
                 "y": 256.0224187757247
             }
         },
@@ -266,34 +266,47 @@
                 5,
                 3
             ],
-            "scale": 1.6220170454545453,
+            "scale": 1,
             "selectedLayer": 3,
             "viewCenter": {
-                "x": 175.3988965758823,
-                "y": 159.98598826517213
+                "x": 177.5,
+                "y": 172.5
             }
         },
         "maps/battle2.tmx": {
             "expandedObjectLayers": [
-                5,
-                3
+                3,
+                5
             ],
-            "scale": 2,
+            "scale": 1.5,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 119.66666666666666,
+                "y": 215.66666666666663
+            }
+        },
+        "maps/battle3.tmx": {
+            "expandedObjectLayers": [
+                3,
+                5
+            ],
+            "scale": 1.5,
             "selectedLayer": 5,
             "viewCenter": {
-                "x": 143.75,
-                "y": 30.25
+                "x": 297.6666666666667,
+                "y": 21.66666666666663
             }
         },
         "maps/exemple.tmx": {
             "expandedObjectLayers": [
-                6
+                6,
+                5
             ],
-            "scale": 2.2302734374999997,
-            "selectedLayer": 2,
+            "scale": 2,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 97.52167440231194,
-                "y": 80.0350293370698
+                "x": 196.25,
+                "y": 69.25
             }
         },
         "maps/exemple.tmx#main": {
@@ -301,6 +314,18 @@
         },
         "maps/exemple.tmx#player": {
             "scaleInDock": 1
+        },
+        "maps/hut.tmx": {
+            "expandedObjectLayers": [
+                3,
+                5
+            ],
+            "scale": 3.3249999999999997,
+            "selectedLayer": 3,
+            "viewCenter": {
+                "x": 121.0526315789474,
+                "y": 106.31578947368425
+            }
         },
         "maps/lalalalalala.tsx": {
             "scaleInDock": 1,
@@ -318,7 +343,7 @@
             "scale": 4,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 56.125,
+                "x": 63.875,
                 "y": 63.875
             }
         },
@@ -348,14 +373,14 @@
         },
         "maps/start.tmx": {
             "expandedObjectLayers": [
-                5,
-                3
+                3,
+                5
             ],
             "scale": 3,
-            "selectedLayer": 3,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 87.83333333333331,
-                "y": 41.16666666666666
+                "x": 56.16666666666666,
+                "y": 54.833333333333314
             }
         },
         "maps/start.tmx#main": {
@@ -384,14 +409,14 @@
         },
         "maps/tunnel.tmx": {
             "expandedObjectLayers": [
-                5,
-                3
+                3,
+                5
             ],
-            "scale": 1,
-            "selectedLayer": 3,
+            "scale": 5.5,
+            "selectedLayer": 4,
             "viewCenter": {
-                "x": 24.5,
-                "y": 40.5
+                "x": 75.9090909090909,
+                "y": 40.27272727272727
             }
         },
         "misc.tmx": {
@@ -410,29 +435,37 @@
     "last.externalTilesetPath": "/users/etudiant/d/dm316680/PASZDEFICHIERYSTEM/unpacked/entities_anims",
     "last.imagePath": "C:/Users/mathe/OneDrive/ECOLE/Valrose/L3/PCOO/projet/unpacked/spritesheets/portals",
     "map.fixedSize": true,
-    "map.height": 8,
+    "map.height": 15,
     "map.lastUsedFormat": "tmx",
-    "map.tileHeight": 64,
-    "map.tileWidth": 64,
-    "map.width": 8,
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 15,
     "openFiles": [
-        "entities_anims/blue_portal.tsx"
+        "maps/start.tmx",
+        "maps/Ground.tsx",
+        "maps/objects.tsx",
+        "maps/exemple.tmx",
+        "maps/tunnel.tmx",
+        "maps/battle3.tmx",
+        "maps/battle2.tmx",
+        "maps/hut.tmx",
+        "maps/misc.tmx"
     ],
     "project": "walkordie.tiled-project",
-    "property.type": "string",
+    "property.type": "float",
     "recentFiles": [
         "entities_anims/blue_portal.tsx",
-        "entities_anims/ally.tmx",
-        "entities_anims/enemy.tmx",
-        "entities_anims/animWalk_explorationPlayer.tsx",
-        "entities_anims/explorationPlayer.tmx",
-        "entities_anims/bluePortal.tmx",
+        "entities_anims/projectile.tmx",
         "entities_anims/greenPortal.tmx",
-        "entities_anims/orangePortal.tmx",
+        "entities_anims/bluePortal.tmx",
+        "entities_anims/animWalk_explorationPlayer.tsx",
+        "entities_anims/ally_real.tsx",
+        "entities_anims/ally.tsx",
+        "maps/Ground.tsx",
         "maps/start.tmx",
-        "maps/battle1.tmx",
-        "maps/tunnel.tmx",
-        "maps/misc.tmx"
+        "maps/objects.tsx",
+        "maps/exemple.tmx",
+        "maps/tunnel.tmx"
     ],
     "tileset.lastUsedFilter": "Fichiers de jeu de tuiles Tiled (*.tsx *.xml)",
     "tileset.lastUsedFormat": "tsx",

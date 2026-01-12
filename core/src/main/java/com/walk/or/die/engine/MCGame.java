@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,6 +20,7 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.entities.MCEntity;
 import com.walk.or.die.engine.entities.MCEntityFactory;
 import com.walk.or.die.engine.entities.MCEntityManager;
+import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.exceptions.MissingDataException;
 import com.walk.or.die.engine.exceptions.UnexistingBehaviorException;
@@ -27,7 +29,9 @@ import com.walk.or.die.engine.input.MCInputManager.Command;
 import com.walk.or.die.engine.input.MCInputManager.NextMapCommand;
 import com.walk.or.die.engine.input.MCInputManager.PreviousMapCommand;
 import com.walk.or.die.engine.screens.MCGameScreen;
+import com.walk.or.die.engine.screens.MCMainMenuScreen;
 import com.walk.or.die.engine.shared.MCDebugRenderer;
+import com.walk.or.die.engine.shared.MCEmpty;
 import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.shared.MCSharedAssets;
@@ -36,6 +40,7 @@ import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.sm.game.states.MCGSAlliesPlaying;
 import com.walk.or.die.engine.sm.game.states.MCGSEnemiesPlaying;
 import com.walk.or.die.engine.sm.game.states.MCGSExploration;
+import com.walk.or.die.engine.sm.game.states.MCGSVeryBigInformation;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 import com.walk.or.die.engine.ui.MCHUDManager;
@@ -98,7 +103,7 @@ public class MCGame extends Game {
     /**
      * The path where all tiled files are stored.
      */
-    private final String TILED_ROOT = "tiled/packed/";
+    public static final String TILED_ROOT = "tiled/packed/";
     /**
      * The path where all tiled maps are stored.
      */
@@ -184,6 +189,11 @@ public class MCGame extends Game {
 
     private String currentMapFile;
     private String mapFileToLoad = null;
+    private int destIDPortalToLoad = 0;
+
+
+    private Screen currentScreen;
+    private boolean paused = false;
 
     /**
      * Constructs a new MCGame instance.
@@ -194,8 +204,24 @@ public class MCGame extends Game {
      * Gets the root map.
      * @return The root map.
      */
-    public String getRootMap () {
+    public String getRootMap() {
         return MAP_ROOT;
+    }
+
+    public String getMapFileToLoad() {
+        return mapFileToLoad;
+    }
+
+    public void setMapFileToLoad(String filename) {
+        mapFileToLoad = filename;
+    }
+
+    public int getDestIDPortalToLoad() {
+        return destIDPortalToLoad;
+    }
+
+    public void setDestIDPortalToLoad(int destID) {
+        destIDPortalToLoad = destID;
     }
 
     @Override // commence pas je vais t'attraper
@@ -238,32 +264,37 @@ public class MCGame extends Game {
             e.printStackTrace();
         }
 
+        hudManager.init(WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
+
         // State init
         stateManager.addState(new MCGSAlliesPlaying(this));
         stateManager.addState(new MCGSEnemiesPlaying(this));
         stateManager.addState(new MCGSExploration(this));
-
-        hudManager.init(WINDOW_DEFAULT_WIDTH, WINDOW_DEFAULT_HEIGHT);
+        stateManager.addState(new MCGSVeryBigInformation(this));
 
         loadMap("start.tmx");
 
-        try {
-            setScreen(new MCGameScreen(this));
-        } catch (InvalidDataException e) {
-            e.printStackTrace();
-        }
+        currentScreen = new MCMainMenuScreen(this);
+        setScreen(currentScreen);
+
+        bus.on(this, "MainMenu", this::goToMainMenu);
+        bus.on(this, "Pause", this::pauseGame);
+        bus.on(this, "Resume", this::resumeGame);
+        bus.on(this, "PlayFromMainMenu", this::playFromMainMenu);
+        bus.on(this, "Quit", this::quit);
     }
 
     /**
      * Triggers a clean transition with the map name (tmx file).
      * @param filename The name of the map file.
      */
-    public void teleportationActivate (String filename) {
-        mapFileToLoad = filename;
+    public void teleportationActivate (String filename, int destID) {
+        setMapFileToLoad(filename);
+        setDestIDPortalToLoad(destID);
     }
 
     public void reloadMap() {
-        mapFileToLoad = currentMapFile;
+        setMapFileToLoad(currentMapFile);
     }
 
     /**
@@ -279,13 +310,14 @@ public class MCGame extends Game {
         currentMapFile = filename;
         System.out.println("teleportation to " + filename);
         hudManager.getCharacterHud().hide();
+        MCExplorationPlayer chosen = entityManager.getExplorationPlayer();
         entityManager.clearEntities();
 
         if (map != null)
-            map.dispose();
+            map.dispose(); 
         map = new MCTerrainMap(MAP_ROOT + filename, drh);
         MapProperties mapProps = map.getProperties();
-        Boolean mapCombat = mapProps.get("isBattle", Boolean.class);
+        Boolean mapCombat = mapProps.get("battleMap", Boolean.class);
         if(mapCombat == null) {
             mapCombat = false;
         }
@@ -294,6 +326,9 @@ public class MCGame extends Game {
             CAM_UPPER_LIMIT_OFFSET.x + map.getWidth(),
             CAM_UPPER_LIMIT_OFFSET.y + map.getHeight()
         ));
+
+        MCExplorationPlayer newPlayer = null;
+        MCExplorationPlayer newPlayerInTheNewMap = null;
 
         if (mapCombat) {
             try {
@@ -305,13 +340,21 @@ public class MCGame extends Game {
             stateManager.setCurrentState("AlliesPlaying", new MCGSAlliesPlaying.AlliesPlayingArgs());
         } else {
             try {
-                entityManager.addExplorationEntities(map.spawnEntities(this));
+                newPlayer = entityManager.addExplorationEntities(map.spawnEntities(this), chosen);
+                //System.out.println("Player trouvé");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                newPlayerInTheNewMap = new MCExplorationPlayer(newPlayer, map);
+                entityManager.spawnExplorationPlayerWithPortal(map.spawnEntities(this), getDestIDPortalToLoad(), newPlayerInTheNewMap);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             entityManager.update(Gdx.graphics.getDeltaTime());
             stateManager.setCurrentState("Exploration", new MCGSExploration.ExplStateArgs());
         }
+        hudManager.getCharacterHud().hide();
     }
 
     /**
@@ -323,10 +366,16 @@ public class MCGame extends Game {
         // Because we implement MVC (Modular Venomous Contraception) // co autored by
         // mathuww
 
+        if (currentScreen instanceof MCMainMenuScreen) {
+            hudManager.updateMainMenu(delta);
+            return;
+        }
+
         // la condition pour que le changement de map se fait correctement par portail
         if(mapFileToLoad != null) {
-            loadMap(mapFileToLoad);
-            mapFileToLoad = null;
+            loadMap(getMapFileToLoad());
+            setMapFileToLoad(null);
+            setDestIDPortalToLoad(0);
         }
 
         try {
@@ -341,7 +390,6 @@ public class MCGame extends Game {
 
         stateManager.update(delta);
         entityManager.update(delta);
-
         hudManager.update(delta);
     }
 
@@ -357,11 +405,8 @@ public class MCGame extends Game {
 
     @Override
     public void dispose() {
-        entityFact.dispose();
-        attackFact.dispose();
-        map.dispose();
-        sharedAssets.dispose();
-        batch.dispose();
+        if (map != null)
+            map.dispose();
     }
 
     /**
@@ -382,6 +427,48 @@ public class MCGame extends Game {
                 c.getFocus();
             }
         }
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void pauseGame(MCEmpty e) {
+        paused = true;
+        bus.emit("freezeGame");
+        hudManager.getCharacterHud().hide();
+        hudManager.getPauseHud().setDisplay(true);
+    }
+
+    public void playFromMainMenu(MCEmpty emp) {
+        try {  
+            currentScreen = new MCGameScreen(this);
+        } catch (InvalidDataException e) {
+            e.printStackTrace();
+            return;
+        }
+        setScreen(currentScreen);
+    }
+
+    public void quit(MCEmpty e) {
+        //System.out.print("quitting, please wait(forever.)");
+        Gdx.app.exit();
+    }
+
+    public void goToMainMenu(MCEmpty e) {
+        //System.out.println("going straight to main menu, please wait (forever.)");
+        currentScreen = new MCMainMenuScreen(this);
+        setScreen(currentScreen);
+    }
+
+    public void resumeGame(MCEmpty e) {
+        paused = false;
+        bus.emit("unfreezeGame");
+        hudManager.getPauseHud().setDisplay(false);
+    }
+
+    public Screen getCurrentScreen() {
+        return currentScreen;
     }
 
     /**

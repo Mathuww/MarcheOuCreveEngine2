@@ -1,7 +1,16 @@
 package com.walk.or.die.engine.capacities;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.entities.MCAttack;
 import com.walk.or.die.engine.entities.MCCharacter;
+import com.walk.or.die.engine.entities.MCEntity;
+import com.walk.or.die.engine.entities.MCEntityManager;
+import com.walk.or.die.engine.shared.MCIntVector2;
 
 /**
  * An abstract class to build effects that affect the characters.<br>
@@ -15,6 +24,12 @@ public abstract class MCEffects {
     protected MCCharacter parent;
     private boolean dispose = false;
     private int turn = 0;
+    /**
+     * Determines the zone affected by the capacity. <br>
+     * If it's 0, it affects the character who launched it. <br>
+     * If > 0, it affects people if the zone, but not the character who launched it.
+     */
+    protected int affectDistance = 0; 
 
     /**
      * The constructor.
@@ -26,6 +41,39 @@ public abstract class MCEffects {
         this.name = displayName;
     }
 
+    public abstract MCEffects copy(MCCharacter target);
+    public abstract String getSummary();
+
+    public List<MCCharacter> getAffectedCharactersFrom(MCCharacter launcher) {
+        List<MCCharacter> affected = new ArrayList<>();
+        if (affectDistance <= 0) {
+            affected.add(launcher);
+            return affected; 
+        }
+        MCIntVector2 launcherPos = launcher.getTilePosition();
+        for (int i = -affectDistance; i <= affectDistance; i++) {
+            for (int j = -affectDistance; j <= affectDistance; j++) {
+                if (Math.abs(i) + Math.abs(j) <= affectDistance) {
+                    MCIntVector2 pos = new MCIntVector2(launcherPos.x + i, launcherPos.y + j);
+                    MCEntity e = MCEntityManager.get().getEntityFromTile(1, pos);
+                    if (e == null)
+                        continue;
+                    if (e instanceof MCCharacter c) {
+                        if (c.equals(launcher))
+                            continue;
+                        affected.add(c);
+                    }
+                }
+            }
+        }
+        return affected;
+
+    }
+
+    public String getDisplayName() {
+        return name;
+    }
+
     /**
      * Called on each frame.
      * @param delta The time delta.
@@ -35,7 +83,7 @@ public abstract class MCEffects {
     /**
      * Called on each frame.
      */
-    public void render() {}
+    public void render(SpriteBatch batch) {}
     
     /**
      * Called each turn.

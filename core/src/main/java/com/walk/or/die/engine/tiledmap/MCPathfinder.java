@@ -273,7 +273,6 @@ public class MCPathfinder {
      * @param start The starting position.
      * @param end The ending position.
      * @return The list of MCIntVector2 representing the valid trajectory.
-     * @deprecated in theory
      */
     public List<MCIntVector2> getValidTrajectory(MCIntVector2 start, MCIntVector2 end) {
         List<MCIntVector2> list = getTrajectory(start, end);

@@ -14,33 +14,86 @@ import com.walk.or.die.engine.entities.MCCharacter;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 
 /**
- * The HP bar displayed for each character on terrain. <br>
- * Only displayed when the HP are below maximum HP.
+ * Represents the HP bar displayed above each character on the terrain.
+ * It is only displayed when the HP is below the maximum.
  */
 public class MCTerrainHPBar extends MCAbstractHUD {
-    private final float CONTOUR_SIZE = 0.055f; // tile
-    private final float BAR_HEIGHT = 0.08f; // tile
-    private final float BAR_WIDTH = 0.85f; // tile
-    private final float BAR_Y_OFFSET = 1.15f; // (tile) par rapport au bas de tile
+    /**
+     * The size of the black contour around the bar (in tiles).
+     */
+    private final float CONTOUR_SIZE = 0.055f; 
+    /**
+     * The height of the bar (in tiles).
+     */
+    private final float BAR_HEIGHT = 0.08f; 
+    /**
+     * The width of the bar (in tiles).
+     */
+    private final float BAR_WIDTH = 0.85f; 
+    /**
+     * The Y offset relative to the bottom of the tile.
+     */
+    private final float BAR_Y_OFFSET = 1.15f; 
+    /**
+     * The Y offset used when the bar would otherwise be off-screen (top).
+     */
     private final float BAR_Y_LOWER_OFFSET = 1f - BAR_HEIGHT - CONTOUR_SIZE;
 
+    /**
+     * The starting Y offset for the damage indicator.
+     */
     private final float DAMAGE_BASE_Y_OFFSET = 1.7f;
+    /**
+     * The final Y offset for the damage indicator.
+     */
     private final float DAMAGE_END_Y_OFFSET = 3f;
+    /**
+     * The duration of the damage floating animation.
+     */
     private final float DAMAGE_DURATION = 3f;
+    /**
+     * The interpolation speed for the damage floating animation.
+     */
     private final float DAMAGE_UP_LERP = 0.2f;
+    /**
+     * The height of the damage text area.
+     */
     private final float DAMAGE_HEIGHT = 1f;
+    /**
+     * The font scale for the damage text.
+     */
     private final float DAMAGE_FONT_SCALE = 0.0125f;
+    /**
+     * The offset for the damage text contour.
+     */
     private final float DAMAGE_CONTOUR_OFFSET = 0.05f;
+    /**
+     * The font family used for floating numbers.
+     */
     private final String FONT_FAMILY = "ariBlackAlphaFP"; // float positions
 
+    /**
+     * The threshold ratio below which the bar turns yellow.
+     */
     private final float MID_HP_THRESHOLD = 0.66f;
-    private final float LOW_HP_THRESHOLD = 0.34f; // AHAHAHAAHAH
+    /**
+     * The threshold ratio below which the bar turns red.
+     */
+    private final float LOW_HP_THRESHOLD = 0.34f; 
 
+    /**
+     * The interpolation speed for the HP bar fill.
+     */
     private final float LERP = 4f;
+    /**
+     * The duration of the fading out animation.
+     */
     private final float FADING_DURATION = 0.3f;
 
     private MCSharedAssets sharedAssets = MCSharedAssets.get();
-    // pour pas que le barre sorte de la zone visible
+    /**
+     * The camera manager, used to check bounds.
+     */
     private MCCameraManager camManager = MCCameraManager.get();
 
     private TextureRegion contourTexture;
@@ -48,35 +101,89 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     private TextureRegion fillTextureHighHP;
     private TextureRegion fillTextureMidHP;
     private TextureRegion fillTextureLowHP;
+    /**
+     * The currently active fill texture (green, yellow or red).
+     */
     private TextureRegion currentFillTexture;
 
+    /**
+     * The character this bar belongs to.
+     */
     private MCCharacter parent;
+    /**
+     * The cached position of the parent character.
+     */
     private Vector2 gdxParentPos = new Vector2(0f, 0f);
 
+    /**
+     * The calculated X position of the bar.
+     */
     private float startX = 0f;
+    /**
+     * The calculated Y position of the bar.
+     */
     private float startY = 0f;
+    /**
+     * The current interpolated health ratio (0 to 1).
+     */
     private float lerpedHpRatio = 1f;
 
+    /**
+     * The current opacity of the bar.
+     */
     private float alpha = 1f;
+    /**
+     * The time elapsed since the fading started.
+     */
     private float fadeStateTime = 0f;
 
+    /**
+     * Indicates if the bar is currently fading out.
+     */
     private boolean fading = false;
+    /**
+     * Indicates if the bar should be displayed.
+     */
     private boolean display = true;
 
     private MCUILayout layout = new MCUILayout();
     private BitmapFont font;
+    
+    /**
+     * The string representation of the damage amount.
+     */
     private String damageStr = "";
+    /**
+     * The layout for the damage text.
+     */
     private GlyphLayout damageLayout;
+    /**
+     * The width of the damage text.
+     */
     private float damageWidth;
+    /**
+     * The current opacity of the damage text.
+     */
     private float damageAlpha = 0f;
+    /**
+     * The time elapsed since the damage display started.
+     */
     private float damageFadeStateTime = 0f;
+    /**
+     * The current Y offset of the floating damage text.
+     */
     private float damageOffsetY = 0f;
+    /**
+     * The starting X position for the damage text.
+     */
     private float damageStartX = 0f;
+    /**
+     * The starting Y position for the damage text.
+     */
     private float damageStartY = 0f;
 
     /**
      * Constructs a {@code MCTerrainHPBar}.
-     *
      * @param parent The parent MCCharacter.
      * @param vp The viewport.
      */
@@ -97,9 +204,8 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     }
 
     /**
-     * Shows the damage.
-     *
-     * @param damage The damage to show.
+     * Triggers the display of a floating damage number.
+     * @param damage The damage amount to show.
      */
     public void showDamage(int damage) {
         damageStr = Integer.toString(damage);
@@ -115,9 +221,8 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     }
 
     /**
-     * Updates the damage indicator.
-     *
-     * @param delta The time delta.
+     * Updates the damage indicator animation.
+     * @param delta The time elapsed since the last frame.
      */
     public void updateDamageIndicator(float delta) {
         damageFadeStateTime += delta;
@@ -141,9 +246,8 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     }
 
     /**
-     * Called on each frame.
-     *
-     * @param delta The time delta.
+     * Updates the bar logic. Called each frame.
+     * @param delta The time elapsed since the last frame.
      */
     public void update(float delta) {
         // pour ne pas faire new Vector2 à chaque frame !
@@ -191,9 +295,8 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     }
 
     /**
-     * Called on each frame.
-     *
-     * @param batch The sprite batch.
+     * Renders the bar and damage indicator. Called each frame.
+     * @param batch The sprite batch used for drawing.
      */
     public void render(SpriteBatch batch) {
         if(!display)
@@ -241,35 +344,31 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     }
 
     /**
-     * Checks if the hp bar is fully shown.
-     *
-     * @return {@code true} if the hp bar is fully shown, {@code false} otherwise.
+     * Checks if the HP bar is fully visible (not fading).
+     * @return True if the HP bar is fully shown, false otherwise.
      */
     public boolean isFullyShown() { return display && !fading; }
 
     /**
-     * Checks if a position belongs to the hud component.
-     *
+     * Checks if a screen position belongs to this HUD component.
      * @param pos The position to check.
-     * @return {@code false} always.
+     * @return Always false for the terrain HP bar.
      */
     public boolean posBelongsToHudComponent(Vector2 pos) { return false; }
 
     /**
-     * Handles hover.
-     *
-     * @param pos The position to handle.
+     * Handles mouse hover events.
+     * @param pos The position of the cursor.
      */
     public void handleHover(Vector2 pos) {}
 
     /**
-     * Handles hover gone.
+     * Handles the event when the mouse stops hovering over the component.
      */
     public void handleHoverGone() {}
 
     /**
-     * Handles a click.
-     *
+     * Handles mouse click events.
      * @param pos The position of the click.
      */
     public void handleClick(Vector2 pos) {}

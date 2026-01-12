@@ -37,7 +37,6 @@ public class MCCSDead extends MCCharacterState<MCCSDead.DeadStateArgs> {
         parent.getHudCustomization().canShow = false;
         stateTime = 0f;
         MCAnimation deadAnim = parent.getAnimation("dead");
-        System.out.println("Im here " + deadAnim);
         if (deadAnim != null) {
             DEAD_DURATION = Math.min(deadAnim.getDuration(), 2f); // faut pas déconner quand meme
             parent.playAnimation("dead");

@@ -3,6 +3,8 @@ package com.walk.or.die.engine.sm.game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.input.MCInputManager;
+import com.walk.or.die.engine.screens.MCGameScreen;
+import com.walk.or.die.engine.shared.MCEmpty;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCStateMachine;
 
@@ -79,11 +81,12 @@ public abstract class MCGameState<T extends MCGameState.StateArgs> extends MCSta
     protected void inputPressed(MCInputManager.Command data) {
         if (!(data instanceof MCInputManager.Command)) return;
         
-        if (data instanceof MCInputManager.ClickTileCommand) {
-            System.out.println("Oh, on a clické");
-        }
-        else if (data instanceof MCInputManager.DirectionalCommand) {
-            System.out.println("Oh on a pressé les touches du clavier");
+        if (parent.getCurrentScreen() instanceof MCGameScreen
+            && data instanceof MCInputManager.PauseCommand) {
+            if (parent.isPaused())
+                parent.resumeGame(new MCEmpty());
+            else
+                parent.pauseGame(new MCEmpty());
         }
     }
 }

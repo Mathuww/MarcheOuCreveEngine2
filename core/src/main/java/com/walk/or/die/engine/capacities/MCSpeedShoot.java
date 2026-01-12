@@ -23,9 +23,19 @@ public class MCSpeedShoot extends MCEffects {
      * @param parent The parent character.
      * @param displayName The display name of the effect.
      */
-    public MCSpeedShoot(MCCharacter parent, String displayName) {
-        super(parent, displayName);
+    public MCSpeedShoot(MCCharacter parent) {
+        super(parent, "SPEED SHOOT");
         MCEventBus.get().on(this, "EntityTileReached", this::tileReached);
+    }
+
+    @Override
+    public String getSummary() {
+        return "This ally will return every attack to the sender for one turn.";
+    }
+
+    @Override
+    public MCEffects copy(MCCharacter target) {
+        return new MCSpeedShoot(target);
     }
 
     /**
@@ -62,7 +72,6 @@ public class MCSpeedShoot extends MCEffects {
      * Performs the shoot action.
      */
     private void shoot() {
-        System.out.println("Shoot");
         List<MCIntVector2> list = MCPathfinder.get().getBestTrajectory(parent.getTilePosition(), args.tile);
 
         if (MCPathfinder.get().isCorrectTrajectory(list, args.tile) == 1f && args.entity instanceof MCEnemy c) { // Est ce que je tire seulement si je suis sur de réussir le shoot ?

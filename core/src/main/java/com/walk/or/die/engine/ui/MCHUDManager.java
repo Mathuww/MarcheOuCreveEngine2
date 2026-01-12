@@ -38,6 +38,18 @@ public class MCHUDManager {
      * @see MCTerrainFocusHUD
      */
     private MCTerrainFocusHUD focusHUD;
+    /**
+     * @see MCVeryBigInfoHUD
+     */
+    private MCVeryBigInfoHUD vbiHUD;
+    /**
+     * @see MCPauseHUD
+     */
+    private MCPauseHUD pauseHUD;
+    /**
+     * @see MCMainMenuHUD
+     */
+    private MCMainMenuHUD mmHUD;
 
     /**
      * Initializes the HUD manager.
@@ -51,6 +63,9 @@ public class MCHUDManager {
         characterHUD = new MCCharacterHUD();
         simpleActionHUD = new MCSimpleActionHUD();
         focusHUD = new MCTerrainFocusHUD();
+        vbiHUD = new MCVeryBigInfoHUD();
+        pauseHUD = new MCPauseHUD();
+        mmHUD = new MCMainMenuHUD();
     }
 
     /**
@@ -98,6 +113,18 @@ public class MCHUDManager {
         return focusHUD;
     }
 
+    public MCVeryBigInfoHUD getVbiHud() {
+        return vbiHUD;
+    }
+
+    public MCPauseHUD getPauseHud() {
+        return pauseHUD;
+    }
+
+    public MCMainMenuHUD getMainMenuHud() {
+        return mmHUD;
+    }
+
     /**
      * Called on each frame
      */
@@ -106,6 +133,12 @@ public class MCHUDManager {
         characterHUD.update(delta);
         simpleActionHUD.update(delta);
         focusHUD.update(delta);
+        pauseHUD.update(delta);
+    }
+
+    public void updateMainMenu(float delta) {
+        hudCamera.update();
+        mmHUD.update(delta);
     }
 
     /**
@@ -119,8 +152,24 @@ public class MCHUDManager {
         batch.begin();
         characterHUD.render(batch);
         simpleActionHUD.render(batch);
+        vbiHUD.render(batch);
+        pauseHUD.render(batch);
         batch.end();
         //characterHUD.renderDebug();
+    }
+
+    public void renderMainMenu(SpriteBatch batch) {
+        hudViewport.apply();
+        batch.setProjectionMatrix(hudCamera.combined);
+        batch.begin();
+        mmHUD.render(batch);
+        batch.end();
+    }
+
+    public boolean canReceiveHudCommand() {
+        return characterHUD.isFullyShown()
+            || pauseHUD.isFullyShown()
+            || mmHUD.isFullyShown();
     }
 
     /**
@@ -132,7 +181,9 @@ public class MCHUDManager {
      */
     public boolean posBelongsToHud(Vector2 pos) {
         return characterHUD.posBelongsToHudComponent(pos) 
-            || simpleActionHUD.posBelongsToHudComponent(pos);
+            || simpleActionHUD.posBelongsToHudComponent(pos)
+            || pauseHUD.posBelongsToHudComponent(pos)
+            || mmHUD.posBelongsToHudComponent(pos);
     }
 
     /**
@@ -147,6 +198,10 @@ public class MCHUDManager {
             characterHUD.handleHover(pos);
         else if (simpleActionHUD.posBelongsToHudComponent(pos))
             simpleActionHUD.handleHover(pos);
+        else if (pauseHUD.posBelongsToHudComponent(pos))
+            pauseHUD.handleHover(pos);
+        else if (mmHUD.posBelongsToHudComponent(pos))
+            mmHUD.handleHover(pos);
     }
 
     /**
@@ -155,6 +210,8 @@ public class MCHUDManager {
     public void handleHoverGone() {
         characterHUD.handleHoverGone();
         simpleActionHUD.handleHoverGone();
+        pauseHUD.handleHoverGone();
+        mmHUD.handleHoverGone();
     }
 
     /**
@@ -167,6 +224,10 @@ public class MCHUDManager {
             characterHUD.handleClick(pos);
         else if (simpleActionHUD.posBelongsToHudComponent(pos))
             simpleActionHUD.handleClick(pos);
+        else if (pauseHUD.posBelongsToHudComponent(pos))
+            pauseHUD.handleClick(pos);
+        else if (mmHUD.posBelongsToHudComponent(pos))
+            mmHUD.handleClick(pos);
     }
 
     /**
@@ -177,5 +238,7 @@ public class MCHUDManager {
      */
     public void handleScroll(Vector2 pos, float dy) {
         characterHUD.handleScroll(pos, dy);
+        pauseHUD.handleScroll(pos, dy);
+        mmHUD.handleScroll(pos, dy);
     }
 }

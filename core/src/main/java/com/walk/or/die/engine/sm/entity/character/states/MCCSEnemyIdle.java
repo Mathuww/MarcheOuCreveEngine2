@@ -52,6 +52,7 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         parent.onHudVisibilityLost();
         setupHudCustomization();
         parent.playAnimation("idle");
+        System.out.print(parent.getId() + "entered idle");
         super.enter(args);
     }
 

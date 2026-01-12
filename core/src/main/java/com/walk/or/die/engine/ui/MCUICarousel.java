@@ -13,7 +13,16 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
+/**
+ * Represents a choice carousel constructed using text elements.
+ * Scrolling past the limits wraps around to the other side.
+ * Executes a callback when an element is focused (if specified) and another when validated (if specified).
+ * @see MCUISimpleText
+ */
 public class MCUICarousel {
+    /**
+     * Represents a single item within the carousel.
+     */
     public static class CarouselItem {
         public String name;
         public Runnable onValidate;
@@ -22,11 +31,10 @@ public class MCUICarousel {
         public float width;
 
         /**
-         * CarouselItem constructor.
-         *
+         * Constructs a new CarouselItem.
          * @param name The name of the item.
-         * @param onValidate The runnable to validate.
-         * @param onFocus The runnable to focus.
+         * @param onValidate The Runnable to execute on validation.
+         * @param onFocus The Runnable to execute on focus.
          */
         public CarouselItem(String name, Runnable onValidate, Runnable onFocus) {
             this.name = name;
@@ -62,14 +70,14 @@ public class MCUICarousel {
     private boolean displayHighlight = true;
 
     private TextureRegion gradientTexture;
+    private float gradientAlpha = 1f;
     private TextureRegion greyTexture;
 
     /**
-     * MCUICarousel constructor.
-     *
+     * Constructs a new MCUICarousel.
      * @param parent The parent HUD.
-     * @param font The font.
-     * @param zone The zone.
+     * @param font The font used for text rendering.
+     * @param zone The layout zone.
      */
     public MCUICarousel(MCAbstractHUD parent, BitmapFont font, Zone zone) {
         this.parent = parent;
@@ -84,7 +92,7 @@ public class MCUICarousel {
         );
         this.textComponent.centered = false; // sinon on double centre mdr
 
-        focusedItemRect = new Rectangle(zone.outside());
+        focusedItemRect = new Rectangle(zone.inside());
 
         try {
             gradientTexture = MCSharedAssets.get().getSavedTexture("whiteFade");
@@ -95,7 +103,7 @@ public class MCUICarousel {
     }
 
     /**
-     * Clears the actions.
+     * Clears all actions and items from the carousel.
      */
     public void clearActions() {
         this.items.clear();
@@ -106,20 +114,22 @@ public class MCUICarousel {
         textComponent.setText(textIfEmpty);
     }
 
+    public void setGradientAlpha(float a) {
+        gradientAlpha = a;
+    }
+
     /**
-     * Sets the empty text.
-     *
-     * @param t The text to set when the carousel is empty.
+     * Sets the text displayed when the carousel is empty.
+     * @param t The text to display.
      */
     public void setEmptyText(String t) {
         textIfEmpty = t;
     }
 
     /**
-     * Loads the items.
-     *
-     * @param items The list of carousel items.
-     * @param firstIndex The index of the first item.
+     * Loads a list of items into the carousel.
+     * @param items The list of carousel items to load.
+     * @param firstIndex The index of the initially selected item.
      */
     public void loadItems(List<CarouselItem> items, int firstIndex) {
         clearActions();
@@ -163,7 +173,7 @@ public class MCUICarousel {
     }
 
     /**
-     * Selects the next item.
+     * Selects the next item in the carousel.
      */
     public void next() {
         if (items.isEmpty())
@@ -181,7 +191,7 @@ public class MCUICarousel {
     }
 
     /**
-     * Selects the previous item.
+     * Selects the previous item in the carousel.
      */
     public void previous() {
         if (items.isEmpty())
@@ -199,17 +209,18 @@ public class MCUICarousel {
     }
 
     /**
-     * Validates the current item.
+     * Validates (activates) the currently selected item.
      */
     public void validate() {
         if (items.isEmpty())
             return;
-        if (items.get(currentIndex).onValidate != null)
+        if (items.get(currentIndex).onValidate != null) {
             items.get(currentIndex).onValidate.run();
+        }
     }
 
     /**
-     * Updates the geometry.
+     * Updates the geometric positioning of the carousel items.
      */
     public void updateGeometry() {
         if (items.isEmpty()) {
@@ -226,14 +237,13 @@ public class MCUICarousel {
         targetOffsetX = zoneCenter - itemCenter;
 
         focusedItemRect.width = item.width + 2f * CORNER_PADDING;
-        focusedItemRect.x = zone.outside().x + (zone.outside().width - focusedItemRect.width) / 2f;
+        focusedItemRect.x = zone.inside().x + (zone.inside().width - focusedItemRect.width) / 2f;
         // y et height bougent pas, on reste centrés verticalement
     }
 
     /**
-     * Called on each frame
-     *
-     * @param delta The delta time
+     * Updates the carousel logic. Called on each frame.
+     * @param delta The time elapsed since the last frame.
      */
     public void update(float delta) {
         blinkingTime += delta;
@@ -251,6 +261,7 @@ public class MCUICarousel {
     }
 
     private void edgeGradient(SpriteBatch batch) {
+        batch.setColor(1f, 1f, 1f, gradientAlpha - 0.2f);
         batch.draw(
             gradientTexture, 
             zone.inX(), 
@@ -270,6 +281,7 @@ public class MCUICarousel {
         );
 
         gradientTexture.flip(true, false);
+        batch.setColor(1f, 1f, 1f, 1f);
     }
 
     private boolean closeEnoughToCenter() {
@@ -277,14 +289,16 @@ public class MCUICarousel {
     }
 
     /**
-     * Called on each frame
-     *
-     * @param delta The delta time
+     * Renders the carousel. Called on each frame.
+     * @param batch The sprite batch used for drawing.
      */
     public void render(SpriteBatch batch) {
         if (closeEnoughToCenter() && !items.isEmpty() && parent.isFullyShown()) {
-            if (focusedItemHovered)
+            if (focusedItemHovered) {
+                batch.setColor(1f, 1f, 1f, gradientAlpha);
                 parent.drawFilledRectangle(focusedItemRect, greyTexture);
+                batch.setColor(1f, 1f, 1f, 1f);
+            }
             if (displayHighlight)
                 parent.drawFourCorners(focusedItemRect, CORNER_SIZE);
         }
@@ -294,7 +308,6 @@ public class MCUICarousel {
 
     /**
      * Checks if a position belongs to the HUD component.
-     *
      * @param pos The position to check.
      * @return True if the position belongs to the HUD component, false otherwise.
      */
@@ -303,8 +316,7 @@ public class MCUICarousel {
     }
 
     /**
-     * Handles hover.
-     *
+     * Handles hover events.
      * @param pos The position of the cursor.
      */
     public void handleHover(Vector2 pos) {
@@ -315,15 +327,14 @@ public class MCUICarousel {
     }
 
     /**
-     * Handles when the hover is gone.
+     * Handles the event when the mouse stops hovering over the component.
      */
     public void handleHoverGone() {
         focusedItemHovered = false;
     }
 
     /**
-     * Handles a click.
-     *
+     * Handles mouse click events.
      * @param pos The position of the click.
      */
     public void handleClick(Vector2 pos) {
@@ -343,9 +354,8 @@ public class MCUICarousel {
     }
 
     /**
-     * Handles a scroll event.
-     *
-     * @param dy The scroll amount.
+     * Handles scroll events.
+     * @param dy The vertical scroll amount.
      */
     public void handleScroll(float dy) {
         if (targetOffsetX != offsetX)

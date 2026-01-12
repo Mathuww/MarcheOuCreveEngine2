@@ -58,7 +58,7 @@ public class MCEventBus implements MCVehicle {
          * @return True if the subscription concerns the given object and event, false otherwise.
          */
         public boolean check(Object obj, String eventName) {
-            return (obj.getClass() == cl && id == System.identityHashCode(obj) && eventName == this.eventName);
+            return (obj.getClass() == cl && id == System.identityHashCode(obj) && eventName.equals(this.eventName));
         }
 
         /**
@@ -71,7 +71,7 @@ public class MCEventBus implements MCVehicle {
     }
 
     /**
-     * The constructor.
+     * Constructs the event bus.
      */
     private MCEventBus() {
         this.listeners = new HashMap<>();
@@ -86,6 +86,11 @@ public class MCEventBus implements MCVehicle {
         addEvent("CombatDone", MCGame.CombatDoneArgs.class);
         addEvent("freezeGame", MCEntity.class);
         addEvent("unfreezeGame", MCEmpty.class);
+        addEvent("Pause", MCEmpty.class);
+        addEvent("Resume", MCEmpty.class);
+        addEvent("MainMenu", MCEmpty.class);
+        addEvent("PlayFromMainMenu", MCEmpty.class);
+        addEvent("Quit", MCEmpty.class);
     }
 
     /**
@@ -137,11 +142,12 @@ public class MCEventBus implements MCVehicle {
         subscriptions.remove(sub);
     }
 
+    /*
     private void clear(List list) {
         for (Subscription sub : new ArrayList<>(subscriptions)) {
             subscriptions.remove(sub);
         }
-    }
+    } */
 
     /**
      * Disconnects an object's function from an event.
@@ -153,10 +159,10 @@ public class MCEventBus implements MCVehicle {
         for (Subscription sub : new ArrayList<>(subscriptions)) {
             if (sub.check(obj, eventName)) {
                 sub.unsubscribe();
-                list.add(sub);
+                //list.add(sub);
             }
         }
-        clear(list);
+        //clear(list);
     }
 
     /**

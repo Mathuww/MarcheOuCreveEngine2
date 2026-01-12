@@ -6,8 +6,10 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.AtlasTmxMapLoader;
 import com.badlogic.gdx.utils.Disposable;
+import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.exceptions.InvalidDataException;
 import com.walk.or.die.engine.shared.MCIntVector2;
 import com.badlogic.gdx.math.MathUtils;
@@ -59,7 +61,9 @@ public class MCMap implements Disposable {
         assetManager.setLoader(TiledMap.class,
             new AtlasTmxMapLoader(new InternalFileHandleResolver()));
         // on charge la map via AssetManager
-        assetManager.load(mapPath, TiledMap.class);
+        TmxMapLoader.Parameters params = new TmxMapLoader.Parameters();
+        params.projectFilePath = MCGame.TILED_ROOT + "walkordie.tiled-project"; 
+        assetManager.load(mapPath, TiledMap.class, params);
         assetManager.finishLoadingAsset(mapPath);
         tiledMap = assetManager.get(mapPath, TiledMap.class);
         // on choisit l'unit scale selon la taille de tile 

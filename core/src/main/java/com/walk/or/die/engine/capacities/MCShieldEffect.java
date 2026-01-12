@@ -12,8 +12,18 @@ public class MCShieldEffect extends MCEffects{
      * @param parent The parent character.
      * @param displayName The display name.
      */
-    public MCShieldEffect(MCCharacter parent, String displayName) {
-        super(parent, displayName);
+    public MCShieldEffect(MCCharacter parent) {
+        super(parent, "TOTAL SHIELD");
+    }
+
+    @Override
+    public String getSummary() {
+        return "This ally will be insensitive to all attacks for one turn.";
+    }
+
+    @Override
+    public MCEffects copy(MCCharacter target) {
+        return new MCShieldEffect(target);
     }
 
     @Override

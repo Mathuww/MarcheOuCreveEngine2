@@ -57,7 +57,7 @@ def pack():
     print("Copying spritesheets & tilesets...")
     
     def ignore_patterns(path, names):
-        return [n for n in names if n.endswith('.tmx') or n.endswith('.tiled-project') or n.endswith('.tiled-session')]
+        return [n for n in names if n.endswith('.tmx') or n.endswith('.tiled-session')]
 
     shutil.copytree(MAP_ROOT, PACK_OUTPUT_ROOT, ignore=ignore_patterns)
 

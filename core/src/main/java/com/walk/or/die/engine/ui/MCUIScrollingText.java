@@ -10,6 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
+/**
+ * A text element that will make the text scroll if it overflows the zone.
+ * @see MCUISimpleText
+ */
 public class MCUIScrollingText extends MCUISimpleText {
     private final float SCROLL_SPEED = 50f; // pixels/s
     private final float SCROLL_GAP = 30f;

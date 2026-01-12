@@ -311,6 +311,10 @@ public abstract class MCEntity {
         this.hitbox.setPosition(pos.x, pos.y);
     }
 
+    public void setTilePosition(MCIntVector2 pos) {
+        this.hitbox.setPosition(pos.x, pos.y);
+    }
+
     /**
      * Sets the alpha of the sprite.
      * @param alpha The alpha value.

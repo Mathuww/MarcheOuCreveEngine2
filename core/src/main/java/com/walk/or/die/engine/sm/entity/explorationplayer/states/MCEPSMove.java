@@ -35,7 +35,9 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     private DirectionalCommand lastCmd;
     private int nbConcurrentCommand;
 
-    private final float MOVE_SPEED = 2f;
+    private final float MOVE_SPEED = 8f;
+
+    private float speed;
 
     private Map<MCIntVector2, Boolean> currentInput;
 
@@ -53,6 +55,7 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         limitX = (float) parent.getMap().getWidth() - parent.getSize();
         limitY = (float) parent.getMap().getHeight() - parent.getSize();
         relativeMove = new Vector2(0f, 0f);
+        speed = parent.getSpeed();
     }
 
     /**
@@ -231,8 +234,8 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         }
         if (relativeMove.len() > 0) relativeMove.nor();
 
-        relativeMove.x = relativeMove.x * MOVE_SPEED * delta;
-        relativeMove.y = relativeMove.y * MOVE_SPEED * delta;
+        relativeMove.x = relativeMove.x * speed * delta;
+        relativeMove.y = relativeMove.y * speed * delta;
         
         float posX = (float) parent.getX() + relativeMove.x;
         float posY = (float) parent.getY() + relativeMove.y;

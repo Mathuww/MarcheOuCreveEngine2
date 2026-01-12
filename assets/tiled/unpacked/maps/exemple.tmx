@@ -132,27 +132,24 @@
     <property name="name" value="enemy"/>
    </properties>
   </object>
-  <object id="51" x="172.5" y="19.5">
-   <properties>
-    <property name="name" value="explorationPlayer"/>
-   </properties>
-  </object>
  </objectgroup>
  <objectgroup id="6" name="Portals">
-  <object id="52" x="66.5" y="108.5">
+  <object id="52" x="66.25" y="98.0625" width="8.1875" height="7.5">
    <properties>
-    <property name="destMap" value="battle1"/>
+    <property name="destMap" value="battle2"/>
     <property name="destPortal_ID" type="int" value="2"/>
     <property name="name" value="greenPortal"/>
     <property name="portal_ID" type="int" value="2"/>
+    <property name="spawnDirection" value="right"/>
    </properties>
   </object>
-  <object id="53" x="202.5" y="43">
+  <object id="53" x="193.773" y="38.6364" width="9.45455" height="8.63636">
    <properties>
     <property name="destMap" value="start"/>
     <property name="destPortal_ID" type="int" value="1"/>
     <property name="name" value="purplePortal"/>
     <property name="portal_ID" type="int" value="1"/>
+    <property name="spawnDirection" value="left"/>
    </properties>
   </object>
  </objectgroup>

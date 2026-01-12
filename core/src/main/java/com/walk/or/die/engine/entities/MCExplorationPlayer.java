@@ -11,13 +11,19 @@ import com.walk.or.die.engine.sm.entity.explorationplayer.MCExplorationPlayerSta
 import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSIdle;
 import com.walk.or.die.engine.sm.entity.explorationplayer.states.MCEPSMove;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
+import com.walk.or.die.engine.ui.MCTerrainHPBar;
 
+/**
+ * A freely moveable character that only exists in Exploration mode.
+ */
 public class MCExplorationPlayer extends MCEntity {
     private int hp;
     private int maxHp;
+    private float speed;
     private boolean dead = false;
     private Float toleranceHitbox;
     private MCStateMachine<MCExplorationPlayerState, MCEntity> stateManager;
+    private MCTerrainHPBar hpBar;
 
     /**
      * Constructs a new MCExplorationPlayer.
@@ -45,10 +51,11 @@ public class MCExplorationPlayer extends MCEntity {
         this.setMaxHp(ally.getMaxHp());
         this.setHealth(ally.getHealth());
         this.setPosition(ally.getPosition());
+        this.setSpeed(ally.getSpeed());
 
         Map<String, MCAnimation> animations = ally.getAnimationMap();
         for (String animName : animations.keySet()) {
-            System.out.println("copying anim to expl player " + animName);
+            //System.out.println("copying anim to expl player " + animName);
             MCAnimation anim = animations.get(animName);
             addAnimation(animName, anim);
         }
@@ -58,7 +65,31 @@ public class MCExplorationPlayer extends MCEntity {
         stateManager.addState(new MCEPSMove(this));
 
         toleranceHitbox = ally.getToleranceHitbox();
+    }
+    
+    public MCExplorationPlayer(MCExplorationPlayer player, MCTerrainMap map) {
+        super(
+            player.getParent(),
+            map,
+            "explorationPlayer"
+        );
+        this.setMaxHp(player.getMaxHp());
+        this.setHealth(player.getHealth());
+        this.setPosition(player.getPosition());
+        this.setSpeed(player.getSpeed());
+
+        Map<String, MCAnimation> animations = player.getAnimationMap();
+        for (String animName : animations.keySet()) {
+            //System.out.println("copying anim to expl player " + animName);
+            MCAnimation anim = animations.get(animName);
+            addAnimation(animName, anim);
+        }
         
+        stateManager = new MCStateMachine<>(this);
+        stateManager.addState(new MCEPSIdle(this));
+        stateManager.addState(new MCEPSMove(this));
+
+        toleranceHitbox = player.getToleranceHitbox();
     }
 
     /**
@@ -125,6 +156,11 @@ public class MCExplorationPlayer extends MCEntity {
         return maxHp;
     }
 
+    public float getSpeed() {
+        return speed;
+    }
+
+
     /**
      * Makes the entity get hurt.
      * @param damage The damage taken.
@@ -163,6 +199,10 @@ public class MCExplorationPlayer extends MCEntity {
      */
     public void setMaxHp(int maxHp) {
         this.maxHp = maxHp;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     /**

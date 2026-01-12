@@ -90,7 +90,7 @@ public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPla
 
     /**
      * Called at state entrance.
-     * Inits the enemies list, then setups both HUD & camera.
+     * Inits the enemies list, then setups both HUD and camera.
      * @param args The arguments passed to the state.
      */
     @Override
@@ -98,7 +98,10 @@ public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPla
         super.enter(args);
         bus.on(this, "CombatDone", this::combatDone);
         enemies.clear();
-        for (MCEnemy e : MCEntityManager.get().getEnemies()) e.newTurn();
+        for (MCEnemy e : MCEntityManager.get().getEnemies()) {
+            e.newTurn();
+            e.onHudVisibilityLost();
+        }
         enemies.addAll(MCEntityManager.get().getEnemies());
         nextTurnRequest = true;
         firstPlay = true;
@@ -136,17 +139,18 @@ public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPla
 
     /**
      * Called at state exit. <br>
-     * Resets HUD & camera to the state they were before.
+     * Resets HUD and camera to the state they were before.
      */
     @Override
     public void exit() {
         nextTurnRequest = false;
         if (hudFocusBefore != null) {
             hudManager.getCharacterHud().setCharacter(hudFocusBefore);
-        } else
-            hudManager.getCharacterHud().hide();
+        }
+        hudManager.getCharacterHud().hide();
         camManager.setMode(CameraMode.ARROWS);
         camManager.interpolateTo(cameraPosBefore);
+        bus.off(this, "CombatDone");
         super.exit();
     }
 
@@ -157,7 +161,7 @@ public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPla
      */
     @Override
     public void combatDone(MCGame.CombatDoneArgs args) {
-        System.out.println("received combat done evt");
+        //System.out.println("received combat done evt");
         super.combatDone(args);
     }
 }

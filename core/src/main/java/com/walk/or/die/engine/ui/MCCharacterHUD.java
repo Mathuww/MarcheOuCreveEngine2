@@ -133,9 +133,9 @@ public class MCCharacterHUD extends MCAbstractHUD {
     private MCUISimpleText characterHpText;
 
     /**
-     * @see MCUITypingText
+     * @see MCUIScrollingText
      */
-    private MCUITypingText choiceMessageText;
+    private MCUIScrollingText choiceMessageText;
     /**
      * @see MCUICarousel
      */
@@ -226,7 +226,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
             NAME_FONT_SPACING
         );
 
-        choiceMessageText = new MCUITypingText(
+        choiceMessageText = new MCUIScrollingText(
             this,
             font,
             layout.zone("choiceMessage"),
@@ -319,7 +319,11 @@ public class MCCharacterHUD extends MCAbstractHUD {
             return;
         }
 
-        if (newCharacter != null && newCharacter.equals(currentCharacter)) {
+        /**
+         * C'est volontaire d'utiliser == et de comparer les objets en mémoire
+         * et pas juste leur ID (avec .equals(..))  
+         */
+        if (newCharacter != null && newCharacter == currentCharacter) {
             show();
             return;
         }
@@ -372,7 +376,6 @@ public class MCCharacterHUD extends MCAbstractHUD {
         characterNameText.setText(currentCharacter.getDisplayName());
         characterHpBar.setTarget(currentCharacter);
         choiceMessageText.setText(customization.choiceMessage);
-        choiceMessageText.startTyping();
         //choiceCarousel.clearActions();
         if (reloadCarousel) {
             choiceCarousel.loadItems(customization.carouselItems, customization.carouselFirstIndex);
@@ -386,7 +389,6 @@ public class MCCharacterHUD extends MCAbstractHUD {
      */
     public void setMessage(String text) {
         choiceMessageText.setText(text);
-        choiceMessageText.startTyping();
     }
     
     /**

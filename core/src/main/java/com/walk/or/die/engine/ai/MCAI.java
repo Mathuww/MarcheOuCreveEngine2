@@ -204,11 +204,18 @@ public class MCAI {
         for (int x = -maxMoves; x <= maxMoves; x++) {
             for (int y = -maxMoves; y <= maxMoves; y++) {
                 MCIntVector2 newV = new MCIntVector2(pos.x + x, pos.y + y);
-                if (Math.abs(x) + Math.abs(y) <= maxMoves && 
+                List<MCIntVector2> pathToNewV = pathfinder.getPath(pos, newV);
+                if (
+                    Math.abs(x) + Math.abs(y) <= maxMoves && 
                     newV.x < map.getWidth() && newV.y < map.getHeight() &&
-                    newV.x >= 0 && newV.y >=0 &&
-                    (MCEntityManager.get().getEntityFromTile(1, newV) == null || MCEntityManager.get().getEntityFromTile(1, newV) == parent) &&
-                    neighborsShelt(newV)) {
+                    newV.x >= 0 && 
+                    newV.y >=0 &&
+                    (
+                        MCEntityManager.get().getEntityFromTile(1, newV) == null || MCEntityManager.get().getEntityFromTile(1, newV) == parent
+                    ) &&
+                    neighborsShelt(newV) &&
+                    pathToNewV.size() - 1 <= maxMoves
+                ) {
                         list.add(newV);
                         showSpot(newV);
                 }

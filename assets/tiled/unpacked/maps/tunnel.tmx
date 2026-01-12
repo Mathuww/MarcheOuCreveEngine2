@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="22" height="5" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="15">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="22" height="5" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="17">
  <properties>
   <property name="isBattle" type="bool" value="false"/>
  </properties>
@@ -32,23 +32,27 @@
 0,0,0,0,0,0,0,0,0,152,152,152,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <objectgroup id="3" name="Primary_Entities">
-  <object id="14" x="19.5606" y="35.4242" width="9.54545" height="9.81818">
-   <properties>
-    <property name="name" value="ally"/>
-   </properties>
-  </object>
- </objectgroup>
+ <objectgroup id="3" name="Primary_Entities"/>
  <objectgroup id="5" name="Portals">
   <properties>
    <property name="destFile" value="start2.tmx"/>
   </properties>
   <object id="8" x="324.34" y="38.1288" width="3.66667" height="5.66667">
    <properties>
-    <property name="destMap" value="battle2"/>
+    <property name="destMap" value="battle3"/>
     <property name="destPortal_ID" type="int" value="1"/>
     <property name="name" value="orangePortal"/>
-    <property name="portal_ID" type="int" value="1"/>
+    <property name="portal_ID" type="int" value="3"/>
+    <property name="spawnDirection" value="left"/>
+   </properties>
+  </object>
+  <object id="15" x="22.6894" y="36.678" width="3.66667" height="5.66667">
+   <properties>
+    <property name="destMap" value="battle2"/>
+    <property name="destPortal_ID" type="int" value="2"/>
+    <property name="name" value="greenPortal"/>
+    <property name="portal_ID" type="int" value="2"/>
+    <property name="spawnDirection" value="right"/>
    </properties>
   </object>
  </objectgroup>

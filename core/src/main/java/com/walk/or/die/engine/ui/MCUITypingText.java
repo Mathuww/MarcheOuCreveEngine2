@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
+/**
+ * Like MCUISimpleText, but with a typewriter effect.
+ * @see MCUISimpleText
+ */
 public class MCUITypingText extends MCUISimpleText { 
     private float stateTime = 0f;
     private boolean typing;

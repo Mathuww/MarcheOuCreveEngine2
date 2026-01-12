@@ -59,8 +59,7 @@ public class MCProjectile extends MCEntity {
 
     @Override 
     public void setFreeze(boolean bool) {
-        if (bool)
-        System.out.println("Aie aie aie je suis freeze " + this);
+        //System.out.println("Aie aie aie je suis freeze " + this);
         super.setFreeze(bool);
     }
     /**
@@ -134,7 +133,6 @@ public class MCProjectile extends MCEntity {
             // dst2 : dst^2 (+ rapide)
             if (newPos.dst2(targetPos) <= COLLISION_THRESHOLD * COLLISION_THRESHOLD) { 
                 // la balle est arrivée billy !! :(
-                System.out.println("end : " + this);
                 if (callback != null) {
                     callback.run();
                     callback = null;
@@ -148,7 +146,7 @@ public class MCProjectile extends MCEntity {
 
     /**
      * Called on each frame.
-     * @param delta The time in seconds since the last frame.
+     * @param batch The sprite batch.
      */
     @Override
     public void render(SpriteBatch batch) {

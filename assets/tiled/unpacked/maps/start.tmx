@@ -1,75 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="11" height="11" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="15">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="16" tileheight="16" infinite="0" nextlayerid="7" nextobjectid="18">
  <properties>
-  <property name="isBattle" type="bool" value="false"/>
+  <property name="battleMap" type="bool" value="true"/>
  </properties>
  <tileset firstgid="1" source="Ground.tsx"/>
  <tileset firstgid="121" source="objects.tsx"/>
  <tileset firstgid="175" source="../entities_anims/purple_portal.tsx"/>
- <layer id="2" name="Ground" width="11" height="11">
+ <layer id="2" name="Ground" width="12" height="8">
   <data encoding="csv">
-52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52,
-52,52,52,52,52,52,52,52,52,52,52
+72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72,
+72,72,72,72,72,72,72,72,72,72,72,72
 </data>
  </layer>
- <layer id="1" name="Ground2" width="11" height="11">
+ <layer id="1" name="Ground2" width="12" height="8">
   <data encoding="csv">
-1,2,2,2,2,2,2,2,2,2,3,
-41,42,42,42,42,42,42,42,42,42,43,
-41,42,42,42,42,42,42,42,42,42,43,
-41,42,42,42,42,42,42,42,42,42,43,
-41,42,42,42,42,42,42,42,42,42,43,
-41,42,42,42,42,42,42,42,42,42,43,
-41,42,42,42,42,42,42,42,42,42,43,
-41,42,42,42,42,42,42,42,42,42,43,
-41,42,42,42,42,42,42,42,42,42,43,
-41,42,42,42,42,42,42,42,42,42,43,
-81,82,82,82,5,42,4,82,82,82,83
+0,0,0,0,0,0,0,0,0,0,41,42,
+0,0,0,0,0,0,0,0,0,0,41,42,
+0,0,0,0,0,0,0,0,0,0,41,42,
+0,0,0,0,0,0,0,0,0,0,41,42,
+0,0,0,0,0,0,0,0,0,0,41,42,
+0,0,0,0,0,0,0,0,0,0,41,42,
+0,0,0,0,0,0,0,0,2,2,45,42,
+0,0,0,0,0,0,0,0,42,42,42,42
 </data>
  </layer>
- <layer id="4" name="Ground3" width="11" height="11">
+ <layer id="6" name="Ground3" width="12" height="8">
   <data encoding="csv">
-0,0,0,0,0,0,0,0,0,0,0,
-0,155,0,155,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,155,0,0,
-0,0,0,155,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,155,0,0,0,0,0,
-0,0,0,0,0,0,0,155,0,0,0,
-0,0,155,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0
+0,0,0,0,0,0,26,27,28,0,0,0,
+0,0,0,0,0,0,66,67,68,0,0,0,
+0,0,26,27,27,27,109,107,108,0,0,0,
+0,0,66,67,67,67,68,0,0,0,0,0,
+0,0,66,67,67,67,68,0,0,0,0,0,
+0,0,66,67,67,67,68,0,0,0,0,0,
+26,27,109,107,107,107,110,27,28,0,0,0,
+66,67,68,0,0,0,66,67,68,0,0,0
+</data>
+ </layer>
+ <layer id="4" name="Ground4" width="12" height="8">
+  <data encoding="csv">
+0,0,0,0,124,0,0,0,0,0,151,0,
+0,0,0,0,0,124,0,123,0,0,151,0,
+0,0,150,150,150,150,0,0,0,124,151,0,
+124,0,150,0,0,0,0,0,0,0,151,0,
+0,0,0,0,0,0,0,0,124,0,151,0,
+0,0,0,0,0,0,0,0,0,0,151,0,
+0,0,0,0,0,0,0,0,150,151,151,0,
+0,123,0,0,0,151,0,123,0,0,0,0
 </data>
  </layer>
  <objectgroup id="3" name="Primary_Entities">
-  <object id="5" x="143.788" y="19.2727" width="12.9091" height="9.72727">
+  <object id="14" x="4.212" y="4.80267" width="8.24243" height="7.0606">
    <properties>
     <property name="name" value="ally"/>
+    <property name="priorityLevel" type="int" value="0"/>
    </properties>
   </object>
-  <object id="14" x="17.5455" y="49.803" width="12.9091" height="9.72727">
+  <object id="16" x="51.8788" y="51.4697" width="8.24243" height="7.0606">
    <properties>
-    <property name="name" value="ally"/>
+    <property name="name" value="enemy"/>
    </properties>
   </object>
  </objectgroup>
  <objectgroup id="5" name="Portals">
-  <object id="12" x="85.2424" y="165.121" width="4.09091" height="3.45455">
+  <object id="17" x="181.167" y="5.83333" width="3.66667" height="5.66667">
    <properties>
-    <property name="destMap" value="battle1"/>
+    <property name="destMap" value="hut"/>
     <property name="destPortal_ID" type="int" value="1"/>
     <property name="name" value="greenPortal"/>
     <property name="portal_ID" type="int" value="1"/>
+    <property name="spawnDirection" value="bottom"/>
    </properties>
   </object>
  </objectgroup>

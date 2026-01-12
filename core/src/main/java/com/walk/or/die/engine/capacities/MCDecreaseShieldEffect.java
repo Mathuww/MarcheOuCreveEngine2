@@ -9,12 +9,31 @@ public class MCDecreaseShieldEffect extends MCEffects {
     /**
      * Constructs a MCDecreaseShieldEffect.
      * @param parent The parent character.
-     * @param displayName The display name.
-     * @param percentage The percentage of shield to decrease.
      */
-    public MCDecreaseShieldEffect(MCCharacter parent, String displayName, float percentage) {
-        super(parent, displayName);
-        this.percentage = percentage;
+    public MCDecreaseShieldEffect(MCCharacter parent) {
+        super(parent, "DECREASE SHIELD");
+        this.percentage = 50f;
+        this.affectDistance = 4;
+    }
+
+    @Override
+    public String getSummary() {
+        return "Everyone in " + affectDistance + " tiles will get " + percentage + " % less damage for one turn.";
+    }
+
+    public void setAffectDistance(int d) {
+        affectDistance = d;
+    }
+
+    public void setPercentage(float p) {
+        percentage = p;
+    }
+
+    @Override
+    public MCEffects copy(MCCharacter target) {
+        MCDecreaseShieldEffect e = new MCDecreaseShieldEffect(target);
+        e.setPercentage(percentage);
+        return e;
     }
 
     /**
