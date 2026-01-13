@@ -46,20 +46,53 @@ $ python3 ./walkordie.py run
 
 ## Overview
 
-You should start in a map in Exploration mode. It's one of the two game modes :
-- The mode you're currently in, the Exploration mode, allows you to freely move an ally with the keyboard around the map and to cross portals between worlds. As its name suggests, it's made to explore and you cannot lose any health nor die in this mode ;
-- The Combat mode, in which allies are only controllable using a classical tactical RPG interface. In this mode, moving, attacking and other actions are obviously restricted since it's a turn-based system. It is not possible to cross portals in this game mode, for obvious reasons.
+You should start in a map in Combat mode. It's one of the two game modes :
+- The mode you're currently in, the Combat mode, in which allies are only controllable using a classical tactical RPG interface. In this mode, moving, attacking and other actions are obviously restricted since it's a turn-based system. It is not possible to cross portals in this game mode, for obvious reasons.
+- The mode you're currently in, the Exploration mode, allows you to freely move an ally with the keyboard around the map and to cross portals between worlds. As its name suggests, it's made to explore and you cannot lose any health nor die in this mode.
 
-Crossing the first portal brings you to a tunnel leading to another portal. This one actually brings you to a Combat map. A Combat is a succession of Allies and Enemies turns, that only ends when one of the team defeated the whole adverse team. 
-When it's your turn, you can select an ally that you may move, attack and use a special capacity with. You can only performs each one of these actions once per turn. 
-- Moving an ally is restricted by the value of its maximum moves per turn.
-- Several attacks may exist for each ally, allowing the player to use the one that is most adapted to the current situation.
-- Same for the special capacities.
+Combat are successions of Allies and Enemies turns. 
+It only ends when either them defeats the other.
 
-When you're done moving and attacking, you can hit **END TURN** at the upper right corner of the screen to switch to the enemies' turn. Each enemy is controlled by an AI that will make perform do the best current move. They will not necessarily attack you if it's not the best move for them to perform.
+You start in the Allies turn.
+To win the first map, click on the only ally (in the demo, the ally characters will be dark-haired, and enemies will be blond). This will the open the battle HUD for this character, allowing you to :
+- Move : select Move (to navigate in the carousel, you can either scroll with the mouse on the carousel, click on the left & right elements, or use the keyboard's arrows. Validate either by clicking on the center element on by pressing ENTER.) to see which tiles you can move to within the range of your ally. Click on the desired tile to move this ally to it if it's accessible.
+- Attack : select Attack. In the carousel, scroll to the attack you wish to use. It will display the tiles reachable by this attack. If it's reachable and there's an enemy on it, click on a tile to attack this enemy. To cancel attacking, select CANCEL.
+- Capacity : select Capacity. This will open the capacity choice menu. Every ally can only use a capacity one per battle. Click or press ENTER on the one you wish to use, and select CANCEL to go back.
+
+Except capacities which self-destroy, each of the actions can only be performed once a turn.
+
+You can preview the enemy's available attacks by clicking on it.
+This will open a carousel in which none option can be selected, but you can scroll through the enemy's attacks to preview where and with which power it can attack you.
+
+You can easily win the first map by moving the ally close enough to the enemy and in a position in which its arrows can reach the enemy (bushes are obstacles). 
+When you can reach it, attack the enemy by using either KNIFE or BOW.
+KNIFE will kill it in one-shot, so you can select BOW if you want to play the first map longer.
+
+When you're done moving and attacking for a turn, you can hit **END TURN** at the upper right corner of the screen to switch to the enemies' turn. Each enemy is controlled by an AI that will make perform do the best current move. They will not necessarily attack you if it's not the best move for them to perform.
 
 Losing to the enemies will make the current battle restart.
 Winning to them will switch to the Exploration mode, turning one of the remaining allies into a freely controllable character again, for you to explore the map if that's your will, then find your way to a portal to teleport to another map.
+
+Thus once you won the first battle, you wiill be able to control with ZSQD the ally that was only controllable via the HUD before.
+Use this ability to go and cross the first portal, at the top right corner.
+
+Crossing the first portal brings you to a tunnel leading to another portal. This one brings you to another Combat map. 
+You can control your allies in the same way as before to win this battle. Don't be discouraged by the enemies, even two of your allies can win over three of them !
+
+Once the battle is over, you can cross two portals, one leading you to our prototype map we used during the development to build all the features, and the another one bringing you to a tunnel.
+This tunnel will bring you to an even bigger Combat map that is *slightly* harder to defeat.
+
+## Your special capacities
+Regardless of the battle map you're in, the allies in the demo template can use all the capacities made available in MCE2, these being the following.
+
+For the capacities benefiting only the ally who used them :
+- **TOTAL SHIELD** : for this turn, this ally will be insentitive to every damage taken.
+- **STRENGTH** : for this turn, the ally will inflict twice as much damage.
+- **SPEED SHOOT** : the description for this capacity in the game's HUD is actually wrong and we're sorry for this. This is actually a **fury** mode. The ally will overcome its attacking limit for several next turns, and will even start attacking without orders, making it much powerful for these ones. Try it ! 
+
+For the capacities affecting other characters within a zone, but not the ally itself :
+- **DECREASE SHIELD** : all other characters within the zone will receive less damage, by a percentage specified in the Tiled data for this character, during this turn.
+- **SPEED UP** : all other characters within the zone will be able to move twice as far during this turn.
 
 ## How maps, entities and attacks are stored
 The main goal of our project wasn't to produce this demo, but to make it fairly easy to create your own game. We'll thus explain the data structure, and how you can edit/create Tiled files to edit or extend the game.
@@ -83,7 +116,7 @@ Every time you use a spritesheet in your game, make sure it's loaded for a the `
 
 ### The `maps/` folder
 We distinguish two kinds of maps :
-- Exploration-only maps, which won't trigger a battle (switch to Combat game mode). They're made for visiting (which are not necessarily visible, you can set up an invisible portal at the door of the house, to make the player able to visit it in a separate map).
+- Exploration-only maps, which won't trigger a battle (switch to Combat game mode). They're made for visiting and crossing portals only (which are not necessarily visible, you can set up an invisible portal at the door of the house, to make the player able to visit it in a separate map).
 - Combat maps, which will trigger a battle when visited. When the battle finishes, if your team won, the game will switch to the Exploration mode while still being inside this map. One of the allies that's still alive will become able to move freely using WSAD/ZSQD, allowing you to cross a portal to exit the map.
 
 The game begins in the map `start.tmx`.
@@ -178,8 +211,13 @@ On top of all these, characters also have these properties :
 
 We'll cover the way attacks can be customized later, but for now remember that each attack existing in the game is a .tmx file in the `attacks/` folder.
 
-Characters can have special capacities, that they can use only once per battle.
-As for attacks, you can specify `string : capacity[1,5]` and you can use the same five as you can see in `ally.tmx` (speedUp, speedShoot, strength, totalShield, decreaseShield). See the HUD for a summary of each one.
+As said earlier, characters can have special capacities, that they can use only once per battle.
+As for attacks, you can specify `string : capacity[1,5]` and you can use the same five as you can see in `ally.tmx`and above in the Overview section with the values `speedUp`, `speedShoot`, `strength`, `totalShield`, `decreaseShield`. See the HUD for a summary of each one.
+
+Some capacities take parameters. 
+To set a parameter for the `capacity1` for example, set the property `capacity1_[parameter name]`.
+- `decreaseShield` and `speedUp` take `int : capacity[n]_dist` to set the range of the zone affected by the effect.
+- `decreaseShield` takes `float : capacity[n]_percentage` to set the percentage of the damage avoided by everyone within the zone. Setting it to `100` will make everyone in the zone have a complete shield.
 
 #### Allies' specificities
 Specify `int : speed` to set the speed at which the ally will move if it becomes freely controllable (Exploration mode).
