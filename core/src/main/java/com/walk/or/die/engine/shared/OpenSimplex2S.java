@@ -1,10 +1,12 @@
 package com.walk.or.die.engine.shared;
 
 /**
+ * Simplex noise generator, a simplified copy of :
  * https://github.com/KdotJPG/OpenSimplex2/
  * (Unlicensed / Public domain)
- * On a enlevé les fonctions et tout ce qui est relatif aux bruits 3D/4D
+ * We removed everything related to 3D & 4D noise.
  * 
+ * Original comment :
  * K.jpg's OpenSimplex 2, smooth variant ("SuperSimplex")
  */
 

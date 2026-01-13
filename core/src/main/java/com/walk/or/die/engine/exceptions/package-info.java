@@ -1,4 +1,4 @@
 /**
- * The exceptional exception's package.
+ * The exceptional exception package.
  */
 package com.walk.or.die.engine.exceptions;

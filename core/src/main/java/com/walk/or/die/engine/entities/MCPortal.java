@@ -54,18 +54,34 @@ public class MCPortal extends MCEntity {
         }
     }
 
+    /**
+     * Gets the portal ID.
+     * @return the portal ID.
+     */
     public int getPortalID() {
         return ID;
     }
 
+    /**
+     * Gets the portal ID to teleport to.
+     * @return The destination portal ID.
+     */
     public int getDestID() {
         return destID;
     }
 
+    /**
+     * Gets the destination map
+     * @return the destinationn map.
+     */
     public String getDestMap() {
         return destMap;
     }
 
+    /**
+     * Gets at which tile the playe should spawn in the destination map.
+     * @return the spawn direction.
+     */
     public String getSpawnDirection() {
         return spawnDirection;
     }

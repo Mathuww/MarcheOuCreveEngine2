@@ -47,6 +47,11 @@ public class MCTerrainMap extends MCMap {
         super(mapPath, assetManager);
     }
     
+    /**
+     * Actually loads the map.
+     * @param mapPath the path of the map to load.
+     * @param assetManager the libGDX asset manager to use.
+     */
     @Override
     public void loadMapWithAtlas(String mapPath, AssetManager assetManager) {
         super.loadMapWithAtlas(mapPath, assetManager);
