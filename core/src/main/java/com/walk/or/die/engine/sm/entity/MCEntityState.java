@@ -9,10 +9,11 @@ import com.walk.or.die.engine.sm.MCStateMachine;
  * Abstract class for entity's state.
  */
 public abstract class MCEntityState<T extends MCEntityState.StateArgs, U extends MCEntity> extends MCState<T> {
+    /** The parent entity that owns this state. */
     protected U parent;
 
     /**
-     * The constructor.
+     * Constructs a new entity state.
      * @param parent The parent entity.
      */
     public MCEntityState(U parent) {
@@ -28,19 +29,26 @@ public abstract class MCEntityState<T extends MCEntityState.StateArgs, U extends
         return parent;
     }
 
+    /**
+     * Called at entrance to the state.
+     * @param args The arguments for entering the state.
+     */
     @Override
     public void enter(T args) {
         listen("InputPressed", this::inputPressed);
         // Je rentre dans tes MC en bus
     }
 
+    /**
+     * Called at exit from the state.
+     */
     @Override
     public void exit() {
         bus.off(this, "InputPressed");
     }
 
     /**
-     * Determines if it's a blocking state (if it needs to end normally or if it can be interrupt). By default, returns true.
+     * Determines if this state is blocking, meaning it must complete normally and cannot be interrupted. By default, it returns true.
      * @return True if the state is blocking, false otherwise.
      */
     public boolean isBlocking() {
@@ -64,7 +72,7 @@ public abstract class MCEntityState<T extends MCEntityState.StateArgs, U extends
     }
 
     /**
-     * Changes the state, and calls a new one with its needed argument.
+     * Changes the current state and initiates a transition to a new one with the provided arguments.
      * @param newState The name of the new state.
      * @param args The arguments for the new state.
      */

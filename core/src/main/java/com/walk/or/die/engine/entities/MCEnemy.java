@@ -17,19 +17,28 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 
 /**
- * A character run by an AI.
+ * Represents a character controlled by an AI.
  */
 public class MCEnemy extends MCCharacter{
 
+    /**
+     * The AI controller for this enemy.
+     */
     private MCAI ai;
+    /**
+     * Tracks the current decision index being processed.
+     */
     private int current_decision = 0;
+    /**
+     * The callback to execute when the current action is finished.
+     */
     private Runnable action_finished;
 
     /**
-     * The constructor.
-     * @param parent The parent MCGame.
-     * @param map The MCTerrainMap.
-     * @param entityGenericName The generic name of the entity.
+     * Constructs an MCEnemy instance.
+     * @param parent The parent MCGame instance.
+     * @param map The terrain map for the enemy.
+     * @param entityGenericName The generic name of this entity.
      * @throws Exception If an error occurs during initialization.
      */
     public MCEnemy(MCGame parent, MCTerrainMap map, String entityGenericName) throws Exception {
@@ -46,9 +55,9 @@ public class MCEnemy extends MCCharacter{
     }
 
     /**
-     * Starts to play.
-     * @param callback The callback to execute after the decision.
-     * @return True if the decision was played, false otherwise.
+     * Initiates the enemy's decision-making process.
+     * @param callback The callback to execute after the decision is completed.
+     * @return True if the decision was successfully initiated, false otherwise.
      */
     public boolean playDecision(Runnable callback) {
         action_finished = callback;
@@ -65,9 +74,9 @@ public class MCEnemy extends MCCharacter{
     }
 
     /**
-     * Shoots.
+     * Executes a shooting decision.
      * @param state The enemy idle state.
-     * @return True if the shoot was executed.
+     * @return True if the shooting decision was executed.
      */
     public boolean shootDecision(MCCSEnemyIdle state) {
         MCAlly victim = ai.getBestShootableAlly(getTilePosition(), 4);
@@ -82,9 +91,9 @@ public class MCEnemy extends MCCharacter{
     }
 
     /**
-     * Handles decisions.
-     * @param prev The previous state.
-     * @param next The next state.
+     * Handles the transition between states to process decisions.
+     * @param prev The previous state object.
+     * @param next The next state object.
      */
     public void nextDecision(Object prev, Object next) {
         if (current_decision == 0 && prev instanceof MCCSClickMove moveState && next instanceof MCCSEnemyIdle idleState) {

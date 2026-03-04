@@ -17,10 +17,20 @@ import com.walk.or.die.engine.ui.MCHUDManager;
 
 public class MCGSAlliesPlaying extends MCGSCombat<MCGSAlliesPlaying.AlliesPlayingArgs> {
 
+    /**
+     * Arguments for the allies playing state.
+     */
     public static class AlliesPlayingArgs extends MCGameState.StateArgs {
+        /**
+         * Constructs a new AlliesPlayingArgs instance.
+         */
         public AlliesPlayingArgs() {}
     }
 
+    /**
+     * Constructs a new MCGSAlliesPlaying state.
+     * @param parent The parent game instance.
+     */
     public MCGSAlliesPlaying(MCGame parent) {
         super(parent);
         this.name = "AlliesPlaying";
@@ -28,6 +38,7 @@ public class MCGSAlliesPlaying extends MCGSCombat<MCGSAlliesPlaying.AlliesPlayin
 
     /**
      * Called on each frame.
+     * @param delta The time in seconds since the last frame.
      */
     @Override
     public void update(float delta) {
@@ -37,7 +48,7 @@ public class MCGSAlliesPlaying extends MCGSCombat<MCGSAlliesPlaying.AlliesPlayin
     /**
      * Called at state entrance.
      * Sets up the event listeners, resets the allies' turn states,
-     * then setups both the camera and the HUD.
+     * then sets up both the camera and the HUD.
      * @param args The arguments for the state.
      */
     @Override
@@ -106,8 +117,8 @@ public class MCGSAlliesPlaying extends MCGSCombat<MCGSAlliesPlaying.AlliesPlayin
 
     /**
      * Called when a combat is done. <br>
-     * Delegates logic to MCGSCombat.
-     * @param args Which team won.
+     * Delegates the logic to MCGSCombat.
+     * @param args Indicates which team won.
      */
     @Override
     public void combatDone(MCGame.CombatDoneArgs args) {

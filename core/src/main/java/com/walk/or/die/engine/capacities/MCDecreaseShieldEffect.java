@@ -4,6 +4,9 @@ import com.walk.or.die.engine.entities.MCCharacter;
 
 public class MCDecreaseShieldEffect extends MCEffects {
 
+    /**
+     * The percentage of damage reduction applied by this effect.
+     */
     float percentage;
 
     /**
@@ -16,19 +19,40 @@ public class MCDecreaseShieldEffect extends MCEffects {
         this.affectDistance = 4;
     }
 
+    /**
+     * Gets a summary description of the effect.
+     *
+     * @return A string summarizing the effect's properties.
+     */
     @Override
     public String getSummary() {
         return "Everyone in " + affectDistance + " tiles will get " + percentage + " % less damage for one turn.";
     }
 
+    /**
+     * Sets the affect distance of the effect.
+     *
+     * @param d The new affect distance in tiles.
+     */
     public void setAffectDistance(int d) {
         affectDistance = d;
     }
 
+    /**
+     * Sets the percentage of damage reduction.
+     *
+     * @param p The new percentage of damage reduction.
+     */
     public void setPercentage(float p) {
         percentage = p;
     }
 
+    /**
+     * Creates a copy of this effect for a new target character.
+     *
+     * @param target The new target character for the copied effect.
+     * @return A new instance of this effect, configured for the target.
+     */
     @Override
     public MCEffects copy(MCCharacter target) {
         MCDecreaseShieldEffect e = new MCDecreaseShieldEffect(target);

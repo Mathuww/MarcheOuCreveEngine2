@@ -10,56 +10,78 @@ import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
 /**
  * The HP bar shown inside the character HUD's left panel. <br>
- * Very, very important to use lerp here to make it look aesthetic.
+ * It employs linear interpolation (LERP) to ensure an aesthetically pleasing visual effect.
  */
 public class MCHUDHPBar {
     /**
-     * The HP bar outline width.
+     * The width of the HP bar's outline.
      */
     private final float CONTOUR_SIZE = 5f; // tile
 
     /**
-     * The threshould at which HP become yellow.
+     * The threshold at which HP becomes yellow.
      */
     private final float MID_HP_THRESHOLD = 0.66f;
     /**
-     * The threshould at which HP become red.
+     * The threshold at which HP becomes red.
      */
     private final float LOW_HP_THRESHOLD = 0.34f; // AHAHAHAAHAH
 
     /**
-     * HP interpolation constant.
+     * The HP interpolation constant.
      */
     private final float LERP = 4f;
     /**
-     * Used to fade out when the character dies.
+     * The duration used to fade out the HP bar when the character dies.
      */
     private final float FADING_DURATION = 0.3f;
 
+    /**
+     * Provides access to shared game assets.
+     */
     private MCSharedAssets sharedAssets = MCSharedAssets.get();
 
+    /**
+     * The texture region used for high HP levels.
+     */
     private TextureRegion fillTextureHighHP;
+    /**
+     * The texture region used for mid-range HP levels.
+     */
     private TextureRegion fillTextureMidHP;
+    /**
+     * The texture region used for low HP levels.
+     */
     private TextureRegion fillTextureLowHP;
+    /**
+     * The currently selected fill texture region based on the HP ratio.
+     */
     private TextureRegion currentFillTexture;
 
+    /**
+     * The parent HUD instance.
+     */
     private MCAbstractHUD parent;
+    /**
+     * The target character whose health points are displayed.
+     */
     private MCCharacter target;
     /**
+     * The UI zone where the HP bar is rendered.
      * @see MCUILayout.Zone
      */
     private Zone zone;
 
     /**
-     * Stores the "visual" HP ratio, which is not equals to the "logical" one because of the interpolation.
+     * Stores the visual HP ratio, which is not equal to the logical one due to interpolation.
      */
     private float lerpedHpRatio = 1f;
 
     /**
      * Constructs a new MCHUDHPBar.
      *
-     * @param parent the Parent HUD.
-     * @param zone the Zone where the HP bar is located.
+     * @param parent The parent HUD.
+     * @param zone The zone where the HP bar is located.
      */
     public MCHUDHPBar(MCAbstractHUD parent, Zone zone) {
         this.parent = parent;
@@ -78,7 +100,7 @@ public class MCHUDHPBar {
     /**
      * Sets the target character for the HP bar.
      *
-     * @param target the Target character.
+     * @param target The target character.
      */
     public void setTarget(MCCharacter target) {
         this.target = target;
@@ -122,7 +144,7 @@ public class MCHUDHPBar {
     /**
      * Gets the current lerped HP value.
      *
-     * @return the Current lerped HP ratio.
+     * @return The current lerped HP ratio.
      */
     public int getCurrentLerpedHp() {
         float hpRatio = MathUtils.clamp(lerpedHpRatio * target.getMaxHp(), 0f, target.getMaxHp());
@@ -131,7 +153,7 @@ public class MCHUDHPBar {
 
     /**
      * Called on each frame.
-     * @param batch the Sprite batch being used to draw.
+     * @param batch The sprite batch being used to draw.
      */
     public void render(SpriteBatch batch) {
         if (target == null)

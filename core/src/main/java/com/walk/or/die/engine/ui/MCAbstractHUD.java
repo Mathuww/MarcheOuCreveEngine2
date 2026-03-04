@@ -9,21 +9,25 @@ import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
 /**
- * The abstract class of all HUD elements that share the need for the basic textures (black, white grey), drawing fancy rectangles and handling user input. 
+ * The abstract class for all HUD elements that share the need for basic textures (black, white, grey), draw fancy rectangles, and handle user input.
  */
 public abstract class MCAbstractHUD {
     /**
      * Stores the current batch to avoid passing the batch argument everywhere.
      */
     protected SpriteBatch currentBatch;
+    /** Stores the shared assets instance. */
     protected final MCSharedAssets sharedAssets = MCSharedAssets.get();
+    /** Stores the black texture. */
     protected TextureRegion blackTexture;
+    /** Stores the white texture. */
     protected TextureRegion whiteTexture;
+    /** Stores the grey texture. */
     protected TextureRegion greyTexture;
 
     /**
-     * Constructs a basic HUD elements. <br>
-     * Does nothing else than storing the basic textures needed (black, white, grey).
+     * Constructs a basic HUD element. <br>
+     * It stores the basic textures needed (black, white, grey).
      */
     public MCAbstractHUD() {
         try {
@@ -37,14 +41,13 @@ public abstract class MCAbstractHUD {
     }
 
     /**
-     * Called on each frame
+     * Called on each frame.
      * @param delta The time in seconds since the last frame.
      */
     public abstract void update(float delta);
 
     /**
      * Handles input when a command is pressed.
-     * Jouer un petit son quand on interagit avec le hud
      * @param cmd The command that was pressed.
      */
     public void inputPressed(Command cmd) {
@@ -52,7 +55,7 @@ public abstract class MCAbstractHUD {
     }
 
     /**
-     * Called on each frame
+     * Called on each frame.
      * @param batch The sprite batch to render with.
      */
     public void render(SpriteBatch batch) {
@@ -171,7 +174,7 @@ public abstract class MCAbstractHUD {
     public abstract void handleHover(Vector2 pos);
 
     /**
-     * Handles when the hover is gone.
+     * Handles when the hover is no longer active.
      */
     public abstract void handleHoverGone();
 

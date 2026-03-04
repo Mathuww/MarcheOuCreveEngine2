@@ -7,19 +7,19 @@ import com.walk.or.die.engine.sm.entity.explorationplayer.MCExplorationPlayerSta
 
 
 /**
- * The idle state for explorer player.<br>
- * Name = "idle"<br>
- * This is a non-blocking state.
+ * The idle state for the exploration player.<br>
+ * The name of this state is "idle".<br>
+ * This state is non-blocking.
  */
 public class MCEPSIdle extends MCExplorationPlayerState<MCEPSIdle.IdleStateArgs> {
 
     /**
-     * Class which represents args needed by idle move to start.
+     * Represents the arguments needed for an idle move to start.
      */
     public static class IdleStateArgs extends MCExplorationPlayerState.StateArgs {}
 
     /**
-     * The constructor.
+     * Constructs a new `MCEPSIdle` state.
      * @param parent The exploration player parent.
      */
     public MCEPSIdle(MCExplorationPlayer parent) {
@@ -27,11 +27,19 @@ public class MCEPSIdle extends MCExplorationPlayerState<MCEPSIdle.IdleStateArgs>
         this.name = "idle";
     }
 
+    /**
+     * Called on each frame.
+     * @param delta The time elapsed since the last frame.
+     */
     @Override
     public void update(float delta) {
         //System.out.println("On respire le bon air de la nature");
     }
 
+    /**
+     * Called at entrance.
+     * @param args The arguments for entering the idle state.
+     */
     @Override
     public void enter(MCEPSIdle.IdleStateArgs args) {
         parent.keep = false;
@@ -39,6 +47,9 @@ public class MCEPSIdle extends MCExplorationPlayerState<MCEPSIdle.IdleStateArgs>
         super.enter(args);
     }
 
+    /**
+     * Called at exit.
+     */
     @Override
     public void exit() {
         parent.keep = true;

@@ -21,11 +21,17 @@ import com.walk.or.die.engine.ui.MCMainMenuHUD;
  * @see Screen
  */
 public class MCMainMenuScreen implements Screen {
+    /**
+     * The game instance.
+     */
     private MCGame game;
+    /**
+     * The HUD manager instance.
+     */
     private MCHUDManager hudManager = MCHUDManager.get();
 
     /**
-     * The constructor.
+     * Constructs a new main menu screen.
      * @param game The game instance.
      * @throws InvalidDataException If the data is invalid.
      */
@@ -34,7 +40,7 @@ public class MCMainMenuScreen implements Screen {
     }
     
     /**
-     * Called once (when the window is opened).
+     * Called once when the window is opened.
      */
     @Override
     public void show() {
@@ -52,6 +58,7 @@ public class MCMainMenuScreen implements Screen {
     }
 
     /**
+     * Resizes the screen to the given dimensions.
      * @param width The new width.
      * @param height The new height.
      */
@@ -60,21 +67,33 @@ public class MCMainMenuScreen implements Screen {
         hudManager.getViewport().update(width, height, true);
     }
 
+    /**
+     * Invoked when the application is paused.
+     */
     @Override
     public void pause() {
         // Invoked when your application is paused.
     }
     
+    /**
+     * Invoked when the application is resumed after a pause.
+     */
     @Override
     public void resume() {
         // Invoked when your application is resumed after pause.
     }
 
+    /**
+     * Called when another screen replaces the current one.
+     */
     @Override
     public void hide() {
         // This method is called when another screen replaces this one.
     }
 
+    /**
+     * Destroys the screen's assets.
+     */
     @Override
     public void dispose() {
         // Destroy screen's assets here.

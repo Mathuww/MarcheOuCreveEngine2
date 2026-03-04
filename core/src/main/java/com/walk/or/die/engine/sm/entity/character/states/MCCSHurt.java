@@ -9,7 +9,7 @@ import com.walk.or.die.engine.ui.MCHUDHPBar;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
- * The state to take damages.<br>
+ * Represents the state where a character takes damage.<br>
  * Name = "hurt"
  */
 public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
@@ -17,13 +17,19 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
      * The class which represents arguments needed by hurt state to start.
      */
     public static class HurtStateArgs extends MCCharacterState.StateArgs {
+        /**
+         * The amount of damage to inflict.
+         */
         private int damage;
+        /**
+         * The target animation to play during the hurt state.
+         */
         private String targetAnim;
 
         /**
-         * The constructor.
-         * @param damage The damage taken by the character
-         * @param targetAnim The animation to play
+         * Constructs a new HurtStateArgs instance.
+         * @param damage The damage taken by the character.
+         * @param targetAnim The animation to play.
          */
         public HurtStateArgs(int damage, String targetAnim) {
             this.damage = damage;
@@ -32,7 +38,7 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
 
         /**
          * Gets the damage.
-         * @return The damage
+         * @return The damage.
          */
         public int getDamage() {
             return damage;
@@ -40,27 +46,51 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
 
         /**
          * Gets the target animation.
-         * @return The target animation
+         * @return The target animation.
          */
         public String getTargetAnim() {
             return targetAnim;
         }
     }
 
+    /**
+     * The duration of the hurt state in seconds.
+     */
     private float HURT_DURATION = 2f;
 
+    /**
+     * The interval at which the character blinks during the hurt state.
+     */
     private final float BLINKING_INTERVAL = 0.1f;
+    /**
+     * Indicates whether the damage latency has passed.
+     */
     private boolean latencyPassed = false;
+    /**
+     * The current time elapsed in the hurt state.
+     */
     private float stateTime = 0f;
+    /**
+     * The current time elapsed for blinking during the hurt state.
+     */
     private float blinkingTime = 0f;
+    /**
+     * The amount of damage inflicted in the current hurt state.
+     */
     private int damage;
 
+    /**
+     * The character that had HUD focus before the hurt state.
+     */
     private MCCharacter hudFocusBeforeHurt;
+    /**
+     * Indicates whether the HUD right panel was displayed before the hurt state.
+     */
     private boolean hudRightPanelDispBefore = false;
 
     /**
-     * The constructor.
-     * @param parent The parent character
+     * Constructs a new MCCSHurt state instance.
+     * @param parent The parent character.
      */
     public MCCSHurt(MCCharacter parent) {
         super(parent);
@@ -69,7 +99,7 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
 
     /**
      * Called at state entrance.
-     * @param args The arguments for the hurt state
+     * @param args The arguments for the hurt state.
      */
     @Override
     public void enter(HurtStateArgs args) {
@@ -95,7 +125,7 @@ public class MCCSHurt extends MCCharacterState<MCCSHurt.HurtStateArgs> {
 
     /**
      * Called on each frame.
-     * @param delta The time delta
+     * @param delta The time delta.
      */
     @Override
     public void update(float delta) {

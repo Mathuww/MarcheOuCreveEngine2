@@ -21,24 +21,26 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
 
 /**
- * The state that symbolizes when the capacity to use is chosen.<br>
+ * The state that symbolizes the choice of capacity to use.<br>
  * Name = "capacityChoose"
  */
 public class MCCSCapacityChoose extends MCCharacterState<MCCSCapacityChoose.CapaChooseArgs> {
+    /** The currently selected capacity effect. */
     private MCEffects currentCapacity;
+    /** The currently selected tile for the capacity. */
     private MCIntVector2 tile = new MCIntVector2(-1, -1);
     /**
-     * Class which represents the args needed by the capa. choose state to start.
+     * Represents the arguments needed by the capacity choose state.
      */
     public static class CapaChooseArgs extends MCCharacterState.StateArgs {
         /**
-         * Constructor.
+         * Constructs a new CapaChooseArgs instance.
          */
         public CapaChooseArgs() {}
     }
 
     /**
-     * Constructor for MCCSCapacityChoose.
+     * Constructs a new MCCSCapacityChoose instance.
      * @param parent The parent MCCharacter.
      */
     public MCCSCapacityChoose(MCCharacter parent) {
@@ -46,21 +48,37 @@ public class MCCSCapacityChoose extends MCCharacterState<MCCSCapacityChoose.Capa
         this.name = "capacityChoose";
     }
 
+    /**
+     * Called on each frame.
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void update(float delta) {
         //System.out.println("On respire le bon air de la nature");
     }
 
+    /**
+     * Called on each frame to render the state.
+     * @param batch The sprite batch used for rendering.
+     */
     @Override
     public void render(SpriteBatch batch) {
     }
 
+    /**
+     * Renders any active effects of the current capacity.
+     * @param batch The sprite batch used for rendering.
+     */
     @Override
     public void renderEffects(SpriteBatch batch) {
         if (currentCapacity != null)
             currentCapacity.render(batch);
     }
 
+    /**
+     * Called at entrance to the state.
+     * @param args The arguments for entering the state.
+     */
     @Override
     public void enter(CapaChooseArgs args) {
         super.enter(args);
@@ -68,6 +86,9 @@ public class MCCSCapacityChoose extends MCCharacterState<MCCSCapacityChoose.Capa
 
     }
 
+    /**
+     * Called at exit from the state.
+     */
     @Override
     public void exit() {
         /* if (currentCapacity != null)

@@ -14,6 +14,9 @@ import com.walk.or.die.engine.shared.MCIntVector2;
  * Behavior class which causes the camera to follow a target.
  */
 public class MCFollowCamBehavior extends MCCameraBehavior {
+    /**
+     * The entity that the camera follows.
+     */
     private MCEntity target;
     
     /**
@@ -34,6 +37,9 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
      */
     private Float targetZoom;
 
+    /**
+     * Constructs a new {@code MCFollowCamBehavior}.
+     */
     public MCFollowCamBehavior() {}
 
     /**
@@ -50,7 +56,7 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
     
     /**
      * Updates the camera behavior.
-     * @param gdxCam The libGDX OrthographicCamera.
+     * @param gdxCam The LibGDX {@code OrthographicCamera} instance.
      * @param delta The time elapsed since the last frame.
      */
     @Override
@@ -116,9 +122,9 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
     }
 
     /**
-     * Proceeds to update the camera accordingly to the given InputPressed command.
+     * Handles the given {@link Command} when an input is pressed, updating the camera as needed.
      * @param gdxCam The camera to update.
-     * @param cmd The input command.
+     * @param cmd The command received when an input is pressed.
      */
     @Override
     public void handleInputPressed(OrthographicCamera gdxCam, Command cmd) {
@@ -131,8 +137,8 @@ public class MCFollowCamBehavior extends MCCameraBehavior {
     }
 
     /**
-     * Proceeds to update the camera accordingly to the given InputReleased command.
-     * @param cmd The input command.
+     * Handles the given {@link Command} when an input is released, updating the camera as needed.
+     * @param cmd The command received when an input is released.
      */
     @Override
     public void handleInputReleased(Command cmd) {

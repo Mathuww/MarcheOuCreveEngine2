@@ -20,24 +20,34 @@ import com.walk.or.die.engine.tiledmap.MCTerrainMap;
  * A singleton that manages all the entities in the game.
  */
 public class MCEntityManager {
+    /**
+     * The singleton instance of the entity manager.
+     */
     private static MCEntityManager instance = null;
 
     /**
-     * Gets the instance.
-     * @return the instance
+     * Gets the singleton instance of the entity manager.
+     * @return The instance of the entity manager.
      */
     public static MCEntityManager get() {
         if (instance == null) instance = new MCEntityManager();
         return instance;
     }
 
+    /**
+     * Constructs a new MCEntityManager.
+     * This constructor is private to enforce the singleton pattern.
+     */
     private MCEntityManager() {}
 
+    /**
+     * The parent game instance.
+     */
     private MCGame parent;
 
     /**
      * Initializes the singleton.
-     * @param game the game instance
+     * @param game The game instance.
      */
     public void init(MCGame game) {
         parent = game;
@@ -46,16 +56,28 @@ public class MCEntityManager {
     }
 
     //private MCGame parent;
+    /**
+     * The set of all active entities in the game.
+     */
     private Set<MCEntity> entities = Collections.newSetFromMap(new IdentityHashMap<>());
+    /**
+     * A temporary set of entities to be removed during the next update cycle.
+     */
     private Set<MCEntity> toKill = Collections.newSetFromMap(new IdentityHashMap<>());
+    /**
+     * A temporary set of entities to be added during the next update cycle.
+     */
     private Set<MCEntity> toAdd = Collections.newSetFromMap(new IdentityHashMap<>());
+    /**
+     * An array of sprite representations of entities that have been "killed" but their corpses are still visible.
+     */
     private Array<Sprite> corpses = new Array<>();
 
     /**
      * Creates a projectile entity.
-     * @param projType the projectile type
-     * @return the created projectile
-     * @throws Exception if an error occurs during projectile creation
+     * @param projType The projectile type.
+     * @return The created projectile.
+     * @throws Exception if an error occurs during projectile creation.
      * @see MCProjectile
      */
     public MCProjectile buildProjectile(String projType) throws Exception {
@@ -76,7 +98,7 @@ public class MCEntityManager {
 
     /**
      * Freezes all entities except the specified one.
-     * @param except the entity to exclude from freezing
+     * @param except The entity to exclude from freezing.
      */
     public void freezeAll(MCEntity except) {
         //System.out.println("Freeze");
@@ -87,7 +109,7 @@ public class MCEntityManager {
 
     /**
      * Unfreezes all entities.
-     * @param c the object that triggered the unfreeze
+     * @param c The object that triggered the unfreeze.
      */
     public void unfreezeAll(Object c) {
         //System.out.println("Unfreeze");
@@ -97,16 +119,16 @@ public class MCEntityManager {
     }
     
     /**
-     * Removes an entity.
-     * @param e the entity to remove
+     * Removes an entity from the game.
+     * @param e The entity to remove.
      */
     public void kill(MCEntity e) {
         toKill.add(e);
     }
 
     /**
-     * Removes an entity and shows its corpse.
-     * @param e the entity to remove
+     * Removes an entity and preserves its sprite as a corpse.
+     * @param e The entity to remove.
      */
     public void killAndKeepCorpse(MCEntity e) {
         corpses.add(e.getSprite());
@@ -114,8 +136,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Adds a new entity.
-     * @param e the entity to add
+     * Adds a new entity to be processed in the next update cycle.
+     * @param e The entity to add.
      */
     public void addEntity(MCEntity e) {
         toAdd.add(e);
@@ -123,9 +145,10 @@ public class MCEntityManager {
     }
 
     /**
-     * Adds exploration entities.
-     * @param entities the set of entities to add
-     * @return what will be the exploration player
+     * Adds a set of exploration-related entities to the game, and manages the player.
+     * @param entities The set of entities to add.
+     * @param player The existing exploration player, or null if a new one should be created.
+     * @return The exploration player, either the existing one or a newly created one.
      */
     public MCExplorationPlayer addExplorationEntities(Set<MCEntity> entities, MCExplorationPlayer player) {
         Set<MCAlly> list = new HashSet<>();
@@ -162,8 +185,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Adds a set of entities.
-     * @param e the set of entities to add
+     * Adds a set of entities to be processed in the next update cycle.
+     * @param e The set of entities to add.
      */
     public void addAllEntities(Set<MCEntity> e) {
         toAdd.addAll(e);
@@ -171,16 +194,16 @@ public class MCEntityManager {
     }
 
     /**
-     * Gets all entities in the game.
-     * @return the set of entities
+     * Gets all entities currently active in the game.
+     * @return The set of entities.
      */
     public Set<MCEntity> getEntities() {
         return this.entities;
     }
 
     /**
-     * Gets all MCAllies in the game.
-     * @return the set of allies
+     * Gets all MCAllies currently active in the game.
+     * @return The set of allies.
      * @see MCAlly
      */
     public Set<MCAlly> getAllies() {
@@ -196,8 +219,9 @@ public class MCEntityManager {
     }
 
     /**
-     * Gets the MCAlly that has the highest priority to become a MCExplorationPlayer
+     * Gets the MCAlly that has the highest priority to become a MCExplorationPlayer.
      * @return The chosen ally.
+     * @throws IllegalStateException If no ally is found.
      * @see MCAlly
      */
     public MCAlly getBestAlly() throws IllegalStateException {
@@ -227,8 +251,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Gets all MCEnemies in the game.
-     * @return the set of enemies
+     * Gets all MCEnemies currently active in the game.
+     * @return The set of enemies.
      */
     public Set<MCEnemy> getEnemies() {
         Set<MCEnemy> list = new HashSet<>();
@@ -243,8 +267,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Gets the MCExplorationPlayer (unique in theory).
-     * @return the exploration player
+     * Gets the MCExplorationPlayer (which should be unique).
+     * @return The exploration player, or null if not found.
      * @see MCExplorationPlayer
      */
     public MCExplorationPlayer getExplorationPlayer()  {
@@ -257,7 +281,12 @@ public class MCEntityManager {
     }
 
     /**
-     * 
+     * Spawns the exploration player near a specified portal.
+     * @param entities The set of entities in the current map.
+     * @param destID The ID of the destination portal.
+     * @param player The exploration player to spawn.
+     * @throws IllegalStateException If the destination portal does not exist or has an invalid spawn direction.
+     * @throws MissingDataException If the portal is missing a 'spawnDirection' property.
      */
     public void spawnExplorationPlayerWithPortal(Set<MCEntity> entities, int destID, MCExplorationPlayer player) throws IllegalStateException, MissingDataException {
         Boolean findPortal = false;
@@ -298,7 +327,7 @@ public class MCEntityManager {
     }
 
     /**
-     * Clears the list of entities.
+     * Clears the list of all active entities, entities to add, entities to kill, and corpses.
      */
     public void clearEntities() {
         entities.clear();
@@ -308,8 +337,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Launches the same animation for all the entities.
-     * @param anim the animation name
+     * Launches the same animation for all entities.
+     * @param anim The animation name.
      */
     public void playGlobalAnimation(String anim) {
         for (MCEntity e : entities) {
@@ -319,9 +348,9 @@ public class MCEntityManager {
     
     /**
      * Gets an entity from its tile's position.
-     * @param layer the layer of the tile
-     * @param pos the position of the tile
-     * @return the entity at the specified tile position
+     * @param layer The layer of the tile.
+     * @param pos The position of the tile.
+     * @return The entity at the specified tile position, or null if no entity is found.
      */
     public MCEntity getEntityFromTile(int layer, MCIntVector2 pos) {
         for (MCEntity e: entities) {
@@ -332,8 +361,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Checks if an entity blocks the process.
-     * @return true if anyone is busy, false otherwise
+     * Checks if any character entity is currently busy.
+     * @return True if anyone is busy, false otherwise.
      */
     public boolean isAnyoneBusy() {
         for (MCEntity e : getEntities()) {
@@ -345,8 +374,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Called on each frame.
-     * @param delta the time delta
+     * Called on each frame to update the state of all entities.
+     * @param delta The time delta since the last frame.
      */
     public void update(float delta) {
         for (MCEntity e : entities) {
@@ -377,8 +406,8 @@ public class MCEntityManager {
     }
 
     /**
-     * Called on each frame.
-     * @param batch the sprite batch
+     * Called on each frame to render all entities and corpses.
+     * @param batch The sprite batch used for rendering.
      */
     public void render(SpriteBatch batch) {
         // 1 : render corpses

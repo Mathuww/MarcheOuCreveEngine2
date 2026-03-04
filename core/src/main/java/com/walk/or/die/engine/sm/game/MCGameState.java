@@ -8,9 +8,22 @@ import com.walk.or.die.engine.shared.MCEmpty;
 import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.MCStateMachine;
 
+/**
+ * Represents an abstract base class for game states.
+ *
+ * @param <T> The type of state arguments.
+ */
 public abstract class MCGameState<T extends MCGameState.StateArgs> extends MCState<T> {
+    /**
+     * The parent game instance.
+     */
     protected MCGame parent;
 
+    /**
+     * Initializes a new instance of the {@code MCGameState} class.
+     *
+     * @param parent The parent game instance.
+     */
     public MCGameState(MCGame parent) {
         super();
         this.parent = parent;

@@ -18,6 +18,9 @@ import com.walk.or.die.engine.vehicles.MCVehicle;
  * @see MCVehicle
  */
 public class MCEventBus implements MCVehicle {
+    /**
+     * The singleton instance of the event bus.
+     */
     private static MCEventBus instance;
 
     /**
@@ -33,13 +36,25 @@ public class MCEventBus implements MCVehicle {
      * A class which represents a subscription to an event.
      */
     public static class Subscription {
+        /**
+         * The class of the subscribed object.
+         */
         Class cl;
+        /**
+         * The identity hash code of the subscribed object.
+         */
         int id;
+        /**
+         * The name of the event.
+         */
         String eventName;
+        /**
+         * The listener function associated with the subscription.
+         */
         Consumer<?> listener;
 
         /**
-         * The constructor.
+         * Constructs a new subscription.
          * @param obj The object.
          * @param eventName The event name.
          * @param listener The listener.
@@ -94,17 +109,32 @@ public class MCEventBus implements MCVehicle {
     }
 
     /**
-     * The performative deconstructor.
+     * Performs a performative deconstruction.
      */
     private void MCDeconstructor() {
         System.out.println("Je suis un homme déconstruit");
     }
 
+    /**
+     * The map of listeners.
+     */
     private Map<String, List<Consumer<?>>> listeners;
+    /**
+     * The map of event types.
+     */
     private Map<String, Class<?>> eventTypes;
+    /**
+     * The list of subscriptions.
+     */
     private List<Subscription> subscriptions;
     
+    /**
+     * The line number.
+     */
     private int lineNumber = 62;
+    /**
+     * The destination.
+     */
     private String destination = "Aspremont";
 
     /**
@@ -134,6 +164,10 @@ public class MCEventBus implements MCVehicle {
         subscriptions.add(new Subscription(obj, eventName, listener));
     }
 
+    /**
+     * Unsubscribes a subscription.
+     * @param sub The subscription.
+     */
     private void unsubscribe(Subscription sub) {
         List<Consumer<?>> listenersList = listeners.get(sub.eventName);
         /* je me demandais si c'était néceessaire d'ajouter une exception si on n'a pas enregistré de listener en vrai jsp */
@@ -198,13 +232,16 @@ public class MCEventBus implements MCVehicle {
         emit(eventName, null);
     }
 
-
+    /**
+     * Starts the bus.
+     */
     public void start() {
         System.out.println("le bus demarre !");
     }
 
     /**
-     * No one stops us, idiot.
+     * Stops the event bus, causing a voluntary crash.
+     * @throws VoluntaryCrashException If the bus crashes voluntarily.
      */
     public void stop() throws VoluntaryCrashException {
         System.out.println("We never stop idiot");
@@ -212,7 +249,8 @@ public class MCEventBus implements MCVehicle {
     }
 
     /**
-     * Crashes the bus in your face.
+     * Crashes the event bus.
+     * @throws VoluntaryCrashException If the bus crashes.
      */
     public void crash() throws VoluntaryCrashException {
         throw new VoluntaryCrashException("EXPLOSION !!!!!! over. *Fermeture des rideaux*");

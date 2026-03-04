@@ -15,12 +15,14 @@ public class MCCSDead extends MCCharacterState<MCCSDead.DeadStateArgs> {
      */
     public static class DeadStateArgs extends MCCharacterState.StateArgs {}
 
+    /** The duration for which the character stays dead if no animation is available. */
     private float DEAD_DURATION = 2f; // si jamais pas d'anim
+    /** The current time elapsed within this state. */
     private float stateTime = 0f;
 
     /**
-     * The constructor.
-     * @param parent the parent
+     * Constructs a new dead state for the character.
+     * @param parent The parent character to which this state belongs.
      */
     public MCCSDead(MCCharacter parent) {
         super(parent);
@@ -29,7 +31,7 @@ public class MCCSDead extends MCCharacterState<MCCSDead.DeadStateArgs> {
 
     /**
      * Called at state entrance.
-     * @param args the args
+     * @param args The arguments required for entering the dead state.
      */
     @Override
     public void enter(DeadStateArgs args) {
@@ -46,7 +48,7 @@ public class MCCSDead extends MCCharacterState<MCCSDead.DeadStateArgs> {
 
     /**
      * Called on each frame.
-     * @param delta the delta
+     * @param delta The time elapsed since the last frame in seconds.
      */
     @Override
     public void update(float delta) {

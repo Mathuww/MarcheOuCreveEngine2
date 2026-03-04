@@ -32,11 +32,14 @@ public class MCCameraManager {
         ARROWS
     }
 
+    /**
+     * The singleton instance of the MCCameraManager.
+     */
     private static MCCameraManager instance;
 
     /**
      * Gets the singleton instance.
-     * @return the singleton instance.
+     * @return The singleton instance.
      */
     public static MCCameraManager get() {
         if (instance == null) instance = new MCCameraManager();
@@ -89,15 +92,15 @@ public class MCCameraManager {
      */
     private float stateTime = 0f;
     /**
-     * Trauma decay (trauma units/sec)
+     * Trauma decay (trauma units/sec).
      */
     private final float TRAUMA_DECAY = 0.5f;
     /**
-     * Max. camera shake rotation angle (degrees)
+     * Max. camera shake rotation angle (degrees).
      */
     private final float SHAKE_MAX_ANGLE = 15f; 
     /**
-     * Max. camera shake translation offset (tiles)
+     * Max. camera shake translation offset (tiles).
      */
     private final float SHAKE_MAX_OFFSET = 1.5f;
     /**
@@ -107,7 +110,7 @@ public class MCCameraManager {
     private final float SHAKE_NOISE_SPEED = 20f;
 
     /**
-     * Zoom interpolation constant
+     * Zoom interpolation constant.
      */
     public final float ZOOM_LERP = 5f;
     /**
@@ -115,15 +118,15 @@ public class MCCameraManager {
      */
     public final float ZOOM_STEP = 0.085f;
     /**
-     * Min. zoom level
+     * Min. zoom level.
      */
     public final float ZOOM_MIN = 0.25f;
     /**
-     * Max. zoom level
+     * Max. zoom level.
      */
     public final float ZOOM_MAX = 1.25f;
     /**
-     * Used for "zoom to mouse" effect
+     * Used for "zoom to mouse" effect.
      */
     private Vector3 zoomTargetPos = new Vector3();
     /**
@@ -131,8 +134,14 @@ public class MCCameraManager {
      */
     private float zoomTarget;
 
+    /**
+     * The event bus for managing events.
+     */
     private final MCEventBus bus = MCEventBus.get();
 
+    /**
+     * Constructs a new MCCameraManager and registers default camera behaviors.
+     */
     private MCCameraManager() {
         register(CameraMode.FOLLOW, new MCFollowCamBehavior());
         register(CameraMode.ARROWS, new MCArrowsCamBehavior());
@@ -140,7 +149,7 @@ public class MCCameraManager {
 
     /**
      * Gets the global lower limit of the camera.
-     * @return the lower limit vector.
+     * @return The lower limit vector.
      */
     public Vector2 getGlobalLowerLimit() {
         return this.lowerLimit;
@@ -148,7 +157,7 @@ public class MCCameraManager {
 
     /**
      * Sets the global lower limit of the camera.
-     * @param limit the new lower limit coordinates.
+     * @param limit The new lower limit coordinates.
      */
     public void setLowerLimit(Vector2 limit) {
         this.lowerLimit = limit;
@@ -156,7 +165,7 @@ public class MCCameraManager {
 
     /**
      * Gets the global upper limit of the camera.
-     * @return the upper limit vector.
+     * @return The upper limit vector.
      */
     public Vector2 getGlobalUpperLimit() {
         return this.upperLimit;
@@ -164,7 +173,7 @@ public class MCCameraManager {
 
     /**
      * Sets the global upper limit of the camera.
-     * @param limit the new upper limit coordinates.
+     * @param limit The new upper limit coordinates.
      */
     public void setUpperLimit(Vector2 limit) {
         this.upperLimit = limit;
@@ -172,7 +181,7 @@ public class MCCameraManager {
 
     /**
      * Gets the current camera's position.
-     * @return the position vector.
+     * @return The position vector.
      */
     public Vector2 getPosition() {
         return new Vector2(gdxCam.position.x, gdxCam.position.y);
@@ -180,7 +189,7 @@ public class MCCameraManager {
 
     /**
      * Sets the camera's position.
-     * @param pos the new position vector.
+     * @param pos The new position vector.
      */
     public void setPosition(Vector2 pos) {
         gdxCam.position.x = pos.x;
@@ -190,7 +199,7 @@ public class MCCameraManager {
     /**
      * Used to begin interpolating to the desired position.
      * Delegates the logic to the current behavior.
-     * @param pos the target position.
+     * @param pos The target position.
      */
     public void interpolateTo(Vector2 pos) {
         if (mode != null)
@@ -199,8 +208,8 @@ public class MCCameraManager {
 
     /**
      * Registers a camera behavior associated with a specific mode.
-     * @param mode the mode to associate with the behavior.
-     * @param behavior the behavior to execute for this mode.
+     * @param mode The mode to associate with the behavior.
+     * @param behavior The behavior to execute for this mode.
      */
     public void register(CameraMode mode, MCCameraBehavior behavior) {
         behaviors.put(mode, behavior);
@@ -208,7 +217,7 @@ public class MCCameraManager {
 
     /**
      * Gets the current camera mode.
-     * @return the active camera mode.
+     * @return The active camera mode.
      */
     public CameraMode getMode() {
         return this.mode;
@@ -216,7 +225,7 @@ public class MCCameraManager {
 
     /**
      * Sets the active camera mode.
-     * @param mode the new mode to activate.
+     * @param mode The new mode to activate.
      */
     public void setMode(CameraMode mode) {
         if (this.mode != null) behaviors.get(this.mode).exit();
@@ -226,9 +235,9 @@ public class MCCameraManager {
 
     /**
      * Initializes the camera manager.
-     * @param viewportWidth the width of the camera viewport.
-     * @param viewportHeight the height of the camera viewport.
-     * @param mode the initial camera mode.
+     * @param viewportWidth The width of the camera viewport.
+     * @param viewportHeight The height of the camera viewport.
+     * @param mode The initial camera mode.
      */
     public void init(float viewportWidth, float viewportHeight, CameraMode mode) {
         gdxCam = new OrthographicCamera(viewportWidth, viewportHeight);
@@ -242,7 +251,7 @@ public class MCCameraManager {
 
     /**
      * Gets the x-coordinate of the top-right viewport corner.
-     * @return the x-coordinate.
+     * @return The x-coordinate.
      */
     public float getCurrentUpperLimitX() {
         return gdxCam.position.x + gdxCam.viewportWidth / 2;
@@ -250,7 +259,7 @@ public class MCCameraManager {
 
     /**
      * Gets the y-coordinate of the top-right viewport corner.
-     * @return the y-coordinate.
+     * @return The y-coordinate.
      */
     public float getCurrentUpperLimitY() {
         return gdxCam.position.y + gdxCam.viewportHeight / 2;
@@ -258,7 +267,7 @@ public class MCCameraManager {
 
     /**
      * Gets the x-coordinate of the bottom-left viewport corner.
-     * @return the x-coordinate.
+     * @return The x-coordinate.
      */
     public float getCurrentLowerLimitX() {
         return gdxCam.position.x - gdxCam.viewportWidth / 2;
@@ -266,7 +275,7 @@ public class MCCameraManager {
 
     /**
      * Gets the y-coordinate of the bottom-left viewport corner.
-     * @return the y-coordinate.
+     * @return The y-coordinate.
      */
     public float getCurrentLowerLimitY() {
         return gdxCam.position.y - gdxCam.viewportHeight / 2;
@@ -274,7 +283,7 @@ public class MCCameraManager {
 
     /**
      * Gets the underlying LibGDX OrthographicCamera.
-     * @return the OrthographicCamera instance.
+     * @return The OrthographicCamera instance.
      */
     public OrthographicCamera getGdxCam() {
         return gdxCam;
@@ -282,7 +291,7 @@ public class MCCameraManager {
 
     /**
      * Gets the entity currently being followed by the camera.
-     * @return the target entity.
+     * @return The target entity.
      */
     public MCEntity getFollowTarget() {
         return this.target;
@@ -290,7 +299,7 @@ public class MCCameraManager {
 
     /**
      * Sets the entity to be followed by the camera.
-     * @param target the entity to follow.
+     * @param target The entity to follow.
      */
     public void setFollowTarget(MCEntity target) {
         this.target = target;
@@ -298,7 +307,7 @@ public class MCCameraManager {
 
     /**
      * Adds trauma to the camera to induce shaking.
-     * @param traumaAddition the amount of trauma to add.
+     * @param traumaAddition The amount of trauma to add.
      */
     public void addTrauma(float traumaAddition) {
         //System.out.println("adding " + traumaAddition + " trauma");
@@ -307,7 +316,7 @@ public class MCCameraManager {
 
     /**
      * Updates the camera logic. Called each frame.
-     * @param delta the time elapsed since the last frame.
+     * @param delta The time elapsed since the last frame.
      * @throws UnexistingBehaviorException if no behavior is associated with the current mode.
      */
     public void update(float delta) throws UnexistingBehaviorException {
@@ -354,7 +363,7 @@ public class MCCameraManager {
 
     /**
      * Checks if the camera has moved during the current frame.
-     * @return true if the camera has moved, false otherwise.
+     * @return True if the camera has moved, false otherwise.
      */
     public boolean hasMovedThisFrame() {
         return this.movedThisFrame;
@@ -362,7 +371,7 @@ public class MCCameraManager {
 
     /**
      * Delegates input pressed logic to the current behavior.
-     * @param cmd the input command.
+     * @param cmd The input command.
      */
     public void inputPressed(Command cmd) {
         if (mode != null)
@@ -371,7 +380,7 @@ public class MCCameraManager {
 
     /**
      * Delegates input released logic to the current behavior.
-     * @param cmd the input command.
+     * @param cmd The input command.
      */
     public void inputReleased(Command cmd) {
         if (mode != null)

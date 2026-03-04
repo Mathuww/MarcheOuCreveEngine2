@@ -16,24 +16,34 @@ import com.walk.or.die.engine.ui.MCHUDHPBar;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
- * The state of shooting on something.<br>
- * Name = "shoot"
+ * Represents the state of shooting at something.
+ * <p>The state's name is "shoot".</p>
  */
 public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
 
     /**
-     * Class which represents args needed by shoot state to start.
+     * Represents arguments needed by the shoot state to start.
      */
     public static class ShootStateArgs extends MCCharacterState.StateArgs {
+        /**
+         * Represents the target character.
+         */
         MCCharacter target;
+        /**
+         * Represents the attack to be used.
+         */
         MCAttack attack;
+        /**
+         * Represents the path of the bullet.
+         */
         List<MCIntVector2> trajectory;
 
         /**
-         * The constructor.
-         * @param e The target
-         * @param a The used attack
-         * @param traj Path of the bullet
+         * Initializes a new instance of the {@code ShootStateArgs} class.
+         *
+         * @param e The target character.
+         * @param a The attack used.
+         * @param traj The trajectory or path of the bullet.
          */
         public ShootStateArgs(MCCharacter e, MCAttack a, List<MCIntVector2> traj) {
             target = e;
@@ -44,27 +54,39 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
     }
 
     /**
-     * The constructor.
-     * @param parent The parent
+     * Initializes a new instance of the {@code MCCSShoot} class.
+     *
+     * @param parent The parent character.
      */
     public MCCSShoot(MCCharacter parent) {
         super(parent);
         this.name = "shoot";
     }
 
+    /**
+     * Called on each frame to update the state.
+     *
+     * @param delta The time elapsed since the last frame.
+     */
     @Override
     public void update(float delta) {
         //if (finished) changeState("idle", new MCESIdle.IdleStateArgs());
     }
 
+    /**
+     * Called on each frame to render the state.
+     *
+     * @param batch The sprite batch used for rendering.
+     */
     @Override
     public void render(SpriteBatch batch) {
         
     }
 
     /**
-     * Called at state entrance.
-     * @param args The shoot state arguments
+     * Called at the state's entrance.
+     *
+     * @param args The arguments for the shoot state.
      */
     @Override
     public void enter(ShootStateArgs args) {
@@ -95,7 +117,7 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
     }
 
     /**
-     * Called at state exit.
+     * Called at the state's exit.
      */
     @Override
     public void exit() {
@@ -103,7 +125,9 @@ public class MCCSShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
     }
     
     /**
-     * @param data The input command data
+     * Handles input commands when a button is pressed.
+     *
+     * @param data The input command data received.
      */
     @Override
     protected void inputPressed(MCInputManager.Command data) {}

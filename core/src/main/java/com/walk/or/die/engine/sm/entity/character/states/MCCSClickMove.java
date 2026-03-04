@@ -14,22 +14,24 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 import com.walk.or.die.engine.sm.entity.character.MCCharacterState;
 
 /**
- * The state to move to a given position.<br>
+ * Represents the state to move to a given position.<br>
  * Name = "move"
  */
 public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs> {
 
     /**
-     * Class which represents args needed by the clickMove state to start.
+     * Represents the arguments needed by the clickMove state to start.
      */
     public static class MoveStateArgs extends MCCharacterState.StateArgs {
+        /** The target position. */
         public MCIntVector2 target;
+        /** The path to follow. */
         public List<MCIntVector2> path;
 
         /**
-         * The constructor.
-         * @param target - The targeted position.
-         * @param path - The path to follow.
+         * Initializes a new `MoveStateArgs` instance.
+         * @param target The targeted position.
+         * @param path The path to follow.
          */
         public MoveStateArgs(MCIntVector2 target, List<MCIntVector2> path) {
             this.target = target;
@@ -37,18 +39,25 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
         }
     }
 
+    /** The ultimate goal position. */
     private MCIntVector2 goal;
 
+    /** The queue of movements to perform. */
     private Deque<MCIntVector2> movements;
+    /** The percentages at which to check for tile boundaries. */
     private Deque<Float> percent_check = new ArrayDeque<>();
+    /** The starting position for the current movement segment. */
     private Vector2 start;
+    /** The displacement vector for the current movement segment. */
     private Vector2 deplacement = new Vector2(0f,0f);
+    /** The current progress percentage of the movement segment. */
     private float percent = 0f;
+    /** The movement speed. */
     private float speed = 4f;
 
     /**
-     * The constructor.
-     * @param parent - The parent character.
+     * Initializes a new `MCCSClickMove` instance.
+     * @param parent The parent character.
      */
     public MCCSClickMove(MCCharacter parent) {
         super(parent);
@@ -58,7 +67,7 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
 
     /**
      * Called on each frame.
-     * @param delta - The time delta.
+     * @param delta The time delta.
      */
     @Override
     public void update(float delta) {
@@ -96,7 +105,7 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
 
     /**
      * Called at state entrance.
-     * @param args - The arguments for the move state.
+     * @param args The arguments for the move state.
      */
     @Override
     public void enter(MoveStateArgs args) {
@@ -122,6 +131,10 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
         super.exit();
     }
     
+    /**
+     * Processes the input command when a key is pressed.
+     * @param data The input command data.
+     */
     @Override
     protected void inputPressed(MCInputManager.Command data) {
         //System.out.println("Input pressed detect in Move");
@@ -164,8 +177,8 @@ public class MCCSClickMove extends MCCharacterState<MCCSClickMove.MoveStateArgs>
     
     /**
      * Plays the given animation or a secondary one if the first one does not exist.
-     * @param anim1 - The primary animation name.
-     * @param anim2 - The secondary animation name.
+     * @param anim1 The primary animation name.
+     * @param anim2 The secondary animation name.
      */
     private void playAnimationOr(String anim1, String anim2) {
         if (!parent.playAnimationWithoutReset(anim1))

@@ -10,6 +10,10 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 public class MCCSSpeedShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
     
+    /**
+     * Constructs a new {@code MCCSSpeedShoot} state.
+     * @param parent The parent character for this state.
+     */
     public MCCSSpeedShoot(MCCharacter parent) {
         super(parent);
         this.name = "speedShoot";
@@ -17,7 +21,7 @@ public class MCCSSpeedShoot extends MCCharacterState<MCCSShoot.ShootStateArgs> {
 
     /**
      * Called at state entrance.
-     * @param args the shoot state arguments.
+     * @param args The shoot state arguments.
      */
     @Override
     public void enter(MCCSShoot.ShootStateArgs args) {

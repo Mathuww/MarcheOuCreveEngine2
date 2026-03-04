@@ -23,6 +23,7 @@ import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
  */
 public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
 
+    /** The currently displayed attack. */
     private MCAttack displayedAttack;
 
     /**
@@ -34,11 +35,19 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         this.name = "idle";
     }
 
+    /**
+     * Called on each frame.
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void update(float delta) {
         //System.out.println("On respire le bon air de la nature");
     }
 
+    /**
+     * Renders the effects.
+     * @param batch The sprite batch used for rendering.
+     */
     @Override
     public void renderEffects(SpriteBatch batch) {
         if (displayedAttack == null)
@@ -46,6 +55,10 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         displayedAttack.render(batch);
     }
 
+    /**
+     * Called at entrance.
+     * @param args The arguments for entering the idle state.
+     */
     @Override
     public void enter(MCCSIdle.IdleStateArgs args) {
         parent.keep = false;
@@ -56,6 +69,9 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         super.enter(args);
     }
 
+    /**
+     * Called at exit.
+     */
     @Override
     public void exit() {
         parent.keep = true;
@@ -64,6 +80,10 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         super.exit();
     }
     
+    /**
+     * Handles input pressed events.
+     * @param data The input command data.
+     */
     @Override
     protected void inputPressed(MCInputManager.Command data) {
         super.inputPressed(data);
@@ -71,7 +91,7 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     }
 
     /**
-     * Launches move action.
+     * Launches a move action.
      * @param pos The position to move on.
      */
     public void play(MCIntVector2 pos) {
@@ -79,7 +99,7 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     }
 
     /**
-     * Launches shoot action.
+     * Launches a shoot action.
      * @param ally The targeted ally.
      * @param traj The trajectory of the bullet.
      */
@@ -87,11 +107,18 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
         changeState("shoot", new MCCSShoot.ShootStateArgs((MCCharacter)ally, parent.getAttack(), traj));
     }
 
+    /**
+     * Determines if the state is blocking.
+     * @return True if the state is blocking, false otherwise.
+     */
     @Override
     public boolean isBlocking() {
         return false;
     }
 
+    /**
+     * Sets up the HUD customization for the character.
+     */
     private void setupHudCustomization() {
         if (parent instanceof MCEnemy enemy) {
             Map<String, MCAttack> attacks = enemy.getAttacks();
@@ -124,7 +151,7 @@ public class MCCSEnemyIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     }
 
     /**
-     * Called when hud visibility is lost.
+     * Called when HUD visibility is lost.
      */
     @Override
     public void onHudVisibilityLost() {

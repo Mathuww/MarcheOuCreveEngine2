@@ -24,10 +24,14 @@ import java.util.Collections;
  * A useful class for A*.
  */
 class Tuple {
-    int g;        // distance depuis le départ
-    int h;        // istance min jusqu'à la fin
-    MCIntVector2 pos;  // position
-    Tuple parent; // parent pour reconstruire le chemin
+    /** The distance from the start. */
+    int g;
+    /** The minimum distance to the end. */
+    int h;
+    /** The position. */
+    MCIntVector2 pos;
+    /** The parent for reconstructing the path. */
+    Tuple parent;
 
     /**
      * Constructs a new Tuple.
@@ -45,24 +49,27 @@ class Tuple {
 }
 
 /**
- * A singleton class which gives us methods to know paths and trajectories.
+ * A singleton class which provides methods to determine paths and trajectories.
  */
 public class MCPathfinder {
-    // A* ma gueule, algo de zigzaging
+    /** The game instance. */
     private MCGame game;
+    /** The singleton instance of MCPathfinder. */
     private static MCPathfinder instance = null;
 
     /**
-     * A class that returns a simulation of a trajectory, with the success and where it ends.
+     * A class that returns a simulation of a trajectory, with its success status and where it ends.
      */
     public static class Simulation {
+        /** Indicates if the simulation was successful. */
         public boolean success;
+        /** The end position of the simulation. */
         public MCIntVector2 endPos;
 
         /**
          * Constructs a Simulation.
-         * @param success the success of the simulation
-         * @param pos the end position of the simulation
+         * @param success The success of the simulation.
+         * @param pos The end position of the simulation.
          */
         public Simulation(boolean success, MCIntVector2 pos) {
             this.success = success;
@@ -88,7 +95,7 @@ public class MCPathfinder {
     }
 
     /**
-     * Gets a path between 2 points using A*. Returns an empty list if there's no path.
+     * Gets a path between two points using A*. Returns an empty list if there is no path.
      * @param start The start position.
      * @param end The end position.
      * @return The list of MCIntVector2 representing the path.
@@ -133,7 +140,7 @@ public class MCPathfinder {
     }
 
     /**
-     * Checks if a position contains something that protects from bullets.
+     * Checks if a position contains something that protects entities from bullets.
      * @param pos The position to check.
      * @return True if the position is protected, false otherwise.
      */
@@ -146,7 +153,7 @@ public class MCPathfinder {
     }
 
     /**
-     * Gets a straight trajectory between two points, useful for bullets.
+     * Gets a straight trajectory between two points, which is useful for bullets.
      * @param v1 The starting position.
      * @param v2 The ending position.
      * @return The list of MCIntVector2 representing the trajectory.
@@ -182,7 +189,7 @@ public class MCPathfinder {
     }
 
     /**
-     * Cuts the given list when it hits something.
+     * Cuts the given list when it hits an obstacle.
      * @param list The list of MCIntVector2 representing the trajectory.
      */
     public void cutTrajectoryOnHit(List<MCIntVector2> list) {
@@ -202,7 +209,7 @@ public class MCPathfinder {
     }
 
     /**
-     * Gets the best trajectory to shoot on a target.
+     * Gets the best trajectory to shoot at a target.
      * @param v1 The starting position.
      * @param v2 The ending position.
      * @return The list of MCIntVector2 representing the best trajectory.
@@ -269,7 +276,7 @@ public class MCPathfinder {
     }
 
     /**
-     * Gets a trajectory between two points, without those points, for being tested.
+     * Gets a trajectory between two points, excluding the start and end points, for testing purposes.
      * @param start The starting position.
      * @param end The ending position.
      * @return The list of MCIntVector2 representing the valid trajectory.
@@ -282,10 +289,10 @@ public class MCPathfinder {
     }
 
     /**
-     * Tests if the given trajectory can be achieved (by checking between the first and the last point).
+     * Tests if the given trajectory can be achieved by checking between the first and the last point.
      * @param trajectory The list of MCIntVector2 representing the trajectory.
      * @param end The end position.
-     * @return The results of the Test.
+     * @return The results of the test.
      * @see Simulation
      */
     public Simulation simulateTrajectory(List<MCIntVector2> trajectory, MCIntVector2 end) {
@@ -302,7 +309,7 @@ public class MCPathfinder {
     }
 
     /**
-     * Gets the probability of success of a trajectory.
+     * Calculates the probability of success of a trajectory.
      * @param trajectory The list of MCIntVector2 representing the trajectory.
      * @param end The end position.
      * @return The probability of success.
@@ -320,7 +327,7 @@ public class MCPathfinder {
     }
     
     /**
-     * Cleans the given path, by leaving only the intersection's positions.
+     * Cleans the given path by leaving only the intersection positions.
      * @param path The list of MCIntVector2 representing the path.
      * @return The cleaned list of MCIntVector2.
      * @see MCIntVector2
@@ -360,7 +367,7 @@ public class MCPathfinder {
     }
 
     /**
-     * Compares two tuples based on their F value (g + h).
+     * Compares two tuples based on their F-value (g + h).
      * @param x The first tuple.
      * @param y The second tuple.
      * @return -1 if x is less than y, 1 if x is greater than y, 0 otherwise.
@@ -377,7 +384,7 @@ public class MCPathfinder {
     }
 
     /**
-     * Gets the Manhattan distance between two points.
+     * Calculates the Manhattan distance between two points.
      * @param x The first point.
      * @param y The second point.
      * @return The Manhattan distance between the two points.

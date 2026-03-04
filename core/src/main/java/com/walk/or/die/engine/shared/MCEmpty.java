@@ -1,7 +1,7 @@
 package com.walk.or.die.engine.shared;
 
 /**
- * Our null object.
+ * Represents a null object.
  */
 public class MCEmpty {
     // Face the emptiness of the universe.

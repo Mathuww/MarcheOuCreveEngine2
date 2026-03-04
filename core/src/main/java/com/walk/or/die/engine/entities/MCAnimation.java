@@ -24,15 +24,15 @@ public class MCAnimation {
     private float stateTime;
 
     /**
-     * The constructor.
+     * Constructs a new MCAnimation instance.
      */
     public MCAnimation() {
         stateTime = 0f;
     }
 
     /**
-     * The constructor.
-     * @param anim A libGDX animation.
+     * Constructs a new MCAnimation instance with a specified libGDX animation.
+     * @param anim The libGDX animation to wrap.
      */
     public MCAnimation(Animation<TextureRegion> anim) {
         this.animation = anim;
@@ -48,7 +48,8 @@ public class MCAnimation {
     }
 
     /**
-     * @param delta The time elapsed since last frame.
+     * Updates the animation state and calculates the current key frame.
+     * @param delta The time elapsed since the last frame.
      * @return The current key frame.
      */
     public TextureRegion update(float delta) {
@@ -84,7 +85,7 @@ public class MCAnimation {
 
     /**
      * Creates a horizontally flipped copy of the animation.
-     * Useful if a spritesheets only contains a walk to the left animation for instance.
+     * Useful if a spritesheet only contains a walk to the left animation for instance.
      * @return A flipped copy of the animation.
      */
     public MCAnimation getFlippedAnim() {

@@ -17,9 +17,9 @@ import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
 
 /**
- * This is the HUD shown when inside main menu. <br>
- * It just contains a sprite, a line of text and a choice carousel (and copyrights). <br>
- * A lot of the stuff here is highly similar to MCCharacterHUD, the most complex one.
+ * This is the HUD shown within the main menu. <br>
+ * It contains a sprite, a line of text, and a choice carousel (including copyrights). <br>
+ * Much of the functionality here is highly similar to MCCharacterHUD, which is the most complex one.
  * @see MCCharacterHUD
  */
 public class MCMainMenuHUD extends MCAbstractHUD {
@@ -36,10 +36,18 @@ public class MCMainMenuHUD extends MCAbstractHUD {
      */
     private final float FONT_SPACING = 3f;
 
+    /**
+     * The border width for HUD rectangles.
+     */
     private final float HUD_RECT_BORDER = MCGame.WINDOW_DEFAULT_HEIGHT * 0.0125f;
 
-
+    /**
+     * The font used for rendering text in the HUD.
+     */
     private BitmapFont font;
+    /**
+     * The rectangle representing the entire screen area.
+     */
     private Rectangle wholeScreen = new Rectangle(
         0, 0,
         MCGame.WINDOW_DEFAULT_WIDTH, 
@@ -50,22 +58,49 @@ public class MCMainMenuHUD extends MCAbstractHUD {
      */
     private MCUILayout layout = new MCUILayout();
 
+    /**
+     * The carousel component displayed in the lower part of the HUD.
+     */
     private MCUICarousel lowerCarousel;
+    /**
+     * The simple text component displayed in the upper part of the HUD.
+     */
     private MCUISimpleText upperText;
 
+    /**
+     * The horizontal padding for the HUD layout.
+     */
     private final float PADDING_W = 100f;
+    /**
+     * The vertical padding for the HUD layout.
+     */
     private final float PADDING_H = 160f;
+    /**
+     * The gap between layout zones.
+     */
     private final float GAP = 0f;
+    /**
+     * The scale factor for larger text elements.
+     */
     private final float BIG_SCALE = 0.65f;
 
+    /**
+     * The alpha value for the background.
+     */
     private final float BG_ALPHA = 0.65f;
     
     /**
      * Is the HUD currently shown? Only true when it's ENTIRELY shown.
      */
     private boolean shown = false;
+    /**
+     * Indicates if the HUD is currently being hovered over.
+     */
     private boolean hovered = false;
 
+    /**
+     * The event bus for inter-component communication.
+     */
     private final MCEventBus bus = MCEventBus.get();
 
     /**
@@ -140,6 +175,10 @@ public class MCMainMenuHUD extends MCAbstractHUD {
         upperText.render(batch);
     }
 
+    /**
+     * Sets the display state of the HUD.
+     * @param display True to show the HUD, false to hide it.
+     */
     public void setDisplay(boolean display) {
         this.shown = display;
     }
@@ -202,6 +241,10 @@ public class MCMainMenuHUD extends MCAbstractHUD {
             lowerCarousel.handleScroll(dy);
     }
 
+    /**
+     * Handles input pressed events.
+     * @param cmd The command that was pressed.
+     */
     public void inputPressed(Command cmd) {
         //System.out.print("mmhud is fully shown ? " + Boolean.toString(isFullyShown()));
         if (!isFullyShown())

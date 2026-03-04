@@ -23,7 +23,9 @@ import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
  * Name = "aim"
  */
 public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
+    /** The current attack chosen by the character. */
     private MCAttack currentAttack;
+    /** Represents the currently targeted tile. */
     private MCIntVector2 tile = new MCIntVector2(-1, -1);
     /**
      * Class which represents the args needed by the aim state to start.
@@ -44,21 +46,37 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
         this.name = "aim";
     }
 
+    /**
+     * Called on each frame to update the state.
+     * @param delta The time in seconds since the last frame.
+     */
     @Override
     public void update(float delta) {
         //System.out.println("On respire le bon air de la nature");
     }
 
+    /**
+     * Called on each frame to render the state.
+     * @param batch The sprite batch used for rendering.
+     */
     @Override
     public void render(SpriteBatch batch) {
     }
 
+    /**
+     * Renders any visual effects associated with the aim state.
+     * @param batch The sprite batch used for rendering.
+     */
     @Override
     public void renderEffects(SpriteBatch batch) {
         if (currentAttack != null)
             currentAttack.render(batch);
     }
 
+    /**
+     * Called at entrance to the aim state.
+     * @param args The arguments for entering the aim state.
+     */
     @Override
     public void enter(AimStateArgs args) {
         super.enter(args);
@@ -68,6 +86,9 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
         MCInputManager.get().triggerMouseUpdate(); // Initialise la position de la souris
     }
 
+    /**
+     * Called at exit from the aim state.
+     */
     @Override
     public void exit() {
         if (currentAttack != null)
@@ -192,6 +213,4 @@ public class MCCSAim extends MCCharacterState<MCCSAim.AimStateArgs> {
             ally.notifyHudUpdate(true);
         }
     }
-
-
 }

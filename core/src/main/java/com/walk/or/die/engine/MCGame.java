@@ -51,8 +51,17 @@ import com.walk.or.die.engine.vehicles.MCVehicle;
  * platforms. This is the main class of the game, which manages the whole game.
  */
 public class MCGame extends Game {
+    /**
+     * Represents the possible outcomes of a combat event.
+     */
     public static enum CombatDoneArgs {
+        /**
+         * Indicates that the allies won the combat.
+         */
         ALLIES_WON,
+        /**
+         * Indicates that the enemies won the combat.
+         */
         ENEMIES_WON
     }
 
@@ -65,20 +74,20 @@ public class MCGame extends Game {
      */
     public static final int VIEWPORT_HEIGHT = 12;
     /**
-     * Describes how far the camera can exceed the map lower boundaries.
+     * Describes how far the camera can exceed the map's lower boundaries.
     */
     public static final Vector2 CAM_LOWER_LIMIT_OFFSET = new Vector2(0f, -4f);
     /**
-     * Describes how far the camera can exceed the map upper boundaries.
+     * Describes how far the camera can exceed the map's upper boundaries.
     */
     public static final Vector2 CAM_UPPER_LIMIT_OFFSET = new Vector2(0f, 1f); 
 
     /** 
-     * Sets the fixed HUD viewport height.
+     * The fixed HUD viewport height.
     */
     public final static int WINDOW_DEFAULT_HEIGHT = 480;
       /** 
-     * Sets the fixed HUD viewport width.
+     * The fixed HUD viewport width.
     */
     public final static int WINDOW_DEFAULT_WIDTH = 
         MathUtils.round((float)WINDOW_DEFAULT_HEIGHT * ((float)VIEWPORT_WIDTH / (float)VIEWPORT_HEIGHT));
@@ -88,7 +97,13 @@ public class MCGame extends Game {
      * @see MCTerrainMap
      */
     private MCTerrainMap map;
+    /**
+     * Stores the states of the maps.
+     */
     private Map<String, Boolean> mapsStates = new HashMap<>();
+    /**
+     * The index of the current map.
+     */
     private int mapIndex = 1;
     /**
      * The pathfinder singleton.
@@ -187,12 +202,27 @@ public class MCGame extends Game {
      */
     private MCHUDManager hudManager = MCHUDManager.get();
 
+    /**
+     * The file name of the current map.
+     */
     private String currentMapFile;
+    /**
+     * The file name of the map to load.
+     */
     private String mapFileToLoad = null;
+    /**
+     * The destination ID of the portal to load.
+     */
     private int destIDPortalToLoad = 0;
 
 
+    /**
+     * The current screen.
+     */
     private Screen currentScreen;
+    /**
+     * Indicates whether the game is paused.
+     */
     private boolean paused = false;
 
     /**
@@ -208,22 +238,41 @@ public class MCGame extends Game {
         return MAP_ROOT;
     }
 
+    /**
+     * Gets the map file to load.
+     * @return The map file to load.
+     */
     public String getMapFileToLoad() {
         return mapFileToLoad;
     }
 
+    /**
+     * Sets the map file to load.
+     * @param filename The filename to set.
+     */
     public void setMapFileToLoad(String filename) {
         mapFileToLoad = filename;
     }
 
+    /**
+     * Gets the destination ID of the portal to load.
+     * @return The destination ID of the portal to load.
+     */
     public int getDestIDPortalToLoad() {
         return destIDPortalToLoad;
     }
 
+    /**
+     * Sets the destination ID of the portal to load.
+     * @param destID The destination ID to set.
+     */
     public void setDestIDPortalToLoad(int destID) {
         destIDPortalToLoad = destID;
     }
 
+    /**
+     * Called when the {@link com.badlogic.gdx.Application} is first created.
+     */
     @Override // commence pas je vais t'attraper
               // cast me if you can ;)
               // MCGaia sale_terrorist = (MCGaia) anothercoderterrorist
@@ -285,20 +334,24 @@ public class MCGame extends Game {
     }
 
     /**
-     * Triggers a clean transition with the map name (tmx file).
+     * Triggers a clean transition using the map name (TMX file).
      * @param filename The name of the map file.
+     * @param destID The destination ID.
      */
     public void teleportationActivate (String filename, int destID) {
         setMapFileToLoad(filename);
         setDestIDPortalToLoad(destID);
     }
 
+    /**
+     * Reloads the map.
+     */
     public void reloadMap() {
         setMapFileToLoad(currentMapFile);
     }
 
     /**
-     * Loads and cleans a map with the map name (tmx file).
+     * Loads and cleans a map using the map name (TMX file).
      * @param filename The name of the map file.
      * @throws IllegalStateException If the map file does not exist.
      */
@@ -358,7 +411,7 @@ public class MCGame extends Game {
     }
 
     /**
-     * Handles the global logic of the game, triggered each frame.
+     * Handles the global game logic, triggered on each frame.
      * @param delta The time elapsed since the last frame.
      */
     private void logic(float delta) {
@@ -393,6 +446,9 @@ public class MCGame extends Game {
         hudManager.update(delta);
     }
 
+    /**
+     * Called when the {@link com.badlogic.gdx.Application} should render itself.
+     */
     @Override
     public void render() {
         // on va pas render à < 10 FPS non plus
@@ -403,6 +459,9 @@ public class MCGame extends Game {
         super.render();
     }
 
+    /**
+     * Called when the {@link com.badlogic.gdx.Application} is destroyed.
+     */
     @Override
     public void dispose() {
         if (map != null)
@@ -429,10 +488,18 @@ public class MCGame extends Game {
         }
     }
 
+    /**
+     * Checks if the game is paused.
+     * @return True if the game is paused, false otherwise.
+     */
     public boolean isPaused() {
         return paused;
     }
 
+    /**
+     * Pauses the game.
+     * @param e The empty event.
+     */
     public void pauseGame(MCEmpty e) {
         paused = true;
         bus.emit("freezeGame");
@@ -440,6 +507,10 @@ public class MCGame extends Game {
         hudManager.getPauseHud().setDisplay(true);
     }
 
+    /**
+     * Plays the game from the main menu.
+     * @param emp The empty event.
+     */
     public void playFromMainMenu(MCEmpty emp) {
         try {  
             currentScreen = new MCGameScreen(this);
@@ -450,23 +521,39 @@ public class MCGame extends Game {
         setScreen(currentScreen);
     }
 
+    /**
+     * Quits the game.
+     * @param e The empty event.
+     */
     public void quit(MCEmpty e) {
         //System.out.print("quitting, please wait(forever.)");
         Gdx.app.exit();
     }
 
+    /**
+     * Goes to the main menu.
+     * @param e The empty event.
+     */
     public void goToMainMenu(MCEmpty e) {
         //System.out.println("going straight to main menu, please wait (forever.)");
         currentScreen = new MCMainMenuScreen(this);
         setScreen(currentScreen);
     }
 
+    /**
+     * Resumes the game.
+     * @param e The empty event.
+     */
     public void resumeGame(MCEmpty e) {
         paused = false;
         bus.emit("unfreezeGame");
         hudManager.getPauseHud().setDisplay(false);
     }
 
+    /**
+     * Gets the current screen.
+     * @return The current screen.
+     */
     public Screen getCurrentScreen() {
         return currentScreen;
     }
@@ -488,9 +575,9 @@ public class MCGame extends Game {
     }
 
     /**
-     * Determines if a case is walkable.
+     * Determines if a tile is walkable.
      * @param pos The position of the tile.
-     * @return True if the case is walkable.
+     * @return True if the tile is walkable.
      */
     public boolean isWalkable(MCIntVector2 pos) {
         if (entityManager.getEntityFromTile(1, pos) == null) {

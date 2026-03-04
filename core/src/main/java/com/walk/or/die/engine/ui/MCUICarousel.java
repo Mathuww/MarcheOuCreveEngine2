@@ -43,34 +43,106 @@ public class MCUICarousel {
         }
     }
 
+    /**
+     * The tolerance for interaction based on offset from the center.
+     */
     private final float INTERACT_OFFSET_TOLERANCE = 15f;
+    /**
+     * The linear interpolation factor for scrolling.
+     */
     private final float SCROLL_LERP = 8f;
+    /**
+     * The number of spaces between carousel items.
+     */
     private final int SPACES_BETWEEN_ITEMS = 5;
-    private final float FADE_WIDTH = 60f; 
+    /**
+     * The width of the fade gradient at the edges.
+     */
+    private final float FADE_WIDTH = 60f;
+    /**
+     * The size of the corners for the focused item highlight.
+     */
     private final float CORNER_SIZE = MCGame.WINDOW_DEFAULT_HEIGHT * 0.015f;
+    /**
+     * The padding around the focused item for the highlight.
+     */
     private final float CORNER_PADDING = CORNER_SIZE * 3f;
 
+    /**
+     * The text displayed when the carousel has no items.
+     */
     private String textIfEmpty = "(NOTHING TO DO)";
+    /**
+     * The list of items currently in the carousel.
+     */
     private List<CarouselItem> items = new ArrayList<>();
+    /**
+     * The total calculated width of the combined text for all items.
+     */
     private float totalWidth = 0f;
+    /**
+     * The index of the currently focused item.
+     */
     private int currentIndex = 0;
+    /**
+     * The rectangle representing the focused item's highlight area.
+     */
     private Rectangle focusedItemRect;
+    /**
+     * Indicates whether the focused item is currently being hovered over.
+     */
     private boolean focusedItemHovered = false;
 
+    /**
+     * The current horizontal offset of the carousel content.
+     */
     private float offsetX = 0f;
+    /**
+     * The target horizontal offset for the carousel content, determined by the focused item.
+     */
     private float targetOffsetX = 0f;
 
+    /**
+     * The parent HUD component.
+     */
     private MCAbstractHUD parent;
+    /**
+     * The layout zone for this carousel.
+     */
     private Zone zone;
+    /**
+     * The combined text of all carousel items, including spaces.
+     */
     private String totalText;
+    /**
+     * The simple text component used to render the carousel items.
+     */
     private MCUISimpleText textComponent;
 
+    /**
+     * The current time accumulator for the blinking effect.
+     */
     private float blinkingTime = 0f;
+    /**
+     * The interval at which the highlight blinks.
+     */
     private final float BLINKING_INTERVAL = 0.95f;
+    /**
+     * Indicates whether the focused item highlight should currently be displayed (for blinking effect).
+     */
     private boolean displayHighlight = true;
 
+    /**
+     * The texture used for the edge fade gradient.
+     */
     private TextureRegion gradientTexture;
+    /**
+     * The alpha transparency for the gradient textures.
+     */
     private float gradientAlpha = 1f;
+    /**
+     * The texture used for the background of the hovered focused item.
+     */
     private TextureRegion greyTexture;
 
     /**
@@ -114,6 +186,10 @@ public class MCUICarousel {
         textComponent.setText(textIfEmpty);
     }
 
+    /**
+     * Sets the alpha transparency for the gradient textures.
+     * @param a The alpha value to set.
+     */
     public void setGradientAlpha(float a) {
         gradientAlpha = a;
     }
@@ -151,7 +227,7 @@ public class MCUICarousel {
             item.width = visualItemWidth;
 
             String itemWithSpaces = item.name;
-            if (i < items.size() - 1) {// pas le dernier 
+            if (i < items.size() - 1) {// pas le dernier
                 for (int j = 0; j < SPACES_BETWEEN_ITEMS; j++)
                     itemWithSpaces += " ";
             }
@@ -196,7 +272,7 @@ public class MCUICarousel {
     public void previous() {
         if (items.isEmpty())
             return;
-        
+
         currentIndex--;
         if (currentIndex < 0)
             currentIndex = items.size() - 1;
@@ -260,23 +336,27 @@ public class MCUICarousel {
         textComponent.setOffsetX(offsetX);
     }
 
+    /**
+     * Draws the edge fade gradients on both sides of the carousel.
+     * @param batch The sprite batch used for drawing.
+     */
     private void edgeGradient(SpriteBatch batch) {
         batch.setColor(1f, 1f, 1f, gradientAlpha - 0.2f);
         batch.draw(
-            gradientTexture, 
-            zone.inX(), 
-            zone.inY(), 
-            FADE_WIDTH, 
+            gradientTexture,
+            zone.inX(),
+            zone.inY(),
+            FADE_WIDTH,
             zone.inHeight()
         );
         if (!gradientTexture.isFlipX())
             gradientTexture.flip(true, false); // flip x
-    
+
         batch.draw(
-            gradientTexture, 
-            zone.inX() + zone.inWidth() - FADE_WIDTH, 
-            zone.inY(), 
-            FADE_WIDTH, 
+            gradientTexture,
+            zone.inX() + zone.inWidth() - FADE_WIDTH,
+            zone.inY(),
+            FADE_WIDTH,
             zone.inHeight()
         );
 
@@ -284,6 +364,10 @@ public class MCUICarousel {
         batch.setColor(1f, 1f, 1f, 1f);
     }
 
+    /**
+     * Checks if the carousel's current offset is close enough to its target offset for interaction.
+     * @return True if the carousel is close enough to the center, false otherwise.
+     */
     private boolean closeEnoughToCenter() {
         return (Math.abs(targetOffsetX - offsetX) < INTERACT_OFFSET_TOLERANCE);
     }

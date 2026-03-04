@@ -10,12 +10,13 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * It also greatly helps to manage HUD input (see posBelongsToHud)
  */
 public class MCHUDManager {
+    /** Holds the singleton instance of the MCHUDManager. */
     private static MCHUDManager instance = null;
 
     /**
      * Gets the instance of the MCHUDManager.
      *
-     * @return the instance
+     * @return The instance.
      */
     public static MCHUDManager get() {
         if (instance == null)
@@ -23,7 +24,9 @@ public class MCHUDManager {
         return instance;
     }
 
+    /** Represents the viewport for the HUD elements. */
     public FitViewport hudViewport;
+    /** Represents the camera for the HUD elements. */
     private OrthographicCamera hudCamera;
 
     /**
@@ -54,8 +57,8 @@ public class MCHUDManager {
     /**
      * Initializes the HUD manager.
      *
-     * @param width  the width of the viewport
-     * @param height the height of the viewport
+     * @param width The width of the viewport.
+     * @param height The height of the viewport.
      */
     public void init(int width, int height) {
         hudCamera = new OrthographicCamera();
@@ -71,7 +74,7 @@ public class MCHUDManager {
     /**
      * Gets the viewport.
      *
-     * @return the hudViewport
+     * @return The hudViewport.
      */
     public FitViewport getViewport() {
         return hudViewport;
@@ -80,7 +83,7 @@ public class MCHUDManager {
     /**
      * Gets the camera.
      *
-     * @return the hudCamera
+     * @return The hudCamera.
      */
     public OrthographicCamera getCamera() {
         return hudCamera;
@@ -89,7 +92,7 @@ public class MCHUDManager {
     /**
      * Gets the character HUD.
      *
-     * @return the characterHUD
+     * @return The characterHUD.
      */
     public MCCharacterHUD getCharacterHud() {
         return characterHUD;
@@ -98,7 +101,7 @@ public class MCHUDManager {
     /**
      * Gets the simple HUD.
      *
-     * @return the simpleActionHUD
+     * @return The simpleActionHUD.
      */
     public MCSimpleActionHUD getSimpleHud() {
         return simpleActionHUD;
@@ -107,26 +110,43 @@ public class MCHUDManager {
     /**
      * Gets the focus HUD.
      *
-     * @return the focusHUD
+     * @return The focusHUD.
      */
     public MCTerrainFocusHUD getFocusHud() {
         return focusHUD;
     }
 
+    /**
+     * Gets the very big info HUD.
+     *
+     * @return The very big info HUD.
+     */
     public MCVeryBigInfoHUD getVbiHud() {
         return vbiHUD;
     }
 
+    /**
+     * Gets the pause HUD.
+     *
+     * @return The pause HUD.
+     */
     public MCPauseHUD getPauseHud() {
         return pauseHUD;
     }
 
+    /**
+     * Gets the main menu HUD.
+     *
+     * @return The main menu HUD.
+     */
     public MCMainMenuHUD getMainMenuHud() {
         return mmHUD;
     }
 
     /**
-     * Called on each frame
+     * Called on each frame.
+     *
+     * @param delta The time in seconds since the last frame.
      */
     public void update(float delta) {
         hudCamera.update();
@@ -136,15 +156,20 @@ public class MCHUDManager {
         pauseHUD.update(delta);
     }
 
+    /**
+     * Called on each frame.
+     *
+     * @param delta The time in seconds since the last frame.
+     */
     public void updateMainMenu(float delta) {
         hudCamera.update();
         mmHUD.update(delta);
     }
 
     /**
-     * Called on each frame
+     * Called on each frame.
      *
-     * @param batch the sprite batch
+     * @param batch The sprite batch.
      */
     public void render(SpriteBatch batch) {
         hudViewport.apply();
@@ -158,6 +183,11 @@ public class MCHUDManager {
         //characterHUD.renderDebug();
     }
 
+    /**
+     * Called on each frame.
+     *
+     * @param batch The sprite batch used for rendering.
+     */
     public void renderMainMenu(SpriteBatch batch) {
         hudViewport.apply();
         batch.setProjectionMatrix(hudCamera.combined);
@@ -166,6 +196,11 @@ public class MCHUDManager {
         batch.end();
     }
 
+    /**
+     * Determines if any active HUD component can receive a command.
+     *
+     * @return True if any active HUD component is fully shown and can receive commands, false otherwise.
+     */
     public boolean canReceiveHudCommand() {
         return characterHUD.isFullyShown()
             || pauseHUD.isFullyShown()
@@ -174,13 +209,13 @@ public class MCHUDManager {
 
     /**
      * Determines if the position belongs to the HUD. <br>
-     * It would difficult to implement the input dispatching like that without a single Manager class.
+     * It would be difficult to implement the input dispatching like that without a single Manager class.
      *
-     * @param pos the position
-     * @return true if the position belongs to the HUD, false otherwise
+     * @param pos The position to check.
+     * @return True if the position belongs to the HUD, false otherwise.
      */
     public boolean posBelongsToHud(Vector2 pos) {
-        return characterHUD.posBelongsToHudComponent(pos) 
+        return characterHUD.posBelongsToHudComponent(pos)
             || simpleActionHUD.posBelongsToHudComponent(pos)
             || pauseHUD.posBelongsToHudComponent(pos)
             || mmHUD.posBelongsToHudComponent(pos);
@@ -189,9 +224,9 @@ public class MCHUDManager {
     /**
      * Handles the hover event. <br>
      * Dispatches the same way as posBelongsToHud.
-     * @see posBelongsToHud
+     * @see #posBelongsToHud(Vector2)
      *
-     * @param pos the position
+     * @param pos The position of the hover event.
      */
     public void handleHover(Vector2 pos) {
         if (characterHUD.posBelongsToHudComponent(pos))
@@ -217,7 +252,7 @@ public class MCHUDManager {
     /**
      * Handles the click event.
      *
-     * @param pos the position
+     * @param pos The position of the click event.
      */
     public void handleClick(Vector2 pos) {
         if (characterHUD.posBelongsToHudComponent(pos))
@@ -233,8 +268,8 @@ public class MCHUDManager {
     /**
      * Handles the scroll event.
      *
-     * @param pos the position
-     * @param dy  the scroll amount
+     * @param pos The position of the scroll event.
+     * @param dy The scroll amount.
      */
     public void handleScroll(Vector2 pos, float dy) {
         characterHUD.handleScroll(pos, dy);

@@ -5,23 +5,24 @@ import com.badlogic.gdx.math.Vector2;
 import com.walk.or.die.engine.shared.MCUtils;
 
 /**
- * The class which gives an interface for MapObject from gdx.
+ * Provides an interface for a MapObject from GDX.
  * @see MapObject
  */
 public class MCMapObject {
+    /** The wrapped MapObject. */
     private MapObject mo;
 
     /**
-     * The constructor.
-     * @param mo The MapObject to wrap.
+     * Constructs a new MCMapObject.
+     * @param mo The {@code MapObject} to wrap.
      */
     public MCMapObject(MapObject mo) {
         this.mo = mo;
     }
 
     /**
-     * Gets the MapObject.
-     * @return The raw MapObject.
+     * Gets the raw {@code MapObject}.
+     * @return The raw {@code MapObject}.
      */
     public MapObject getRawObject() {
         return this.mo;
@@ -29,7 +30,7 @@ public class MCMapObject {
 
     /**
      * Gets the position of the object.
-     * @return The position of the object as a Vector2.
+     * @return The position of the object as a {@code Vector2}.
      */
     public Vector2 getPosition() {
         float x = MCUtils.getFloatProperty(this.mo.getProperties(), "x", 0f);

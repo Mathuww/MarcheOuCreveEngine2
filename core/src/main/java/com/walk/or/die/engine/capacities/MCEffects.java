@@ -14,20 +14,29 @@ import com.walk.or.die.engine.shared.MCIntVector2;
 
 /**
  * An abstract class to build effects that affect the characters.<br>
- * Override the methods to build your own effects.<br>
+ * Overrides the methods to build your own effects.<br>
  */
 public abstract class MCEffects {
     /**
      * The name of the effect. It needs to be a unique name.
      */
     public String name;
+    /**
+     * The parent character to which this effect is applied.
+     */
     protected MCCharacter parent;
+    /**
+     * Indicates whether the effect should be disposed of.
+     */
     private boolean dispose = false;
+    /**
+     * The number of turns this effect has been active.
+     */
     private int turn = 0;
     /**
      * Determines the zone affected by the capacity. <br>
-     * If it's 0, it affects the character who launched it. <br>
-     * If > 0, it affects people if the zone, but not the character who launched it.
+     * If its value is 0, it affects the character who launched it. <br>
+     * If its value is greater than 0, it affects characters within the specified zone, excluding the launcher.
      */
     protected int affectDistance = 0; 
 
@@ -41,9 +50,23 @@ public abstract class MCEffects {
         this.name = displayName;
     }
 
+    /**
+     * Creates a copy of this effect for a specific target.
+     * @param target The target character for the new effect.
+     * @return A new instance of the effect copied for the target.
+     */
     public abstract MCEffects copy(MCCharacter target);
+    /**
+     * Gets a summary description of the effect.
+     * @return A string summary of the effect.
+     */
     public abstract String getSummary();
 
+    /**
+     * Gets the list of characters affected by this effect, based on the launcher's position and the effect's affect distance.
+     * @param launcher The character that launched the effect.
+     * @return A list of characters affected by the effect.
+     */
     public List<MCCharacter> getAffectedCharactersFrom(MCCharacter launcher) {
         List<MCCharacter> affected = new ArrayList<>();
         if (affectDistance <= 0) {
@@ -70,6 +93,10 @@ public abstract class MCEffects {
 
     }
 
+    /**
+     * Gets the display name of the effect.
+     * @return The display name of the effect.
+     */
     public String getDisplayName() {
         return name;
     }
@@ -82,24 +109,25 @@ public abstract class MCEffects {
 
     /**
      * Called on each frame.
+     * @param batch The SpriteBatch used for rendering.
      */
     public void render(SpriteBatch batch) {}
     
     /**
-     * Called each turn.
+     * Called on each turn.
      */
     public void onNewTurn() {
         turn += 1;
     }
 
     /**
-     * Called when attack. Modifies the attack currently.
+     * Called when an attack occurs. Modifies the current attack.
      * @param attack The MCAttack instance.
      */
     public void onAttack(MCAttack attack) {}
 
     /**
-     * Called when we check the character's attack. Modifies the attack currently.
+     * Called when checking the character's attack. Modifies the current attack.
      * @param attack The MCAttack instance.
      */
     public void getAttack(MCAttack attack) {}
@@ -114,7 +142,7 @@ public abstract class MCEffects {
     }
 
     /**
-     * Called when we ask how much damage the character should take.
+     * Called when determining the amount of damage the character should take.
      * @param damage The damage amount.
      * @return The damage amount.
      */
@@ -123,7 +151,7 @@ public abstract class MCEffects {
     }
 
     /**
-     * Called when we ask the character's max move.
+     * Called when determining the character's maximum movement value.
      * @param move The basic value.
      * @return The new value.
      */
@@ -132,7 +160,7 @@ public abstract class MCEffects {
     }
 
     /**
-     * Sets if the effect needs to be disposed.
+     * Sets whether the effect needs to be disposed.
      * @param bool The boolean value.
      */
     public void setDispose(boolean bool) {
@@ -147,6 +175,10 @@ public abstract class MCEffects {
         return dispose;
     }
 
+    /**
+     * Returns a string representation of the effect.
+     * @return A string representation of the effect.
+     */
     @Override
     public String toString() {
         return "Effect " + name + " : dispose = " + dispose + " |  turn = " + turn ;

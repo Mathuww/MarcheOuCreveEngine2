@@ -12,27 +12,66 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
 /**
- * The basic text element of our user interface. <br>
+ * The basic text element of our user interface.
  */
 public class MCUISimpleText {
     /**
-     * How much spaces between words need to be amplified in order to look aesthetic.
+     * Specifies the factor by which spaces between words need to be amplified to achieve an aesthetic appearance.
      */
     private final float SPACE_FACTOR = 2.5f;
 
+    /**
+     * The layout zone for this text element.
+     */
     protected Zone zone;
+    /**
+     * The viewport used for coordinate transformations.
+     */
     protected Viewport viewport;
+    /**
+     * The parent HUD component.
+     */
     protected MCAbstractHUD parent;
+    /**
+     * The current SpriteBatch used for drawing.
+     */
     protected SpriteBatch currentBatch;
+    /**
+     * The current text displayed by this element.
+     */
     protected String currentText = "AAAHH";
+    /**
+     * The bitmap font used for rendering the text.
+     */
     protected BitmapFont font;
+    /**
+     * The calculated dimensions (width and height) of the current text.
+     */
     protected Vector2 dimensions;
+    /**
+     * The color of the text.
+     */
     protected Color color;
+    /**
+     * The scale of the text.
+     */
     protected float scale;
+    /**
+     * The spacing between characters.
+     */
     protected float spacing;
+    /**
+     * The alpha (transparency) of the text.
+     */
     protected float alpha = 1f;
 
+    /**
+     * The horizontal offset applied to the text.
+     */
     protected float offsetX = 0f;
+    /**
+     * Indicates whether the text should be centered within its zone.
+     */
     public boolean centered = true;
 
     /**
@@ -85,7 +124,7 @@ public class MCUISimpleText {
     }
 
     /**
-     * Computes the x and y dimensions of the text.
+     * Calculates the X and Y dimensions of the text.
      *
      * @param text The text to measure.
      * @return A Vector2 containing the width and height of the text.
@@ -105,8 +144,7 @@ public class MCUISimpleText {
     }
 
     /**
-     * Called on each frame. <br>
-     * We used scissors (computed manually, it didn't work otherwise) to make sure the text doesn't overflow.
+     * Called on each frame. It uses manually computed scissors to ensure that the text does not overflow its boundaries.
      *
      * @param batch The sprite batch.
      */
@@ -147,6 +185,11 @@ public class MCUISimpleText {
         }
     }
 
+    /**
+     * Sets the scale of the text.
+     *
+     * @param scale The new scale for the text.
+     */
     public void setScale(float scale) {
         this.scale = scale;
         setText(currentText); // maj des dimensions
@@ -167,9 +210,9 @@ public class MCUISimpleText {
     }
 
     /**
-     * Sets the offset X.
+     * Sets the X offset.
      *
-     * @param offsetX The offset X to set.
+     * @param offsetX The X offset to set.
      */
     public void setOffsetX(float offsetX) {
         this.offsetX = offsetX;

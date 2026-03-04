@@ -5,8 +5,18 @@ import com.walk.or.die.engine.entities.MCExplorationPlayer;
 import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.sm.entity.MCEntityState;
 
+/**
+ * Abstract base class for exploration player states.
+ *
+ * @param <T> Type of state arguments.
+ */
 public abstract class MCExplorationPlayerState<T extends MCExplorationPlayerState.StateArgs> extends MCEntityState<T, MCExplorationPlayer>  {
 
+    /**
+     * Initializes a new exploration player state.
+     *
+     * @param parent The parent MCExplorationPlayer entity.
+     */
     public MCExplorationPlayerState(MCExplorationPlayer parent) {
         super(parent);
     }

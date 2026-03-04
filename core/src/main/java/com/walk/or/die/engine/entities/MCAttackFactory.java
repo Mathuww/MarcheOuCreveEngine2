@@ -20,22 +20,40 @@ import com.walk.or.die.engine.tiledmap.MCMapLayer;
  * Another singleton factory, for attacks this time.
  */
 public class MCAttackFactory {
+    /**
+     * The singleton instance of the attack factory.
+     */
     private static MCAttackFactory instance = null;
 
     /**
-     * Gets the instance.
-     * @return the singleton instance.
+     * Gets the singleton instance.
+     * @return The singleton instance.
      */
     public static MCAttackFactory get() {
         if (instance == null) instance = new MCAttackFactory();
         return instance;
     }
 
+    /**
+     * The root path for attack definitions.
+     */
     private final String ATTACK_ROOT = "tiled/packed/attacks/";
+    /**
+     * The asset manager used to load resources.
+     */
     private AssetManager assetManager;
+    /**
+     * A map used to detect duplicate attack names during initialization.
+     */
     private Map<String, String> possibleAttacks;
+    /**
+     * A cache of loaded attack maps, keyed by attack name.
+     */
     private Map<String, MCMap> mapCache;
 
+    /**
+     * Initializes a new MCAttackFactory instance.
+     */
     private MCAttackFactory() {
         possibleAttacks = new HashMap<>();
         mapCache = new HashMap<>();
@@ -43,8 +61,8 @@ public class MCAttackFactory {
 
     /**
      * Initializes the singleton.
-     * @param assetManager the asset manager.
-     * @throws InvalidDataException if there is invalid data.
+     * @param assetManager The asset manager used for loading assets.
+     * @throws InvalidDataException If there is invalid data.
      */
     public void init(AssetManager assetManager) throws InvalidDataException {
         this.assetManager = assetManager;
@@ -62,10 +80,10 @@ public class MCAttackFactory {
 
     /**
      * Builds a new attack instance.
-     * @param parent the parent entity.
-     * @param attackName the attack name.
-     * @return the new attack instance.
-     * @throws Exception if there is an error.
+     * @param parent The parent entity of the attack.
+     * @param attackName The name of the attack to build.
+     * @return The new attack instance.
+     * @throws Exception If an error occurs during building.
      */
     public MCAttack build(MCEntity parent, String attackName) throws Exception {
         if (assetManager == null) 

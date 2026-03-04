@@ -25,32 +25,46 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
  * A class that represents an attack.
  */
 public class MCAttack {
+    /** The name of the attack. */
     private String attackName;
+    /** The parent entity that owns this attack. */
     private final MCEntity parent;
+    /** The shared assets instance for accessing resources. */
     private final MCSharedAssets sharedAssets = MCSharedAssets.get();
+    /** The base power of the attack. */
     private int basePower;
+    /** The current power of the attack, which can be modified from the base power. */
     private int currentPower;
+    /** The pattern of damage relative to the parent entity's position. */
     private Map<MCIntVector2, Float> damagePattern;
+    /** The sprites used to display the attack's valid tiles. */
     private Array<Sprite> displaySprites = new Array<>();
+    /** The sprites used to display the attack's trajectory. */
     private Array<Sprite> trajectorySprites = new Array<>();
+    /** The texture region for valid attack tiles. */
     private TextureRegion validTileTexture;
+    /** The texture region for trajectory tiles. */
     private TextureRegion trajTexture;
+    /** The name of the projectile associated with this attack. */
     private String projectileName = "projectile";
+    /** Indicates whether the attack's display sprites should be rendered. */
     public boolean display = false;
+    /** The color used for displaying valid attack tiles. */
     private final Color VALID_COLOR = new Color(1f, 1f, 1f, 0.5f);
+    /** The color used for displaying trajectory tiles. */
     private final Color TRAJ_COLOR = new Color(1f, 1f, 1f, 0.8f);
 
+    /** The name of the animation to play on the sender entity. */
     private String senderAnim;
 
     /**
-     * The creator.
+     * Constructs an {@code MCAttack} object.
      * @param parent The parent entity.
      * @param name The name of the attack.
      * @param power The base power of the attack.
      * @param pattern The damage pattern of the attack.
-     * @throws Exception
+     * @throws Exception If an error occurs during initialization.
      */
-    
     public MCAttack(MCEntity parent, String name, int power, Map<MCIntVector2, Float> pattern) throws Exception {
         this.parent = parent;
         this.attackName = name;
@@ -62,7 +76,7 @@ public class MCAttack {
     }
 
     /**
-     * Initializes parameters from tiled datas.
+     * Initializes parameters from tiled data.
      * @param props The map properties.
      */
     public void initFromProperties(MapProperties props) {
@@ -71,7 +85,7 @@ public class MCAttack {
     }
 
     /**
-     * Gets if the tile is concerned by the attack.
+     * Checks if the tile is concerned by the attack.
      * @param targetPos The target position.
      * @return True if the tile is valid, false otherwise.
      */
@@ -104,7 +118,7 @@ public class MCAttack {
     }
 
     /**
-     * Computes all the tile to display.
+     * Computes all tiles to display.
      */
     public void computeValidTilesDisplay() {
         //System.out.println("updating attack");
@@ -166,7 +180,7 @@ public class MCAttack {
     }
 
     /**
-     * Gets the name of the anim to play on the sender.
+     * Gets the name of the animation to play on the sender.
      * @return The sender animation name.
      */
     public String getSenderAnim() {
@@ -174,9 +188,9 @@ public class MCAttack {
     }
 
     /**
-     * Creates the right projectile.
+     * Spawns a projectile.
      * @return The projectile spawned.
-     * @throws Exception
+     * @throws Exception If an error occurs during projectile creation.
      */
     public MCProjectile spawnProjectile() throws Exception {
         return MCEntityManager.get().buildProjectile(projectileName);

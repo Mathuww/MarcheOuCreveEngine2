@@ -19,9 +19,12 @@ import com.walk.or.die.engine.tiledmap.MCMap;
 import com.walk.or.die.engine.tiledmap.MCMapLayer;
 
 /**
- * A singleton useful to load only one time assets used in many classes.
+ * A singleton useful to load assets that are used in many classes only once.
  */
 public class MCSharedAssets {
+    /**
+     * The singleton instance of MCSharedAssets.
+     */
     private static MCSharedAssets instance = null;
 
     /**
@@ -33,20 +36,38 @@ public class MCSharedAssets {
         return instance;
     }
 
+    /**
+     * The path to the font files.
+     */
     private String fontPath;
+    /**
+     * The TiledMapLayer containing miscellaneous tiles.
+     */
     private MCMapLayer miscTilesLayer;
+    /**
+     * A map storing saved TiledMapTile objects, indexed by name.
+     */
     private Map<String, TiledMapTile> savedTiles = new HashMap<>();
+    /**
+     * A map storing saved TextureRegion objects, indexed by name.
+     */
     private Map<String, TextureRegion> savedTextures = new HashMap<>();
+    /**
+     * A map storing saved BitmapFont objects, indexed by name.
+     */
     private Map<String, BitmapFont> savedBitmapFonts = new HashMap<>();
 
+    /**
+     * Constructs a new MCSharedAssets instance.
+     */
     private MCSharedAssets() {}
 
     /**
      * Initializes the singleton.
-     * @param miscMapPath The path to the misc map.
+     * @param miscMapPath The path to the miscellaneous map.
      * @param fontPath The path to the font.
      * @param drh The asset manager.
-     * @throws Exception if an error occurs during initialization.
+     * @throws Exception If an error occurs during initialization.
      */
     public void init(String miscMapPath, String fontPath, AssetManager drh) throws Exception {
         MCMap miscTilesMap = new MCMap(miscMapPath, drh);
@@ -71,6 +92,11 @@ public class MCSharedAssets {
         addSavedBitmapFont("ariBlackAlpha", "ariBlackAlphaFP", false);
     }
 
+    /**
+     * Adds a one-pixel texture.
+     * @param name The name of the texture.
+     * @param color The color of the texture.
+     */
     private void addOnePixelTexture(String name, Color color) {
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
@@ -80,6 +106,11 @@ public class MCSharedAssets {
         addSavedTexture(name, new TextureRegion(texture));
     }
 
+    /**
+     * Adds a gradient texture.
+     * @param name The name of the texture.
+     * @param color The color of the texture.
+     */
     private void addGradientTexture(String name, Color color) {
         int width = 64;
         Pixmap pixmap = new Pixmap(width, 1, Pixmap.Format.RGBA8888);
@@ -93,6 +124,11 @@ public class MCSharedAssets {
         addSavedTexture(name, new TextureRegion(texture));
     }
 
+    /**
+     * Adds a saved tile.
+     * @param nameVal The name of the tile.
+     * @throws Exception If the tile cannot be found or an error occurs during the process.
+     */
     private void addSavedTile(String nameVal) throws Exception {
         TiledMapTileLayer.Cell cell = miscTilesLayer.getCellByProperty("name", nameVal);
         if (cell == null)
@@ -106,10 +142,22 @@ public class MCSharedAssets {
             savedTextures.put(nameVal, texture);
     }
 
+    /**
+     * Adds a saved texture.
+     * @param nameVal The name of the texture.
+     * @param texture The texture region.
+     */
     private void addSavedTexture(String nameVal, TextureRegion texture) {
         savedTextures.put(nameVal, texture);
     }
  
+    /**
+     * Adds a saved bitmap font.
+     * @param filename The name of the file.
+     * @param petName The pet name for the font.
+     * @param intPos Indicates whether to use integer positions for rendering.
+     * @throws NotBeautifulFontException If the font is not considered beautiful.
+     */
     private void addSavedBitmapFont(String filename, String petName, boolean intPos) throws NotBeautifulFontException { 
         if (filename.contains("Arial")) {
             throw new NotBeautifulFontException(filename);
@@ -122,10 +170,10 @@ public class MCSharedAssets {
     }
 
     /**
-     * Gets a tile from his name.
+     * Gets a tile by its name.
      * @param name The name of the tile.
      * @return The tiled map tile.
-     * @throws Exception If the tile doesn't exist or the name is false.
+     * @throws Exception If the tile does not exist or the name is invalid.
      */
     public TiledMapTile getSavedTile(String name) throws Exception {
         TiledMapTile tile = savedTiles.get(name);
@@ -135,10 +183,10 @@ public class MCSharedAssets {
     }
 
     /**
-     * Gets a texture from its name.
+     * Gets a texture by its name.
      * @param name The name of the texture.
      * @return The texture region.
-     * @throws Exception If the texture doesn't exist or the name is false.
+     * @throws Exception If the texture does not exist or the name is invalid.
      */
     public TextureRegion getSavedTexture(String name) throws Exception {
         TextureRegion texture = savedTextures.get(name);
@@ -147,11 +195,11 @@ public class MCSharedAssets {
         return texture;
     }
 
-    /**LEFT
-     * Gets a font from its name.
+    /**
+     * Gets a font by its name.
      * @param name The name of the font.
      * @return The bitmap font.
-     * @throws Exception If the font doesn't exist or the name is false.
+     * @throws Exception If the font does not exist or the name is invalid.
      */
     public BitmapFont getSavedFont(String name) throws Exception {
         BitmapFont font = savedBitmapFonts.get(name);

@@ -8,15 +8,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
 /**
- * Class to represent the state machine, which manages states and transitions between them.
- * @param <T> Type of state
- * @param <U> Parent object owning this state machine
+ * Represents the state machine, which manages states and transitions between them.
+ * @param <T> Type of the state.
+ * @param <U> Parent object that owns this state machine.
  */
 public class MCStateMachine<T extends MCState, U> {
     
     /**
-     * Class internal to permit clean transitions between the previous and the next state.
-     * @param <T> Next state
+     * A class that permits clean transitions between the previous and next state.
+     * @param <T> The next state.
      */
     public static class TransitionArgs<T extends MCState.StateArgs> {
         /**
@@ -36,9 +36,9 @@ public class MCStateMachine<T extends MCState, U> {
 
         /**
          * Constructor.
-         * @param prevState The previous state
-         * @param nextState The next state
-         * @param args The arguments
+         * @param prevState The previous state.
+         * @param nextState The next state.
+         * @param args The arguments.
          */
         public TransitionArgs (String prevState, String nextState, T args) {
             this.prevState = prevState;
@@ -48,29 +48,29 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * Parent object owning this state machine.
+     * The parent object that owns this state machine.
      */
     protected U parent;
 
     /**
-     * List of the possible states.
+     * A list of the possible states.
      */
     private List<T> states;
 
     /**
-     * Actual state, which is updated and rendered each frame.
+     * The actual state, which is updated and rendered each frame.
      */
     private T currentState;
 
     /**
-     * Called when the state changes.
+     * The callback invoked when the state changes.
      */
     private BiConsumer<T, T> callback;
 
 
     /**
-     * The constructor.
-     * @param parent The parent object
+     * Constructs a new MCStateMachine with the specified parent.
+     * @param parent The parent object.
      */
     public MCStateMachine(U parent) {
         this.parent = parent;
@@ -79,7 +79,7 @@ public class MCStateMachine<T extends MCState, U> {
 
     /**
      * Gets the current state.
-     * @return the current state
+     * @return The current state.
      */
     public T getCurrentState() {
         return currentState;
@@ -87,8 +87,8 @@ public class MCStateMachine<T extends MCState, U> {
 
     /**
      * Sets the current state.
-     * @param name The name of the state
-     * @param args The arguments for the state
+     * @param name The name of the state.
+     * @param args The arguments for the state.
      */
     public void setCurrentState(String name, T.StateArgs args) {
         if (currentState != null) {
@@ -100,8 +100,8 @@ public class MCStateMachine<T extends MCState, U> {
 
     /**
      * Checks if the current state has the given name.
-     * @param name The name to check
-     * @return true if the current state has the given name, false otherwise
+     * @param name The name to check.
+     * @return True if the current state has the given name, false otherwise.
      */
     public boolean isIn(String name) {
         return currentState.getName().equals(name);
@@ -109,7 +109,7 @@ public class MCStateMachine<T extends MCState, U> {
 
     /**
      * Adds a possible state to the state machine.
-     * @param state The state to add
+     * @param state The state to add.
      */
     public void addState(T state) {
         states.add(state);
@@ -126,7 +126,7 @@ public class MCStateMachine<T extends MCState, U> {
     
     /**
      * Called on each frame.
-     * @param batch The sprite batch
+     * @param batch The sprite batch.
      */
     public void render(SpriteBatch batch) {
         if (currentState == null) return;
@@ -134,8 +134,8 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * Renders call after the main render (used for visual effects).
-     * @param batch The sprite batch
+     * Renders visual effects after the main render call.
+     * @param batch The sprite batch.
      */
     public void renderEffects(SpriteBatch batch) {
         if (currentState == null) return;
@@ -143,8 +143,8 @@ public class MCStateMachine<T extends MCState, U> {
     }
 
     /**
-     * Allows or not the transition.
-     * @param args The transition arguments
+     * Checks whether a state transition is allowed.
+     * @param args The transition arguments.
      */
     public void stateTransitionCheck(TransitionArgs<?> args) {
         if (!args.prevState.equals(currentState.getName()) || !stateExists(args.nextState)) {
@@ -158,8 +158,8 @@ public class MCStateMachine<T extends MCState, U> {
 
     /**
      * Checks if a possible state has the given name.
-     * @param name The name to check
-     * @return true if a state with the given name exists, false otherwise
+     * @param name The name to check.
+     * @return True if a state with the given name exists, false otherwise.
      */
     public boolean stateExists(String name) {
         for (T state : states) {
@@ -172,8 +172,8 @@ public class MCStateMachine<T extends MCState, U> {
 
     /**
      * Gets a state based on its name.
-     * @param name The name of the state
-     * @return the state (or null)
+     * @param name The name of the state.
+     * @return The state (or null).
      */
     public T getState(String name) {
         for (T state : states) {
@@ -186,10 +186,10 @@ public class MCStateMachine<T extends MCState, U> {
 
     /**
      * Transitions between two states.
-     * @param <V>
-     * @param prevState The previous state
-     * @param nextState The next state
-     * @param args The transition arguments
+     * @param <V> The type of state arguments.
+     * @param prevState The previous state.
+     * @param nextState The next state.
+     * @param args The transition arguments.
      */
     private <V extends T.StateArgs> void stateTransition(T prevState, T nextState, V args) {
         if (!prevState.getName().equals(currentState.getName())) {
@@ -204,7 +204,7 @@ public class MCStateMachine<T extends MCState, U> {
     
     /**
      * Sets the callback.
-     * @param callback The callback to set
+     * @param callback The callback to set.
      */
     public void setCallback(BiConsumer<T, T> callback) {
         this.callback = callback;

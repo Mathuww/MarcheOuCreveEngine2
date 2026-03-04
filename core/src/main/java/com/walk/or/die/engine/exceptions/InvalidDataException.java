@@ -1,11 +1,11 @@
 package com.walk.or.die.engine.exceptions;
 
 /**
- * Throws this exception when the data are wrong or corrupted.
+ * Indicates that the provided data is incorrect or corrupted.
  */
 public class InvalidDataException extends Exception {
     /**
-     * The constructor.
+     * Constructs a new InvalidDataException with the specified detail message.
      * @param msg The message of the exception.
      */
     public InvalidDataException(String msg) {

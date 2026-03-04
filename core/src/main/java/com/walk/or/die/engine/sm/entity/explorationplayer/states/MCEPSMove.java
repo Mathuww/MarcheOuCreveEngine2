@@ -21,6 +21,9 @@ import com.walk.or.die.engine.tiledmap.MCTerrainMap;
 public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs> {
 
     public static class MoveStateArgs extends MCExplorationPlayerState.StateArgs {
+        /**
+         * The first directional command received.
+         */
         public MCInputManager.DirectionalCommand firstData;
 
         /**
@@ -31,21 +34,46 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
         }
     }
 
+    /**
+     * The vector representing the relative movement.
+     */
     private Vector2 relativeMove;
+    /**
+     * The last directional command received.
+     */
     private DirectionalCommand lastCmd;
+    /**
+     * The number of concurrent commands currently active.
+     */
     private int nbConcurrentCommand;
 
+    /**
+     * The base movement speed of the player.
+     */
     private final float MOVE_SPEED = 8f;
 
+    /**
+     * The current speed of the player.
+     */
     private float speed;
 
+    /**
+     * A map storing the current state of directional inputs.
+     */
     private Map<MCIntVector2, Boolean> currentInput;
 
+    /**
+     * The maximum X coordinate limit for player movement.
+     */
     private float limitX;
+    /**
+     * The maximum Y coordinate limit for player movement.
+     */
     private float limitY;
 
 
     /**
+     * Constructs a new MCEPSMove state.
      * @param parent The exploration player.
      */
     public MCEPSMove(MCExplorationPlayer parent) {
@@ -59,7 +87,7 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     }
 
     /**
-     * Updates the command.
+     * Updates the command state.
      * @param cmd The directional command.
      * @param action A boolean indicating whether the command is being activated or deactivated.
      */
@@ -161,7 +189,7 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     }
 
     /**
-     * Called at entrance
+     * Called at entrance.
      * @param args The move state arguments.
      */
     @Override
@@ -174,7 +202,7 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     }
 
     /**
-     * Called at exit
+     * Called at exit.
      */
     @Override
     public void exit() {
@@ -212,8 +240,8 @@ public class MCEPSMove extends MCExplorationPlayerState<MCEPSMove.MoveStateArgs>
     }
 
     /**
-     * Called on each frame
-     * @param delta The time delta
+     * Called on each frame.
+     * @param delta The time delta.
      */
     @Override
     public void update(float delta) { // IL FAUT UTILISER LE DELTAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA

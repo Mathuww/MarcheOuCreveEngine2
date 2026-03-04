@@ -20,14 +20,23 @@ import com.walk.or.die.engine.shared.MCIntVector2;
  * Represents a behavioral class that allows the player to control the camera with the arrows.
  */
 public class MCArrowsCamBehavior extends MCCameraBehavior {
+    /** The camera movement speed. */
     private final float CAM_MOVE_SPEED = 0.05f;
+    /** The camera linear interpolation factor. */
     private final float CAM_LERP = 3f;
-    private float targetX = 0f, targetY = 0f;
+    /** The target X coordinate for camera interpolation. */
+    private float targetX = 0f;
+    /** The target Y coordinate for camera interpolation. */
+    private float targetY = 0f;
+    /** Indicates if the camera is currently translating. */
     private boolean translating = false;
 
+    /** The entity the camera targets. */
     private MCEntity target;
+    /** The target zoom level for the camera. */
     private Float targetZoom;
 
+    /** A map storing the current state of directional inputs. */
     private Map<MCIntVector2, Boolean> currentInput;
 
     /**
@@ -38,7 +47,7 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
     }
 
     /**
-     * Called at state entrance.
+     * Called at entrance.
      */
     @Override
     public void enter() {
@@ -53,13 +62,13 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
     }
 
     /**
-     * Called at state exit.
+     * Called at exit.
      */
     @Override
     public void exit() {}
 
     /**
-     * Handles when an input is pressed.
+     * Handles an input press event.
      * @param gdxCam The LibGDX OrthographicCamera.
      * @param data The input command data.
      */
@@ -97,7 +106,7 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
     }
 
     /**
-     * Handles when an input is released.
+     * Handles an input release event.
      * @param data The input command data.
      */
     public void handleInputReleased(Command data) {
@@ -107,7 +116,7 @@ public class MCArrowsCamBehavior extends MCCameraBehavior {
     }
 
     /**
-     * Moves to the target position by interpolating.
+     * Moves the camera to the target position by interpolating.
      * @param pos The target position.
      */
     @Override

@@ -27,9 +27,21 @@ public class MCMap implements Disposable {
      * @see TiledMap
      */
     protected TiledMap tiledMap;
+    /**
+     * The size of a single tile.
+     */
     protected float tileSize;
+    /**
+     * The scale factor for converting tile coordinates to world units.
+     */
     protected float unitScale;
+    /**
+     * The maximum width among all layers in tiles.
+     */
     private int maxLayerWidth = 0;
+    /**
+     * The maximum height among all layers in tiles.
+     */
     private int maxLayerHeight = 0;
 
     /**
@@ -116,9 +128,9 @@ public class MCMap implements Disposable {
     }
 
     /**
-     * Gets the vector of the tile where pos is.
+     * Calculates the integer coordinates of the tile nearest to the given position.
      * @param pos The position vector.
-     * @return The vector of the tile where pos is.
+     * @return The integer coordinates of the nearest tile.
      * @see MCIntVector2
      */
     public MCIntVector2 stickToNearestTile(Vector2 pos) {
@@ -197,7 +209,7 @@ public class MCMap implements Disposable {
     }
 
     /**
-     * Returns the display point of a tile from its tiled coords.
+     * Calculates the display coordinates of a tile from its tiled coordinates.
      * @param tiledCoords The tile coordinates.
      * @return The display coordinates.
      */
@@ -207,6 +219,9 @@ public class MCMap implements Disposable {
         return new Vector2(displayX, displayY);
     }
 
+    /**
+     * Disposes of the tiled map resources.
+     */
     @Override
     public void dispose() {
         if (tiledMap != null) tiledMap.dispose();

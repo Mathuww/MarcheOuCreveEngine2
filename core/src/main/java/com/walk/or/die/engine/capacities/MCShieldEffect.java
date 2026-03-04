@@ -8,20 +8,28 @@ import com.walk.or.die.engine.entities.MCCharacter;
 public class MCShieldEffect extends MCEffects{
     
     /**
-     * The constructor.
+     * Constructs a new shield effect.
      * @param parent The parent character.
-     * @param displayName The display name.
      */
     public MCShieldEffect(MCCharacter parent) {
         super(parent, "TOTAL SHIELD");
     }
 
     @Override
+    /**
+     * Gets a summary description of the effect.
+     * @return A summary string describing the effect.
+     */
     public String getSummary() {
         return "This ally will be insensitive to all attacks for one turn.";
     }
 
     @Override
+    /**
+     * Creates a copy of this effect for a specified target character.
+     * @param target The character to apply the effect to.
+     * @return A new instance of {@code MCShieldEffect} for the target.
+     */
     public MCEffects copy(MCCharacter target) {
         return new MCShieldEffect(target);
     }

@@ -24,23 +24,32 @@ import com.walk.or.die.engine.tiledmap.MCTerrainMap;
  * A singleton which creates entities, based on tiled data.
  */
 public class MCEntityFactory {
+    /** The singleton instance of MCEntityFactory. */
     private static MCEntityFactory instance = null;
 
     /**
      * Gets the instance.
-     * @return the instance
+     * @return The instance.
      */
     public static MCEntityFactory get() {
         if (instance == null) instance = new MCEntityFactory();
         return instance;
     }
 
+    /** The root path for entity animations. */
     private final String ENTITY_ROOT = "tiled/packed/entities_anims/";
+    /** The asset manager for loading resources. */
     private AssetManager assetManager;
+    /** A map of entity type strings to their corresponding classes. */
     private Map<String, Class<? extends MCEntity>> entityTypes;
+    /** Stores the generic names of entities found during initialization to detect duplicates. */
     private Map<String, String> possibleEntities;
+    /** A cache of entity maps, keyed by their generic names. */
     private Map<String, MCMap> mapCache;
 
+    /**
+     * Constructs a new MCEntityFactory instance.
+     */
     private MCEntityFactory() {
         entityTypes = new HashMap<>();
         possibleEntities = new HashMap<>();
@@ -48,9 +57,9 @@ public class MCEntityFactory {
     }
 
     /**
-     * Inits the singleton.
-     * @param assetManager the asset manager
-     * @throws InvalidDataException if the data is invalid
+     * Initializes the singleton.
+     * @param assetManager The asset manager.
+     * @throws InvalidDataException If the data is invalid.
      */
     public void init(AssetManager assetManager) throws InvalidDataException {
         this.assetManager = assetManager;
@@ -78,14 +87,15 @@ public class MCEntityFactory {
 
     /**
      * Builds a new instance of an entity.
-     * @param parentScreen the parent screen
-     * @param parentMap the parent map
-     * @param entityGenericName the entity generic name
-     * @param entityId the entity id
-     * @param props the map properties
-     * @return the built entity
-     * @throws IllegalStateException if the state is illegal
-     * @throws InvalidDataException if the data is invalid
+     * @param parentScreen The parent screen.
+     * @param parentMap The parent map.
+     * @param entityGenericName The entity generic name.
+     * @param entityId The entity ID.
+     * @param props The map properties.
+     * @return The built entity.
+     * @throws IllegalStateException If the state is illegal.
+     * @throws InvalidDataException If the data is invalid.
+     * @throws Exception If a general error occurs during entity creation.
      */
     public MCEntity build(MCGame parentScreen, MCTerrainMap parentMap, String entityGenericName, String entityId, MapProperties props) throws Exception {
         if (assetManager == null) 

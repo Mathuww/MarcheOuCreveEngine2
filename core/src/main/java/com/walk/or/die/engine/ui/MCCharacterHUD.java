@@ -14,11 +14,11 @@ import com.walk.or.die.engine.input.MCInputManager;
 import com.walk.or.die.engine.shared.MCEventBus;
 
 /**
- * The biggest (and most complex) HUD element : the character HUD. <br>
- * It can only keep focus on one character, and can be shown and hidden at any time. <br>
- * When switching between characters and when switching visibility, it will never instantly disappear or appear, but will scroll below the visible zone then appear again. <br>
- * For the focused character, we displayed its current sprite (updating each frame to follow the animation playing), its name and its current HP, as well as a right panel with a carousel whose actions will depend of the type of the character. <br>
- * For an ally, it will allow the player to choose actions but for an enemy, it will only show attacks to previsualize.
+ * The biggest (and most complex) HUD element: the character HUD. <br>
+ * It can only keep focus on one character and can be shown and hidden at any time. <br>
+ * When switching between characters and visibility, it never instantly disappears or appears, but scrolls below the visible zone then appears again. <br>
+ * For the focused character, it displays its current sprite (which updates each frame to follow the playing animation), its name, and its current HP, as well as a right panel with a carousel whose actions depend on the type of the character. <br>
+ * For an ally, it allows the player to choose actions, but for an enemy, it only shows attacks for preview.
  */
 public class MCCharacterHUD extends MCAbstractHUD {
     /**
@@ -99,13 +99,16 @@ public class MCCharacterHUD extends MCAbstractHUD {
      */
     private final float SCROLL_LERP = 16f;
     /**
-     * Target Y position when the HUD is "hidden" (actually it's just below the screen visible zone.)
+     * Target Y position when the HUD is "hidden" (actually, it is just below the screen's visible zone).
      */
     private final float SCROLL_Y = HUD_RECT_BORDER - HUD_PADDING_HEIGHT - HUD_HEIGHT;
 
+    /**
+     * The font used for rendering text.
+     */
     private BitmapFont font;
     /**
-     * When switching character, it would be quite unaesthetic to see the name of the character change before the HUD disappears. So we store it to make the switch only when it's out the screen.
+     * Stores the character to switch to. When switching characters, it would be unaesthetic to see the character's name change before the HUD disappears. The switch is made only when the HUD is off-screen.
      */
     private MCCharacter afterSwitchCharacter;
     /**
@@ -118,6 +121,9 @@ public class MCCharacterHUD extends MCAbstractHUD {
      */
     private MCUILayout layout = new MCUILayout();
 
+    /**
+     * The sprite of the currently focused character.
+     */
     private Sprite characterSprite = new Sprite();
     /**
      * @see MCUIScrollingText
@@ -162,8 +168,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
      */
     private boolean shown = false;
     /**
-     * Sometimes it's useful to hide the right panel. <br>
-     * Especially used during enemies' turn for aesthetics.
+     * Indicates whether the right panel should be rendered. It is especially used during enemies' turns for aesthetic purposes.
      */
     private boolean renderRightPanel = true;
     /**
@@ -172,6 +177,9 @@ public class MCCharacterHUD extends MCAbstractHUD {
      */
     private boolean renderRPafterScroll = true;
 
+    /**
+     * The event bus for handling events.
+     */
     private final MCEventBus bus = MCEventBus.get();
 
     /**
@@ -245,8 +253,8 @@ public class MCCharacterHUD extends MCAbstractHUD {
     }
 
     /**
-     * Scrolls to a specific target offset.
-     * @param targetOffsetY The target offset to scroll to.
+     * Scrolls the HUD to a specific target offset.
+     * @param targetOffsetY The target Y offset to scroll to.
      */
     private void scrollTo(float targetOffsetY) {
         if (this.targetOffsetY == targetOffsetY)
@@ -256,7 +264,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
     }
 
     /**
-     * Hides the HUD.
+     * Hides the character HUD.
      */
     public void hide() {
         if (currentCharacter != null)
@@ -266,7 +274,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
     }
 
     /**
-     * Shows the HUD.
+     * Shows the character HUD.
      */
     public void show() {
         HudCustomization customization = currentCharacter.getHudCustomization();
@@ -278,7 +286,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     /**
      * Gets the display status of the right panel.
-     * @return True if the right panel is displayed, false otherwise.
+     * @return Returns true if the right panel is displayed, false otherwise.
      */
     public boolean getRightPanelDisplay() {
         if (scrolling)
@@ -302,7 +310,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     /**
      * Gets the current character.
-     * @return The current character.
+     * @return Returns the currently focused character.
      */
     public MCCharacter getCharacter() {
         return currentCharacter;
@@ -310,7 +318,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     /**
      * Sets the current character.
-     * @param newCharacter The new character to set.
+     * @param newCharacter The new character to focus on.
      */
     public void setCharacter(MCCharacter newCharacter) {
         if (newCharacter == null || newCharacter.isDead()) {
@@ -343,7 +351,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     /**
      * Requests a refresh of the HUD.
-     * @param c The character to refresh the HUD for.
+     * @param c The character for which to refresh the HUD.
      * @param reloadCarousel True to reload the carousel, false otherwise.
      */
     public void refreshRequest(MCCharacter c, boolean reloadCarousel) {
@@ -385,14 +393,14 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     /**
      * Sets the message to be displayed in the choice message text.
-     * @param text The text to set.
+     * @param text The text to set as the choice message.
      */
     public void setMessage(String text) {
         choiceMessageText.setText(text);
     }
     
     /**
-     * Handles input when a button is pressed.
+     * Handles input commands when a button is pressed.
      * @param cmd The command that was pressed.
      */
     @Override
@@ -468,7 +476,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     /**
      * Called on each frame.
-     * @param batch The sprite batch to render with.
+     * @param batch The sprite batch used for rendering.
      */
     @Override
     public void render(SpriteBatch batch) {
@@ -501,7 +509,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
 
     /**
      * Checks if the HUD is fully shown.
-     * @return True if the HUD is fully shown, false otherwise.
+     * @return Returns true if the HUD is fully shown, false otherwise.
      */
     public boolean isFullyShown() {
         return shown && !scrolling && (offsetY == targetOffsetY);
@@ -510,7 +518,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
     /**
      * Checks if a position belongs to a HUD component.
      * @param mousePos The position to check.
-     * @return True if the position belongs to a HUD component, false otherwise.
+     * @return Returns true if the position belongs to a HUD component, false otherwise.
      */
     public boolean posBelongsToHudComponent(Vector2 mousePos) {
         if (renderRightPanel)
@@ -531,7 +539,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
     }
 
     /**
-     * Handles hover gone events.
+     * Handles events when the mouse hover leaves the HUD component.
      */
     public void handleHoverGone() {
         choiceCarousel.handleHoverGone();
@@ -551,7 +559,7 @@ public class MCCharacterHUD extends MCAbstractHUD {
     /**
      * Handles scroll events.
      * @param pos The position of the scroll event.
-     * @param dy The amount of the scroll.
+     * @param dy The amount of scroll.
      */
     public void handleScroll(Vector2 pos, float dy) {
         if (!isFullyShown())

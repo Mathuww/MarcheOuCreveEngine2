@@ -1,30 +1,39 @@
 package com.walk.or.die.engine.shared;
 
 /**
- * Simplex noise generator, a simplified copy of :
+ * Simplex noise generator, a simplified copy of:
  * https://github.com/KdotJPG/OpenSimplex2/
  * (Unlicensed / Public domain)
  * We removed everything related to 3D & 4D noise.
  * 
- * Original comment :
+ * Original comment:
  * K.jpg's OpenSimplex 2, smooth variant ("SuperSimplex")
  */
-
 public class OpenSimplex2S {
 
+    /** Represents the X prime multiplier used in hashing. */
     private static final long PRIME_X = 0x5205402B9270C86FL;
+    /** Represents the Y prime multiplier used in hashing. */
     private static final long PRIME_Y = 0x598CD327003817B5L;
+    /** Represents the hash multiplier used in gradient calculations. */
     private static final long HASH_MULTIPLIER = 0x53A3F72DEEC546F5L;
 
+    /** Represents the constant square root of 2 divided by 2. */
     private static final double ROOT2OVER2 = 0.7071067811865476;
+    /** Represents the 2D skew factor. */
     private static final double SKEW_2D = 0.366025403784439;
+    /** Represents the 2D unskew factor. */
     private static final double UNSKEW_2D = -0.21132486540518713;
 
+    /** Represents the exponent for the number of 2D gradients. */
     private static final int N_GRADS_2D_EXPONENT = 7;
+    /** Represents the total number of 2D gradients. */
     private static final int N_GRADS_2D = 1 << N_GRADS_2D_EXPONENT;
 
+    /** Represents the 2D normalizer constant. */
     private static final double NORMALIZER_2D = 0.05481866495625118;
 
+    /** Represents the squared radius constant for 2D noise. */
     private static final float RSQUARED_2D = 2.0f / 3.0f;
 
     /*
@@ -32,7 +41,8 @@ public class OpenSimplex2S {
      */
 
     /**
-     * 2D OpenSimplex2S/SuperSimplex noise, standard lattice orientation.
+     * Generates 2D OpenSimplex2S/SuperSimplex noise with a standard lattice orientation.
+     *
      * @param seed The seed value.
      * @param x The x coordinate.
      * @param y The y coordinate.
@@ -48,11 +58,12 @@ public class OpenSimplex2S {
     }
 
     /**
-     * 2D OpenSimplex2S/SuperSimplex noise, with Y pointing down the main diagonal.
-     * Might be better for a 2D sandbox style game, where Y is vertical.
-     * Probably slightly less optimal for heightmaps or continent maps,
-     * unless your map is centered around an equator. It's a slight
+     * Generates 2D OpenSimplex2S/SuperSimplex noise, with Y pointing down the main diagonal.
+     * This might be better for a 2D sandbox style game where Y is vertical.
+     * It is probably slightly less optimal for heightmaps or continent maps,
+     * unless your map is centered around an equator. It is a slight
      * difference, but the option is here to make it easy.
+     *
      * @param seed The seed value.
      * @param x The x coordinate.
      * @param y The y coordinate.
@@ -68,7 +79,8 @@ public class OpenSimplex2S {
     }
 
     /**
-     * 2D  OpenSimplex2S/SuperSimplex noise base.
+     * Generates the 2D OpenSimplex2S/SuperSimplex noise base.
+     *
      * @param seed The seed value.
      * @param xs The skewed x coordinate.
      * @param ys The skewed y coordinate.
@@ -185,6 +197,7 @@ public class OpenSimplex2S {
 
     /**
      * Calculates the gradient.
+     *
      * @param seed The seed value.
      * @param xsvp The x seed prime.
      * @param ysvp The y seed prime.
@@ -202,6 +215,7 @@ public class OpenSimplex2S {
 
     /**
      * Calculates the fast floor.
+     *
      * @param x The x value.
      * @return The fast floor value.
      */
@@ -214,6 +228,7 @@ public class OpenSimplex2S {
      * Lookup Tables and Gradients
      */
 
+    /** Represents the 2D gradient lookup table. */
     private static float[] GRADIENTS_2D;
     static {
 

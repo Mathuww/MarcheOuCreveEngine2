@@ -21,15 +21,15 @@ import com.walk.or.die.engine.ui.MCUICarousel.CarouselItem;
 public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
 
     /**
-     * Class which represents args needed by idle move to start.
+     * Represents the arguments needed to start an idle move.
      */
     public static class IdleStateArgs extends MCCharacterState.StateArgs {
         // ajouter derniere direction pour jouer idle_up, idle_right etc.
     }
 
     /**
-     * The constructor.
-     * @param parent the parent character
+     * Constructs a new {@code MCCSIdle} state.
+     * @param parent The parent character.
      */
     public MCCSIdle(MCCharacter parent) {
         super(parent);
@@ -37,8 +37,8 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     }
 
     /**
-     * Called on each frame
-     * @param delta the delta time
+     * Called on each frame.
+     * @param delta The delta time.
      */
     @Override
     public void update(float delta) {
@@ -47,7 +47,7 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
 
     /**
      * Called at state entrance.
-     * @param args the arguments for the idle state
+     * @param args The arguments for the idle state.
      */
     @Override
     public void enter(IdleStateArgs args) {
@@ -59,7 +59,7 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
     }
 
     /**
-     * Called at state exit
+     * Called at state exit.
      */
     @Override
     public void exit() {
@@ -106,6 +106,9 @@ public class MCCSIdle extends MCCharacterState<MCCSIdle.IdleStateArgs> {
             changeState("aim", new MCCSAim.AimStateArgs());
     }
 
+    /**
+     * Transitions to the "capacity choose" state if conditions are met.
+     */
     public void goToCapaChoose() {
         if (!parent.focus)
             return;

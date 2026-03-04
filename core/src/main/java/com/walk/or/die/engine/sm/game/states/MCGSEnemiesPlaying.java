@@ -19,18 +19,22 @@ import com.walk.or.die.engine.sm.MCState;
 import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
+/**
+ * Represents the game state where enemies are taking their turns.
+ * This state manages enemy actions, turn progression, and associated UI/camera changes.
+ */
 public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPlayingArgs> {
 
     /**
-     * Does not refer to a Allies/Enemies turn,
+     * Does not refer to an Allies/Enemies turn,
      * but to the internal turns within the current state. <br>
-     * True if it is time to make another enemy play. <br>
-     * Consumed when an enemy played. <br>
-     * Allows us to set a min. time between two enemies playing.
+     * Indicates if it is time to make another enemy play. <br>
+     * It is consumed when an enemy plays. <br>
+     * Allows the setting of a minimum time between two enemies playing.
      */
     private boolean nextTurnRequest = false;
     /**
-     * Only true before the first enemy played.
+     * Indicates if it is true only before the first enemy plays.
      */
     private boolean firstPlay = false;
     /**
@@ -38,30 +42,37 @@ public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPla
      */
     private float intermediateTime = 0f;
     /**
-     * Used to artificially slow down the Enemies turn,
-     * to make it more bearable to watch and more cinematic.
+     * Used to artificially slow down the enemies' turn,
+     * making it more bearable to watch and more cinematic.
      */
     private final float MIN_TIME_BETWEEN_PLAYS = 2.5f;
     /**
-     * Contains the enemies who should play.
+     * Contains the enemies that should play.
      */
     private Queue<MCEnemy> enemies = new ArrayDeque<>();
     /**
-     * Current processed enemy.
+     * The current processed enemy.
      */
     private MCEnemy enemy = null;
 
     /**
-     * Used to reset HUD focus to the character selected before clicking END TURN.
+     * Used to reset the HUD focus to the character selected before clicking END TURN.
      */
     private MCCharacter hudFocusBefore;
     /**
-     * Used to reset camera position to the one it had before clicking END TURN.
+     * Used to reset the camera position to the one it had before clicking END TURN.
      */
     private Vector2 cameraPosBefore = new Vector2();
 
+    /**
+     * Arguments for the EnemiesPlaying state.
+     */
     public static class EnemiesPlayingArgs extends MCState.StateArgs {}
 
+    /**
+     * Constructs a new MCGSEnemiesPlaying state.
+     * @param parent The game instance.
+     */
     public MCGSEnemiesPlaying(MCGame parent) {
         super(parent);
         this.name = "EnemiesPlaying";
@@ -69,9 +80,7 @@ public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPla
 
     /**
      * Called on each frame.
-     * If it is time for another enemy to play,
-     * will check if enough time elapsed and if that is the case,
-     * will make it play.
+     * If it is time for another enemy to play, it checks if enough time has elapsed and, if so, makes the enemy play.
      * @param delta The time in seconds since the last frame.
      */
     @Override
@@ -90,7 +99,7 @@ public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPla
 
     /**
      * Called at state entrance.
-     * Inits the enemies list, then setups both HUD and camera.
+     * Initializes the enemies list, then sets up both the HUD and camera.
      * @param args The arguments passed to the state.
      */
     @Override
@@ -115,7 +124,7 @@ public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPla
     }
 
     /**
-     * Called when a new enemy should play.
+     * Is called when a new enemy should play.
      */
     private void playOne() {
         // nettoyer les ennemis morts
@@ -139,7 +148,7 @@ public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPla
 
     /**
      * Called at state exit. <br>
-     * Resets HUD and camera to the state they were before.
+     * Resets the HUD and camera to the state they were in before.
      */
     @Override
     public void exit() {
@@ -155,9 +164,9 @@ public class MCGSEnemiesPlaying extends MCGSCombat<MCGSEnemiesPlaying.EnemiesPla
     }
 
     /**
-     * Called when a combat is done. <br>
-     * Delegates logic to MCGSCombat.
-     * @param args Which team won.
+     * Is called when combat is done. <br>
+     * Delegates logic to the MCGSCombat class.
+     * @param args The arguments indicating which team won.
      */
     @Override
     public void combatDone(MCGame.CombatDoneArgs args) {

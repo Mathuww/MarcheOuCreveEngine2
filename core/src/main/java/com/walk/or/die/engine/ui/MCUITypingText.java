@@ -10,20 +10,25 @@ import com.walk.or.die.engine.ui.MCUILayout.Zone;
  * @see MCUISimpleText
  */
 public class MCUITypingText extends MCUISimpleText { 
+    /** Tracks the current state time for typing. */
     private float stateTime = 0f;
+    /** Indicates if the text is currently typing. */
     private boolean typing;
+    /** Represents the typing speed in characters per second. */
     private float typingSpeed = 15f; // caracteres/s
+    /** Stores the number of characters currently typed and displayed. */
     private int typedChars = 0;
+    /** Stores the complete text to be typed. */
     private String fullText = "";
 
     /**
      * Creates a new MCUITypingText.
      * @param parent The parent HUD.
      * @param font The bitmap font.
-     * @param zone The zone.
-     * @param color The color.
-     * @param scale The scale.
-     * @param spacing The spacing.
+     * @param zone The zone for layout.
+     * @param color The color of the text.
+     * @param scale The scale of the text.
+     * @param spacing The spacing between characters.
      */
     public MCUITypingText(
         MCAbstractHUD parent, 
@@ -46,6 +51,7 @@ public class MCUITypingText extends MCUISimpleText {
 
     /**
      * Starts the typing animation.
+     * Resets the state time and typed characters, then sets the typing flag to true.
      */
     public void startTyping() {
         stateTime = 0f;
@@ -56,6 +62,7 @@ public class MCUITypingText extends MCUISimpleText {
 
     /**
      * Ends the typing animation.
+     * Sets the number of typed characters to the full text length and sets the typing flag to false.
      */
     public void endTyping() {
         typedChars = fullText.length();
@@ -71,7 +78,8 @@ public class MCUITypingText extends MCUISimpleText {
     }
 
     /**
-     * Sets the full text.
+     * Sets the full text to be typed.
+     * This method stores the full text and clears the currently displayed text.
      * @param text The text to set.
      */
     @Override
@@ -81,7 +89,8 @@ public class MCUITypingText extends MCUISimpleText {
     }
 
     /**
-     * Called on each frame
+     * Called on each frame.
+     * Updates the typing animation based on the elapsed time.
      * @param delta The time in seconds since the last frame.
      */
     @Override

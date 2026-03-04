@@ -21,19 +21,19 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     /**
      * The size of the black contour around the bar (in tiles).
      */
-    private final float CONTOUR_SIZE = 0.055f; 
+    private final float CONTOUR_SIZE = 0.055f;
     /**
      * The height of the bar (in tiles).
      */
-    private final float BAR_HEIGHT = 0.08f; 
+    private final float BAR_HEIGHT = 0.08f;
     /**
      * The width of the bar (in tiles).
      */
-    private final float BAR_WIDTH = 0.85f; 
+    private final float BAR_WIDTH = 0.85f;
     /**
      * The Y offset relative to the bottom of the tile.
      */
-    private final float BAR_Y_OFFSET = 1.15f; 
+    private final float BAR_Y_OFFSET = 1.15f;
     /**
      * The Y offset used when the bar would otherwise be off-screen (top).
      */
@@ -79,7 +79,7 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     /**
      * The threshold ratio below which the bar turns red.
      */
-    private final float LOW_HP_THRESHOLD = 0.34f; 
+    private final float LOW_HP_THRESHOLD = 0.34f;
 
     /**
      * The interpolation speed for the HP bar fill.
@@ -90,16 +90,34 @@ public class MCTerrainHPBar extends MCAbstractHUD {
      */
     private final float FADING_DURATION = 0.3f;
 
+    /**
+     * The shared assets instance.
+     */
     private MCSharedAssets sharedAssets = MCSharedAssets.get();
     /**
      * The camera manager, used to check bounds.
      */
     private MCCameraManager camManager = MCCameraManager.get();
 
+    /**
+     * The texture for the bar contour.
+     */
     private TextureRegion contourTexture;
+    /**
+     * The texture for the bar background.
+     */
     private TextureRegion backgroundTexture;
+    /**
+     * The texture for the high HP fill.
+     */
     private TextureRegion fillTextureHighHP;
+    /**
+     * The texture for the mid HP fill.
+     */
     private TextureRegion fillTextureMidHP;
+    /**
+     * The texture for the low HP fill.
+     */
     private TextureRegion fillTextureLowHP;
     /**
      * The currently active fill texture (green, yellow or red).
@@ -146,9 +164,15 @@ public class MCTerrainHPBar extends MCAbstractHUD {
      */
     private boolean display = true;
 
+    /**
+     * The UI layout manager.
+     */
     private MCUILayout layout = new MCUILayout();
+    /**
+     * The font used for drawing text.
+     */
     private BitmapFont font;
-    
+
     /**
      * The string representation of the damage amount.
      */
@@ -185,7 +209,7 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     /**
      * Constructs a {@code MCTerrainHPBar}.
      * @param parent The parent MCCharacter.
-     * @param vp The viewport.
+     * @param vp The viewport instance.
      */
     public MCTerrainHPBar(MCCharacter parent, Viewport vp) {
         this.parent = parent;
@@ -246,7 +270,7 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     }
 
     /**
-     * Updates the bar logic. Called each frame.
+     * Updates the bar logic. Called on each frame.
      * @param delta The time elapsed since the last frame.
      */
     public void update(float delta) {
@@ -295,7 +319,7 @@ public class MCTerrainHPBar extends MCAbstractHUD {
     }
 
     /**
-     * Renders the bar and damage indicator. Called each frame.
+     * Renders the bar and damage indicator. Called on each frame.
      * @param batch The sprite batch used for drawing.
      */
     public void render(SpriteBatch batch) {

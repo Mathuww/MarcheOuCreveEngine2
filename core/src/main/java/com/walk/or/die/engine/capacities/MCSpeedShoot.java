@@ -12,27 +12,39 @@ import com.walk.or.die.engine.sm.entity.character.states.MCCSShoot;
 import com.walk.or.die.engine.tiledmap.MCPathfinder;
 
 public class MCSpeedShoot extends MCEffects {
-    
+
+    /** Holds the tile reached arguments. */
     private MCEntity.TileReachedArgs args;
 
+    /** Indicates whether a shoot action has been performed. */
     private boolean hasShoot = false;
 
     /**
      * Constructs a new MCSpeedShoot object.
      *
      * @param parent The parent character.
-     * @param displayName The display name of the effect.
      */
     public MCSpeedShoot(MCCharacter parent) {
         super(parent, "SPEED SHOOT");
         MCEventBus.get().on(this, "EntityTileReached", this::tileReached);
     }
 
+    /**
+     * Returns a summary of the effect.
+     *
+     * @return A summary string for the effect.
+     */
     @Override
     public String getSummary() {
         return "This ally will return every attack to the sender for one turn.";
     }
 
+    /**
+     * Creates a copy of this effect for a given target.
+     *
+     * @param target The character to apply the copied effect to.
+     * @return A new instance of the effect copied for the target.
+     */
     @Override
     public MCEffects copy(MCCharacter target) {
         return new MCSpeedShoot(target);
@@ -59,7 +71,7 @@ public class MCSpeedShoot extends MCEffects {
     /**
      * Delays the shoot action.
      *
-     * @param n The object.
+     * @param n The object that triggers the delay.
      */
     private void delay(Object n) {
         if (hasShoot) return ;

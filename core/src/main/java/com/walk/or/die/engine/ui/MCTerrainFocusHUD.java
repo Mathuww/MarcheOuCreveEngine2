@@ -15,8 +15,14 @@ public class MCTerrainFocusHUD extends MCAbstractHUD {
      */
     private final float CORNER_SIZE = 0.2f; // tile (unit viewport monde pas viewport HUD)
 
+    /**
+     * The target character to focus on.
+     */
     private MCCharacter target;
 
+    /**
+     * The rectangle representing the focused area.
+     */
     private Rectangle rect = new Rectangle();
 
     /**
@@ -29,10 +35,13 @@ public class MCTerrainFocusHUD extends MCAbstractHUD {
     private float blinkingTime = 0f;
 
     /**
-     * Not displayed when it's not the allies' turn.
+     * Indicates whether the HUD is currently displayed.
      */
     private boolean display = true;
 
+    /**
+     * Constructs a new `MCTerrainFocusHUD`.
+     */
     public MCTerrainFocusHUD() {}
 
     /**
@@ -87,17 +96,17 @@ public class MCTerrainFocusHUD extends MCAbstractHUD {
     }
 
     /**
-     * Gets whether the hud is fully shown.
+     * Gets whether the HUD is fully shown.
      *
-     * @return True if the hud is fully shown, false otherwise.
+     * @return True if the HUD is fully shown, false otherwise.
      */
     public boolean isFullyShown() { return display; }
 
     /**
-     * Checks if the position belongs to the hud component.
+     * Checks if the position belongs to the HUD component.
      *
      * @param pos The position to check.
-     * @return False, as the position never belongs to the hud component.
+     * @return False, as the position never belongs to the HUD component.
      */
     public boolean posBelongsToHudComponent(Vector2 pos) { return false; }
 

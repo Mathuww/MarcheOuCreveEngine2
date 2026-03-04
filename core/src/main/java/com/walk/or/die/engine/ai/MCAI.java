@@ -21,7 +21,10 @@ import com.walk.or.die.engine.tiledmap.MCTerrainMap;
  * Represents the decision-making AI for enemies, calculating moves and shots based on a score system.
  */
 public class MCAI {
-    
+
+    /**
+     * The terrain map on which the AI operates.
+     */
     private MCTerrainMap map;
 
     /**
@@ -44,7 +47,7 @@ public class MCAI {
 
     /**
      * Constructs a new AI instance.
-     * @param map The map on which the moves will occur.
+     * @param map The map on which moves occur.
      * @param parent The enemy entity controlled by this AI.
      * @throws Exception If an error occurs during initialization.
      */
@@ -70,7 +73,7 @@ public class MCAI {
                 //System.out.println("Selection AI" + ally + " : " + newScore);
                 bestVictim = ally;
                 best_score = newScore;
-            } 
+            }
         }
         return bestVictim;
     }
@@ -79,7 +82,7 @@ public class MCAI {
      * Calculates the score for attacking a specific ally.
      * @param pos The enemy position (shooting source).
      * @param ally The ally target.
-     * @param degats The maximum damage the enemy could inflict.
+     * @param degats The maximum damage the enemy can inflict.
      * @return The calculated score for this target.
      */
     private float scoreVictim(MCIntVector2 pos, MCAlly ally, float degats) {
@@ -148,7 +151,7 @@ public class MCAI {
                 ally.getTilePosition(),
                 pos);
             result += pathfinder.isCorrectTrajectory(traj, pos);
-            
+
         }
         //System.out.println("score safe " + result + " pour la pos " + pos);
         /*
@@ -159,7 +162,7 @@ public class MCAI {
         return score
         0 safe, puis ensuite comparaison
         */
-        
+
         return result;
     }
 
@@ -178,7 +181,7 @@ public class MCAI {
                 pos,
                 ally.getTilePosition()
             );
-            
+
             result += pathfinder.isCorrectTrajectory(traj, ally.getTilePosition());
         }
         /*
@@ -200,15 +203,15 @@ public class MCAI {
      */
     private List<MCIntVector2> searchShelts(MCIntVector2 pos, int maxMoves) {
         List<MCIntVector2> list = new ArrayList<>();
-        
+
         for (int x = -maxMoves; x <= maxMoves; x++) {
             for (int y = -maxMoves; y <= maxMoves; y++) {
                 MCIntVector2 newV = new MCIntVector2(pos.x + x, pos.y + y);
                 List<MCIntVector2> pathToNewV = pathfinder.getPath(pos, newV);
                 if (
-                    Math.abs(x) + Math.abs(y) <= maxMoves && 
+                    Math.abs(x) + Math.abs(y) <= maxMoves &&
                     newV.x < map.getWidth() && newV.y < map.getHeight() &&
-                    newV.x >= 0 && 
+                    newV.x >= 0 &&
                     newV.y >=0 &&
                     (
                         MCEntityManager.get().getEntityFromTile(1, newV) == null || MCEntityManager.get().getEntityFromTile(1, newV) == parent
@@ -244,7 +247,7 @@ public class MCAI {
         /*
         if (isOneProtected) {
             String str = pos.toString();
-            for (MCIntVector2 p : newPositions)   
+            for (MCIntVector2 p : newPositions)
                 str += pathfinder.isProtect(p);
             //System.out.println(str);
         } */
@@ -274,7 +277,7 @@ public class MCAI {
      * Adds a debug marker to the specified position.
      * @param spot The position to mark.
      */
-    public void showSpot(MCIntVector2 spot) { 
+    public void showSpot(MCIntVector2 spot) {
         MCDebugRenderer.get().addDebugTile(spot);
     }
 

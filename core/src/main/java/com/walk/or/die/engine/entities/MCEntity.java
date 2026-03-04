@@ -26,7 +26,9 @@ public abstract class MCEntity {
      * Represents the entity and its new position, useful to trigger events.
      */
     public static class TileReachedArgs {
+        /** The entity. */
         public MCEntity entity;
+        /** The tile. */
         public MCIntVector2 tile;
 
         /**
@@ -40,15 +42,25 @@ public abstract class MCEntity {
         }
     }
 
+    /** The unique identifier for the entity. */
     private String id;
+    /** The parent game instance. */
     private MCGame parent;
+    /** The terrain map the entity belongs to. */
     private MCTerrainMap map;
+    /** The hitbox of the entity for collision detection. */
     private Rectangle hitbox;
+    /** A map of animations available for this entity. */
     private Map<String, MCAnimation> animations;
+    /** The name of the currently playing animation. */
     private String currentAnimName;
+    /** The currently playing animation. */
     private MCAnimation currentAnim;
+    /** The sprite representing the entity. */
     private Sprite sprite;
+    /** The rendering layer of the entity. */
     private int layer = 1;
+    /** Indicates if the entity's state is frozen. */
     private boolean freeze = false;
 
     /**
@@ -64,6 +76,7 @@ public abstract class MCEntity {
      */
     public boolean keep = false;
 
+    /** The default size of the entity's sprite. */
     private float SIZE = 1f;
 
     /**
@@ -92,6 +105,11 @@ public abstract class MCEntity {
         hitbox = new Rectangle(0, 0, sprite.getWidth(), sprite.getHeight());
     }
 
+    /**
+     * Initializes parameters from map properties.
+     * @param props The map properties.
+     * @throws MissingDataException If required data is missing from the properties.
+     */
     public void initFromMapProperties(MapProperties props) throws MissingDataException {};
 
     /**
@@ -100,9 +118,9 @@ public abstract class MCEntity {
     public abstract void onSpawn();
 
     /**
-     * Initializes parameters from tiled datas.
+     * Initializes parameters from tiled data.
      * @param props The map properties.
-     * @throws Exception
+     * @throws Exception If an error occurs during initialization.
      */
     public abstract void initFromProperties(MapProperties props) throws Exception;
 
@@ -118,7 +136,7 @@ public abstract class MCEntity {
     }
 
     /**
-     * Gets animation names.
+     * Gets the animation names.
      * @return The set of animation names.
      */
     public Set<String> getAnimationNames() {
@@ -189,9 +207,9 @@ public abstract class MCEntity {
     }
 
     /**
-     * Plays an animation without reset.
+     * Plays an animation without resetting its state.
      * @param animName The animation name.
-     * @return True if the animation is played without reset, false otherwise.
+     * @return True if the animation is played without resetting its state, false otherwise.
      */
     public boolean playAnimationWithoutReset(String animName) {
         //System.out.println("asking playanimnoreset : " + animName);
@@ -222,7 +240,7 @@ public abstract class MCEntity {
     }
 
     /**
-     * Gets the parent (the game).
+     * Gets the parent game instance.
      * @return The game.
      */
     public MCGame getParent() {
@@ -311,6 +329,10 @@ public abstract class MCEntity {
         this.hitbox.setPosition(pos.x, pos.y);
     }
 
+    /**
+     * Sets the entity's position to a specific tile.
+     * @param pos The tile position.
+     */
     public void setTilePosition(MCIntVector2 pos) {
         this.hitbox.setPosition(pos.x, pos.y);
     }
@@ -357,7 +379,7 @@ public abstract class MCEntity {
     }
 
     /**
-     * To give the focus to the entity.
+     * Gives focus to the entity.
      */
     public void getFocus() {
         focus = true;
@@ -405,6 +427,11 @@ public abstract class MCEntity {
         return this.id;
     }
 
+    /**
+     * Compares this entity to the specified object.
+     * @param obj The object to compare with.
+     * @return True if the entities are equal, false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -413,6 +440,10 @@ public abstract class MCEntity {
         return comp.getId().equals(this.getId());
     }
 
+    /**
+     * Gets the hash code for this entity.
+     * @return The hash code.
+     */
     @Override
     public int hashCode() {
         return id.hashCode();

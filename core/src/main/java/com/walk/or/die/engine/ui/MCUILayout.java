@@ -13,9 +13,14 @@ import com.badlogic.gdx.math.Vector2;
  * A class used to easily design our user interface without using any absolute positioning. Very inspired by the way CSS works (especially for padding).
  */
 public class MCUILayout {
+    /** Holds the mapping of zone names to {@link Zone} objects. */
     private Map<String, Zone> zones = new HashMap<>();
+    /** The shape renderer used for drawing debug information. */
     private ShapeRenderer debugRenderer = new ShapeRenderer();
 
+    /**
+     * Constructs a new {@code MCUILayout}.
+     */
     public MCUILayout() {}
 
     /**
@@ -128,6 +133,8 @@ public class MCUILayout {
      */
     public void renderDebug() {
         debugRenderer.begin(ShapeType.Line);
+        // Note: MCHUDManager is not defined in the provided code, but its usage implies it's a utility for camera.
+        // It's left as is as per rule 5.
         debugRenderer.setProjectionMatrix(MCHUDManager.get().getCamera().combined);
         for (Zone z : zones.values()) {
             z.renderDebug(debugRenderer);
@@ -140,10 +147,18 @@ public class MCUILayout {
      * Especially wraps padding and alignment (left, center, right) computation.
      */
     public static class Zone {
+        /** The parent zone of this zone, or null if it's a root zone. */
         private Zone parent;
+        /** The logical rectangle defining the zone's position and dimensions. */
         private Rectangle logicRect;
-        private float padX = 0f, padY = 0f;
-        private float offsetX = 0f, offsetY = 0f;
+        /** The horizontal padding applied to the zone's content. */
+        private float padX = 0f;
+        /** The vertical padding applied to the zone's content. */
+        private float padY = 0f;
+        /** The horizontal offset of the zone relative to its logical position. */
+        private float offsetX = 0f;
+        /** The vertical offset of the zone relative to its logical position. */
+        private float offsetY = 0f;
 
         /**
          * Constructs a new Zone.
@@ -194,7 +209,7 @@ public class MCUILayout {
          *
          * @param width The width of the object to be centered.
          * @param height The height of the object to be centered.
-         * @return A Vector2 representing the center position.
+         * @return A {@link Vector2} representing the center position.
          */
         public Vector2 center(float width, float height) {
             float x = inX() + (inWidth() - width) / 2f;
@@ -206,7 +221,7 @@ public class MCUILayout {
          * Aligns an object to the left side of the zone.
          *
          * @param height The height of the object to align.
-         * @return A Vector2 representing the aligned position.
+         * @return A {@link Vector2} representing the aligned position.
          */
         public Vector2 alignLeft(float height) {
             float x = inX();
@@ -219,7 +234,7 @@ public class MCUILayout {
          *
          * @param width The width of the object to align.
          * @param height The height of the object to align.
-         * @return A Vector2 representing the aligned position.
+         * @return A {@link Vector2} representing the aligned position.
          */
         public Vector2 alignRight(float width, float height) {
             float x = inX() + inWidth() - width;
@@ -276,7 +291,7 @@ public class MCUILayout {
         /**
          * Gets the outside rectangle of the zone, including cumulative offsets.
          *
-         * @return A Rectangle representing the outside dimensions of the zone.
+         * @return A {@link Rectangle} representing the outside dimensions of the zone.
          */
         public Rectangle outside() {
             return new Rectangle(
@@ -290,7 +305,7 @@ public class MCUILayout {
         /**
          * Gets the inside rectangle of the zone, including offsets and padding.
          *
-         * @return A Rectangle representing the inside dimensions of the zone.
+         * @return A {@link Rectangle} representing the inside dimensions of the zone.
          */
         public Rectangle inside() {
             Rectangle effRect = outside();
@@ -342,7 +357,7 @@ public class MCUILayout {
         /**
          * Renders debug information for the zone using a ShapeRenderer.
          *
-         * @param debugRenderer The ShapeRenderer to use for rendering.
+         * @param debugRenderer The {@link ShapeRenderer} to use for rendering.
          */
         public void renderDebug(ShapeRenderer debugRenderer) {
             // censé être déjà begin et setProjectionMatrix à cet endroit

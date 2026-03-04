@@ -17,16 +17,19 @@ import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
- * Our personal screen.
+ * Represents our personal game screen.
  * @see Screen
  */
 public class MCGameScreen implements Screen {
+    /** The main game instance. */
     private MCGame game;
+    /** The camera manager instance. */
     private MCCameraManager camManager = MCCameraManager.get();
+    /** The HUD manager instance. */
     private MCHUDManager hudManager = MCHUDManager.get();
 
     /**
-     * The constructor.
+     * Constructs a new game screen.
      * @param game The game instance.
      * @throws InvalidDataException If the data is invalid.
      */
@@ -35,7 +38,7 @@ public class MCGameScreen implements Screen {
     }
     
     /**
-     * Called once (when the window is opened).
+     * Called once when the window is opened.
      */
     @Override
     public void show() {
@@ -65,6 +68,7 @@ public class MCGameScreen implements Screen {
     }
 
     /**
+     * Resizes the screen's viewports.
      * @param width The new width.
      * @param height The new height.
      */
@@ -74,22 +78,33 @@ public class MCGameScreen implements Screen {
        hudManager.getViewport().update(width, height, true);
     }
 
+    /**
+     * Pauses the game screen.
+     */
     @Override
     public void pause() {
-        // Invoked when your application is paused.
         MCEventBus.get().emit("Pause");
     }
     
+    /**
+     * Resumes the game screen after a pause.
+     */
     @Override
     public void resume() {
         // Invoked when your application is resumed after pause.
     }
 
+    /**
+     * Hides the game screen.
+     */
     @Override
     public void hide() {
         // This method is called when another screen replaces this one.
     }
 
+    /**
+     * Disposes of the screen's assets.
+     */
     @Override
     public void dispose() {
         // Destroy screen's assets here.

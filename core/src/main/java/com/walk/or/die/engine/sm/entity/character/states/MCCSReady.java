@@ -15,6 +15,9 @@ import com.walk.or.die.engine.tiledmap.MCPathfinder;
  * Name = "ready"
  */
 public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
+    /**
+     * Represents the currently hovered tile.
+     */
     private MCIntVector2 tile = new MCIntVector2(-1, -1);
 
     /**
@@ -31,11 +34,19 @@ public class MCCSReady extends MCCharacterState<MCCSReady.ReadyStateArgs> {
         this.name = "ready";
     }
 
+    /**
+     * Called on each frame.
+     * @param delta The time elapsed since the last frame.
+     */
     @Override
     public void update(float delta) {
         //System.out.println("On respire le bon air de la nature");
     }
 
+    /**
+     * Renders the state.
+     * @param batch The sprite batch used for rendering.
+     */
     @Override
     public void render(SpriteBatch batch) {
         

@@ -31,15 +31,17 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * The class which contains the maps we play on.
+ * Represents the class that contains the maps for gameplay.
  * @see MCMap
  */
 public class MCTerrainMap extends MCMap {
+    /** The renderer for the tiled map. */
     private OrthogonalTiledMapRenderer renderer;
+    /** The parent game instance. */
     private MCGame parent;
 
     /**
-     * The constructor.
+     * Constructs a new MCTerrainMap instance.
      * @param mapPath The path of the map.
      * @param assetManager The asset manager.
      */
@@ -48,9 +50,9 @@ public class MCTerrainMap extends MCMap {
     }
     
     /**
-     * Actually loads the map.
-     * @param mapPath the path of the map to load.
-     * @param assetManager the libGDX asset manager to use.
+     * Loads the map using an atlas.
+     * @param mapPath The path of the map to load.
+     * @param assetManager The LibGDX asset manager to use.
      */
     @Override
     public void loadMapWithAtlas(String mapPath, AssetManager assetManager) {
@@ -60,7 +62,7 @@ public class MCTerrainMap extends MCMap {
     }
 
     /**
-     * Gets if the tile itself at the given position is walkable.
+     * Checks if the tile at the given position is walkable.
      * A tile isn't walkable if it is void on all layers,
      * or if it is "blocked" at the highest layer
      * that isn't void at this tile.
@@ -99,8 +101,8 @@ public class MCTerrainMap extends MCMap {
     
            
     /**
-     * Gets if the tile itself at the given position protects bullets.
-     * A tile is protecting if the highest non void layer has property "blocked".
+     * Checks if the tile at the given position protects bullets.
+     * A tile is considered protecting if the highest non-void layer has the "blocked" property.
      * @param pos The position to check.
      * @return True if the tile is protecting, false otherwise.
      */
@@ -135,7 +137,7 @@ public class MCTerrainMap extends MCMap {
     }
 
     /**
-     * Creates all the entities on the map.
+     * Creates all entities on the map.
      * @param game The game instance.
      * @return A set of spawned entities.
      * @throws Exception If an error occurs during entity creation.
@@ -221,6 +223,9 @@ public class MCTerrainMap extends MCMap {
         renderer.render();
     }
 
+    /**
+     * Disposes of the map's resources.
+     */
     @Override
     public void dispose() {
         if (renderer != null) renderer.dispose();

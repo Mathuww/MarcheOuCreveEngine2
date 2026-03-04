@@ -1,12 +1,12 @@
 package com.walk.or.die.engine.exceptions;
 
 /**
- * Throws this exception when someone tries to load the wrong font.
+ * Indicates that an attempt was made to load an unsuitable font.
  */
 public class NotBeautifulFontException extends Exception {
     /**
-     * The constructor.
-     * @param name The name of the font.
+     * Constructs a new {@code NotBeautifulFontException}.
+     * @param name The name of the font that caused the exception.
      */
     public NotBeautifulFontException(String name) {
         super("This font is too ugly to be loaded : " + name);

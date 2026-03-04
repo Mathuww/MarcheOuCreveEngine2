@@ -16,12 +16,17 @@ import com.walk.or.die.engine.ui.MCHUDManager;
 
 public abstract class MCGSCombat<T extends MCGameState.StateArgs> extends MCGameState<T> {
 
+    /**
+     * Constructs a new MCGSCombat instance.
+     * @param parent The game instance.
+     */
     public MCGSCombat(MCGame parent) {
         super(parent);
     }
 
     /**
      * Called on each frame.
+     * @param delta The time elapsed since the last frame.
      */
     @Override
     public void update(float delta) {
@@ -30,6 +35,7 @@ public abstract class MCGSCombat<T extends MCGameState.StateArgs> extends MCGame
 
     /**
      * Called at state entrance.
+     * @param args The arguments passed to the state upon entry.
      */
     @Override
     public void enter(T args) {
@@ -45,9 +51,9 @@ public abstract class MCGSCombat<T extends MCGameState.StateArgs> extends MCGame
     }
 
     /**
-     * Generic combat done input listener for both combat states.
-     * If the allies won, picks an ally to turn it into an exploration player,
-     * according to this order of priority :
+     * Provides a generic combat done input listener for both combat states.
+     * If the allies won, it picks an ally to turn into an exploration player,
+     * according to the following order of priority:
      * - The priority index specified in the ally's data.
      * - The ally with the highest health points.
      * @param cda Specifies which team won the battle.

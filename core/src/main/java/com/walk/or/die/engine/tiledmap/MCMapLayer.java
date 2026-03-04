@@ -14,23 +14,26 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 
 /**
- * The class which gives an interface for MapLayer from gdx.
+ * Provides an interface for {@link MapLayer} from GDX.
  * @see MapLayer
  */
 public class MCMapLayer {
+    /**
+     * The wrapped {@link MapLayer} instance.
+     */
     private MapLayer ml;
 
     /**
-     * The constructor.
-     * @param ml The MapLayer to wrap.
+     * Constructs a new {@code MCMapLayer}.
+     * @param ml The {@link MapLayer} to wrap.
      */
     public MCMapLayer(MapLayer ml) {
         this.ml = ml;
     }
 
     /**
-     * Gets the MapLayer.
-     * @return The wrapped MapLayer.
+     * Gets the wrapped {@link MapLayer}.
+     * @return The wrapped {@link MapLayer}.
      */
     public MapLayer getRawLayer() {
         return ml;
@@ -38,7 +41,7 @@ public class MCMapLayer {
 
     /**
      * Gets all the objects on the layer.
-     * @return The MapObjects instance containing all objects.
+     * @return The {@link MapObjects} instance containing all objects.
      */
     public MapObjects getObjects() {
         return this.ml.getObjects();
@@ -68,10 +71,10 @@ public class MCMapLayer {
 
     /**
      * Gets the specified cell.
-     * @param x The x coordinate of the cell.
-     * @param y The y coordinate of the cell.
+     * @param x The x-coordinate of the cell.
+     * @param y The y-coordinate of the cell.
      * @return The cell.
-     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer.
+     * @throws IllegalStateException if the wrapped {@code MapLayer} is not an instance of {@link TiledMapTileLayer}.
      */
     public TiledMapTileLayer.Cell getCell(int x, int y) throws IllegalStateException{
         if (!(ml instanceof TiledMapTileLayer)) {
@@ -87,8 +90,8 @@ public class MCMapLayer {
      * Gets the position of the first tile with the given property.
      * @param name The name of the property.
      * @param value The value of the property.
-     * @return The Vector2 representing the position, or null if not found.
-     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer.
+     * @return The {@link Vector2} representing the position, or {@code null} if not found.
+     * @throws IllegalStateException if the wrapped {@code MapLayer} is not an instance of {@link TiledMapTileLayer}.
      */
     public Vector2 getPosByProperty(String name, String value) {
          if (!(ml instanceof TiledMapTileLayer)) {
@@ -117,8 +120,8 @@ public class MCMapLayer {
      * Gets the first cell with the given property.
      * @param name The name of the property.
      * @param value The value of the property.
-     * @return The TiledMapTileLayer.Cell, or null if not found.
-     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer.
+     * @return The {@link TiledMapTileLayer.Cell}, or {@code null} if not found.
+     * @throws IllegalStateException if the wrapped {@code MapLayer} is not an instance of {@link TiledMapTileLayer}.
      */
     public TiledMapTileLayer.Cell getCellByProperty(String name, String value) {
          if (!(ml instanceof TiledMapTileLayer)) {
@@ -144,9 +147,9 @@ public class MCMapLayer {
     }
 
     /**
-     * Gets the layer split in a matrix of tiles.
-     * @return The Array of Array of TiledMapTile representing the split tiles.
-     * @throws IllegalStateException if CMapLayer doesn't contain a TiledMapTileLayer.
+     * Gets the layer split into a matrix of tiles.
+     * @return The {@link Array} of {@link Array} of {@link TiledMapTile} representing the split tiles.
+     * @throws IllegalStateException if the wrapped {@code MapLayer} is not an instance of {@link TiledMapTileLayer}.
      */
     public Array<Array<TiledMapTile>> splitInTiles() {
         if (!(ml instanceof TiledMapTileLayer)) {

@@ -12,12 +12,12 @@ public interface MCVehicle {
     public abstract void start();
     /**
      * Stops the vehicle.
-     * @throws VoluntaryCrashException
+     * @throws VoluntaryCrashException Throws if the vehicle crashes voluntarily during the stop operation.
      */
     public abstract void stop() throws VoluntaryCrashException;
     /**
      * Crashes the vehicle.
-     * @throws VoluntaryCrashException
+     * @throws VoluntaryCrashException Throws to indicate a voluntary crash has occurred.
      */
     public abstract void crash() throws VoluntaryCrashException;
 }

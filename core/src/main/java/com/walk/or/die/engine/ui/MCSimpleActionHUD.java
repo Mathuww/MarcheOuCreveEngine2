@@ -14,7 +14,7 @@ import com.walk.or.die.engine.shared.MCEventBus;
  * This is the HUD shown at the upper right corner.
  * It only consists of the single button.
  * The only complexity resides in managing mouse hovering.
- * A lot of the stuff here is highly similar to MCCharacterHUD, excepts the callback function.
+ * A lot of the stuff here is highly similar to MCCharacterHUD, except for the callback function.
  * @see MCCharacterHUD
  */
 public class MCSimpleActionHUD extends MCAbstractHUD {
@@ -75,6 +75,9 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
      */
     private final float SCROLL_Y = HUD_TOP_MARGIN + HUD_HEIGHT;
 
+    /**
+     * The font used for displaying text.
+     */
     private BitmapFont font;
     /**
      * @see MCUILayout
@@ -113,6 +116,9 @@ public class MCSimpleActionHUD extends MCAbstractHUD {
      */
     private Runnable callback;
 
+    /**
+     * The event bus for game events.
+     */
     private final MCEventBus bus = MCEventBus.get();
 
     /**

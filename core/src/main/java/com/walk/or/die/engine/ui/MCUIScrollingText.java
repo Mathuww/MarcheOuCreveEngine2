@@ -11,15 +11,20 @@ import com.walk.or.die.engine.shared.MCSharedAssets;
 import com.walk.or.die.engine.ui.MCUILayout.Zone;
 
 /**
- * A text element that will make the text scroll if it overflows the zone.
+ * A text element that makes the text scroll if it overflows its zone.
  * @see MCUISimpleText
  */
 public class MCUIScrollingText extends MCUISimpleText {
+    /** The speed at which the text scrolls in pixels per second. */
     private final float SCROLL_SPEED = 50f; // pixels/s
+    /** The gap in pixels between repeated text instances during scrolling. */
     private final float SCROLL_GAP = 30f;
+    /** The width in pixels of the fade effect at the edges of the scrolling text. */
     private final float FADE_WIDTH = 25f; 
 
+    /** The texture region used for the gradient fade effect. */
     private TextureRegion gradientTexture;
+    /** The current X-offset for the scrolling text. */
     private float scrollX = 0f;
 
     /**
@@ -140,7 +145,7 @@ public class MCUIScrollingText extends MCUISimpleText {
     }
 
     /**
-     * Called on each frame
+     * Called on each frame.
      *
      * @param delta The time in seconds since the last frame.
      */

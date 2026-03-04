@@ -8,13 +8,13 @@ import com.walk.or.die.engine.shared.MCEventBus;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
 /**
- * Abstract class for state.
- * @param <T> Type of arguments' state
+ * Abstract class for a state.
+ * @param <T> The type of arguments for the state.
  */
 public abstract class MCState<T extends MCState.StateArgs> {
 
     /**
-     * Class of the args needed by the state to start.
+     * Class of the arguments needed by the state to start.
      */
     public static class StateArgs {}
 
@@ -31,7 +31,7 @@ public abstract class MCState<T extends MCState.StateArgs> {
     protected final MCHUDManager hudManager = MCHUDManager.get();
 
     /**
-     * Name of the state.
+     * The name of the state.
      */
     protected String name;
 
@@ -42,7 +42,7 @@ public abstract class MCState<T extends MCState.StateArgs> {
     protected MCEventBus bus;
 
     /**
-     * Constructor
+     * Initializes a new instance of the {@code MCState} class.
      */
     public MCState() {
         bus = MCEventBus.get();
@@ -50,45 +50,46 @@ public abstract class MCState<T extends MCState.StateArgs> {
 
     /**
      * Gets the name of the state.
-     * @return The name of the state
+     * @return The name of the state.
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Called on each frame
-     * @param delta the time delta
+     * Called on each frame.
+     * @param delta The time delta.
      */
     public abstract void update(float delta);
 
     /**
-     * Called on each frame
-     * @param batch the sprite batch
+     * Called on each frame.
+     * @param batch The sprite batch.
      */
     public abstract void render(SpriteBatch batch);
 
     /**
-     * @param batch the sprite batch
+     * Renders visual effects.
+     * @param batch The sprite batch.
      */
     public abstract void renderEffects(SpriteBatch batch);
 
     /**
-     * Called at state entrance
-     * @param args the arguments
+     * Called at state entrance.
+     * @param args The arguments.
      */
     public abstract void enter(T args);
 
     /**
-     * Called at state exit
+     * Called at state exit.
      */
     public abstract void exit();
 
     /**
      * Connects easily a method to an event.
-     * @param <U> the type of the listener
-     * @param eventName the name of the event
-     * @param listener the listener
+     * @param <U> The type of the listener.
+     * @param eventName The name of the event.
+     * @param listener The listener.
      */
     protected <U> void listen(String eventName, Consumer<U> listener) {
         bus.on(this, eventName, listener);
@@ -96,8 +97,8 @@ public abstract class MCState<T extends MCState.StateArgs> {
 
     /**
      * Changes the state, and calls a new one with its needed argument.
-     * @param newState the new state
-     * @param args the state arguments
+     * @param newState The new state.
+     * @param args The state arguments.
      */
     protected abstract void changeState(String newState, StateArgs args);
 }

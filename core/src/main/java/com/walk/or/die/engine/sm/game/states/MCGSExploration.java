@@ -12,8 +12,16 @@ import com.walk.or.die.engine.sm.game.MCGameState;
 import com.walk.or.die.engine.ui.MCHUDManager;
 
 public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> {
+    /**
+     * Represents arguments specific to the exploration state.
+     */
     public static class ExplStateArgs extends MCGameState.StateArgs {}
 
+    /**
+     * Constructs a new exploration game state.
+     *
+     * @param parent The parent game instance.
+     */
     public MCGSExploration(MCGame parent) {
         super(parent);
         this.name = "Exploration";
@@ -21,6 +29,8 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
 
     /**
      * Called on each frame.
+     *
+     * @param delta The time in seconds since the last frame.
      */
     @Override
     public void update(float delta) {
@@ -30,6 +40,7 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
     /**
      * Called at state entrance.
      * Sets up camera and HUD.
+     *
      * @param args The arguments passed to the state.
      */
     @Override
@@ -68,6 +79,7 @@ public class MCGSExploration extends MCGameState<MCGSExploration.ExplStateArgs> 
 
     /**
      * Called on each frame.
+     *
      * @param batch The sprite batch.
      */
     @Override

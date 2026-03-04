@@ -17,12 +17,19 @@ import com.walk.or.die.engine.ui.MCTerrainHPBar;
  * A freely moveable character that only exists in Exploration mode.
  */
 public class MCExplorationPlayer extends MCEntity {
+    /** The current health points of the player. */
     private int hp;
+    /** The maximum health points of the player. */
     private int maxHp;
+    /** The movement speed of the player. */
     private float speed;
+    /** Indicates if the player is dead. */
     private boolean dead = false;
+    /** The hitbox tolerance for interactions. */
     private Float toleranceHitbox;
+    /** The state manager for the player's behavior. */
     private MCStateMachine<MCExplorationPlayerState, MCEntity> stateManager;
+    /** The health bar for the player. */
     private MCTerrainHPBar hpBar;
 
     /**
@@ -67,6 +74,11 @@ public class MCExplorationPlayer extends MCEntity {
         toleranceHitbox = ally.getToleranceHitbox();
     }
     
+    /**
+     * Constructs a new MCExplorationPlayer from an existing player and a new map.
+     * @param player The existing player to copy properties from.
+     * @param map The terrain map.
+     */
     public MCExplorationPlayer(MCExplorationPlayer player, MCTerrainMap map) {
         super(
             player.getParent(),
@@ -101,9 +113,9 @@ public class MCExplorationPlayer extends MCEntity {
     }
 
     /**
-     * Initializes from properties.
+     * Initializes the player from properties.
      * @param props The properties to initialize from.
-     * @throws Exception if an error occurs.
+     * @throws Exception If an error occurs.
      */
     @Override
     public void initFromProperties(MapProperties props) throws Exception {
@@ -141,7 +153,7 @@ public class MCExplorationPlayer extends MCEntity {
     }
 
     /**
-     * Gets the health.
+     * Gets the current health.
      * @return The current health.
      */
     public int getHealth() {
@@ -149,20 +161,24 @@ public class MCExplorationPlayer extends MCEntity {
     }
 
     /**
-     * Gets the max health.
+     * Gets the maximum health.
      * @return The maximum health.
      */
     public int getMaxHp() {
         return maxHp;
     }
 
+    /**
+     * Gets the movement speed.
+     * @return The current movement speed.
+     */
     public float getSpeed() {
         return speed;
     }
 
 
     /**
-     * Makes the entity get hurt.
+     * Makes the entity receive damage.
      * @param damage The damage taken.
      * @param targetAnim The target animation.
      * @throws IllegalArgumentException If damage is negative.
@@ -194,27 +210,31 @@ public class MCExplorationPlayer extends MCEntity {
     }
 
     /**
-     * Sets the max hp.
+     * Sets the maximum health points.
      * @param maxHp The maximum health to set.
      */
     public void setMaxHp(int maxHp) {
         this.maxHp = maxHp;
     }
 
+    /**
+     * Sets the movement speed.
+     * @param speed The movement speed to set.
+     */
     public void setSpeed(float speed) {
         this.speed = speed;
     }
 
     /**
-     * Sets the health.
-     * @param h The health to set.
+     * Sets the health points.
+     * @param h The health points to set.
      */
     public void setHealth(int h) {
         this.hp = h;
     }
 
     /**
-     * Sets the player to dead.
+     * Sets the player's status to dead.
      */
     public void setDead() {
         dead = true;

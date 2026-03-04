@@ -40,6 +40,9 @@ public class MCAlly extends MCCharacter {
          */
         public boolean hasUsedCapacity = false;
         
+        /**
+         * Constructs a new AllyTurnState.
+         */
         public AllyTurnState() {}
 
         /**
@@ -81,6 +84,9 @@ public class MCAlly extends MCCharacter {
         public void capacityUsed() {hasUsedCapacity = true;}
     }   
 
+    /**
+     * The priority level of this ally.
+     */
     private int priorityLevel;
 
     /**
@@ -112,8 +118,8 @@ public class MCAlly extends MCCharacter {
     /**
      * Initializes from map properties.
      *
-     * @param props the MapProperties instance
-     * @throws MissingDataException When the map properties are missing or invalid
+     * @param props The map properties instance.
+     * @throws MissingDataException When the map properties are missing or invalid.
      */
     @Override
     public void initFromMapProperties(MapProperties props) throws MissingDataException {
@@ -140,8 +146,8 @@ public class MCAlly extends MCCharacter {
     }
 
     /**
-     * Gets the priority level
-     * @return priorityLevel
+     * Gets the priority level.
+     * @return The priority level of this ally.
      */
     public int getPriorityLevel() {
         return this.priorityLevel;

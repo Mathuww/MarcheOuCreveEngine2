@@ -11,9 +11,8 @@ import com.walk.or.die.engine.MCGame;
 import com.walk.or.die.engine.shared.MCEventBus;
 
 /**
- * This is the HUD showing just two lines of text
- * when the battle is over. <br>
- * A lot of the stuff here is highly similar to MCCharacterHUD, the most complex one.
+ * Displays two lines of text when a battle concludes.
+ * Much of its functionality is similar to MCCharacterHUD, the most complex HUD.
  * @see MCCharacterHUD
  */
 public class MCVeryBigInfoHUD extends MCAbstractHUD {
@@ -30,8 +29,13 @@ public class MCVeryBigInfoHUD extends MCAbstractHUD {
      */
     private final float FONT_SPACING = 3f;
 
-
+    /**
+     * The font used for displaying text.
+     */
     private BitmapFont font;
+    /**
+     * Represents the entire screen area.
+     */
     private Rectangle wholeScreen = new Rectangle(
         0, 0,
         MCGame.WINDOW_DEFAULT_WIDTH, 
@@ -42,21 +46,45 @@ public class MCVeryBigInfoHUD extends MCAbstractHUD {
      */
     private MCUILayout layout = new MCUILayout();
 
+    /**
+     * The text component for the lower line.
+     */
     private MCUISimpleText lowerText;
+    /**
+     * The text component for the upper line.
+     */
     private MCUISimpleText upperText;
 
+    /**
+     * The horizontal padding for the layout.
+     */
     private final float PADDING_W = 100f;
+    /**
+     * The vertical padding for the layout.
+     */
     private final float PADDING_H = 160f;
+    /**
+     * The gap between the upper and lower text zones.
+     */
     private final float GAP = 0f;
 
+    /**
+     * The alpha value for the background.
+     */
     private final float BG_ALPHA = 0.65f;
     
     /**
      * Is the HUD currently shown? Only true when it's ENTIRELY shown.
      */
     private boolean shown = false;
+    /**
+     * Indicates whether the HUD is currently hovered.
+     */
     private boolean hovered = false;
 
+    /**
+     * The event bus for dispatching and receiving events.
+     */
     private final MCEventBus bus = MCEventBus.get();
 
     /**
@@ -83,18 +111,34 @@ public class MCVeryBigInfoHUD extends MCAbstractHUD {
         upperText = new MCUISimpleText(this, font, layout.zone("upper"), Color.BLACK, DEFAULT_FONT_SCALE, FONT_SPACING);
     }
 
+    /**
+     * Sets the text for the lower line.
+     * @param newText The new text to display.
+     */
     public void setLowerText(String newText) {
         lowerText.setText(newText);
     }
 
+    /**
+     * Sets the scale for the lower text.
+     * @param scale The scale factor for the text.
+     */
     public void setLowerTextScale(float scale) {
         lowerText.setScale(scale);
     }
 
+    /**
+     * Sets the text for the upper line.
+     * @param newText The new text to display.
+     */
     public void setUpperText(String newText) {
         upperText.setText(newText);
     }
 
+    /**
+     * Sets the scale for the upper text.
+     * @param scale The scale factor for the text.
+     */
     public void setUpperTextScale(float scale) {
         upperText.setScale(scale);
     }
@@ -123,12 +167,16 @@ public class MCVeryBigInfoHUD extends MCAbstractHUD {
         upperText.render(batch);
     }
 
+    /**
+     * Sets the display status of the HUD.
+     * @param display True to show the HUD, false to hide it.
+     */
     public void setDisplay(boolean display) {
         this.shown = display;
     }
 
     /**
-     * Checks if the HUD is fully shown.
+     * Checks whether the HUD is fully shown.
      * @return True if fully shown, false otherwise.
      */
     public boolean isFullyShown() {
@@ -136,7 +184,7 @@ public class MCVeryBigInfoHUD extends MCAbstractHUD {
     }
 
     /**
-     * Checks if a position belongs to a HUD component.
+     * Checks whether a position belongs to a HUD component.
      * @param mousePos The mouse position.
      * @return True if the position belongs to a HUD component, false otherwise.
      */
@@ -145,7 +193,7 @@ public class MCVeryBigInfoHUD extends MCAbstractHUD {
     }
     
     /**
-     * Handles hover events.
+     * Handles hover events for the HUD.
      * @param hoverPos The hover position.
      */
     public void handleHover(Vector2 hoverPos) {
@@ -153,14 +201,14 @@ public class MCVeryBigInfoHUD extends MCAbstractHUD {
     }
 
     /**
-     * Handles hover gone events.
+     * Handles events when the hover state ends.
      */
     public void handleHoverGone() {
         hovered = false;
     }
 
     /**
-     * Handles click events.
+     * Handles click events for the HUD.
      * @param clickPos The click position.
      */
     public void handleClick(Vector2 clickPos) {

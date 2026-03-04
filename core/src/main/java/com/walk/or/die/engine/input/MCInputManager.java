@@ -19,11 +19,14 @@ import com.walk.or.die.engine.ui.MCHUDManager;
  * Our singleton which manages inputs.
  */
 public class MCInputManager implements InputProcessor {
+    /**
+     * The singleton instance of the MCInputManager.
+     */
     private static MCInputManager instance = null;
 
     /**
      * Gets the singleton instance.
-     * @return the singleton instance.
+     * @return The singleton instance.
      */
     public static MCInputManager get() {
         if (instance == null) instance = new MCInputManager();
@@ -39,36 +42,39 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * Command class, destined to be extended.
+     * Represents a base class for commands, designed to be extended.
      */
     public static abstract class Command {}
 
     /**
-     * Directional input.
+     * Represents a directional input command.
      */
     public static class DirectionalCommand extends Command {
+        /**
+         * The directional vector.
+         */
         private MCIntVector2 v;
 
         /**
-         * The creator, by a (MC)vector.
-         * @param v The MCIntVector2 to use.
+         * Constructs a DirectionalCommand with a given vector.
+         * @param v The MCIntVector2 representing the direction.
          */
         public DirectionalCommand(MCIntVector2 v) {
             this.v = v;
         }
 
         /**
-         * The creator, by int.
-         * @param x The x coordinate.
-         * @param y The y coordinate.
+         * Constructs a DirectionalCommand with given integer coordinates.
+         * @param x The x-coordinate of the direction.
+         * @param y The y-coordinate of the direction.
          */
         public DirectionalCommand(int x, int y) {
             this.v = new MCIntVector2(x, y);
         }
         
         /**
-         * Gets the direction pressed.
-         * @return the direction pressed.
+         * Retrieves the direction vector of the command.
+         * @return The direction vector.
          */
         public MCIntVector2 getIntVect() {
             return this.v;
@@ -76,22 +82,25 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * Tile clicked.
+     * Represents a command for a tile click.
      */
     public static class ClickTileCommand extends Command {
+        /**
+         * The position of the clicked tile.
+         */
         private MCIntVector2 v;
 
         /**
-         * The creator.
-         * @param v The MCIntVector2 to use.
+         * Constructs a ClickTileCommand with a given tile position.
+         * @param v The MCIntVector2 representing the tile position.
          */
         public ClickTileCommand(MCIntVector2 v) {
             this.v = v;
         }
 
         /**
-         * Returns the tile position.
-         * @return the tile position.
+         * Retrieves the tile position.
+         * @return The tile position.
          */
         public MCIntVector2 getIntVect() {
             return this.v;
@@ -99,20 +108,32 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * Aim input.
+     * Represents an aim input command.
      */
     public static class AimCommand extends Command {
+        /**
+         * Constructs an AimCommand.
+         */
         public AimCommand() {}
     }
 
     /**
-     * Ready input.
+     * Represents a ready input command.
      */
     public static class ReadyCommand extends Command {
+        /**
+         * Constructs a ReadyCommand.
+         */
         public ReadyCommand() {}    
     }
 
+    /**
+     * Represents a command related to HUD interactions.
+     */
     public static class HudCommand extends Command {
+        /**
+         * Defines the types of HUD commands.
+         */
         public static enum Type {
             UP,
             DOWN,
@@ -121,29 +142,45 @@ public class MCInputManager implements InputProcessor {
             VALIDATE
         }
 
+        /**
+         * The type of the HUD command.
+         */
         public Type type;
 
         /**
-         * @param type The type of HudCommand.
+         * Constructs a HudCommand with the specified type.
+         * @param type The type of the HUD command.
          */
         public HudCommand(Type type) {
             this.type = type;
         }
     }
 
+    /**
+     * Represents a command to navigate to the previous map.
+     */
     public static class PreviousMapCommand extends Command {}
+    /**
+     * Represents a command to navigate to the next map.
+     */
     public static class NextMapCommand extends Command {}
+    /**
+     * Represents a command to pause the game.
+     */
     public static class PauseCommand extends Command {}
 
     /**
-     * Non-handled input.
+     * Represents a command for a non-handled key input.
      */
     public static class OtherKeyCommand extends Command {
+        /**
+         * The key code of the unhandled input.
+         */
         public int key;
 
         /**
-         * The creator.
-         * @param key The key code.
+         * Constructs an OtherKeyCommand with the specified key code.
+         * @param key The key code of the input.
          */
         public OtherKeyCommand(int key) {
             this.key = key;
@@ -151,30 +188,50 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * Next-turn input.
+     * Represents a command to advance to the next turn.
      */
     public static class NextTurnCommand extends Command {
+        /**
+         * Constructs a NextTurnCommand.
+         */
         public NextTurnCommand() {}
     }
 
+    /**
+     * Represents a command to zoom the camera.
+     */
     public static class CameraZoomCommand extends Command {
+        /**
+         * The scroll delta value.
+         */
         public float scrollDelta;
 
         /**
-         * @param scroll The scroll value.
+         * Constructs a CameraZoomCommand with the specified scroll delta.
+         * @param scroll The scroll delta value.
          */
         public CameraZoomCommand(float scroll) {
             scrollDelta = scroll;
         }
     }
 
+    /**
+     * Represents a command to pan the camera.
+     */
     public static class CameraPanCommand extends Command {
+        /**
+         * The delta X value for panning.
+         */
         public float deltaX;
+        /**
+         * The delta Y value for panning.
+         */
         public float deltaY;
 
         /**
-         * @param dx The delta X value.
-         * @param dy The delta Y value.
+         * Constructs a CameraPanCommand with the specified delta values.
+         * @param dx The delta X value for panning.
+         * @param dy The delta Y value for panning.
          */
         public CameraPanCommand(float dx, float dy) {
             deltaX = dx;
@@ -183,37 +240,61 @@ public class MCInputManager implements InputProcessor {
     }
     
     /**
-     * A class to store functions to call when the mouse moves.
+     * Stores functions to call when the mouse moves.
      */
     public static class MouseListener {
+        /**
+         * The function to be called when the mouse moves.
+         */
         public Consumer<Vector2> mouseMovedFunction;
 
         /**
-         * The constructor.
-         * @param consumer The consumer to call when the mouse moves.
+         * Constructs a MouseListener with the specified consumer.
+         * @param consumer The consumer function to call when the mouse moves.
          */
         public MouseListener(Consumer<Vector2> consumer) {
             this.mouseMovedFunction = consumer;
         }
     }
 
+    /**
+     * The viewport used for coordinate transformations.
+     */
     private Viewport vp;
 
+    /**
+     * The event bus for broadcasting input commands.
+     */
     private final MCEventBus bus = MCEventBus.get();
+    /**
+     * The HUD manager for handling HUD-specific inputs.
+     */
     private final MCHUDManager hudManager = MCHUDManager.get();
+    /**
+     * The function to be called when the mouse moves, if connected.
+     */
     private Consumer<Vector2> mouseMovedFunction;
 
+    /**
+     * The world coordinates of the mouse position before a drag operation.
+     */
     private Vector3 posBeforeDrag = new Vector3(0f,0f,0f);
+    /**
+     * Indicates whether a mouse drag operation is currently active.
+     */
     private boolean isDragging = false;
 
+    /**
+     * Constructs the MCInputManager singleton instance.
+     */
     private MCInputManager() {
         bus.on(this, "connectMouseMoved", this::connectMouseMoved);
         bus.on(this, "disconnectMouseMoved", this::disconnectMouseMoved);
     }
 
     /**
-     * Calls the given function when the mouse moves.
-     * @param consumer The mouse listener.
+     * Connects a function to be called when the mouse moves.
+     * @param consumer The mouse listener containing the function.
      */
     public void connectMouseMoved(MouseListener consumer) {
         if (mouseMovedFunction != null) 
@@ -222,13 +303,18 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * Stops calling the function.
+     * Disconnects the currently connected mouse moved function.
      * @param consumer The mouse listener.
      */
     public void disconnectMouseMoved(MouseListener consumer) {
         mouseMovedFunction = null;
     }
 
+    /**
+     * Called when a key is pressed down. Processes the key event and emits corresponding commands.
+     * @param k The key code of the pressed key.
+     * @return True if the event was handled, false otherwise.
+     */
     @Override 
     public boolean keyDown(int k) {
         switch (k) {
@@ -291,6 +377,11 @@ public class MCInputManager implements InputProcessor {
         return true;
     }
 
+    /**
+     * Called when a key is released. Processes the key release event and emits corresponding commands.
+     * @param k The key code of the released key.
+     * @return True if the event was handled, false otherwise.
+     */
     @Override 
     public boolean keyUp(int k){
         switch (k) {
@@ -317,6 +408,14 @@ public class MCInputManager implements InputProcessor {
         return true;
     }
 
+    /**
+     * Called when a touch screen is touched or a mouse button is pressed. Handles clicks and initiates dragging.
+     * @param x The x-coordinate of the touch/click.
+     * @param y The y-coordinate of the touch/click.
+     * @param pointer The pointer for the event.
+     * @param button The button that was pressed (for mouse events).
+     * @return True if the event was handled, false otherwise.
+     */
     @Override public boolean touchDown(int x, int y, int pointer, int button) {
         Vector3 worldCoords = new Vector3(x, y, 0);
         Vector3 hudCoords = new Vector3(worldCoords);
@@ -345,6 +444,12 @@ public class MCInputManager implements InputProcessor {
         return false;
     }
 
+    /**
+     * Called when the mouse is moved. Handles HUD hovering and relays mouse movement to connected listeners.
+     * @param x The x-coordinate of the mouse cursor.
+     * @param y The y-coordinate of the mouse cursor.
+     * @return True if the event was handled, false otherwise.
+     */
     @Override public boolean mouseMoved(int x, int y) {
         Vector3 hudPos = new Vector3(x, y, 0f);
         hudManager.getViewport().unproject(hudPos);
@@ -371,7 +476,7 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * To force a mouse update.
+     * Triggers a manual mouse update, simulating a mouse movement event.
      */
     public void triggerMouseUpdate() {
         int x = Gdx.input.getX();
@@ -380,8 +485,8 @@ public class MCInputManager implements InputProcessor {
     }
 
     /**
-     * Asks for the world mouse position.
-     * @return the world mouse position.
+     * Retrieves the current world coordinates of the mouse position.
+     * @return The world mouse position.
      */
     public Vector3 askWorldMousePos() {
         Vector3 worldCoords = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -390,6 +495,12 @@ public class MCInputManager implements InputProcessor {
         return worldCoords;
     }
 
+    /**
+     * Called when the mouse wheel is scrolled. Handles HUD scrolling and camera zooming.
+     * @param x The horizontal scroll amount (not typically used for vertical scrolling).
+     * @param y The vertical scroll amount.
+     * @return True if the event was handled, false otherwise.
+     */
     @Override 
     public boolean scrolled(float x, float y) {
         Vector3 hudPos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0f);
@@ -405,6 +516,14 @@ public class MCInputManager implements InputProcessor {
         return true;
     }
 
+    /**
+     * Called when a touch screen is no longer touched or a mouse button is released. Ends drag operations.
+     * @param x The x-coordinate of the touch/release.
+     * @param y The y-coordinate of the touch/release.
+     * @param p The pointer for the event.
+     * @param button The button that was released (for mouse events).
+     * @return True if the event was handled, false otherwise.
+     */
     @Override
     public boolean touchUp(int x, int y, int p, int button) {
         if (button == Buttons.RIGHT) {
@@ -414,6 +533,13 @@ public class MCInputManager implements InputProcessor {
         return false;
     }
 
+    /**
+     * Called when a touch screen is touched and then dragged, or when a mouse button is pressed and the mouse is moved. Handles camera panning.
+     * @param x The x-coordinate of the drag event.
+     * @param y The y-coordinate of the drag event.
+     * @param p The pointer for the event.
+     * @return True if the event was handled, false otherwise.
+     */
     @Override 
     public boolean touchDragged(int x, int y, int p) {
         if (!isDragging)
@@ -437,6 +563,20 @@ public class MCInputManager implements InputProcessor {
         return true;
     }
 
+    /**
+     * Called when a character is typed. Currently not handled.
+     * @param c The character that was typed.
+     * @return Always returns false as the event is not handled.
+     */
     @Override public boolean keyTyped(char c){return false;}
+
+    /**
+     * Called when a touch event is cancelled. Currently not handled.
+     * @param screenX The x-coordinate of the cancelled touch.
+     * @param screenY The y-coordinate of the cancelled touch.
+     * @param pointer The pointer for the event.
+     * @param button The button associated with the cancelled touch.
+     * @return Always returns false as the event is not handled.
+     */
     @Override public boolean touchCancelled (int screenX, int screenY, int pointer, int button) {return false;}
 }
